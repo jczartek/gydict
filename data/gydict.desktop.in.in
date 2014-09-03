@@ -1,0 +1,10 @@
+[Desktop Entry]
+_Name=Gydict
+_Comment=Dictionary PWN
+_GenericName=Dictionary
+Keywords=office;dictionary;
+Exec=gydict
+Terminal=false
+Type=Application
+Icon=gydict
+Categories=GTK;Office;Other;

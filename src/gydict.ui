@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.0 on Wed Jan  1 20:17:05 2014 -->
+<interface>
+	<!-- interface-requires gtk+ 3.10 -->
+	<menu id="gear_menu">
+		<section>
+			<item>
+				<attribute name="label" translatable="yes">_Print</attribute>
+				<attribute name="action">win.print</attribute>
+				<attribute name="accel">&lt;Primary&gt;p</attribute>
+			</item>
+			<item>
+				<attribute name="label" translatable="yes">_Copy</attribute>
+				<attribute name="action">win.copy</attribute>
+				<attribute name="accel">&lt;Primary&gt;c</attribute>
+			</item>
+			<item>
+				<attribute name="label" translatable="yes">Pa_ste</attribute>
+				<attribute name="action">win.paste</attribute>
+				<attribute name="accel">&lt;Primary&gt;v</attribute>
+			</item>
+			<item>
+				<attribute name="label" translatable="yes">React to clipboard</attribute>
+				<attribute name="action">win.clip</attribute>
+				<attribute name="accel">&lt;Primary&gt;m</attribute>
+			</item>
+			<item>
+				<attribute name="label" translatable="yes">Diacritic</attribute>
+				<attribute name="action">win.signs</attribute>
+			</item>
+		</section>
+		<section>
+			<item>
+				<attribute name="label" translatable="yes">Cl_ose</attribute>
+				<attribute name="action">win.close</attribute>
+				<attribute name="accel">&lt;Primary&gt;w</attribute>
+			</item>
+		</section>   
+	</menu>
+	
+	<menu id="dict_menu">
+		<submenu>
+			<attribute name="label" translatable="no">PWN</attribute>
+			<section>
+				<item> 
+					<attribute name="label" translatable="no">Ang-Pl</attribute>
+					<attribute name="action">win.dict</attribute>								
+					<attribute name="target">dict-pwn-angpol</attribute>
+				</item>
+				<item>
+					<attribute name="label" translatable="no">Pl-Ang</attribute>
+					<attribute name="action">win.dict</attribute>
+					<attribute name="target">dict-pwn-polang</attribute>
+				</item>
+			</section>
+		</submenu>
+		<submenu>
+			<attribute name="label" translatable="no">depl</attribute>
+			<section>
+				<item>
+					<attribute name="label" translatable="no">De-Pl</attribute>
+					<attribute name="action">win.dict</attribute>
+					<attribute name="target">dict-depl-a</attribute>
+				</item>
+			</section>
+		</submenu>
+	</menu>
+	
+	
+	<!-- NOTE: PANGO_SCALE = 1024 -->
+	<object class="GtkTextTagTable" id="table_tag">
+		<child type="tag">
+			<object class="GtkTextTag" id="tbig">
+				<property name="name">big</property>
+				<property name="size">14336</property> <!-- result: 14 * PANGO_SCALE -->
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="tblue">
+				<property name="name">blue</property>
+				<property name="foreground">#14aabc</property>
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="tbold">
+				<property name="name">bold</property>
+				<property name="weight">700</property> <!-- PANGO_WEIGHT_BOLD = 700 -->
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="tph">
+				<property name="name">ph</property>
+				<property name="foreground">#c1bdbd</property>
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="tsub">
+				<property name="name">sub</property>
+				<property name="family">serif</property>
+				<property name="size">14336</property> <!-- result: 14 * PANGO_SCALE -->
+				<property name="weight">700</property>
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="titalic">
+				<property name="name">italic</property>
+				<property name="style">2</property> <!-- PANGO_STYLE_ITALIC = 2 -->
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="tsmall">
+				<property name="name">small</property>
+				<property name="scale">0.8333333333333</property> <!-- PANGO_SCALE_SMALL -->
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="tsuperscript">
+				<property name="name">superscript</property>
+				<property name="rise">6144</property> <!-- result: 6 * PANGO_SCALE -->
+				<property name="size">7168</property>
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="tsearch">
+				<property name="name">search</property>
+				<property name="background">#456b6a</property>
+				<property name="foreground">#ffffff</property>
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="tsearch_next">
+				<property name="name">search_next</property>
+				<property name="background">#4c83cd</property>
+				<property name="foreground">#ffffff</property>
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="tred">
+				<property name="name">red</property>
+				<property name="foreground">#bc4b14</property>
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="tgreen">
+				<property name="name">green</property>
+				<property name="foreground">#457218</property>
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="tgray">
+				<property name="name">gray</property>
+				<property name="foreground">#8746ea</property>
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="tacronym">
+				<property name="name">acronym</property>
+				<property name="family">sefif</property>
+			</object>
+		</child>
+		<child type="tag">
+			<object class="GtkTextTag" id="tlink">
+				<property name="name">link</property>
+				<property name="underline">1</property>
+			</object>
+		</child>
+	</object>
+	
+	<object class="GtkTextBuffer" id="text_buffer">
+		<property name="tag_table">table_tag</property>
+	</object>
+		
+	<template class="GyWindow" parent="GtkApplicationWindow">
+		<property name="can_focus">False</property>
+		<property name="has_focus">False</property>
+		<property name="is_focus">False</property>     
+  	<child type="titlebar">
+	  	<object class="GtkHeaderBar" id="header_bar">
+  	  	<property name="visible">True</property>
+  	    <property name="can_focus">False</property>
+	      <property name="vexpand">False</property>
+	      <property name="show_close_button">True</property>
+	      <child>
+	      	<object class="GtkBox" id="box_buttons_history">
+	      		<property name="visible">True</property>
+	      		<property name="valign">center</property>
+	      		<property name="can_focus">False</property>
+	      		<style>
+	      			<class name="linked" />
+	      		</style>
+	      		<child>
+	      			<object class="GtkButton" id="back_button">
+	      				<property name="visible">True</property>
+	      				<property name="valign">center</property>
+	      				<property name="can_focus">False</property>
+	      				<property name="tooltip_text" translatable="yes">Back</property>
+	      				<property name="action_name">win.go-back</property>
+	      				<style>
+	      					<class name="image-button" />
+	      				</style>
+	      				<child>
+	      					<object class="GtkImage" id="back_button_image">
+	      						<property name="visible">True</property>
+	      						<property name="icon_size">1</property>
+	      						<property name="icon_name">go-previous-symbolic</property>
+	      					</object>
+	      				</child>
+	      			</object> <!-- back -->
+	      			<packing>
+		  					<property name="expand">False</property>
+		  					<property name="fill">False</property>
+							</packing>
+	      		</child>
+	      		<child>
+	      			<object class="GtkButton" id="forward_button">
+	      				<property name="visible">True</property>
+	      				<property name="valign">center</property>
+	      				<property name="can_focus">False</property>
+	      				<property name="tooltip_text" translatable="yes">Forward</property>
+	      				<property name="action_name">win.go-forward</property>
+	      				<style>
+	      					<class name="image-button"/>
+	      				</style>
+	      				<child>
+	      					<object class="GtkImage" id="forward_button_image">
+	      						<property name="visible">True</property>
+	      						<property name="icon_size">1</property>
+	      						<property name="icon_name">go-next-symbolic</property>
+	      					</object>
+	      				</child>
+	      			</object> <!-- forward_button -->
+	      			<packing>
+	      				<property name="expand">False</property>
+	      				<property name="fill">False</property>
+	      			</packing>
+	      		</child>
+	      	</object> <!-- box_buttons_history -->
+	      	<packing>
+	      		<property name="pack_type">start</property>
+	      	</packing>
+	      </child>
+	      <child>
+					<object class="GtkBox" id="menu_box">
+						<property name="visible">True</property>
+						<property name="valign">center</property>
+						<property name="can_focus">False</property>
+						<style>
+							<class name="linked"/>
+						</style>
+						<child>
+							<object class="GtkToggleButton" id="find_button">
+	      				<property name="visible">True</property>
+	      				<property name="valign">center</property>
+	      				<property name="can_focus">False</property>
+	      				<property name="action_name">win.find-menu</property>
+	      				<style>
+	      					<class name="image-button"/>
+	      				</style>
+	      				<child>
+	      					<object class="GtkImage" id="find_button_image">
+	      						<property name="visible">True</property>
+	      						<property name="icon_size">1</property>
+	      						<property name="icon_name">edit-find-symbolic</property>
+	      					</object>
+	      				</child>
+	      			</object> <!-- find_button -->
+							<packing>
+								<property name="expand">False</property>
+								<property name="fill">False</property>
+							</packing>
+						</child>
+						<child>
+			      	<object class="GtkMenuButton" id="dict_menu_button">
+	      				<property name="visible">True</property>
+	      				<property name="valign">center</property>
+	      				<property name="can_focus">False</property>
+	      				<property name="action_name">win.dict-menu</property>
+	      				<property name="menu_model">dict_menu</property>
+	      				<style>
+	      					<class name="image-button"/>
+	      				</style>
+	      				<child>
+	      					<object class="GtkImage" id="dict_image">
+	      						<property name="visible">True</property>
+	      						<property name="icon_size">1</property>
+	      						<property name="icon_name">go-down-symbolic</property>
+	      					</object>
+	      				</child>
+	      			</object> <!-- dict_menu_button -->
+							<packing>
+								<property name="expand">False</property>
+								<property name="fill">False</property>
+							</packing>
+						</child>
+						<child>
+			      	<object class="GtkMenuButton" id="gear_menu_button">
+	      				<property name="visible">True</property>
+	      				<property name="valign">center</property>
+	      				<property name="can_focus">False</property>
+	      				<property name="action_name">win.gear-menu</property>
+	      				<property name="menu_model">gear_menu</property>
+	      				<style>
+	      					<class name="image-button"/>
+	      				</style>
+	      				<child>
+	      					<object class="GtkImage" id="gear_image">
+	      						<property name="visible">True</property>
+	      						<property name="icon_size">1</property>
+	      						<property name="icon_name">emblem-system-symbolic</property>
+	      					</object>
+	      				</child>
+	      			</object> <!-- gear_menu_button -->
+							<packing>
+								<property name="expand">False</property>
+								<property name="fill">False</property>
+							</packing>
+						</child>
+					</object> <!-- menu_box -->
+					<packing>
+						<property name="pack_type">end</property>
+					</packing>
+				</child> 
+	    </object> <!-- header_bar -->
+	  </child>
+	  <child>
+			<object class="GtkBox" id="child_box">
+				<property name="visible">True</property>
+				<property name="can_focus">False</property>
+				<property name="orientation">vertical</property>
+				<child>
+					<object class="GtkInfoBar" id="infobar">
+						<property name="visible">False</property>
+						<property name="can_focus">False</property>
+					</object> <!-- ifnobar -->
+					<packing>
+						<property name="expand">False</property>
+						<property name="fill">False</property>
+						<property name="position">0</property>
+					</packing>
+				</child>
+				<child>
+					<object class="GtkPaned" id="paned">
+						<property name="visible">True</property>
+						<property name="can_focus">False</property>
+	      		<property name="position">200</property>
+						<child>
+							<object class="GtkBox" id="box1">
+								<property name="visible">True</property>
+								<property name="can_focus">False</property>
+								<property name="orientation">vertical</property>
+								<child>
+									<object class="GtkSearchEntry" id="entry">
+										<property name="visible">True</property>
+										<property name="can_focus">True</property>
+										<property name="invisible_char">●</property>
+										<property name="invisible_char_set">True</property>
+										<property name="width-request">200</property>
+									</object> <!-- entry -->
+									<packing>
+										<property name="expand">False</property>
+										<property name="fill">True</property>
+										<property name="position">0</property>
+									</packing>
+								</child>
+                <!--toolbar_buttons-->
+								<child>
+									<object class="GtkRevealer" id="revealer_buttons">
+										<property name="visible">True</property>
+										<property name="can_focus">False</property>
+										<property name="vexpand">False</property>
+										<property name="hexpand">True</property>
+										<child>
+											<object class="GtkToolbar" id="toolbar_buttons">
+												<property name="visible">True</property>
+												<property name="can_focus">False</property>
+												<property name="show_arrow">False</property>
+												<child>
+													<object class="GtkToolButton" id="a_button">
+														<property name="visible">True</property>
+														<property name="can_focus">False</property>
+														<property name="is_important">True</property>
+														<property name="label" translatable="no">ä</property>
+														<property name="use_underline">True</property>
+														<property name="action_name">win.paste-sign</property>
+														<property name="action_target">"ä"</property>
+													</object>
+													<packing>
+														<property name="expand">True</property>
+														<property name="homogeneous">True</property>
+													</packing>
+												</child>
+												<child>
+													<object class="GtkToolButton" id="b_button">
+														<property name="visible">True</property>
+														<property name="can_focus">False</property>
+														<property name="is_important">True</property>
+														<property name="label" translatable="no">ö</property>
+														<property name="use_underline">True</property>
+														<property name="action_name">win.paste-sign</property>
+														<property name="action_target">"ö"</property>
+													</object>
+													<packing>
+														<property name="expand">True</property>
+														<property name="homogeneous">True</property>
+													</packing>
+												</child>
+			  								<child>
+			    								<object class="GtkToolButton" id="c_button">
+			      								<property name="visible">True</property>
+			      								<property name="can_focus">False</property>
+			      								<property name="is_important">True</property>
+  			      							<property name="label" translatable="no">ü</property>
+			      								<property name="use_underline">True</property>
+			      								<property name="action_name">win.paste-sign</property>
+			      								<property name="action_target">"ü"</property>
+			    								</object>
+			    								<packing>
+			      								<property name="expand">True</property>
+  			      							<property name="homogeneous">True</property>
+		      	    					</packing>
+			  								</child>
+			  								<child>
+			    								<object class="GtkToolButton" id="d_button">
+			      								<property name="visible">True</property>
+			      								<property name="can_focus">False</property>
+			      								<property name="is_important">True</property>
+			      								<property name="label" translatable="no">ß</property>
+			      								<property name="use_underline">True</property>
+			      								<property name="action_name">win.paste-sign</property>
+    			      						<property name="action_target">"ß"</property>
+			    								</object>
+			    								<packing>
+			      								<property name="expand">True</property>
+			      								<property name="homogeneous">True</property>
+			    								</packing>
+			  								</child>
+											</object>	
+  		      				</child>
+		    					</object>
+		    					<packing>
+		      					<property name="expand">False</property>
+		      					<property name="fill">False</property>
+		      					<property name="position">1</property>
+		    					</packing>
+		  					</child>
+  		  <!-- end toolbar_buttons-->
+    		  			<child>
+      		    		<object class="GtkScrolledWindow" id="scrolledwindowtree">
+		      					<property name="visible">True</property>
+	  	      				<property name="can_focus">True</property>
+	    	      			<property name="shadow_type">in</property>
+		      					<child>
+											<object class="GtkTreeView" id="tree_view">
+												<property name="visible">True</property>
+			  								<property name="can_focus">True</property>
+			  								<property name="rules_hint">True</property>
+			  								<property name="fixed_height_mode">True</property>
+			  								<property name="headers_visible">False</property>
+			  								<child internal-child="selection">
+			  									<object class="GtkTreeSelection" id="treeview-selection1"/>
+			  								</child>
+			  								<child>
+			  									<object class="GtkTreeViewColumn" id="dict_text_column">
+			  										<property name="title">Words</property>
+			  										<property name="sizing">fixed</property>
+			  										<child>
+			  											<object class="GtkCellRendererText" id="dict_text_renderer">
+			  											</object>
+			  											<attributes>
+			  												<attribute name="text">0</attribute>
+			  											</attributes>
+			  										</child>
+			  									</object> <!-- dict_text_column -->
+			  								</child>
+			    							<!--<child internal-child="selection">
+		  	    							<object class="GtkTreeSelection" id="treeview-selection1"/>
+		    								</child> -->
+											</object> <!-- tree_view -->
+		 								</child>
+		    					</object>
+		    					<packing>
+		      					<property name="expand">True</property>
+		      					<property name="fill">True</property>
+		      					<property name="position">2</property>
+		    					</packing>
+		  					</child>
+							</object>
+							<packing>
+		  					<property name="resize">False</property>
+		  					<property name="shrink">True</property>
+							</packing>
+	      		</child>
+	      		<child> <!-- text_box -->
+							<object class="GtkBox" id="text_box">
+  		  				<property name="visible">True</property>
+		  					<property name="can_focus">False</property>
+		  					<property name="orientation">vertical</property>
+		  					<child> <!--scrolledwindowtext -->
+		    					<object class="GtkScrolledWindow" id="scrolledwindowtext">
+		      					<property name="visible">True</property>
+		      					<property name="can_focus">True</property>
+		      					<property name="shadow_type">in</property>
+		      					<child> <!-- text_view -->
+											<object class="GtkTextView" id="text_view">
+  			  							<property name="visible">True</property>
+  			  							<property name="can_focus">True</property>
+  			  							<property name="editable">False</property>
+  			  							<property name="margin_top">8</property>
+  			 								<property name="margin_bottom">8</property>
+  			  							<property name="pixels_above_lines">4</property>
+  			  							<property name="pixels_below_lines">4</property>
+  			  							<property name="pixels_inside_wrap">2</property>
+  			  							<property name="left_margin">10</property>
+  			  							<property name="right_margin">10</property>
+  			  							<property name="buffer">text_buffer</property>
+  										</object>	
+		      					</child> <!-- end text_view -->
+		    					</object>
+		    					<packing>
+		      					<property name="expand">True</property>
+		      					<property name="fill">True</property>
+		      					<property name="position">0</property>
+		    					</packing>
+		  					</child> <!-- end scrolledwindowtext -->
+							</object>
+							<packing>
+		  					<property name="resize">True</property>
+		  					<property name="shrink">True</property>
+  						</packing>
+    	      </child> <!-- end text_box -->
+					</object>
+					<packing>
+						<property name="expand">True</property>
+      	    <property name="fill">True</property>
+      	    <property name="position">1</property>
+      	  </packing>
+      	</child>
+      </object>
+    </child>
+  </template>
+</interface>
