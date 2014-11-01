@@ -97,6 +97,7 @@ struct _GyWindowPrivate
   gchar *string_history;
 
   GyHistory *history;
+  GHashTable *histories_dictionaries;
   GySettings *settings;
 
   GtkClipboard *clipboard; /* Non free! */
@@ -306,23 +307,39 @@ dict_radio_cb (GSimpleAction *action,
 
     if (!(dict = g_datalist_id_get_data (&priv->datalist, priv->qvalue)))
     {
-   	dict = gy_dict_new_object (value);
+      GyHistory *history = NULL;
+      dict = gy_dict_new_object (value);
 
-	if(gy_dict_set_dictionary (dict) ||
-	   gy_dict_init_list (dict))
+      if(gy_dict_set_dictionary (dict) ||
+	 gy_dict_init_list (dict))
 	{
-	    gtk_widget_show (priv->infobar);
-	    return;
+	  gtk_widget_show (priv->infobar);
+	  return;
 	}
 
-	g_datalist_id_set_data_full (&priv->datalist,
-				     priv->qvalue,dict,
-				     g_object_unref);
+      g_datalist_id_set_data_full (&priv->datalist,
+				   priv->qvalue,dict,
+				   g_object_unref);
+
+      if (priv->histories_dictionaries != NULL)
+      {
+       	history = gy_history_new ();
+	g_signal_connect (G_OBJECT (history), "notify::start-list",
+	  		  G_CALLBACK (changed_history_cb), window);
+	g_signal_connect (G_OBJECT (history), "notify::end-list",
+	  		  G_CALLBACK (changed_history_cb), window);
+	g_hash_table_insert (priv->histories_dictionaries,
+	 		    (gpointer) g_strdup (value),
+	 		    history);
+      }
     }
 
     gy_utility_delete_text_in_buffer (priv->buffer);
-    gtk_header_bar_set_title (GTK_HEADER_BAR (priv->header_bar),
-			      "");
+    gtk_header_bar_set_title (GTK_HEADER_BAR (priv->header_bar), "");
+    priv->history = GY_HISTORY (g_hash_table_lookup (priv->histories_dictionaries,
+				value));
+    window_check_history (window);
+
     gtk_tree_view_set_model (GTK_TREE_VIEW (priv->tree_view),
 		             gy_dict_get_tree_model (dict));
 
@@ -648,8 +665,14 @@ gy_window_init (GyWindow *window)
   gy_search_bar_connect_text_buffer (GY_SEARCH_BAR (priv->findbar), priv->buffer);
 
   /* Create history */
-  priv->history = gy_history_new ();
-  window_check_history (window);
+  priv->histories_dictionaries = g_hash_table_new_full (g_str_hash,
+						        g_str_equal,
+							g_free,
+							g_object_unref);
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (g_action_map_lookup_action (G_ACTION_MAP (window), "go-back")), FALSE);
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (g_action_map_lookup_action (G_ACTION_MAP (window), "go-forward")), FALSE);
+  //priv->history = gy_history_new ();
+  //window_check_history (window);
 
   /* Create settings */
   priv->settings = gy_settings_get ();
@@ -665,10 +688,10 @@ gy_window_init (GyWindow *window)
 		    G_CALLBACK (press_button_text_view_cb), window);
   g_signal_connect (priv->text_view, "button-release-event",
 		    G_CALLBACK (release_button_text_view_cb), window);
-  g_signal_connect (G_OBJECT (priv->history), "notify::start-list",
+  /*g_signal_connect (G_OBJECT (priv->history), "notify::start-list",
 		    G_CALLBACK (changed_history_cb), window);
   g_signal_connect (G_OBJECT (priv->history), "notify::end-list",
-		    G_CALLBACK (changed_history_cb), window);
+		    G_CALLBACK (changed_history_cb), window);*/
   g_signal_connect (priv->settings, "fonts-changed",
 		    G_CALLBACK (settings_fonts_changed_cb), window);
 }
@@ -679,6 +702,8 @@ window_check_history (GyWindow *window)
   GAction *action;
   gboolean disable;
   GyWindowPrivate *priv = gy_window_get_instance_private (window);
+
+  g_return_if_fail (priv->history != NULL);
 
   disable = gy_history_get_start_list (priv->history);
   action = g_action_map_lookup_action (G_ACTION_MAP (window), "go-back");
@@ -719,7 +744,13 @@ dispose (GObject *object)
   priv->qvalue = 0;
 
   g_clear_object (&priv->settings);
-  g_clear_object (&priv->history);
+  //g_clear_object (&priv->history);
+  if (priv->histories_dictionaries != NULL)
+  {
+    g_hash_table_destroy (priv->histories_dictionaries);
+    priv->histories_dictionaries = NULL;
+    priv->history = NULL;
+  }
 
   G_OBJECT_CLASS (gy_window_parent_class)->dispose (object);
 }
