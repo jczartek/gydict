@@ -575,9 +575,12 @@ insert_text_buffor (ParserContext *context)
 	    *context->current_buffer_pos++ = *context->iter++;
 	else
 	{
-	    insert_sign_buffer (&context->current_buffer_pos, 
+/*	    insert_sign_buffer (&context->current_buffer_pos, 
 				context->iter, 
-				**(array_of_pointer_to_arrays_of_character_set +1));
+				**(array_of_pointer_to_arrays_of_character_set +1));*/
+	  gy_tabs_convert_character (&context->current_buffer_pos,
+				     context->iter,
+				     GY_TABS_CHARACTER_ENCODING_ISO88592);
 	    context->iter++;
 	}
     }

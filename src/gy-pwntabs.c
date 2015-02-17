@@ -101,3 +101,28 @@ const gchar *pwndict_superscript_to_utf8_table[] =
 const gchar *(*array_of_pointer_to_arrays_of_character_set[2])[] = {&pwndict_cp1250_to_utf8_table,
 								    &pwndict_iso88592_to_utf8_table};
 
+void gy_tabs_convert_character (gchar **buffer,
+				const gchar *c,
+				guint encoding)
+{
+  const gchar *str;
+  gchar *b;
+
+  g_return_if_fail (buffer != NULL);
+  g_return_if_fail (encoding == GY_TABS_CHARACTER_ENCODING_CP1250 ||
+		    encoding == GY_TABS_CHARACTER_ENCODING_ISO88592);
+
+  b = *buffer;
+
+  if (encoding == GY_TABS_CHARACTER_ENCODING_CP1250)
+    str = pwndict_cp1250_to_utf8_table[((guchar) *c) - 128];
+  else
+    str = pwndict_iso88592_to_utf8_table[((guchar) *c) - 128];
+
+  while (*str)
+    *b++ = *str++;
+  
+  *buffer = b;
+}
+
+

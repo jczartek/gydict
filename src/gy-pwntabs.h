@@ -21,10 +21,19 @@
 
 #include <gtk/gtk.h>
 
+enum
+{
+  GY_TABS_CHARACTER_ENCODING_CP1250,
+  GY_TABS_CHARACTER_ENCODING_ISO88592
+};
 
 extern const gchar *(*array_of_pointer_to_arrays_of_character_set[2])[];
 extern const gchar *pwn_encje[];
 extern const gchar *pwn_encje_zam[];
 extern const gchar *pwndict_superscript_to_utf8_table[];
+
+void gy_tabs_convert_character (gchar **buffer,
+				const gchar *c,
+				guint encoding);
     									
 #endif /* end of include guard: __Gy_PWNTABS_H__ */
