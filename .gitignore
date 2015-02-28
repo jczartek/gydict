@@ -1,6 +1,7 @@
 *.[oa]
 *.swp
 *.gmo
+configure
 Makefile
 Makefile.in
 
