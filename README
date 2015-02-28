@@ -14,6 +14,7 @@ Należy wykonać następujące polecenia:
 	make install
 
 Jeśli chcemy skompilować program do katalogu domowego:
+ ./autogen
  ./configure --prefix=/kome/user/.local
  make
  make install
@@ -22,6 +23,8 @@ to, aby program działał należy ustawić dwie zmienne środowiskowe tj. XDG_DA
 XDG_DATA_DIRS=/usr/share:/usr/local/share:$HOME/.local/share
 PATH=$PATH:$HOME/.local/bin:$HOME/bin
 export XDG_DATA_DIRS PATH
+
+Aby wyczyścić katalog z plików, które powstały przy kompilacji (automake, plików obiektowych itp) należy użyć: autogen --clean
 
 2. Jakie słowniki obsługuje Gydict?
 
