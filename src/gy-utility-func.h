@@ -24,4 +24,9 @@ extern gboolean gy_utility_handlers_is_blocked_by_func(gpointer instance, gpoint
 extern gint gy_utility_strcmp (const gchar *p1,
 			       const gchar *p2,
 		      	       size_t n);
+extern void gy_utility_text_buffer_insert_text_with_tags (GtkTextBuffer *buffer,
+							  GtkTextIter   *iter,
+							  const gchar   *text,
+							  gint           len,
+							  GHashTable    *table_tags);
 #endif
