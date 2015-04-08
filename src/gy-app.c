@@ -104,7 +104,6 @@ new_window_cb (GSimpleAction *action G_GNUC_UNUSED,
   GtkWidget *window;
 
   window = gy_window_new (app);
-  gtk_window_set_default_size (GTK_WINDOW (window), 700, 500);
   gtk_application_add_window (GTK_APPLICATION (app), GTK_WINDOW (window));
   gtk_widget_show_all (window);
 }

@@ -72,6 +72,12 @@ static void changed_history_cb (GObject    *object,
 			        GParamSpec *spec,
 			        gpointer    data);
 static void window_check_history (GyWindow *window);
+static void on_window_size_allocate (GtkWidget *widget,
+				     GtkAllocation *allocation);
+static gboolean on_window_state_event (GtkWidget *widget,
+	   			       GdkEventWindowState *event);
+static void on_window_destroy (GtkWidget *widget);
+static void on_window_constructed (GObject *object);
 static void dispose (GObject *object);
 
 struct _GyWindowPrivate
@@ -101,6 +107,11 @@ struct _GyWindowPrivate
   GySettings *settings;
 
   GtkClipboard *clipboard; /* Non free! */
+
+  /* Window State */
+  gint current_width;
+  gint current_height;
+  gboolean is_maximized;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (GyWindow, gy_window, GTK_TYPE_APPLICATION_WINDOW);
@@ -720,7 +731,12 @@ gy_window_class_init (GyWindowClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
+  object_class->constructed = on_window_constructed;
   object_class->dispose = dispose;
+
+  widget_class->size_allocate = on_window_size_allocate;
+  widget_class->window_state_event = on_window_state_event;
+  widget_class->destroy = on_window_destroy;
 
   gtk_widget_class_set_template_from_resource (widget_class,
 					       "/org/gtk/gydict/gydict.ui");
@@ -732,6 +748,93 @@ gy_window_class_init (GyWindowClass *klass)
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, text_view);
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, text_box);
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, revealer_buttons);						
+}
+
+static void
+window_store_state (GyWindow *window)
+{
+  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GKeyFile *keyfile = g_key_file_new ();
+  
+  g_key_file_set_integer (keyfile, "WindowState", "width", priv->current_width);
+  g_key_file_set_integer (keyfile, "WindowState", "height", priv->current_height);
+  g_key_file_set_boolean (keyfile, "WindowState", "IsMaximized", priv->is_maximized);
+
+  const gchar *id_app = g_application_get_application_id (g_application_get_default());
+  gchar *path = g_build_filename (g_get_user_cache_dir (), id_app, NULL);
+
+  if (g_mkdir_with_parents (path, 0700) < 0)
+  {
+    goto out;
+  }
+  gchar *file = g_build_filename (path, "state.ini", NULL);
+  g_key_file_save_to_file (keyfile, file, NULL);
+
+  g_free (file);
+out:
+  g_key_file_unref (keyfile);
+  g_free (path);
+}
+
+static void
+window_load_state (GyWindow *window)
+{
+  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  const gchar *id_app = g_application_get_application_id (g_application_get_default ());
+  gchar *file = g_build_filename (g_get_user_cache_dir (), id_app, "state.ini", NULL);
+  GKeyFile *keyfile = g_key_file_new ();
+
+  if (!g_key_file_load_from_file (keyfile, file, G_KEY_FILE_NONE, NULL))
+  {
+    goto out;
+  }
+
+  GError *error = NULL;
+  priv->current_width = g_key_file_get_integer (keyfile, "WindowState", "width", &error);
+  if (error != NULL)
+  {
+    g_clear_error (&error);
+    priv->current_width = -1;
+  }
+
+  priv->current_height = g_key_file_get_integer (keyfile, "WindowState", "height", &error);
+  if (error != NULL)
+  {
+    g_clear_error (&error);
+    priv->current_height = -1;
+  }
+
+  priv->is_maximized = g_key_file_get_boolean (keyfile, "WindowState", "IsMaximized", &error);
+  if (error != NULL)
+  {
+    g_clear_error (&error);
+    priv->is_maximized = FALSE;
+  }
+out:
+  g_key_file_unref (keyfile);
+  g_free (file);
+}
+
+static void
+on_window_constructed (GObject *object)
+{
+  GyWindow *window = GY_WINDOW (object);
+  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+
+  priv->current_width = -1;
+  priv->current_height = -1;
+  priv->is_maximized = FALSE;
+
+  window_load_state (window);
+
+  gtk_window_set_default_size (GTK_WINDOW (window),
+			       priv->current_width,
+			       priv->current_height);
+
+  if (priv->is_maximized)
+    gtk_window_maximize (GTK_WINDOW (window));
+
+  G_OBJECT_CLASS (gy_window_parent_class)->constructed (object);
 }
 
 static void
@@ -753,6 +856,49 @@ dispose (GObject *object)
   }
 
   G_OBJECT_CLASS (gy_window_parent_class)->dispose (object);
+}
+
+static void 
+on_window_size_allocate (GtkWidget *widget,
+			 GtkAllocation *allocation)
+{
+  GyWindow *win = GY_WINDOW (widget);
+  GyWindowPrivate *priv = gy_window_get_instance_private (win);
+
+  GTK_WIDGET_CLASS (gy_window_parent_class)->size_allocate (widget,
+							    allocation);
+  if (!(priv->is_maximized))
+  {
+    priv->current_width = allocation->width;
+    priv->current_height = allocation->height;
+  }
+}
+
+static gboolean
+on_window_state_event (GtkWidget *widget,
+		       GdkEventWindowState *event)
+{
+  GyWindow *win = GY_WINDOW (widget);
+  GyWindowPrivate *priv = gy_window_get_instance_private (win);
+  gboolean res = GDK_EVENT_PROPAGATE;
+
+  if (GTK_WIDGET_CLASS (gy_window_parent_class)->window_state_event != NULL)
+  {
+    res = GTK_WIDGET_CLASS (gy_window_parent_class)->window_state_event (widget,
+									 event);
+  }
+
+  priv->is_maximized = (event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED) != 0;
+
+  return res;
+}
+
+static void 
+on_window_destroy (GtkWidget *widget)
+{
+  GyWindow *win = GY_WINDOW (widget);
+  window_store_state (win);
+  GTK_WIDGET_CLASS (gy_window_parent_class)->destroy (widget);
 }
 
 /**PUBLIC METHOD**/
