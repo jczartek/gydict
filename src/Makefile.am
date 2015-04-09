@@ -39,6 +39,8 @@ gydict_SOURCES = \
 		 gy-utility-func.c	\
 		 gy-dict.c		\
 		 gy-parser.c		\
+		 gy-parser-pwn.c	\
+		 gy-parser-pwn.h	\
 		 gy-print.c		\
 		 gy-history.c		\
 		 gy-search-bar.c	\
