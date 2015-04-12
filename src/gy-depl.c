@@ -45,10 +45,10 @@ typedef struct _ParserContext ParserContext;
 typedef struct _ParserTagDescription ParserTagDescription;
 typedef struct _GyDeplPrivate GyDeplPrivate;
 
-static void gy_parser_interface_init (GyParserInterface *iface);
-static void parser_lexer_buffer (GyParser      *parser,
-				 GtkTextBuffer *buffer,
-				 gint 	        row);
+static void gy_parser_interface_init (GyParserDictInterface *iface);
+static void parser_dict (GyParserDict  *parser,
+       			 GtkTextBuffer *buffer,
+	       		 gint 	        row);
 static void start_element_cb (ParserContext *context);
 static void end_element_cb (ParserContext *context);
 static ParserTagDescription* parse_tag_description_new (void);
@@ -130,7 +130,7 @@ struct _GyDeplPrivate
 
 G_DEFINE_TYPE_WITH_CODE (GyDepl, gy_depl, GY_TYPE_DICT,
                          G_ADD_PRIVATE (GyDepl)
-                         G_IMPLEMENT_INTERFACE (GY_TYPE_PARSER,
+                         G_IMPLEMENT_INTERFACE (GY_TYPE_PARSER_DICT,
 						gy_parser_interface_init));
 
 static inline void
@@ -331,15 +331,15 @@ gy_depl_class_init (GyDeplClass *klass)
 
 /************************IMPLEMENTED INTERFACE********************************/
 static void
-gy_parser_interface_init (GyParserInterface *iface)
+gy_parser_interface_init (GyParserDictInterface *iface)
 {
-    iface->lexer_buffer = parser_lexer_buffer;
+    iface->parser_dict = parser_dict;
 }
 
 static void
-parser_lexer_buffer (GyParser      *parser,
-                     GtkTextBuffer *buffer,
-                     gint           row)
+parser_dict (GyParserDict      *parser,
+             GtkTextBuffer     *buffer,
+             gint               row)
 {
     gchar *buf = NULL;
     GyDict *dict = GY_DICT (parser);

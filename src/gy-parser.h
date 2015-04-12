@@ -16,8 +16,8 @@
  * 
  */
 
-#ifndef __GY_PARSER_H__
-#define __GY_PARSER_H__
+#ifndef __GY_PARSER_DICT_H__
+#define __GY_PARSER_DICT_H__
 
 #include <gtk/gtk.h>
 
@@ -25,31 +25,31 @@ G_BEGIN_DECLS
 /*
  * Type macros
  */
-#define GY_TYPE_PARSER                (gy_parser_get_type ())
-#define GY_PARSER(obj)                (G_TYPE_CHECK_INSTANCE_CAST ((obj), GY_TYPE_PARSER, GyParser))
-#define GY_IS_PARSER(obj)             (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GY_TYPE_PARSER))
-#define GY_PARSER_GET_INTERFACE(inst) (G_TYPE_INSTANCE_GET_INTERFACE ((inst), GY_TYPE_PARSER, GyParserInterface))
+#define GY_TYPE_PARSER_DICT                (gy_parser_dict_get_type ())
+#define GY_PARSER_DICT(obj)                (G_TYPE_CHECK_INSTANCE_CAST ((obj), GY_TYPE_PARSER_DICT, GyParserDict))
+#define GY_IS_PARSER_DICT(obj)             (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GY_TYPE_PARSER_DICT))
+#define GY_PARSER_DICT_GET_INTERFACE(inst) (G_TYPE_INSTANCE_GET_INTERFACE ((inst), GY_TYPE_PARSER_DICT, GyParserDictInterface))
 
-typedef struct _GyParser GyParser; /* dummy object */
-typedef struct _GyParserInterface GyParserInterface;
+typedef struct _GyParserDict GyParserDict; /* dummy object */
+typedef struct _GyParserDictInterface GyParserDictInterface;
 
-struct _GyParserInterface
+struct _GyParserDictInterface
 {
     GTypeInterface parent_iface;
 
     /* Method iface */
-    void (*lexer_buffer) (GyParser      *parser, 
-			  GtkTextBuffer *buffer, 
-			  gint           row);
+    void (*parser_dict) (GyParserDict      *parser, 
+			 GtkTextBuffer     *buffer, 
+			 gint               row);
 
 };
 
 /* used by GY_TYPE_PARSER */
-GType gy_parser_get_type (void);
-void gy_parser_lexer_buffer (GyParser      *parser,
-			     GtkTextBuffer *buffer,
-			     gint	    row);
+GType gy_parser_dict_get_type (void);
+void gy_parser_dict_parse (GyParserDict      *parser,
+			   GtkTextBuffer     *buffer,
+		       	   gint	              row);
 
 G_END_DECLS
 
-#endif /* end of include guard: __GY_PARSER_H__ */
+#endif /* end of include guard: __GY_PARSER_DICT_H__ */

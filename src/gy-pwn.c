@@ -28,6 +28,7 @@
 #include "gy-pwntabs.h"
 #include "gy-utility-func.h"
 #include "gy-settings.h"
+#include "gy-parser-pwn.h"
 
 #define PWNDICT_MAGIC_11 0x81115747 /* Dictionary 2003 	*/
 #define PWNDICT_MAGIC_12 0x81125747 /* Dictionary 2004  */
@@ -41,22 +42,39 @@ struct _GyPwnPrivate
 {
     guint32 * offset;
     FILE * file_dict;
+    GyMarkupParserPwn *parser;
 };
+
+static void start_tag_cb (const gchar *tag_name,
+		          const GPtrArray *attribute_name,
+		          const GPtrArray *attribute_value,
+		          gpointer data);
+static void end_tab_cb (const gchar *tag_name,
+			gpointer     data);
+static void text_cb (const gchar *text,
+		     gsize        text_len,
+		     gpointer     data);
+
+struct ParserData
+{
+  GtkTextBuffer *buffer;
+  GtkTextIter	 iter;
+} parser_data;
 
 static gint stack_buffer[STACK_MAX];
 static guint stack_top = 0;
-static void gy_parser_interface_init (GyParserInterface *iface);
-static void parser_lexer_buffer (GyParser      *parser,
-				 GtkTextBuffer *buffer,
-				 gint 	        row);
+static void gy_parser_dict_interface_init (GyParserDictInterface *iface);
+static void parser_dict (GyParserDict   *parser,
+	       		 GtkTextBuffer  *buffer,
+	       		 gint 	         row);
 static void format_tag (GtkTextBuffer  *buffer, 
 			GtkTextIter    *iter, 
 			gchar          *token);
 
 G_DEFINE_TYPE_WITH_CODE (GyPwn, gy_pwn, GY_TYPE_DICT,
 			 G_ADD_PRIVATE (GyPwn)
-			 G_IMPLEMENT_INTERFACE (GY_TYPE_PARSER,
-					        gy_parser_interface_init));
+			 G_IMPLEMENT_INTERFACE (GY_TYPE_PARSER_DICT,
+					        gy_parser_dict_interface_init));
 static guint
 gy_pwn_set_dictionary (GyDict *dict)
 {
@@ -362,12 +380,17 @@ gy_pwn_finalize (GObject *object)
 }
 
 static void
-gy_pwn_init (GyPwn *pwn)
+gy_pwn_init (GyPwn *self)
 {
-    GyPwnPrivate *priv = gy_pwn_get_instance_private (pwn);
+    GyPwnPrivate *priv = gy_pwn_get_instance_private (self);
 
     priv->offset = NULL;
     priv->file_dict = NULL;
+    priv->parser = gy_markup_parser_pwn_new (start_tag_cb,
+					     end_tab_cb,
+					     text_cb,
+					     gy_tabs_get_entity_table (),
+					     &parser_data, NULL);
 }
 
 static void
@@ -385,16 +408,17 @@ gy_pwn_class_init (GyPwnClass *klass)
 
 
 /************************IMPLEMENTED INTERFACE********************************/
+
 static void
-gy_parser_interface_init (GyParserInterface *iface)
+gy_parser_dict_interface_init (GyParserDictInterface *iface)
 {
-    iface->lexer_buffer = parser_lexer_buffer;
+    iface->parser_dict = parser_dict;
 }
 
 static void
-parser_lexer_buffer (GyParser 	   *parser,
-		     GtkTextBuffer *buffer,
-		     gint 	    row)
+parser_dict (GyParserDict  *parser,
+	     GtkTextBuffer *buffer,
+	     gint 	    row)
 {
     GyDict *dict = GY_DICT (parser);
     gchar *buf = NULL, token[255];
@@ -656,3 +680,25 @@ format_tag (GtkTextBuffer  *buffer,
 }
 
 /************************END IMPLEMENTED INTERFACE****************************/
+
+/************************NEW IMPLEMENTED INTERFACE****************************/
+static void 
+start_tag_cb (const gchar *tag_name,
+	      const GPtrArray *attribute_name,
+	      const GPtrArray *attribute_value,
+	      gpointer data)
+{
+}
+
+static void 
+end_tab_cb (const gchar *tag_name,
+	    gpointer     data)
+{
+}
+
+static void 
+text_cb (const gchar *text,
+	 gsize        text_len,
+	 gpointer     data)
+{
+}

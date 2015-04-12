@@ -489,8 +489,8 @@ tree_selection_cb (GtkTreeSelection *selection,
 	row = gtk_tree_path_get_indices (path);
 
 	gy_utility_delete_text_in_buffer (buffer);
-	gy_parser_lexer_buffer (GY_PARSER (gy_window_get_dictionary (window)), 
-					   buffer, *row);
+	gy_parser_dict_parse (GY_PARSER_DICT (gy_window_get_dictionary (window)), 
+			      buffer, *row);
 
 	gtk_tree_model_get (model, &iter, 0, &value, -1);
 	gtk_header_bar_set_title (GTK_HEADER_BAR (gy_window_get_header_bar (window)),

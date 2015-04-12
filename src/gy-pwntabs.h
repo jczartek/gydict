@@ -35,5 +35,7 @@ extern const gchar *pwndict_superscript_to_utf8_table[];
 void gy_tabs_convert_character (gchar **buffer,
 				const gchar *c,
 				guint encoding);
+GHashTable *
+gy_tabs_get_entity_table (void);
     									
 #endif /* end of include guard: __Gy_PWNTABS_H__ */

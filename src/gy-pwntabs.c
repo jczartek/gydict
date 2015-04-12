@@ -126,3 +126,19 @@ void gy_tabs_convert_character (gchar **buffer,
 }
 
 
+GHashTable*
+gy_tabs_get_entity_table (void)
+{
+  GHashTable *tab = NULL;
+
+  tab = g_hash_table_new (g_str_hash,
+			  g_str_equal);
+
+  for (int i=0; pwn_encje[i] != NULL && pwn_encje_zam[i] != NULL; i++)
+       g_hash_table_insert (tab, 
+	       		    (gpointer) pwn_encje[i], 
+    			    (gpointer) pwn_encje_zam[i]);
+
+  return tab;
+
+}

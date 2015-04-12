@@ -18,19 +18,19 @@
 
 #include "gy-parser.h"
 
-G_DEFINE_INTERFACE (GyParser, gy_parser, 0);
+G_DEFINE_INTERFACE (GyParserDict, gy_parser_dict, 0);
 
 static void
-gy_parser_default_init (GyParserInterface *klass G_GNUC_UNUSED)
+gy_parser_dict_default_init (GyParserDictInterface *klass G_GNUC_UNUSED)
 {
 }
 
 void
-gy_parser_lexer_buffer (GyParser      *parser,
-			GtkTextBuffer *buffer,
-			gint 	       row)
+gy_parser_dict_parse (GyParserDict      *parser,
+		      GtkTextBuffer     *buffer,
+		      gint 	         row)
 {
-    g_return_if_fail (GY_IS_PARSER (parser));
+    g_return_if_fail (GY_IS_PARSER_DICT (parser));
 
-    GY_PARSER_GET_INTERFACE (parser)->lexer_buffer (parser, buffer, row);
+    GY_PARSER_DICT_GET_INTERFACE (parser)->parser_dict (parser, buffer, row);
 }
