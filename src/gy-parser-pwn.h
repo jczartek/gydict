@@ -45,5 +45,6 @@ GyMarkupParserPwn* gy_markup_parser_pwn_new (GyMarkupParserPwnTagStartCallback  
 void gy_markup_parser_pwn_free (GyMarkupParserPwn *parser);
 void gy_markup_parser_pwn_parse (GyMarkupParserPwn *parser,
 				 const gchar       *text,
-				 int              text_len);
+				 int                text_len,
+				 GyDictEncoding     encoding);
 #endif

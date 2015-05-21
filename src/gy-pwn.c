@@ -1,7 +1,7 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
 /*
  * gy-pwn.c
- * Copyright (C) 2014 kuba <kuba@fedora>
+ * Copyright (C) 2014 Jakub Czartek <kuba@linux.pl>
  *
  * gy-pwn.c is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -21,6 +21,7 @@
 #include <glib/gi18n-lib.h>
 #include <zlib.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "gy-dict.h"
 #include "gy-parser.h"
@@ -29,47 +30,52 @@
 #include "gy-utility-func.h"
 #include "gy-settings.h"
 #include "gy-parser-pwn.h"
+#include "gy-window.h"
 
 #define PWNDICT_MAGIC_11 0x81115747 /* Dictionary 2003 	*/
 #define PWNDICT_MAGIC_12 0x81125747 /* Dictionary 2004  */
 #define PWNDICT_MAGIC_13 0x81135747 /* Dictionary 2005  */
 #define PWNDICT_MAGIC_14 0x81145747 /* Dictionary 06/07 */
-#define STACK_MAX 50
+//#define STACK_MAX 50
 
+typedef struct _ParserData ParserData;
 typedef struct _GyPwnPrivate GyPwnPrivate;
 
 struct _GyPwnPrivate
 {
-    guint32 * offset;
-    FILE * file_dict;
+    guint32           *offset;
+    FILE              *file_dict;
     GyMarkupParserPwn *parser;
+    ParserData	      *pdata;
+};
+
+struct _ParserData
+{
+  GtkTextBuffer   *buffer;
+  GtkTextIter	   iter;
+  GHashTable      *table_tags;
+  GtkTextTagTable *table_buffor_tags;
 };
 
 static void start_tag_cb (const gchar *tag_name,
 		          const GPtrArray *attribute_name,
 		          const GPtrArray *attribute_value,
 		          gpointer data);
-static void end_tab_cb (const gchar *tag_name,
+static void end_tag_cb (const gchar *tag_name,
 			gpointer     data);
 static void text_cb (const gchar *text,
 		     gsize        text_len,
 		     gpointer     data);
 
-struct ParserData
-{
-  GtkTextBuffer *buffer;
-  GtkTextIter	 iter;
-} parser_data;
-
-static gint stack_buffer[STACK_MAX];
-static guint stack_top = 0;
+//static gint stack_buffer[STACK_MAX];
+//static guint stack_top = 0;
 static void gy_parser_dict_interface_init (GyParserDictInterface *iface);
 static void parser_dict (GyParserDict   *parser,
 	       		 GtkTextBuffer  *buffer,
 	       		 gint 	         row);
-static void format_tag (GtkTextBuffer  *buffer, 
+/*static void format_tag (GtkTextBuffer  *buffer, 
 			GtkTextIter    *iter, 
-			gchar          *token);
+			gchar          *token);*/
 
 G_DEFINE_TYPE_WITH_CODE (GyPwn, gy_pwn, GY_TYPE_DICT,
 			 G_ADD_PRIVATE (GyPwn)
@@ -376,21 +382,43 @@ gy_pwn_read_definition (GyDict *dict,
 static void
 gy_pwn_finalize (GObject *object)
 {
+    GyDict *dict = GY_DICT (object);
+    GyPwnPrivate *priv = gy_pwn_get_instance_private (GY_PWN (dict));
+
+    g_clear_pointer (&priv->pdata,
+		     g_free);
     G_OBJECT_CLASS (gy_pwn_parent_class)->finalize (object);
 }
 
 static void
 gy_pwn_init (GyPwn *self)
 {
-    GyPwnPrivate *priv = gy_pwn_get_instance_private (self);
+  GApplication *app = NULL;
+  GtkWindow *win = NULL;
+  GyPwnPrivate *priv = gy_pwn_get_instance_private (self);
 
-    priv->offset = NULL;
-    priv->file_dict = NULL;
-    priv->parser = gy_markup_parser_pwn_new (start_tag_cb,
-					     end_tab_cb,
-					     text_cb,
-					     gy_tabs_get_entity_table (),
-					     &parser_data, NULL);
+  priv->offset = NULL;
+  priv->file_dict = NULL;
+  priv->parser = NULL;
+  priv->pdata = g_malloc0 (sizeof (ParserData));
+
+  app = g_application_get_default ();
+  win = gtk_application_get_active_window (GTK_APPLICATION (app));
+
+  priv->pdata->buffer = gy_window_get_text_buffer (GY_WINDOW (win));
+  priv->pdata->table_tags = g_hash_table_new_full (g_str_hash, g_str_equal,
+						   g_free, NULL);
+  priv->pdata->table_buffor_tags = gtk_text_buffer_get_tag_table (priv->pdata->buffer);
+
+  g_return_if_fail (GTK_IS_TEXT_BUFFER (priv->pdata->buffer) && 
+                    GTK_IS_TEXT_TAG_TABLE (priv->pdata->table_buffor_tags) &&
+		    priv->pdata->table_tags);
+
+  priv->parser = gy_markup_parser_pwn_new (start_tag_cb,
+					    end_tag_cb,
+					    text_cb,
+					    gy_tabs_get_entity_table (),
+					    priv->pdata, NULL);
 }
 
 static void
@@ -421,20 +449,25 @@ parser_dict (GyParserDict  *parser,
 	     gint 	    row)
 {
     GyDict *dict = GY_DICT (parser);
-    gchar *buf = NULL, token[255];
-    gint len;
-    GtkTextIter iter;
-    guint i = 0;
+    GyPwnPrivate *priv = gy_pwn_get_instance_private (GY_PWN (dict));
+    gchar *buf = NULL;//, token[255];
+    //gint len;
+    //GtkTextIter iter;
+    //guint i = 0;
     gint encoding = gy_dict_get_encoding (dict);
 
     g_return_if_fail (GY_IS_DICT (dict));
     g_return_if_fail (GTK_IS_TEXT_BUFFER (buffer));
+    g_return_if_fail (priv->parser != NULL);
+    g_return_if_fail (priv->pdata != NULL);
 
-    stack_top = 0;
+    //stack_top = 0;
     buf = gy_dict_read_definition (dict, (guint) row);
-    gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
+    gtk_text_buffer_get_iter_at_offset (buffer, &priv->pdata->iter, 0);
+    gy_markup_parser_pwn_parse (priv->parser, (const gchar *) buf, -1, encoding);
+    //gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
 
-    while( buf[i] )
+    /*while( buf[i] )
     {
 	if(buf[i] == '<')
 	{
@@ -476,10 +509,10 @@ parser_dict (GyParserDict  *parser,
 	    }
 	}
 	i++;
-    }
+    }*/
     g_free (buf);
 }
-
+/*
 static gboolean
 stack_empty(void)
 {
@@ -678,22 +711,92 @@ format_tag (GtkTextBuffer  *buffer,
 	gtk_text_buffer_insert(buffer,iter,"IDIOM",-1);
     }
 }
-
+*/
 /************************END IMPLEMENTED INTERFACE****************************/
 
 /************************NEW IMPLEMENTED INTERFACE****************************/
+static gchar *format_tags[] = {"B", "BIG", "PH", "SMALL", "I", "SUB", "SUP"};
+static gchar *roman_numbers[] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
+
+static inline gboolean
+is_tag_format (const gchar *tag)
+{
+  for (gint i = 0; i < G_N_ELEMENTS (format_tags); i++)
+    if (strcmp (tag, format_tags[i]) == 0)
+      return TRUE;
+  return FALSE;
+}
 static void 
 start_tag_cb (const gchar *tag_name,
 	      const GPtrArray *attribute_name,
 	      const GPtrArray *attribute_value,
 	      gpointer data)
 {
+  ParserData *pdata = (ParserData *) data;
+  if (is_tag_format (tag_name))
+  {
+    GtkTextTag *tag = NULL;
+    gchar *name = g_utf8_strdown (tag_name, -1);
+
+    tag = gtk_text_tag_table_lookup (pdata->table_buffor_tags,
+				     (const gchar *) name);
+    g_hash_table_insert (pdata->table_tags,
+			 (gpointer) name,
+			 (gpointer) tag);
+    g_assert (GTK_IS_TEXT_TAG (tag));
+    return;
+  }
+
+  if (strcmp (tag_name, "P") == 0)
+  {
+    gtk_text_buffer_insert (pdata->buffer,
+			    &pdata->iter,
+			    "\n", -1);
+    return;
+  }
+
+  if (strcmp (tag_name, "IMG") == 0)
+  {
+    g_return_if_fail (attribute_name->len == attribute_value->len);
+    gchar *str = *attribute_value->pdata;
+    if (g_str_has_prefix (str, "rzym") && g_str_has_suffix (str, ".jpg"))
+    {
+#define LENGTH_PREFIX	4
+#define LENGTH_SUFFIX	4
+      gulong end_pos = LENGTH_PREFIX + (strlen (str) - (LENGTH_PREFIX + LENGTH_SUFFIX));
+      gchar *number = g_utf8_substring (str, LENGTH_SUFFIX, end_pos);
+      gint index = atoi ((const gchar *) number);
+      g_free (number);
+      gy_utility_text_buffer_insert_text_with_tags (pdata->buffer,
+						    &pdata->iter,
+						    roman_numbers[index], -1,
+						    pdata->table_tags);
+#undef LENGTH_PREFIX
+#undef LENGTH_SUFFIX
+    }
+    else if (g_str_has_prefix (str, "idioms"))
+    {
+      gy_utility_text_buffer_insert_text_with_tags (pdata->buffer,
+						    &pdata->iter,
+						    "IDIOM", -1,
+						    pdata->table_tags);
+    }
+    return;
+  }
 }
 
 static void 
-end_tab_cb (const gchar *tag_name,
+end_tag_cb (const gchar *tag_name,
 	    gpointer     data)
 {
+  ParserData *pdata = (ParserData *) data;
+  if (is_tag_format (tag_name))
+  {
+    gchar *name = g_utf8_strdown (tag_name, -1);
+    g_hash_table_remove (pdata->table_tags, name);
+    g_free (name);
+    return;
+  }
 }
 
 static void 
@@ -701,4 +804,10 @@ text_cb (const gchar *text,
 	 gsize        text_len,
 	 gpointer     data)
 {
+  ParserData *pdata = (ParserData *) data;
+
+  gy_utility_text_buffer_insert_text_with_tags (pdata->buffer,
+						&pdata->iter,
+						text, text_len,
+						pdata->table_tags);
 }

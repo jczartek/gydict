@@ -442,11 +442,11 @@ start_element_cb (ParserContext *context)
 
     if ((g_strcmp0 (context->name_tag->str, "i") == 0))
     {
-	new_tag_description->name_buffer_tag = g_strdup ("italic");
+	new_tag_description->name_buffer_tag = g_strdup ("i");
     }
     else if ((g_strcmp0 (context->name_tag->str, "b") == 0))
     {
-	new_tag_description->name_buffer_tag = g_strdup ("bold");
+	new_tag_description->name_buffer_tag = g_strdup ("b");
     }
     else if ((g_strcmp0 (context->name_tag->str, "font") == 0))
     {
@@ -459,7 +459,7 @@ start_element_cb (ParserContext *context)
     }
     else if ((g_strcmp0 (context->name_tag->str, "sup") == 0))
     {
-	new_tag_description->name_buffer_tag = g_strdup ("superscript");
+	new_tag_description->name_buffer_tag = g_strdup ("sup");
     }
     else if ((g_strcmp0 (context->name_tag->str, "acronym") == 0))
     {
@@ -580,7 +580,7 @@ insert_text_buffor (ParserContext *context)
 				**(array_of_pointer_to_arrays_of_character_set +1));*/
 	  gy_tabs_convert_character (&context->current_buffer_pos,
 				     context->iter,
-				     GY_TABS_CHARACTER_ENCODING_ISO88592);
+				     GY_ENCODING_ISO88592);
 	    context->iter++;
 	}
     }

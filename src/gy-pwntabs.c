@@ -103,18 +103,18 @@ const gchar *(*array_of_pointer_to_arrays_of_character_set[2])[] = {&pwndict_cp1
 
 void gy_tabs_convert_character (gchar **buffer,
 				const gchar *c,
-				guint encoding)
+				GyDictEncoding encoding)
 {
   const gchar *str;
   gchar *b;
 
   g_return_if_fail (buffer != NULL);
-  g_return_if_fail (encoding == GY_TABS_CHARACTER_ENCODING_CP1250 ||
-		    encoding == GY_TABS_CHARACTER_ENCODING_ISO88592);
+  g_return_if_fail (encoding == GY_ENCODING_CP1250 ||
+		    encoding == GY_ENCODING_ISO88592);
 
   b = *buffer;
 
-  if (encoding == GY_TABS_CHARACTER_ENCODING_CP1250)
+  if (encoding == GY_ENCODING_CP1250)
     str = pwndict_cp1250_to_utf8_table[((guchar) *c) - 128];
   else
     str = pwndict_iso88592_to_utf8_table[((guchar) *c) - 128];

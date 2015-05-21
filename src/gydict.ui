@@ -83,7 +83,7 @@
 		</child>
 		<child type="tag">
 			<object class="GtkTextTag" id="tbold">
-				<property name="name">bold</property>
+				<property name="name">b</property>
 				<property name="weight">700</property> <!-- PANGO_WEIGHT_BOLD = 700 -->
 			</object>
 		</child>
@@ -103,7 +103,7 @@
 		</child>
 		<child type="tag">
 			<object class="GtkTextTag" id="titalic">
-				<property name="name">italic</property>
+				<property name="name">i</property>
 				<property name="style">2</property> <!-- PANGO_STYLE_ITALIC = 2 -->
 			</object>
 		</child>
@@ -115,7 +115,7 @@
 		</child>
 		<child type="tag">
 			<object class="GtkTextTag" id="tsuperscript">
-				<property name="name">superscript</property>
+				<property name="name">sup</property>
 				<property name="rise">6144</property> <!-- result: 6 * PANGO_SCALE -->
 				<property name="size">7168</property>
 			</object>

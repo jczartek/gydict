@@ -17,8 +17,8 @@
  */
 
 #include <string.h>
-#include "gy-parser-pwn.h"
 #include "gy-pwntabs.h"
+#include "gy-parser-pwn.h"
 
 #define SIZE_TEXT_BUFFER		512
 #define __is_angle(c) 			((c) == '<' || (c) == '>' )
@@ -65,7 +65,7 @@ struct _GyMarkupParserPwn
 
   GHashTable                           *__entity;
 
-  guint			                __encoding;
+  GyDictEncoding		        __encoding;
   GyMarkupParserPwnStateFlags	        __flag;
 };
 
@@ -133,15 +133,16 @@ read_text (GyMarkupParserPwn *parser)
          (!__is_et (*parser->__text_iter)) &&
 	 (parser->__text_iter != parser->__text_end))
   {
-    if ((guchar) *parser->__text_iter < 127)
+    if (((guchar) *parser->__text_iter) < 127)
     {
-    *parser->__buf_iter++ = *parser->__text_iter++;
+      *parser->__buf_iter++ = *parser->__text_iter++;
     }
     else
     {
       gy_tabs_convert_character (&parser->__buf_iter,
 				 parser->__text_iter,
 				 parser->__encoding);
+      parser->__text_iter++;
     }
   }
 }
@@ -185,7 +186,7 @@ start:
   skip_space (parser);
   __next_char; /* Pomiń pierwszy cudzysłów */
   tmp = parser->__text_iter;
-  while (g_ascii_isalnum (*parser->__text_iter) || (*parser->__text_iter == '.'))
+  while (g_ascii_isalnum (*parser->__text_iter) || (*parser->__text_iter == '.') || (*parser->__text_iter == ','))
     __next_char;
 
   attribute_value = g_strndup (tmp, parser->__text_iter - tmp);
@@ -207,10 +208,13 @@ start:
 void 
 gy_markup_parser_pwn_parse (GyMarkupParserPwn *parser,
 			    const gchar       *text,
-			    gint              text_len)
+			    gint               text_len,
+			    GyDictEncoding     encoding)
 {
   g_return_if_fail (parser != NULL);
   g_return_if_fail (text !=NULL);
+
+  parser->__encoding = encoding;
 
   enum {
   STATE_NEUTRAL, STATE_OPEN_ANGLE,

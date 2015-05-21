@@ -21,6 +21,7 @@
 #include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 #include "gy-dict.h"
+#include "gy-pwntabs.h"
 #include "gy-pwn.h"
 #include "gy-depl.h"
 #include "gy-enum-types.h"

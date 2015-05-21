@@ -31,13 +31,13 @@ G_BEGIN_DECLS
 #define GY_IS_DICT_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GY_TYPE_DICT))
 #define GY_DICT_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), GY_TYPE_DICT, GyDictClass))
 
-typedef enum
+/*typedef enum
 {
     GY_ENCODING_NONE = -1,
     GY_ENCODING_CP1250,
     GY_ENCODING_ISO88592,
     GY_ENCODING_UTF8
-} GyDictEncoding;
+} GyDictEncoding;*/
 
 enum
 {
