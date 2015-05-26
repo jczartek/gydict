@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
 /*
  * gy-pwn.c
  * Copyright (C) 2014 Jakub Czartek <kuba@linux.pl>
@@ -36,7 +35,6 @@
 #define PWNDICT_MAGIC_12 0x81125747 /* Dictionary 2004  */
 #define PWNDICT_MAGIC_13 0x81135747 /* Dictionary 2005  */
 #define PWNDICT_MAGIC_14 0x81145747 /* Dictionary 06/07 */
-//#define STACK_MAX 50
 
 typedef struct _ParserData ParserData;
 typedef struct _GyPwnPrivate GyPwnPrivate;
@@ -66,16 +64,10 @@ static void end_tag_cb (const gchar *tag_name,
 static void text_cb (const gchar *text,
 		     gsize        text_len,
 		     gpointer     data);
-
-//static gint stack_buffer[STACK_MAX];
-//static guint stack_top = 0;
 static void gy_parser_dict_interface_init (GyParserDictInterface *iface);
 static void parser_dict (GyParserDict   *parser,
 	       		 GtkTextBuffer  *buffer,
 	       		 gint 	         row);
-/*static void format_tag (GtkTextBuffer  *buffer, 
-			GtkTextIter    *iter, 
-			gchar          *token);*/
 
 G_DEFINE_TYPE_WITH_CODE (GyPwn, gy_pwn, GY_TYPE_DICT,
 			 G_ADD_PRIVATE (GyPwn)
@@ -450,10 +442,7 @@ parser_dict (GyParserDict  *parser,
 {
     GyDict *dict = GY_DICT (parser);
     GyPwnPrivate *priv = gy_pwn_get_instance_private (GY_PWN (dict));
-    gchar *buf = NULL;//, token[255];
-    //gint len;
-    //GtkTextIter iter;
-    //guint i = 0;
+    gchar *buf = NULL;
     gint encoding = gy_dict_get_encoding (dict);
 
     g_return_if_fail (GY_IS_DICT (dict));
@@ -461,262 +450,17 @@ parser_dict (GyParserDict  *parser,
     g_return_if_fail (priv->parser != NULL);
     g_return_if_fail (priv->pdata != NULL);
 
-    //stack_top = 0;
     buf = gy_dict_read_definition (dict, (guint) row);
     gtk_text_buffer_get_iter_at_offset (buffer, &priv->pdata->iter, 0);
     gy_markup_parser_pwn_parse (priv->parser, (const gchar *) buf, -1, encoding);
-    //gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
 
-    /*while( buf[i] )
-    {
-	if(buf[i] == '<')
-	{
-	    len =0;
-	    while(buf[i] != '>')
-    	    {
-		token[len++] = buf[i];
-		i++;
-	    }
-	    token[len++] = buf[i];
-	    token[len] = '\0';
-								    
-	    format_tag(buffer,&iter,token);
-	}
-	else if (buf[i] == '&')
-	{
-	    len =0;
-	    while(buf[i] != ';')
-	    {
-		token[len++] = buf[i];
-		i++;
-	    }
-	    token[len] = '\0';
-	    gtk_text_buffer_get_iter_at_offset (buffer, &iter, -1);
-	    gtk_text_buffer_insert(buffer,&iter,pwn_encje_zam[gydict_utility_search_entity(pwn_encje,token)],-1);
-	}
-	else
-	{
-	    if( (guchar) buf[i] < 127)
-	    {
-		gtk_text_buffer_get_iter_at_offset (buffer, &iter, -1);
-		gtk_text_buffer_insert(buffer,&iter,&buf[i],1);
-	    }
-	    else
-	    {
-		gtk_text_buffer_get_iter_at_offset (buffer, &iter, -1);
-		gtk_text_buffer_insert (buffer, &iter,
-				        *(**(array_of_pointer_to_arrays_of_character_set + encoding) + ((guchar) buf[i] - 128)), -1);
-	    }
-	}
-	i++;
-    }*/
     g_free (buf);
 }
-/*
-static gboolean
-stack_empty(void)
-{
-        return (gboolean) stack_top == 0;
-}
 
-static gboolean
-stack_full(void)
-{
-        return (gboolean) stack_top == STACK_MAX;
-}
-
-static void
-stack_push(gint value_iter)
-{
-    if(stack_full())
-	g_warning("Error:: Stack buffer overflow!!!");
-    else stack_buffer[stack_top++] = value_iter;
-}
-
-static void
-stack_pop(void)
-{
-    if(stack_empty()) 
-	g_warning("Error:: Stack empty!!!\n");
-    else
-	--stack_top;
-}
-
-static gint
-stack_give(void)
-{
-    return stack_buffer[stack_top - 1];
-}
-
-static void 
-format_tag (GtkTextBuffer  *buffer, 
- 	    GtkTextIter    *iter, 
-	    gchar          *token)
-{
-    GtkTextIter tmpIter;
-		
-    if(strcmp((char *) token,"<BIG>") == 0)
-    {
-	stack_push(gtk_text_iter_get_offset(iter));
-    }
-    else if (strcmp((char *) token,"</BIG>") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, &tmpIter, stack_give());
-	gtk_text_buffer_apply_tag_by_name(buffer,"big",&tmpIter,iter);
-	stack_pop();
-    }
-    else if (strcmp((char *) token,"<B>") == 0)
-    {
-	stack_push(gtk_text_iter_get_offset(iter));
-    }
-    else if (strcmp((char *) token,"</B>") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, &tmpIter, stack_give());
-	gtk_text_buffer_apply_tag_by_name(buffer,"bold",&tmpIter,iter);
-	stack_pop();
-    }
-    else if (strcmp((char *) token,"<PH>") == 0)
-    {
-	stack_push(gtk_text_iter_get_offset(iter));
-    }
-    else if (strcmp((char *) token,"</PH>") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, &tmpIter, stack_give());
-	gtk_text_buffer_apply_tag_by_name(buffer,"ph",&tmpIter,iter);
-	stack_pop();
-    }
-    else if (strcmp((char *) token,"<SUB>") == 0)
-    {
-	stack_push(gtk_text_iter_get_offset(iter));
-    }
-    else if (strcmp((char *) token,"</SUB>") == 0)
-    {
-    	gtk_text_buffer_get_iter_at_offset (buffer, &tmpIter, stack_give());
-	gtk_text_buffer_apply_tag_by_name(buffer,"sub",&tmpIter,iter);
-	stack_pop();
-    }
-    else if (strcmp((char *) token,"<I>") == 0)
-    {
-    	stack_push(gtk_text_iter_get_offset(iter));
-    }
-    else if (strcmp((char *) token,"</I>") == 0)
-    {
-    	gtk_text_buffer_get_iter_at_offset (buffer, &tmpIter, stack_give());
-	gtk_text_buffer_apply_tag_by_name(buffer,"italic",&tmpIter,iter);
-	stack_pop();
-    }
-    else if (strcmp((char *) token,"<SMALL>") == 0)
-    {
-	stack_push(gtk_text_iter_get_offset(iter));
-    }
-    else if (strcmp((char *) token,"</SMALL>") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, &tmpIter, stack_give());
-	gtk_text_buffer_apply_tag_by_name(buffer,"small",&tmpIter,iter);
-	stack_pop();
-    }
-    else if (strcmp((char *) token,"<SUP>") == 0)
-    {
-    	stack_push(gtk_text_iter_get_offset(iter));
-    }
-    else if (strcmp((char *) token,"</SUP>") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, &tmpIter, stack_give());
-	gtk_text_buffer_apply_tag_by_name(buffer,"superscript",&tmpIter,iter);
-	stack_pop();
-    }
-    else if (strcmp((char *) token,"<P>") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-    	gtk_text_buffer_insert(buffer,iter,"\n",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym1.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"I",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym2.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"II",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym3.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"III",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym4.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"IV",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym5.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"V",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym6.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"VI",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym7.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"VII",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym8.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"VIII",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym9.jpg\">") == 0)
-    {
-    	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"IX",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym10.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-    	gtk_text_buffer_insert(buffer,iter,"X",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym11.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"XI",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym12.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-    	gtk_text_buffer_insert(buffer,iter,"XII",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym13.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"XIII",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym14.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"XIV",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"rzym15.jpg\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"XV",-1);
-    }
-    else if (strcmp((char *) token,"<IMG SRC=\"idioms.JPG\">") == 0)
-    {
-	gtk_text_buffer_get_iter_at_offset (buffer, iter, -1);
-	gtk_text_buffer_insert(buffer,iter,"IDIOM",-1);
-    }
-}
-*/
-/************************END IMPLEMENTED INTERFACE****************************/
-
-/************************NEW IMPLEMENTED INTERFACE****************************/
 static gchar *format_tags[] = {"B", "BIG", "PH", "SMALL", "I", "SUB", "SUP"};
-static gchar *roman_numbers[] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
+static gchar *roman_numbers[] = {"", "I", "II", "III", "IV", "V", "VI", "VII", 
+				 "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", 
+				 "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
 
 static inline gboolean
 is_tag_format (const gchar *tag)
