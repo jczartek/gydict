@@ -102,10 +102,20 @@ gy_markup_parser_pwn_new (GyMarkupParserPwnTagStartCallback      tag_start_cb,
 void 
 gy_markup_parser_pwn_free (GyMarkupParserPwn *parser)
 {
-  g_return_if_fail (parser != NULL);
+  g_return_if_fail ((parser != NULL) &&
+		    (parser->__entity != NULL) &&
+		    (parser->__buffer != NULL));
 
   g_clear_pointer (&parser->__entity,
 		   g_hash_table_unref);
+  g_slice_free1 (SIZE_TEXT_BUFFER,
+		 parser->__buffer);
+  parser->__buffer = NULL;
+
+  if (parser->__dnotify_cb != NULL)
+    parser->__dnotify_cb (parser->__data);
+
+  g_free (parser);
 }
 
 static inline void
