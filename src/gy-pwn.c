@@ -442,6 +442,25 @@ gy_parser_dict_interface_init (GyParserDictInterface *iface)
 }
 
 static void
+delete_double_new_lines (GtkTextBuffer *buffer)
+{
+  GtkTextIter match_start,
+	      match_end;
+
+  gtk_text_buffer_get_start_iter (buffer, &match_start);
+  gtk_text_buffer_get_start_iter (buffer, &match_end);
+
+  while (gtk_text_iter_forward_search (&match_end, "\n\n",
+				       GTK_TEXT_SEARCH_VISIBLE_ONLY,
+				       &match_start, &match_end, NULL))
+  {
+    gtk_text_iter_forward_char (&match_start);
+    gtk_text_buffer_delete (buffer,
+			    &match_start, 
+			    &match_end);
+  }
+}
+static void
 parser_dict (GyParserDict  *parser,
 	     GtkTextBuffer *buffer,
 	     gint 	    row)
@@ -449,6 +468,7 @@ parser_dict (GyParserDict  *parser,
     GyDict *dict = GY_DICT (parser);
     GyPwnPrivate *priv = gy_pwn_get_instance_private (GY_PWN (dict));
     gchar *buf = NULL;
+    const gchar *id_dict = gy_dict_get_id_string (GY_DICT (parser));
     gint encoding = gy_dict_get_encoding (dict);
 
     g_return_if_fail (GY_IS_DICT (dict));
@@ -459,6 +479,16 @@ parser_dict (GyParserDict  *parser,
     buf = gy_dict_read_definition (dict, (guint) row);
     gtk_text_buffer_get_iter_at_offset (buffer, &priv->pdata->iter, 0);
     gy_markup_parser_pwn_parse (priv->parser, (const gchar *) buf, -1, encoding);
+
+    if (strcmp (id_dict, "dict-pwn-polang") == 0)
+    {
+      /*
+       * W słowniku polsko-angielskim, występują podwójny znak nowej lini.
+       * Nie jest to wina parsera, tylko słownika. Funkcja delete_double_new_lines
+       * wyszukuje podwójny znak nowej linii w GtkTextBuffer i usuwa jeden z znaków.
+       */
+      delete_double_new_lines (buffer);
+    }
 
     g_free (buf);
 }
