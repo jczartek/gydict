@@ -376,9 +376,15 @@ gy_pwn_finalize (GObject *object)
 {
     GyDict *dict = GY_DICT (object);
     GyPwnPrivate *priv = gy_pwn_get_instance_private (GY_PWN (dict));
-
     g_clear_pointer (&priv->pdata,
 		     g_free);
+    g_clear_pointer (&priv->offset,
+		     g_free);
+    g_clear_pointer (&priv->parser,
+		     (GDestroyNotify) gy_markup_parser_pwn_free);
+    if (fclose (priv->file_dict) == 0)
+      priv->file_dict = NULL;
+
     G_OBJECT_CLASS (gy_pwn_parent_class)->finalize (object);
 }
 
