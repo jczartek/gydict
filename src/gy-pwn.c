@@ -483,9 +483,9 @@ parser_dict (GyParserDict  *parser,
     if (strcmp (id_dict, "dict-pwn-polang") == 0)
     {
       /*
-       * W słowniku polsko-angielskim, występuje podwójny znak nowej lini.
+       * W słowniku polsko-angielskim, występuje podwójny znak nowej linii.
        * Nie jest to wina parsera, tylko słownika. Funkcja delete_double_new_lines
-       * wyszukuje podwójny znak nowej linii w GtkTextBuffer i usuwa jeden z znaków.
+       * wyszukuje podwójny znak nowej linii w GtkTextBuffer i usuwa jeden ze znaków.
        */
       delete_double_new_lines (buffer);
     }
