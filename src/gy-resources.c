@@ -6218,6 +6218,8 @@ GResource *gy_get_resource (void)
 
 */
 
+#ifndef __GTK_DOC_IGNORE__
+
 #if  __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 7)
 
 #define G_HAS_CONSTRUCTORS 1
@@ -6291,6 +6293,7 @@ GResource *gy_get_resource (void)
 
 #endif
 
+#endif /* __GTK_DOC_IGNORE__ */
 
 #ifdef G_HAS_CONSTRUCTORS
 

@@ -43,6 +43,7 @@ gydict_SOURCES = \
 		 gy-parser-pwn.h	\
 		 gy-print.c		\
 		 gy-history.c		\
+		 gy-history-iterable.c	\
 		 gy-search-bar.c	\
 		 gy-settings.c		\
 		 gy-print-compositor.c	\
