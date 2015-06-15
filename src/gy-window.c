@@ -496,7 +496,7 @@ tree_selection_cb (GtkTreeSelection *selection,
 	gtk_header_bar_set_title (GTK_HEADER_BAR (gy_window_get_header_bar (window)),
 				 (const gchar *) value);
 
-	/* the variable-value frees in function source_func */
+	/* the variable @value is freed in the function source_func */
 	priv->string_history = value;
 	priv->timeout_history = g_timeout_add (2000,
 					(GSourceFunc) source_func,

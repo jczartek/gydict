@@ -70,6 +70,8 @@ void gy_history_update_current_history (GyHistory *self);
 void gy_history_go_back (GyHistory *self);
 void gy_history_go_forward (GyHistory *self);
 
+void gy_history_append (GyHistory   *self,
+			const gchar *str);
 G_END_DECLS
 
 #endif /* end of include guard: __GY_HISTORY_H__ */

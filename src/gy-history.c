@@ -19,9 +19,16 @@
 #include <gtk/gtk.h>
 
 #include "gy-history.h"
+#include "gy-history-iterable.h"
 
 typedef struct _HistoryList HistoryList;
 
+static void          gy_history_next_item      (GyHistoryIterable *iterable);
+static void          gy_history_previous_item  (GyHistoryIterable *iterable);
+static gboolean      gy_history_is_begin       (GyHistoryIterable *iterable);
+static gboolean      gy_history_is_end         (GyHistoryIterable *iterable);
+static gconstpointer gy_history_get_item       (GyHistoryIterable *iterable);
+static void          gy_history_interface_init (GyHistoryIterableInterface *iface);
 /* Static Prototypes */
 static HistoryList * history_list_alloc (void);
 static void history_list_free (HistoryList *list);
@@ -57,6 +64,11 @@ struct _GyHistoryPrivate
 
   guint start_list: 1;
   guint end_list: 1;
+
+  GSequence     *history;
+  GSequenceIter *iter;
+  gboolean       is_begin;
+  gboolean       is_end;
 };
 
 enum
@@ -64,11 +76,17 @@ enum
   PROP_0,
   PROP_START_LIST,
   PROP_END_LIST,
-  N_PROPERTIES
+  /* iterable */
+  PROP_IS_BEGIN,
+  PROP_IS_END,
+  N_PROPERTIES = PROP_IS_BEGIN
 };
 static GParamSpec *obj_properties[N_PROPERTIES] = { NULL, };
 
-G_DEFINE_TYPE (GyHistory, gy_history, G_TYPE_OBJECT);
+//G_DEFINE_TYPE (GyHistory, gy_history, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_CODE (GyHistory, gy_history, G_TYPE_OBJECT,
+			 G_IMPLEMENT_INTERFACE (GY_HISTORY_TYPE_ITERABLE,
+				                gy_history_interface_init));
 
 #define GET_PRIVATE(instance) G_TYPE_INSTANCE_GET_PRIVATE \
     (instance, GY_TYPE_HISTORY, GyHistoryPrivate)
@@ -199,6 +217,9 @@ gy_history_init (GyHistory *self)
   self->priv->current = NULL;
   self->priv->start_list = FALSE;
   self->priv->end_list = FALSE;
+
+  self->priv->history = g_sequence_new (NULL);
+  self->priv->iter = NULL;
 }
 
 static void
@@ -226,8 +247,17 @@ gy_history_class_init (GyHistoryClass *klass)
 			      FALSE,
 			      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-    g_object_class_install_properties (object_class, N_PROPERTIES,
-				       obj_properties);
+  g_object_class_install_properties (object_class,
+				     N_PROPERTIES,
+				     obj_properties);
+
+  g_object_class_override_property (object_class,
+				    PROP_IS_BEGIN,
+				    "is-begin");
+
+  g_object_class_override_property (object_class,
+				    PROP_IS_END,
+				    "is-end");
 }
 
 static void 
@@ -246,9 +276,17 @@ history_get_property (GObject    *object,
     case PROP_END_LIST:
 	g_value_set_boolean (value, history->priv->end_list);
 	break;
-    default:
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-	break;
+  case PROP_IS_BEGIN:
+    g_value_set_boolean (value,
+			 GY_HISTORY (object)->priv->is_begin);
+    break;
+  case PROP_IS_END:
+    g_value_set_boolean (value,
+			 GY_HISTORY (object)->priv->is_end);
+    break;
+  default:
+    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    break;
   }
 }
 
@@ -268,9 +306,15 @@ history_set_property (GObject      *object,
     case PROP_END_LIST:
 	gy_history_set_end_list (history, g_value_get_boolean(value));
 	break;
-    default:
-	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-	break;
+  case PROP_IS_BEGIN:
+    GY_HISTORY (object)->priv->is_begin = g_value_get_boolean (value);
+    break;
+  case PROP_IS_END:
+    GY_HISTORY (object)->priv->is_end = g_value_get_boolean (value);
+    break;
+  default:
+    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    break;
   }
 }
 
@@ -407,3 +451,89 @@ gy_history_go_forward (GyHistory *self)
     self->priv->current = self->priv->current->next;
   }
 }
+static gint
+g_history_compare_data_func (gconstpointer a,
+			     gconstpointer b,
+			     gpointer      data)
+{
+  return g_strcmp0 ((const gchar *) a, (const gchar *) b);
+}
+
+/**
+ * gy_history_append:
+ * @self: a GyHistory.
+ * @str: the string for the new item.
+ *
+ * Adds a new item to the end of @obj.
+ */
+void
+gy_history_append (GyHistory   *obj,
+		   const gchar *str)
+{
+  /* Sprawdź czy słowo znajduje się w liście.*/
+  if ((g_sequence_lookup (obj->priv->history, (gpointer) str,
+			 g_history_compare_data_func, NULL)) != NULL)
+      return;
+
+  obj->priv->iter = g_sequence_append (obj->priv->history,
+					(gpointer) g_strdup (str));
+  g_object_set (obj,
+		"is-begin", gy_history_iterable_is_begin (GY_HISTORY_ITERABLE (obj)),
+		"is-end",   gy_history_iterable_is_end (GY_HISTORY_ITERABLE (obj)),
+		NULL);
+
+  return;
+}
+
+/***********************INTERFACE IMPLEMENTATION******************************/
+static void
+gy_history_interface_init (GyHistoryIterableInterface *iface)
+{
+  iface->next = gy_history_next_item;
+  iface->previous = gy_history_previous_item;
+  iface->is_begin = gy_history_is_begin;
+  iface->is_end = gy_history_is_end;
+  iface->get = gy_history_get_item;
+}
+
+static void
+gy_history_next_item (GyHistoryIterable *iterable)
+{
+  GY_HISTORY (iterable)->priv->iter = g_sequence_iter_next (GY_HISTORY (iterable)->priv->iter);
+
+  g_object_set (GY_HISTORY (iterable),
+		"is-begin", gy_history_iterable_is_begin (iterable),
+		"is-end",   gy_history_iterable_is_end (iterable),
+		NULL);
+}
+
+static void
+gy_history_previous_item (GyHistoryIterable *iterable)
+{
+
+  GY_HISTORY (iterable)->priv->iter = g_sequence_iter_prev (GY_HISTORY (iterable)->priv->iter);
+
+  g_object_set (GY_HISTORY (iterable),
+		"is-begin", gy_history_iterable_is_begin (iterable),
+		"is-end",   gy_history_iterable_is_end (iterable),
+		NULL);
+}
+
+static gboolean
+gy_history_is_begin (GyHistoryIterable *iterable)
+{
+  return g_sequence_iter_is_begin (GY_HISTORY (iterable)->priv->iter);
+}
+
+static gboolean
+gy_history_is_end (GyHistoryIterable *iterable)
+{
+  return g_sequence_iter_is_end (GY_HISTORY (iterable)->priv->iter);
+}
+
+static gconstpointer
+gy_history_get_item (GyHistoryIterable *iterable)
+{
+  return (gconstpointer) g_sequence_get (GY_HISTORY (iterable)->priv->iter);
+}
+

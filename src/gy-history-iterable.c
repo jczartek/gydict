@@ -41,78 +41,78 @@ gy_history_iterable_default_init (GyHistoryIterableInterface *iface)
 
 /**
  * gy_history_iterable_next_item:
- * @iter: a GyHistoryIterable
+ * @iterable: a GyHistoryIterable
  *
- * Moves an iterator to the next position after @iter.
+ * Moves an iterator to the next position after @iterable.
  */
 void
-gy_history_iterable_next_item (GyHistoryIterable *iter)
+gy_history_iterable_next_item (GyHistoryIterable *iterable)
 {
-  g_return_if_fail (GY_HISTORY_IS_ITERABLE (iter));
+  g_return_if_fail (GY_HISTORY_IS_ITERABLE (iterable));
 
-  GY_HISTORY_ITERABLE_GET_INTERFACE (iter)->next (iter);
+  GY_HISTORY_ITERABLE_GET_INTERFACE (iterable)->next (iterable);
 }
 
 
 /**
  * gy_history_iterable_previous_item:
- * @iter: a GyHistoryIterable
+ * @iterable: a GyHistoryIterable
  *
- * Moves an iterator to the previous position before @iter.
+ * Moves an iterator to the previous position before @iterable.
  */
 void
-gy_history_iterable_previous_item (GyHistoryIterable *iter)
+gy_history_iterable_previous_item (GyHistoryIterable *iterable)
 {
-  g_return_if_fail (GY_HISTORY_IS_ITERABLE (iter));
+  g_return_if_fail (GY_HISTORY_IS_ITERABLE (iterable));
 
-  GY_HISTORY_ITERABLE_GET_INTERFACE (iter)->previous (iter);
+  GY_HISTORY_ITERABLE_GET_INTERFACE (iterable)->previous (iterable);
 }
 
 /**
  * gy_history_iterable_is_begin:
- * @iter: a GyHistoryIterable
+ * @iterable: a GyHistoryIterable
  *
- * Checks whether @iter is the begin iterator.
+ * Checks whether @iterable is the begin iterator.
  *
- * Returns: TRUE when @iter is the begin iterator, otherwise FALSE.
+ * Returns: TRUE when @iterable is the begin iterator, otherwise FALSE.
  */
 gboolean
-gy_history_iterable_is_begin (GyHistoryIterable *iter)
+gy_history_iterable_is_begin (GyHistoryIterable *iterable)
 {
-  g_return_val_if_fail (GY_HISTORY_IS_ITERABLE (iter), TRUE);
+  g_return_val_if_fail (GY_HISTORY_IS_ITERABLE (iterable), TRUE);
 
-  return GY_HISTORY_ITERABLE_GET_INTERFACE (iter)->is_begin (iter);
+  return GY_HISTORY_ITERABLE_GET_INTERFACE (iterable)->is_begin (iterable);
 }
 
 /**
  * gy_history_iterable_is_end:
  * @iter: a GyHistoryIterable
  *
- * Checks whether @iter is the end iterator.
+ * Checks whether @iterable is the end iterator.
  *
- * Returns: TRUE when @iter is the end iterator, otherwise FALSE.
+ * Returns: TRUE when @iterable is the end iterator, otherwise FALSE.
  */
 gboolean
-gy_history_iterable_is_end (GyHistoryIterable *iter)
+gy_history_iterable_is_end (GyHistoryIterable *iterable)
 {
-  g_return_val_if_fail (GY_HISTORY_IS_ITERABLE (iter), TRUE);
+  g_return_val_if_fail (GY_HISTORY_IS_ITERABLE (iterable), TRUE);
 
-  return GY_HISTORY_ITERABLE_GET_INTERFACE (iter)->is_end (iter);
+  return GY_HISTORY_ITERABLE_GET_INTERFACE (iterable)->is_end (iterable);
 }
 
 /**
  * gy_history_iterable_get_item:
  * @iter: a GyHistoryIterable
  *
- * Returns the data that @iter points to.
+ * Returns the data that @iterable points to.
  *
- * Returns: the data that @iter points to.
+ * Returns: the data that @iterable points to.
  */
 gconstpointer
-gy_history_iterable_get_item (GyHistoryIterable *iter)
+gy_history_iterable_get_item (GyHistoryIterable *iterable)
 {
-  g_return_val_if_fail (GY_HISTORY_IS_ITERABLE (iter), NULL);
+  g_return_val_if_fail (GY_HISTORY_IS_ITERABLE (iterable), NULL);
 
-  return GY_HISTORY_ITERABLE_GET_INTERFACE (iter)->get (iter);
+  return GY_HISTORY_ITERABLE_GET_INTERFACE (iterable)->get (iterable);
 }
 
