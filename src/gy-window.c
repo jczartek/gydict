@@ -26,6 +26,7 @@
 #include "gy-dict.h"
 #include "gy-print.h"
 #include "gy-history.h"
+#include "gy-history-iterable.h"
 #include "gy-parser.h"
 #include "gy-search-bar.h"
 #include "gy-settings.h"
@@ -80,6 +81,13 @@ static void on_window_destroy (GtkWidget *widget);
 static void on_window_constructed (GObject *object);
 static void dispose (GObject *object);
 
+enum
+{
+  GY_BINDING_ACTION_PREV,
+  GY_BINDING_ACTION_NEXT,
+  GY_N_BINDINGS
+};
+
 struct _GyWindowPrivate
 {
   GtkWidget *main_box;
@@ -104,6 +112,10 @@ struct _GyWindowPrivate
 
   GyHistory *history;
   GHashTable *histories_dictionaries;
+  GAction  *next;
+  GAction  *prev;
+  GBinding *bind[GY_N_BINDINGS];
+
   GySettings *settings;
 
   GtkClipboard *clipboard; /* Non free! */
@@ -316,7 +328,7 @@ dict_radio_cb (GSimpleAction *action,
     value = g_variant_get_string (parameter, NULL);
     priv->qvalue = g_quark_from_string (value);
 
-    if (!(dict = g_datalist_id_get_data (&priv->datalist, priv->qvalue)))
+  if (!(dict = g_datalist_id_get_data (&priv->datalist, priv->qvalue)))
     {
       GyHistory *history = NULL;
       dict = gy_dict_new_object (value);
@@ -333,28 +345,41 @@ dict_radio_cb (GSimpleAction *action,
 				   g_object_unref);
 
       if (priv->histories_dictionaries != NULL)
-      {
-       	history = gy_history_new ();
-	g_signal_connect (G_OBJECT (history), "notify::start-list",
-	  		  G_CALLBACK (changed_history_cb), window);
-	g_signal_connect (G_OBJECT (history), "notify::end-list",
-	  		  G_CALLBACK (changed_history_cb), window);
-	g_hash_table_insert (priv->histories_dictionaries,
-	 		    (gpointer) g_strdup (value),
-	 		    history);
-      }
+	{
+	  history = gy_history_new ();
+
+	  g_hash_table_insert (priv->histories_dictionaries,
+			      (gpointer) g_strdup (value), history);
+
+	}
     }
 
-    gy_utility_delete_text_in_buffer (priv->buffer);
-    gtk_header_bar_set_title (GTK_HEADER_BAR (priv->header_bar), "");
-    priv->history = GY_HISTORY (g_hash_table_lookup (priv->histories_dictionaries,
-				value));
-    window_check_history (window);
+  priv->history = GY_HISTORY (g_hash_table_lookup (priv->histories_dictionaries,
+						   value));
 
-    gtk_tree_view_set_model (GTK_TREE_VIEW (priv->tree_view),
-		             gy_dict_get_tree_model (dict));
+  if (priv->bind[GY_BINDING_ACTION_PREV] != NULL &&
+      priv->bind[GY_BINDING_ACTION_NEXT] != NULL)
+    {
+      g_binding_unbind (priv->bind[GY_BINDING_ACTION_PREV]);
+      g_binding_unbind (priv->bind[GY_BINDING_ACTION_NEXT]);
+    }
 
-    g_action_change_state (G_ACTION (action), parameter);
+  priv->bind[GY_BINDING_ACTION_PREV] = g_object_bind_property (G_OBJECT (priv->history), "is-enabled-action-prev",
+							       G_OBJECT (priv->prev),    "enabled",
+							       G_BINDING_DEFAULT);
+
+  priv->bind[GY_BINDING_ACTION_NEXT] = g_object_bind_property (G_OBJECT (priv->history),  "is-enabled-action-next",
+							       G_OBJECT (priv->next),     "enabled",
+							       G_BINDING_DEFAULT);
+  gy_history_update (priv->history);
+
+  gy_utility_delete_text_in_buffer (priv->buffer);
+  gtk_header_bar_set_title (GTK_HEADER_BAR (priv->header_bar), "");
+
+  gtk_tree_view_set_model (GTK_TREE_VIEW (priv->tree_view),
+			   gy_dict_get_tree_model (dict));
+
+  g_action_change_state (G_ACTION (action), parameter);
 }
 
 static void 
@@ -401,11 +426,17 @@ go_back_cb (GSimpleAction *action G_GNUC_UNUSED,
     GyWindow * window = GY_WINDOW (data);
     GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
-    gy_history_go_back (priv->history);
-    const gchar *text = gy_history_get_string_from_quark (priv->history);
-    gy_history_update_current_history (priv->history);
+    //gy_history_go_back (priv->history);
+    //const gchar *text = gy_history_get_string_from_quark (priv->history);
+    //gy_history_update_current_history (priv->history);
 
+    //gtk_entry_set_text (GTK_ENTRY (priv->entry), text);
+  gy_history_iterable_previous_item (GY_HISTORY_ITERABLE (priv->history));
+  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (priv->history));
+
+  if (text)
     gtk_entry_set_text (GTK_ENTRY (priv->entry), text);
+
 }
 
 static void 
@@ -415,10 +446,15 @@ go_forward_cb (GSimpleAction *action G_GNUC_UNUSED,
 {
     GyWindow * window = GY_WINDOW (data);
     GyWindowPrivate *priv = gy_window_get_instance_private (window);
-    gy_history_go_forward (priv->history);
-    const gchar *text = gy_history_get_string_from_quark (priv->history);
-    gy_history_update_current_history (priv->history);
+    //gy_history_go_forward (priv->history);
+    //const gchar *text = gy_history_get_string_from_quark (priv->history);
+    //gy_history_update_current_history (priv->history);
 
+    //gtk_entry_set_text (GTK_ENTRY (priv->entry), text);
+  gy_history_iterable_next_item (GY_HISTORY_ITERABLE (priv->history));
+  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (priv->history));
+
+  if (text)
     gtk_entry_set_text (GTK_ENTRY (priv->entry), text);
 }
 
@@ -429,7 +465,7 @@ changed_history_cb (GObject    *object G_GNUC_UNUSED,
 {
     GyWindow *window = GY_WINDOW (data);
     
-    window_check_history (window);
+  //  window_check_history (window);
 }
 
 static void 
@@ -454,7 +490,9 @@ source_func (gpointer data)
     GyWindow *window = GY_WINDOW (data);
     GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
-    gy_history_add_list (priv->history, priv->string_history);
+    //gy_history_add_list (priv->history, priv->string_history);
+  gy_history_append (priv->history,
+		     priv->string_history );
 
     g_free (priv->string_history);
     priv->string_history = NULL;
@@ -680,10 +718,13 @@ gy_window_init (GyWindow *window)
 						        g_str_equal,
 							g_free,
 							g_object_unref);
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (g_action_map_lookup_action (G_ACTION_MAP (window), "go-back")), FALSE);
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (g_action_map_lookup_action (G_ACTION_MAP (window), "go-forward")), FALSE);
-  //priv->history = gy_history_new ();
-  //window_check_history (window);
+  priv->next = g_action_map_lookup_action (G_ACTION_MAP (window),
+					   "go-forward");
+  priv->prev = g_action_map_lookup_action (G_ACTION_MAP (window),
+					   "go-back");
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (priv->next), FALSE);
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (priv->prev), FALSE);
+  priv->bind[GY_BINDING_ACTION_PREV] = priv->bind[GY_BINDING_ACTION_NEXT] = NULL;
 
   /* Create settings */
   priv->settings = gy_settings_get ();
@@ -714,7 +755,7 @@ window_check_history (GyWindow *window)
   gboolean disable;
   GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
-  g_return_if_fail (priv->history != NULL);
+  /*g_return_if_fail (priv->history != NULL);
 
   disable = gy_history_get_start_list (priv->history);
   action = g_action_map_lookup_action (G_ACTION_MAP (window), "go-back");
@@ -722,7 +763,7 @@ window_check_history (GyWindow *window)
 
   disable = gy_history_get_end_list (priv->history);
   action = g_action_map_lookup_action (G_ACTION_MAP (window), "go-forward");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), disable);
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), disable);*/
 }
 
 static void

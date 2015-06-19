@@ -29,6 +29,8 @@
 typedef struct _GyHistoryIterable          GyHistoryIterable; /* dumny object */
 typedef struct _GyHistoryIterableInterface GyHistoryIterableInterface;
 
+typedef GList GyHistoryIter;
+
 struct _GyHistoryIterableInterface
 {
   GTypeInterface parent_iface;

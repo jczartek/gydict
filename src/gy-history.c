@@ -65,10 +65,12 @@ struct _GyHistoryPrivate
   guint start_list: 1;
   guint end_list: 1;
 
-  GSequence     *history;
-  GSequenceIter *iter;
+  GList		*history;
+  GyHistoryIter *iter;
   gboolean       is_begin;
   gboolean       is_end;
+  gboolean       is_enabled_action_next;
+  gboolean       is_enabled_action_prev;
 };
 
 enum
@@ -76,6 +78,8 @@ enum
   PROP_0,
   PROP_START_LIST,
   PROP_END_LIST,
+  PROP_IS_ENABLED_ACTION_NEXT,
+  PROP_IS_ENABLED_ACTION_PREV,
   /* iterable */
   PROP_IS_BEGIN,
   PROP_IS_END,
@@ -218,7 +222,7 @@ gy_history_init (GyHistory *self)
   self->priv->start_list = FALSE;
   self->priv->end_list = FALSE;
 
-  self->priv->history = g_sequence_new (NULL);
+  self->priv->history = NULL;
   self->priv->iter = NULL;
 }
 
@@ -246,6 +250,19 @@ gy_history_class_init (GyHistoryClass *klass)
 			      "FALSE for end list",
 			      FALSE,
 			      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+  obj_properties[PROP_IS_ENABLED_ACTION_NEXT] =
+     g_param_spec_boolean ("is-enabled-action-next",
+			   "IsEnabledActionNext",
+			   "This property indicate whether the action \"go-forward\" should be enabled.",
+			   FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+  obj_properties[PROP_IS_ENABLED_ACTION_PREV] =
+     g_param_spec_boolean ("is-enabled-action-prev",
+			   "IsEnabledActionPrev",
+			   "This property indicate whether the action \"go-back\" should be enabled.",
+			   FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
 
   g_object_class_install_properties (object_class,
 				     N_PROPERTIES,
@@ -276,6 +293,14 @@ history_get_property (GObject    *object,
     case PROP_END_LIST:
 	g_value_set_boolean (value, history->priv->end_list);
 	break;
+  case PROP_IS_ENABLED_ACTION_NEXT:
+    g_value_set_boolean (value,
+			 GY_HISTORY (object)->priv->is_enabled_action_next);
+    break;
+  case PROP_IS_ENABLED_ACTION_PREV:
+    g_value_set_boolean (value,
+			 GY_HISTORY (object)->priv->is_enabled_action_prev);
+    break;
   case PROP_IS_BEGIN:
     g_value_set_boolean (value,
 			 GY_HISTORY (object)->priv->is_begin);
@@ -306,6 +331,12 @@ history_set_property (GObject      *object,
     case PROP_END_LIST:
 	gy_history_set_end_list (history, g_value_get_boolean(value));
 	break;
+  case PROP_IS_ENABLED_ACTION_NEXT:
+    GY_HISTORY (object)->priv->is_enabled_action_next = g_value_get_boolean (value);
+    break;
+  case PROP_IS_ENABLED_ACTION_PREV:
+    GY_HISTORY (object)->priv->is_enabled_action_prev = g_value_get_boolean (value);
+    break;
   case PROP_IS_BEGIN:
     GY_HISTORY (object)->priv->is_begin = g_value_get_boolean (value);
     break;
@@ -453,15 +484,14 @@ gy_history_go_forward (GyHistory *self)
 }
 static gint
 g_history_compare_data_func (gconstpointer a,
-			     gconstpointer b,
-			     gpointer      data)
+                             gconstpointer b)
 {
   return g_strcmp0 ((const gchar *) a, (const gchar *) b);
 }
 
 /**
  * gy_history_append:
- * @self: a GyHistory.
+ * @obj: a GyHistory.
  * @str: the string for the new item.
  *
  * Adds a new item to the end of @obj.
@@ -471,18 +501,39 @@ gy_history_append (GyHistory   *obj,
 		   const gchar *str)
 {
   /* Sprawdź czy słowo znajduje się w liście.*/
-  if ((g_sequence_lookup (obj->priv->history, (gpointer) str,
-			 g_history_compare_data_func, NULL)) != NULL)
+  if (( g_list_find_custom (obj->priv->history, (gconstpointer) str,
+			    g_history_compare_data_func)) != NULL)
       return;
 
-  obj->priv->iter = g_sequence_append (obj->priv->history,
-					(gpointer) g_strdup (str));
+  obj->priv->history = g_list_append (obj->priv->history,
+				      (gpointer) g_strdup (str));
+  obj->priv->iter = g_list_last (obj->priv->history);
+
   g_object_set (obj,
-		"is-begin", gy_history_iterable_is_begin (GY_HISTORY_ITERABLE (obj)),
-		"is-end",   gy_history_iterable_is_end (GY_HISTORY_ITERABLE (obj)),
+		"is-enabled-action-prev", ((g_list_length (obj->priv->history) != 1 )? TRUE : FALSE),
+		"is-enabled-action-next",  FALSE,
 		NULL);
 
+  g_print ("%s\t\tCount items in history: %d\t\tIsEnabledActionPrev: %d\t\tIsEnabledActionEnd: %d:\n", __func__,
+	   g_list_length (obj->priv->history),
+	   obj->priv->is_enabled_action_prev,
+           obj->priv->is_enabled_action_next);
+
   return;
+}
+
+/**
+ * gy_history_update:
+ * @obj: a GyHistory.
+ */
+void
+gy_history_update (GyHistory *obj)
+{
+  g_return_if_fail (GY_IS_HISTORY (obj));
+
+  g_object_set (obj,
+		"is-enabled-action-prev", ((g_list_length (obj->priv->history) == 0) && gy_history_iterable_is_begin (GY_HISTORY_ITERABLE (obj))) ? FALSE : TRUE,
+		"is-enabled-action-next", FALSE, NULL);
 }
 
 /***********************INTERFACE IMPLEMENTATION******************************/
@@ -499,41 +550,50 @@ gy_history_interface_init (GyHistoryIterableInterface *iface)
 static void
 gy_history_next_item (GyHistoryIterable *iterable)
 {
-  GY_HISTORY (iterable)->priv->iter = g_sequence_iter_next (GY_HISTORY (iterable)->priv->iter);
+
+  GY_HISTORY (iterable)->priv->iter = g_list_next (GY_HISTORY (iterable)->priv->iter);
 
   g_object_set (GY_HISTORY (iterable),
-		"is-begin", gy_history_iterable_is_begin (iterable),
-		"is-end",   gy_history_iterable_is_end (iterable),
+		"is-enabled-action-prev", TRUE,
+		"is-enabled-action-next",   gy_history_iterable_is_end (iterable) ? FALSE : TRUE,
 		NULL);
+
+      g_print ("%s\t\tIsEnabledActionPrev: %d\t\tIsEnabledActionEnd: %d:\n", __func__,
+	   GY_HISTORY (iterable)->priv->is_enabled_action_prev,
+	   GY_HISTORY (iterable)->priv->is_enabled_action_next);
 }
 
 static void
 gy_history_previous_item (GyHistoryIterable *iterable)
 {
 
-  GY_HISTORY (iterable)->priv->iter = g_sequence_iter_prev (GY_HISTORY (iterable)->priv->iter);
+  GY_HISTORY (iterable)->priv->iter = g_list_previous (GY_HISTORY (iterable)->priv->iter);
 
   g_object_set (GY_HISTORY (iterable),
-		"is-begin", gy_history_iterable_is_begin (iterable),
-		"is-end",   gy_history_iterable_is_end (iterable),
+		"is-enabled-action-prev",  gy_history_iterable_is_begin (iterable) ? FALSE : TRUE,
+		"is-enabled-action-next",  TRUE,
 		NULL);
+
+    g_print ("%s\t\tIsEnabledActionPrev: %d\t\tIsEnabledActionEnd: %d:\n", __func__,
+	   GY_HISTORY (iterable)->priv->is_enabled_action_prev,
+	   GY_HISTORY (iterable)->priv->is_enabled_action_next);
 }
 
 static gboolean
 gy_history_is_begin (GyHistoryIterable *iterable)
 {
-  return g_sequence_iter_is_begin (GY_HISTORY (iterable)->priv->iter);
+  return (g_list_previous (GY_HISTORY (iterable)->priv->iter)) == NULL;
 }
 
 static gboolean
 gy_history_is_end (GyHistoryIterable *iterable)
 {
-  return g_sequence_iter_is_end (GY_HISTORY (iterable)->priv->iter);
+  return (g_list_next (GY_HISTORY (iterable)->priv->iter)) == NULL;
 }
 
 static gconstpointer
 gy_history_get_item (GyHistoryIterable *iterable)
 {
-  return (gconstpointer) g_sequence_get (GY_HISTORY (iterable)->priv->iter);
+  return (gconstpointer) GY_HISTORY (iterable)->priv->iter->data;
 }
 
