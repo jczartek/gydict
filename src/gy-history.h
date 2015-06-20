@@ -56,23 +56,10 @@ GType gy_history_get_type (void);
 /*
  * Method definitions
  */
-GyHistory* gy_history_new (void);
-void gy_history_set_start_list (GyHistory *self, 
-			        gboolean   start_list);
-void gy_history_set_end_list (GyHistory *self, 
-			      gboolean   end_list);
-gboolean gy_history_get_start_list (GyHistory *self);
-gboolean gy_history_get_end_list (GyHistory *self);
-void gy_history_add_list (GyHistory   *self,
-			  const gchar *string);
-const gchar* gy_history_get_string_from_quark (GyHistory *self);
-void gy_history_update_current_history (GyHistory *self);
-void gy_history_go_back (GyHistory *self);
-void gy_history_go_forward (GyHistory *self);
-
-void gy_history_append (GyHistory   *obj,
-			const gchar *str);
-void gy_history_update (GyHistory   *obj);
+GyHistory* gy_history_new       (void);
+void       gy_history_append    (GyHistory   *obj,
+			         const gchar *str);
+void       gy_history_update    (GyHistory   *obj);
 G_END_DECLS
 
 #endif /* end of include guard: __GY_HISTORY_H__ */
