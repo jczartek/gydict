@@ -24,19 +24,6 @@ G_DEFINE_INTERFACE (GyHistoryIterable, gy_history_iterable, 0);
 static void
 gy_history_iterable_default_init (GyHistoryIterableInterface *iface)
 {
-  g_object_interface_install_property (iface,
-				       g_param_spec_boolean ("is-begin",
-				                             "IsBegin",
-				                             "This property indicate whether a iterator is the begin iterator",
-				                             FALSE,
-				                             G_PARAM_READWRITE | G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB));
-
-  g_object_interface_install_property (iface,
-				       g_param_spec_boolean ("is-end",
-				                             "IsEnd",
-				                             "This property indicate whether a iterator is the end iterator",
-				                             FALSE,
-				                             G_PARAM_READWRITE | G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB));
 }
 
 /**

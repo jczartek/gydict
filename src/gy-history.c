@@ -67,8 +67,6 @@ struct _GyHistoryPrivate
 
   GList		*history;
   GyHistoryIter *iter;
-  gboolean       is_begin;
-  gboolean       is_end;
   gboolean       is_enabled_action_next;
   gboolean       is_enabled_action_prev;
 };
@@ -80,10 +78,7 @@ enum
   PROP_END_LIST,
   PROP_IS_ENABLED_ACTION_NEXT,
   PROP_IS_ENABLED_ACTION_PREV,
-  /* iterable */
-  PROP_IS_BEGIN,
-  PROP_IS_END,
-  N_PROPERTIES = PROP_IS_BEGIN
+  N_PROPERTIES
 };
 static GParamSpec *obj_properties[N_PROPERTIES] = { NULL, };
 
@@ -267,17 +262,9 @@ gy_history_class_init (GyHistoryClass *klass)
   g_object_class_install_properties (object_class,
 				     N_PROPERTIES,
 				     obj_properties);
-
-  g_object_class_override_property (object_class,
-				    PROP_IS_BEGIN,
-				    "is-begin");
-
-  g_object_class_override_property (object_class,
-				    PROP_IS_END,
-				    "is-end");
 }
 
-static void 
+static void
 history_get_property (GObject    *object,
 		      guint       prop_id,
 		      GValue     *value,
@@ -301,21 +288,13 @@ history_get_property (GObject    *object,
     g_value_set_boolean (value,
 			 GY_HISTORY (object)->priv->is_enabled_action_prev);
     break;
-  case PROP_IS_BEGIN:
-    g_value_set_boolean (value,
-			 GY_HISTORY (object)->priv->is_begin);
-    break;
-  case PROP_IS_END:
-    g_value_set_boolean (value,
-			 GY_HISTORY (object)->priv->is_end);
-    break;
   default:
     G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     break;
   }
 }
 
-static void 
+static void
 history_set_property (GObject      *object,
 		      guint         prop_id,
 		      const GValue *value,
@@ -336,12 +315,6 @@ history_set_property (GObject      *object,
     break;
   case PROP_IS_ENABLED_ACTION_PREV:
     GY_HISTORY (object)->priv->is_enabled_action_prev = g_value_get_boolean (value);
-    break;
-  case PROP_IS_BEGIN:
-    GY_HISTORY (object)->priv->is_begin = g_value_get_boolean (value);
-    break;
-  case PROP_IS_END:
-    GY_HISTORY (object)->priv->is_end = g_value_get_boolean (value);
     break;
   default:
     G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
