@@ -69,10 +69,6 @@ static void  buttons_signs_cb (GSimpleAction *action,
 static void respond_clipboard_cb (GSimpleAction *action,
 				  GVariant	*parameter,
 				  gpointer 	 data);
-static void changed_history_cb (GObject    *object,
-			        GParamSpec *spec,
-			        gpointer    data);
-static void window_check_history (GyWindow *window);
 static void on_window_size_allocate (GtkWidget *widget,
 				     GtkAllocation *allocation);
 static gboolean on_window_state_event (GtkWidget *widget,
@@ -426,11 +422,6 @@ go_back_cb (GSimpleAction *action G_GNUC_UNUSED,
     GyWindow * window = GY_WINDOW (data);
     GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
-    //gy_history_go_back (priv->history);
-    //const gchar *text = gy_history_get_string_from_quark (priv->history);
-    //gy_history_update_current_history (priv->history);
-
-    //gtk_entry_set_text (GTK_ENTRY (priv->entry), text);
   gy_history_iterable_previous_item (GY_HISTORY_ITERABLE (priv->history));
   const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (priv->history));
 
@@ -446,26 +437,12 @@ go_forward_cb (GSimpleAction *action G_GNUC_UNUSED,
 {
     GyWindow * window = GY_WINDOW (data);
     GyWindowPrivate *priv = gy_window_get_instance_private (window);
-    //gy_history_go_forward (priv->history);
-    //const gchar *text = gy_history_get_string_from_quark (priv->history);
-    //gy_history_update_current_history (priv->history);
 
-    //gtk_entry_set_text (GTK_ENTRY (priv->entry), text);
   gy_history_iterable_next_item (GY_HISTORY_ITERABLE (priv->history));
   const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (priv->history));
 
   if (text)
     gtk_entry_set_text (GTK_ENTRY (priv->entry), text);
-}
-
-static void 
-changed_history_cb (GObject    *object G_GNUC_UNUSED,
-		    GParamSpec *spec G_GNUC_UNUSED,
-		    gpointer    data)
-{
-    GyWindow *window = GY_WINDOW (data);
-    
-  //  window_check_history (window);
 }
 
 static void 
@@ -490,7 +467,6 @@ source_func (gpointer data)
     GyWindow *window = GY_WINDOW (data);
     GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
-    //gy_history_add_list (priv->history, priv->string_history);
   gy_history_append (priv->history,
 		     priv->string_history );
 
@@ -693,13 +669,11 @@ gy_window_init (GyWindow *window)
 				   win_entries, G_N_ELEMENTS (win_entries),
 				   window);
 
-  //setup_new_menu (window);
   create_info_bar (window);
 
   priv->buffer = set_text_buffer_on_text_view (priv->text_view);
   gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (priv->text_view), GTK_WRAP_WORD);
 
-  //set_attribute_tree_view (priv->tree_view);
   priv->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree_view));
   gtk_tree_selection_set_mode (priv->selection, GTK_SELECTION_BROWSE);
   gtk_tree_view_set_search_entry (GTK_TREE_VIEW (priv->tree_view),
@@ -740,30 +714,8 @@ gy_window_init (GyWindow *window)
 		    G_CALLBACK (press_button_text_view_cb), window);
   g_signal_connect (priv->text_view, "button-release-event",
 		    G_CALLBACK (release_button_text_view_cb), window);
-  /*g_signal_connect (G_OBJECT (priv->history), "notify::start-list",
-		    G_CALLBACK (changed_history_cb), window);
-  g_signal_connect (G_OBJECT (priv->history), "notify::end-list",
-		    G_CALLBACK (changed_history_cb), window);*/
   g_signal_connect (priv->settings, "fonts-changed",
 		    G_CALLBACK (settings_fonts_changed_cb), window);
-}
-
-static void
-window_check_history (GyWindow *window)
-{
-  GAction *action;
-  gboolean disable;
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
-
-  /*g_return_if_fail (priv->history != NULL);
-
-  disable = gy_history_get_start_list (priv->history);
-  action = g_action_map_lookup_action (G_ACTION_MAP (window), "go-back");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), disable);
-
-  disable = gy_history_get_end_list (priv->history);
-  action = g_action_map_lookup_action (G_ACTION_MAP (window), "go-forward");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), disable);*/
 }
 
 static void
@@ -788,7 +740,7 @@ gy_window_class_init (GyWindowClass *klass)
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, tree_view);
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, text_view);
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, text_box);
-  gtk_widget_class_bind_template_child_private (widget_class, GyWindow, revealer_buttons);						
+  gtk_widget_class_bind_template_child_private (widget_class, GyWindow, revealer_buttons);
 }
 
 static void
@@ -888,7 +840,6 @@ dispose (GObject *object)
   priv->qvalue = 0;
 
   g_clear_object (&priv->settings);
-  //g_clear_object (&priv->history);
   if (priv->histories_dictionaries != NULL)
   {
     g_hash_table_destroy (priv->histories_dictionaries);
