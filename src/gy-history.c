@@ -190,7 +190,7 @@ gy_history_append (GyHistory   *obj,
 		"is-enabled-action-next",  FALSE,
 		NULL);
 
-  g_print ("%s\t\tCount items in history: %d\t\tIsEnabledActionPrev: %d\t\tIsEnabledActionEnd: %d:\n", __func__,
+  g_debug ("%s\t\tCount items in history: %d\t\tIsEnabledActionPrev: %d\t\tIsEnabledActionEnd: %d:\n", __func__,
 	   g_list_length (obj->priv->history),
 	   obj->priv->is_enabled_action_prev,
            obj->priv->is_enabled_action_next);
@@ -234,9 +234,9 @@ gy_history_next_item (GyHistoryIterable *iterable)
 		"is-enabled-action-next",   gy_history_iterable_is_end (iterable) ? FALSE : TRUE,
 		NULL);
 
-      g_print ("%s\t\tIsEnabledActionPrev: %d\t\tIsEnabledActionEnd: %d:\n", __func__,
-	   GY_HISTORY (iterable)->priv->is_enabled_action_prev,
-	   GY_HISTORY (iterable)->priv->is_enabled_action_next);
+      g_debug ("%s\t\tIsEnabledActionPrev: %d\t\tIsEnabledActionEnd: %d:\n", __func__,
+	       GY_HISTORY (iterable)->priv->is_enabled_action_prev,
+	       GY_HISTORY (iterable)->priv->is_enabled_action_next);
 }
 
 static void
@@ -250,9 +250,9 @@ gy_history_previous_item (GyHistoryIterable *iterable)
 		"is-enabled-action-next",  TRUE,
 		NULL);
 
-    g_print ("%s\t\tIsEnabledActionPrev: %d\t\tIsEnabledActionEnd: %d:\n", __func__,
-	   GY_HISTORY (iterable)->priv->is_enabled_action_prev,
-	   GY_HISTORY (iterable)->priv->is_enabled_action_next);
+    g_debug ("%s\t\tIsEnabledActionPrev: %d\t\tIsEnabledActionEnd: %d:\n", __func__,
+	     GY_HISTORY (iterable)->priv->is_enabled_action_prev,
+	     GY_HISTORY (iterable)->priv->is_enabled_action_next);
 }
 
 static gboolean
