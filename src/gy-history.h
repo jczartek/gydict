@@ -60,6 +60,7 @@ GyHistory* gy_history_new       (void);
 void       gy_history_append    (GyHistory   *obj,
 			         const gchar *str);
 void       gy_history_update    (GyHistory   *obj);
+guint      gy_history_length    (GyHistory   *obj);
 G_END_DECLS
 
 #endif /* end of include guard: __GY_HISTORY_H__ */

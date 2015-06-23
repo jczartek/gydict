@@ -212,6 +212,20 @@ gy_history_update (GyHistory *obj)
 		"is-enabled-action-next", FALSE, NULL);
 }
 
+/**
+ * gy_history_length:
+ * @obj: a GyHistory.
+ *
+ * Gets the numbers of elements in the history.
+ *
+ * Returns: the numbers of elements in the history.
+ */
+guint
+gy_history_length (GyHistory *obj)
+{
+  return obj->priv->history == NULL ? 0 : g_list_length (obj->priv->history);
+}
+
 /***********************INTERFACE IMPLEMENTATION******************************/
 static void
 gy_history_interface_init (GyHistoryIterableInterface *iface)
