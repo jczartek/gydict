@@ -316,7 +316,8 @@ dict_radio_cb (GSimpleAction *action,
 	       GVariant *parameter,
  	       gpointer data)
 {
-    const gchar *value;
+    const gchar *value,
+                *str = NULL;
     GyWindow *window = GY_WINDOW (data);
     GyWindowPrivate *priv = gy_window_get_instance_private (window);
     GyDict *dict;
@@ -349,6 +350,10 @@ dict_radio_cb (GSimpleAction *action,
 
 	}
     }
+  gtk_tree_view_set_model (GTK_TREE_VIEW (priv->tree_view),
+			   gy_dict_get_tree_model (dict));
+  gy_utility_delete_text_in_buffer (priv->buffer);
+  gtk_entry_set_text (GTK_ENTRY (priv->entry), "");
 
   priv->history = GY_HISTORY (g_hash_table_lookup (priv->histories_dictionaries,
 						   value));
@@ -369,11 +374,15 @@ dict_radio_cb (GSimpleAction *action,
 							       G_BINDING_DEFAULT);
   gy_history_update (priv->history);
 
-  gy_utility_delete_text_in_buffer (priv->buffer);
-  gtk_header_bar_set_title (GTK_HEADER_BAR (priv->header_bar), "");
+  if (gy_history_length (priv->history) != 0)
+    {
+      /* Gets the end item in the history. */
+      str = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (priv->history));
+      gtk_entry_set_text (GTK_ENTRY (priv->entry), str);
+    }
 
-  gtk_tree_view_set_model (GTK_TREE_VIEW (priv->tree_view),
-			   gy_dict_get_tree_model (dict));
+  gtk_header_bar_set_title (GTK_HEADER_BAR (priv->header_bar),
+			    str == NULL ? "" : str);
 
   g_action_change_state (G_ACTION (action), parameter);
 }
