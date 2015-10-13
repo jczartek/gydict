@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Wed Jan  1 20:17:05 2014 -->
 <interface>
-	<!-- interface-requires gtk+ 3.10 -->
-	<menu id="gear_menu">
-		<section>
-			<item>
-				<attribute name="label" translatable="yes">_Print</attribute>
+  <menu id="gear_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Print</attribute>
 				<attribute name="action">win.print</attribute>
 				<attribute name="accel">&lt;Primary&gt;p</attribute>
-			</item>
+      </item>
 			<item>
 				<attribute name="label" translatable="yes">_Copy</attribute>
 				<attribute name="action">win.copy</attribute>
@@ -28,7 +26,7 @@
 				<attribute name="label" translatable="yes">Diacritic</attribute>
 				<attribute name="action">win.signs</attribute>
 			</item>
-		</section>
+    </section>
 		<section>
 			<item>
 				<attribute name="label" translatable="yes">Cl_ose</attribute>
@@ -442,8 +440,7 @@
 		      					<property name="fill">False</property>
 		      					<property name="position">1</property>
 		    					</packing>
-		  					</child>
-  		  <!-- end toolbar_buttons-->
+		  					</child><!-- end toolbar_buttons-->
     		  			<child>
       		    		<object class="GtkScrolledWindow" id="scrolledwindowtree">
 		      					<property name="visible">True</property>
@@ -472,9 +469,9 @@
 			  										</child>
 			  									</object> <!-- dict_text_column -->
 			  								</child>
-			    							<!--<child internal-child="selection">
+			    							<child internal-child="selection">
 		  	    							<object class="GtkTreeSelection" id="treeview-selection1"/>
-		    								</child> -->
+		    								</child>
 											</object> <!-- tree_view -->
 		 								</child>
 		    					</object>
