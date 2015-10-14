@@ -25,6 +25,7 @@ src/config.h
 src/stamp-h1
 
 autom4te.cache/
+build-aux/
 po/Makevars.template
 po/Rules-quot
 po/boldquot.sed
@@ -36,4 +37,7 @@ po/remove-potcdate.sin
 src/config.h.in~
 
 m4/
+aclocal.m4
+po/Makefile.in.in
+po/Makefile.in.in~
 
