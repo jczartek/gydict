@@ -469,9 +469,6 @@
 			  										</child>
 			  									</object> <!-- dict_text_column -->
 			  								</child>
-			    							<child internal-child="selection">
-		  	    							<object class="GtkTreeSelection" id="treeview-selection1"/>
-		    								</child>
 											</object> <!-- tree_view -->
 		 								</child>
 		    					</object>
