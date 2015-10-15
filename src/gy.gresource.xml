@@ -3,7 +3,7 @@
   <gresource prefix="/org/gtk/gydict">
     <file alias="gydict.ui">./resources/ui/gydict.ui</file>
     <file alias="menu.ui">./resources/ui/menu.ui</file>
-    <file alias="dialog-pref.ui">./resources/ui/dialog-pref.ui</file>
-    <file alias="gysearchbar.ui">./resources/ui/gysearchbar.ui</file>
+    <file alias="dialog-pref.ui" compressed="true">./resources/ui/dialog-pref.ui</file>
+    <file alias="gysearchbar.ui" compressed="true">./resources/ui/gysearchbar.ui</file>
   </gresource>
 </gresources>
