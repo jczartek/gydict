@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gtk/gydict">
-    <file>gydict.ui</file>
-    <file>menu.ui</file>
-    <file>dialog-pref.ui</file>
-    <file>gysearchbar.ui</file>
+    <file alias="gydict.ui">./resources/ui/gydict.ui</file>
+    <file alias="menu.ui">./resources/ui/menu.ui</file>
+    <file alias="dialog-pref.ui">./resources/ui/dialog-pref.ui</file>
+    <file alias="gysearchbar.ui">./resources/ui/gysearchbar.ui</file>
   </gresource>
 </gresources>
