@@ -5,7 +5,7 @@ Gydict
 Gydict jest programem do obsługi różnych słowników multimedialnych (darmowych i komercyjnych) dostępnych pod Windows. Program działa pod systemem Linux.
 
 1.1 Wymagania
-Aby skompilować program, będzie potrzebna wersja deweloperska biblioteki gtk+ w wersji 3.10.
+Aby skompilować program, będzie potrzebna wersja deweloperska biblioteki gtk+ w wersji 3.14.
 
 1.2 Jak skompilować?
 Należy wykonać następujące polecenia:
@@ -14,8 +14,7 @@ Należy wykonać następujące polecenia:
 	make install
 
 Jeśli chcemy skompilować program do katalogu domowego:
- ./autogen
- ./configure --prefix=/kome/user/.local
+ ./autogen --prefix=/home/user/.local (Będzie potrzebna paczka gnome-common, w której znajduje się skrypt gnome-autogen.sh).
  make
  make install
 to, aby program działał należy ustawić dwie zmienne środowiskowe tj. XDG_DATA_DIRS oraz PATH. Gydict korzysta z GSettings dla trzymania ustawień. GSettings domyślnie szuka swoich plików w /usr/share/glib-2.0/schemas lub /local/usr/share/glib-2.0/schemas, dlatego jeśli kompilujemy do katologu domowego i nie ustawimy odpowiednio zmiennej XDG_DATA_DIRS to program nie będzie działał poprawnie. Dla takiej kompilacji ustawienia zmiennych wygląda następująco:
