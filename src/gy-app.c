@@ -27,17 +27,17 @@ typedef struct _GyAppPrivate GyAppPrivate;
 
 /**STATIC PROTOTYPES FUNCTIONS**/
 static void new_window_cb (GSimpleAction *action,
-			   GVariant      *parametr,
-			   gpointer       data);
+                           GVariant      *parametr,
+                           gpointer       data);
 static void quit_cb (GSimpleAction *action,
-		     GVariant      *parametr,
-	  	     gpointer       data);
+                     GVariant      *parametr,
+                     gpointer       data);
 static void preferences_cb (GSimpleAction *action,
-			    GVariant      *parametr,
-			    gpointer       data);
+                            GVariant      *parametr,
+                            gpointer       data);
 static void about_cb (GSimpleAction *action,
-		      GVariant      *parameter,
-		      gpointer       user_data);
+                      GVariant      *parameter,
+                      gpointer       user_data);
 
 static void dispose (GObject *object);
 
@@ -80,7 +80,7 @@ gy_app_peek_first_window (GyApp *app)
 
   /* Create a new window */
   g_action_group_activate_action (G_ACTION_GROUP (app), 
-				  "new-window", NULL);
+                                  "new-window", NULL);
 
   /* And look for the newly created window again */
   return gy_app_peek_first_window (app);
@@ -90,15 +90,15 @@ inline static void
 setup_actions_app (GyApp *application)
 {
   g_action_map_add_action_entries (G_ACTION_MAP (application),
-				   app_entries,
-				   G_N_ELEMENTS (app_entries),
-				   application);
+                                   app_entries,
+                                   G_N_ELEMENTS (app_entries),
+                                   application);
 }
 
 static void 
 new_window_cb (GSimpleAction *action G_GNUC_UNUSED,
-	       GVariant      *parametr G_GNUC_UNUSED,
-	       gpointer       data)
+               GVariant      *parametr G_GNUC_UNUSED,
+               gpointer       data)
 {
   GyApp *app = GY_APP (data);
   GtkWidget *window;
@@ -110,8 +110,8 @@ new_window_cb (GSimpleAction *action G_GNUC_UNUSED,
 
 static void 
 preferences_cb (GSimpleAction *action G_GNUC_UNUSED,
-	        GVariant      *parametr G_GNUC_UNUSED,
-    	        gpointer       data)
+                GVariant      *parametr G_GNUC_UNUSED,
+                gpointer       data)
 {
   GyApp *app = GY_APP(data);
   GtkWindow *window;
@@ -136,25 +136,24 @@ about_cb (GSimpleAction *action G_GNUC_UNUSED,
   const gchar  *translator_credits = _("translator_credits");
 
   gtk_show_about_dialog (NULL,
-			 "name", "Gydict",
-			 "version", PACKAGE_VERSION,
-			 "comments", _("This program supports the various dictionaries. "
-				     "Currently, the program provides support to the dictionaries: "
-				     "PWN (2006, 2007) and DEPL (www.depl.pl)"),
-			 "license-type", GTK_LICENSE_GPL_2_0,
-			 "authors", authors,
-  			 "documenters", documenters,
-			 "translator-credits",
-			 (strcmp (translator_credits, "translator_credits") != 0 ?
-			 translator_credits : NULL),
-  			 "logo-icon-name", PACKAGE_TARNAME,
-			 NULL);
+                         "name", "Gydict",
+                         "version", PACKAGE_VERSION,
+                         "comments", _("This program supports the various dictionaries. "
+                                       "Currently, the program provides support to the dictionaries: "
+                                       "PWN (2006, 2007) and DEPL (www.depl.pl)"),
+                         "license-type", GTK_LICENSE_GPL_2_0,
+                         "authors", authors,
+                         "documenters", documenters,
+                         "translator-credits",
+                         (strcmp (translator_credits, "translator_credits") != 0 ? translator_credits : NULL),
+                         "logo-icon-name", PACKAGE_TARNAME,
+                         NULL);
 }
 
 static void 
 quit_cb (GSimpleAction *action G_GNUC_UNUSED,
-	 GVariant      *parametr G_GNUC_UNUSED,
-	 gpointer       data)
+         GVariant      *parametr G_GNUC_UNUSED,
+         gpointer       data)
 {
   GyApp *app = GY_APP(data);
   GList * windows;
@@ -163,7 +162,7 @@ quit_cb (GSimpleAction *action G_GNUC_UNUSED,
   while ((windows = gtk_application_get_windows (GTK_APPLICATION (app))))
   {
     gtk_application_remove_window (GTK_APPLICATION (app),
-				   GTK_WINDOW (windows->data));
+                                   GTK_WINDOW (windows->data));
   }
 }
 
@@ -176,31 +175,31 @@ setup_accelerators (GyApp *application)
   parameter[2] = g_variant_new_string ("dict-depl-a");
 
   gtk_application_add_accelerator (GTK_APPLICATION (application),
-				   "<PRIMARY>p", "win.print", NULL);
+                                   "<PRIMARY>p", "win.print", NULL);
   gtk_application_add_accelerator (GTK_APPLICATION (application),
-				   "<PRIMARY>c", "win.copy", NULL);
+                                   "<PRIMARY>c", "win.copy", NULL);
   gtk_application_add_accelerator (GTK_APPLICATION (application),
-				   "<PRIMARY>v", "win.paste", NULL);
+                                   "<PRIMARY>v", "win.paste", NULL);
   gtk_application_add_accelerator (GTK_APPLICATION (application),
-				   "<PRIMARY>m", "win.clip", NULL);
+                                   "<PRIMARY>m", "win.clip", NULL);
   gtk_application_add_accelerator (GTK_APPLICATION (application),
-				   "<PRIMARY>w", "win.close", NULL);
+                                   "<PRIMARY>w", "win.close", NULL);
   gtk_application_add_accelerator (GTK_APPLICATION (application),
-				   "F10", "win.gear-menu", NULL);
+                                   "F10", "win.gear-menu", NULL);
   gtk_application_add_accelerator (GTK_APPLICATION (application),
-				   "<PRIMARY>f", "win.find-menu", NULL);
+                                   "<PRIMARY>f", "win.find-menu", NULL);
   gtk_application_add_accelerator (GTK_APPLICATION (application),
-				   "<PRIMARY>d", "win.dict-menu", NULL);
+                                   "<PRIMARY>d", "win.dict-menu", NULL);
   gtk_application_add_accelerator (GTK_APPLICATION (application),
-				   "<PRIMARY>n", "app.new-window", NULL);
+                                   "<PRIMARY>n", "app.new-window", NULL);
   gtk_application_add_accelerator (GTK_APPLICATION (application),
-				   "<PRIMARY>q", "app.quit", NULL);
+                                   "<PRIMARY>q", "app.quit", NULL);
   gtk_application_add_accelerator (GTK_APPLICATION (application),
-				   "<ALT>1", "win.dict", parameter[0]);
+                                   "<ALT>1", "win.dict", parameter[0]);
   gtk_application_add_accelerator (GTK_APPLICATION (application),
-				   "<ALT>2", "win.dict", parameter[1]);
+                                   "<ALT>2", "win.dict", parameter[1]);
   gtk_application_add_accelerator (GTK_APPLICATION (application),
-				   "<ALT>3", "win.dict", parameter[2]);
+                                   "<ALT>3", "win.dict", parameter[2]);
 }
 
 static void
@@ -271,10 +270,9 @@ gy_app_new(void)
   GyApp * application;
 
   application = g_object_new (GY_TYPE_APP,
-  			      "application-id",   "org.gtk.Gydict",
-			      "flags",            G_APPLICATION_FLAGS_NONE,
-			      "register-session", TRUE,
-			      NULL);
+                              "application-id",   "org.gtk.Gydict",
+                              "flags",            G_APPLICATION_FLAGS_NONE,
+                              "register-session", TRUE, NULL);
 
   return application;
 }
@@ -283,5 +281,5 @@ void
 gy_app_new_window (GyApp *application)
 {
   g_action_group_activate_action (G_ACTION_GROUP (application), 
-				  "new-window",NULL);
+                                  "new-window",NULL);
 }
