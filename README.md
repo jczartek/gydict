@@ -38,10 +38,10 @@ Tu mamy dwie możliwości. Możemy umieścić pliki w domyślnym katalogu tj. **
 Aby zmienić domyślną czcionkę, należy uruchomić program **Gydict**, potem wejść w menu i wybrać **Preferencje->Czcionki** oraz odznaczyć opcję **Użyj domślnych czcionek** i następnie wybrać odpowiednią czcionkę.
 
 ## Kontakt
-| Opis        | Wartość                  |
+|             |                          |
 | :----:      | :----:                   |
 | Author      | Jakub Czartek            |
 | Email       | kuba@linux.pl            |
-| Home Page   |                          |
+| Home Page   | http://jczartek.github.io/gydict |
 | License     | GNU General Public License, version 2 (http://www.gnu.org/licenses/old-licenses/gpl-2.0.html) |
 
