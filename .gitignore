@@ -11,6 +11,7 @@ src/gydict
 src/gy-resources.c
 src/gy-resources.h
 src/config.h.in
+src/tags
 
 config.log
 config.status
