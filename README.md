@@ -1,50 +1,47 @@
-Gydict
-(c) Jakub Czartek <kuba@linux.pl>
+# Project: Gydict
 
-1. Program Gydict
-Gydict jest programem do obsługi różnych słowników multimedialnych (darmowych i komercyjnych) dostępnych pod Windows. Program działa pod systemem Linux.
+## Program Gydict
+**Gydict** jest programem do obsługi różnych słowników multimedialnych (darmowych i komercyjnych) dostępnych pod Windows. Program działa pod systemem Linux.
 
-1.1 Wymagania
-Aby skompilować program, będzie potrzebna wersja deweloperska biblioteki gtk+ w wersji 3.14.
+### Wymagania
+Aby skompilować program, będzie potrzebna wersja deweloperska biblioteki **gtk+** w wersji 3.14. Do wygenerowanie pliku **configure** będzie potrzebna paczka **gnome-common**, w której znajduje się skrypt **gnome-autogen.sh**.
 
-1.2 Jak skompilować?
+### Jak skompilować?
 Należy wykonać następujące polecenia:
-	./configure
-	make
-	make install
 
-Jeśli chcemy skompilować program do katalogu domowego:
- ./autogen --prefix=/home/user/.local (Będzie potrzebna paczka gnome-common, w której znajduje się skrypt gnome-autogen.sh).
+```
+ ./autogen
  make
  make install
-to, aby program działał należy ustawić dwie zmienne środowiskowe tj. XDG_DATA_DIRS oraz PATH. Gydict korzysta z GSettings dla trzymania ustawień. GSettings domyślnie szuka swoich plików w /usr/share/glib-2.0/schemas lub /local/usr/share/glib-2.0/schemas, dlatego jeśli kompilujemy do katologu domowego i nie ustawimy odpowiednio zmiennej XDG_DATA_DIRS to program nie będzie działał poprawnie. Dla takiej kompilacji ustawienia zmiennych wygląda następująco:
+ ```
+### Cechy programu Gydict:
+*  reaguje na schowek;
+*  umożliwia  ustawienia własnych ścieżek do słowników oraz własnych fontów;
+*  program posiada historię używanych słów;
+*  możliwość wydrukowania aktualnie wyświetlanej definicji słowa.
 
-XDG_DATA_DIRS=/usr/share:/usr/local/share:$HOME/.local/share
-PATH=$PATH:$HOME/.local/bin:$HOME/bin
-export XDG_DATA_DIRS PATH
+## Jakie słowniki obsługuje Gydict?
 
-Aby wyczyścić katalog z plików, które powstały przy kompilacji (automake, plików obiektowych itp) należy użyć: autogen --clean
+### PWN Oxford 2006/2007
+Moduł obsługuje słowniki angielsko-polski oraz polsko-angielski. Niezbędne jest posiadania dwóch plików z już zainstalowanej aplikacji pod Windows. Są to pliki '**angpol.win**' oraz '**polang.win**'. Program powinien obsłużyć również starsze słowniki z roku 2003/2004, ale nie jest to przetestowane.
 
-2. Jakie słowniki obsługuje Gydict?
+### Słownik DEPL
+Jest to darmowy słownik niemiecko-polski. Aby słownik działał należy wejść na stronę www.depl.pl i pobrać aktualną bazę wyrazów lub w konsoli wpisać polecenie: wget http://www.depl.pl/wyrazy.zip
+Z archiwum **wyrazy.zip** bierzemy pliki **a.dat** i **b.dat**.
 
-2.1 PWN Oxford 2006/2007
-Moduł obsługuje słowniki angielsko-polski oraz polsko-angielski. Niezbędne jest posiadania dwóch plików z już zainstalowanej aplikacji pod Windows. Są to pliki 'angpol.win' oraz 'polang.win'. Program powinien obsłużyć również starsze słowniki z roku 2003/2004, ale nie jest to przetestowane. Aby dowiedzić się, gdzie te pliki należy umieścić, należy przeczytać punkt 3.
+## Konfiguracja programu Gydict
 
-2.2 Słownik DEPL
-Jest to darmowy słownik niemiecko-polski. Aby słownik działał to należy wejść na stronę www.depl.pl i pobrać aktualną bazę wyrazów lub w konsoli wpisać polecenie: wget http://www.depl.pl/wyrazy.zip
-Z archiwum wyrazy.zip bierzemy pliki a.dat i b.dat. Aby dowiedzić się, gdzie te pliki należy umieścić, należy przeczytać punkt 3.
+### Konfiguracja ścieżek do słowników.
+Tu mamy dwie możliwości. Możemy umieścić pliki w domyślnym katalogu tj. **/opt/gydict/data** lub ustawić własne ścieżki do słowników. Aby skorzystać z drugiej możliwości, należy uruchomić program gydict, potem wejść w menu i wybrać **Preferencje->Słowniki** oraz odznaczyć opcję **Użyj domyślnych** i następnie ustawiać odpowiednią ścieżkę wykorzystując do tego odpowiedni przycisk.
 
-3. Konfiguracja programu Gydict
+### Konfiguracja czcionki.
+Aby zmienić domyślną czcionkę, należy uruchomić program **Gydict**, potem wejść w menu i wybrać **Preferencje->Czcionki** oraz odznaczyć opcję **Użyj domślnych czcionek** i następnie wybrać odpowiednią czcionkę.
 
-3.1 Konfiguracja ścieżek do słowników.
-Tu mamy dwie możliwości. Możemy umieścić pliki w domyślnym katalogu tj. /opt/gydict/data lub ustawić własne ścieżki do słowników. Aby skorzystać z drugiej możliwości, należy uruchomić program gydict, potem wejść w menu i wybrać Preferencje->Słowniki oraz odznaczyć opcję 'Użyj domyślnych' i następnie ustawiać odpowiednią ścieżkę wykorzystując do tego odpowiedni przycisk.
+## Kontakt
+| Opis        | Wartość                  |
+| :----:      | :----:                   |
+| Author      | Jakub Czartek            |
+| Email       | kuba@linux.pl            |
+| Home Page   |                          |
+| License     | GNU General Public License, version 2 (http://www.gnu.org/licenses/old-licenses/gpl-2.0.html) |
 
-3.2 Konfiguracja czcionki.
-Aby zmienić domyślną czcionkę, należy uruchomić program Gydict, potem wejść w menu i wybrać Preferencje->Czcionki oraz odznaczyć opcję 'Użyj domślnych czcionek' i następnie wybrać odpowiednią czcionkę. Czcionkę można ustawić na kontrolki tekstowej oraz kontrolki listy.
-
-
-4. Cechy programu Gydict
-	· program reaguje na schowek;
-	· możliwości  ustawienia własnych ścieżek do słowników oraz własnych fontów;
-	· program posiada historię używanych wczyśniej słów;
-	· możliwość wydrukowania aktualnie wyświetlanej definicji słowa.
