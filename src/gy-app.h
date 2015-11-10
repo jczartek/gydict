@@ -24,9 +24,9 @@ G_BEGIN_DECLS
 /*
  * Type macros
  */
-#define GY_TYPE_APP		(gy_app_get_type ())
-#define GY_APP(obj)   	   	(G_TYPE_CHECK_INSTANCE_CAST ((obj), GY_TYPE_APP, GyApp))
-#define GY_IS_APP(obj) 	   	(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GY_TYPE_APP))
+#define GY_TYPE_APP             (gy_app_get_type ())
+#define GY_APP(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GY_TYPE_APP, GyApp))
+#define GY_IS_APP(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GY_TYPE_APP))
 #define GY_APP_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), GY_TYPE_APP, GyAppClass))
 #define GY_IS_APP_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GY_TYPE_APP))
 #define GY_APP_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), GY_TYPE_APP, GyAppClass))

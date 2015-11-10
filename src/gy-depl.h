@@ -36,12 +36,12 @@ typedef struct _GyDeplClass GyDeplClass;
 
 struct _GyDepl
 {
-    GyDict parent_instance;
+  GyDict parent_instance;
 };
 
 struct _GyDeplClass
 {
-    GyDictClass parent_class;
+  GyDictClass parent_class;
 };
 
 GType gy_depl_get_type (void) G_GNUC_CONST;
