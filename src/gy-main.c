@@ -41,7 +41,7 @@ static GOptionEntry options[] =
 
 static void
 activate_cb (GApplication *application,
-	     gpointer 	  *data G_GNUC_UNUSED)
+             gpointer 	  *data G_GNUC_UNUSED)
 {
   /* Create first instance */
   gy_app_new_window (GY_APP (application));
@@ -59,7 +59,7 @@ main (int argc, char **argv)
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCAL_DIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
-	
+
   if (!gtk_init_with_args (&argc, &argv, NULL, options, GETTEXT_PACKAGE, &error))
   {
     g_printerr ("%s\n", error->message);
@@ -83,7 +83,7 @@ main (int argc, char **argv)
   if (!g_application_register (G_APPLICATION (application), NULL, &error)) 
   {
     g_printerr ("Couldn't register Gydict instance: '%s'\n",
-		error ? error->message : "");
+                error ? error->message : "");
     g_object_unref (application);
     return EXIT_FAILURE;
   }

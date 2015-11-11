@@ -24,21 +24,21 @@
 
 
 static void begin_print (GtkPrintOperation *operation,
-			 GtkPrintContext   *context,
-			 gpointer 	    data);
+                         GtkPrintContext   *context,
+                         gpointer           data);
 
 static void draw_page (GtkPrintOperation *operation,
-		       GtkPrintContext   *context,
-		       gint 		  page_nr,
-		       gpointer           data);
+                       GtkPrintContext   *context,
+                       gint               page_nr,
+                       gpointer           data);
 
 static void end_print (GtkPrintOperation *operation,
-		       GtkPrintContext   *context,
-		       gpointer           data);
+                       GtkPrintContext   *context,
+                       gpointer           data);
 void
 gy_print_do_printing (GSimpleAction *action G_GNUC_UNUSED,
-		      GVariant      *parameter G_GNUC_UNUSED,
-		      gpointer       data)
+                      GVariant      *parameter G_GNUC_UNUSED,
+                      gpointer       data)
 {
   GtkPrintOperation *operation;
   GtkPrintSettings *settings;
@@ -57,11 +57,11 @@ gy_print_do_printing (GSimpleAction *action G_GNUC_UNUSED,
   operation = gtk_print_operation_new ();
     
   g_signal_connect (G_OBJECT (operation), "begin-print",
-		    G_CALLBACK (begin_print), compositor);
+                    G_CALLBACK (begin_print), compositor);
   g_signal_connect (G_OBJECT (operation), "draw-page",
-		    G_CALLBACK (draw_page), compositor);
+                    G_CALLBACK (draw_page), compositor);
   g_signal_connect (G_OBJECT (operation), "end-print",
-		    G_CALLBACK (end_print), compositor);
+                    G_CALLBACK (end_print), compositor);
   
   gtk_print_operation_set_use_full_page (operation, FALSE);
   gtk_print_operation_set_unit (operation, GTK_UNIT_POINTS);
@@ -86,13 +86,11 @@ gy_print_do_printing (GSimpleAction *action G_GNUC_UNUSED,
     ext = ".pdf";
   }
 
-  uri = g_strconcat ("file://", dir, "/", 
-		     "print-word", ext, NULL);
-  gtk_print_settings_set (settings, 
-			  GTK_PRINT_SETTINGS_OUTPUT_URI, uri);
+  uri = g_strconcat ("file://", dir, "/", "print-word", ext, NULL);
+  gtk_print_settings_set (settings,  GTK_PRINT_SETTINGS_OUTPUT_URI, uri);
   gtk_print_operation_set_print_settings (operation, settings);
   gtk_print_operation_run (operation, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
-			   GTK_WINDOW (window), &error);
+                           GTK_WINDOW (window), &error);
   g_object_unref (operation);
   g_object_unref (settings);
   g_free (uri);
@@ -102,21 +100,21 @@ gy_print_do_printing (GSimpleAction *action G_GNUC_UNUSED,
     GtkWidget *dialog;
 	
     dialog = gtk_message_dialog_new (GTK_WINDOW (window),
-				     GTK_DIALOG_DESTROY_WITH_PARENT,
-				     GTK_MESSAGE_ERROR,
-				     GTK_BUTTONS_CLOSE,
-			    	     "%s", error->message);
+                                     GTK_DIALOG_DESTROY_WITH_PARENT,
+                                     GTK_MESSAGE_ERROR,
+                                     GTK_BUTTONS_CLOSE,
+                                     "%s", error->message);
     g_error_free (error);
     g_signal_connect (dialog, "response",
-		      G_CALLBACK (gtk_widget_destroy), NULL);
+                      G_CALLBACK (gtk_widget_destroy), NULL);
     gtk_widget_show (dialog);
   }
 }
 
 static void 
 begin_print (GtkPrintOperation *operation,
-	     GtkPrintContext   *context,
-	     gpointer           data)
+             GtkPrintContext   *context,
+             gpointer           data)
 {
   gint n_pages = 0;
   GyPrintCompositor *compositor = GY_PRINT_COMPOSITOR (data);
@@ -131,9 +129,9 @@ begin_print (GtkPrintOperation *operation,
 
 static void 
 draw_page (GtkPrintOperation *operation G_GNUC_UNUSED,
-	   GtkPrintContext   *context,
-	   gint               page_nr,
-	   gpointer           data)
+           GtkPrintContext   *context,
+           gint               page_nr,
+           gpointer           data)
 {
   GyPrintCompositor *compositor = GY_PRINT_COMPOSITOR (data);
 
@@ -142,8 +140,8 @@ draw_page (GtkPrintOperation *operation G_GNUC_UNUSED,
 
 static void 
 end_print (GtkPrintOperation *operationi G_GNUC_UNUSED,
-	   GtkPrintContext   *context G_GNUC_UNUSED,
-	   gpointer           data)
+           GtkPrintContext   *context G_GNUC_UNUSED,
+           gpointer           data)
 {
   GyPrintCompositor *compositor = GY_PRINT_COMPOSITOR (data);
   g_object_unref (compositor);

@@ -148,43 +148,43 @@ convert_from_mm (gdouble len,
 }
 
 static gboolean
-set_font_description_from_name (GyPrintCompositor     *compositor,
-				PangoFontDescription **font,
-				const gchar           *font_name)
+set_font_description_from_name (GyPrintCompositor      *compositor,
+                                PangoFontDescription  **font,
+                                const gchar            *font_name)
 {
   PangoFontDescription *new = NULL;
   GyPrintCompositorPrivate *priv = gy_print_compositor_get_instance_private (compositor);
 
   if (font_name != NULL)
-  {
-    new = pango_font_description_from_string (font_name);
-  }
+    {
+      new = pango_font_description_from_string (font_name);
+    }
   else
-  {
-    g_return_val_if_fail (priv->body_font != NULL, FALSE);
-    new = pango_font_description_copy (priv->body_font);
-  }
+    {
+      g_return_val_if_fail (priv->body_font != NULL, FALSE);
+      new = pango_font_description_copy (priv->body_font);
+    }
 
   if (*font == NULL || !pango_font_description_equal (*font, new))
-  {
-    if (*font != NULL)
-      pango_font_description_free (*font);
+    {
+      if (*font != NULL)
+        pango_font_description_free (*font);
 
-    *font = new;
-    return TRUE;
-  }
+      *font = new;
+      return TRUE;
+    }
   else
-  {
-    pango_font_description_free (new);
-    return FALSE;
-  }
+    {
+      pango_font_description_free (new);
+      return FALSE;
+    }
 }
 
 static void
 gy_print_compositor_get_property (GObject    *object,
-				  guint       prop_id,
-				  GValue     *value,
-				  GParamSpec *pspec)
+                                  guint       prop_id,
+                                  GValue     *value,
+                                  GParamSpec *pspec)
 {
   GyPrintCompositor *compositor = GY_PRINT_COMPOSITOR (object);
   GyPrintCompositorPrivate *priv = gy_print_compositor_get_instance_private (compositor);
@@ -219,9 +219,9 @@ gy_print_compositor_get_property (GObject    *object,
 
 static void
 gy_print_compositor_set_property (GObject      *object,
-				  guint         prop_id,
-				  const GValue *value,
-				  GParamSpec   *pspec)
+                                  guint         prop_id,
+                                  const GValue *value,
+                                  GParamSpec   *pspec)
 {
   GyPrintCompositor *compositor = GY_PRINT_COMPOSITOR (object);
   GyPrintCompositorPrivate *priv = gy_print_compositor_get_instance_private (compositor);
@@ -235,19 +235,19 @@ gy_print_compositor_set_property (GObject      *object,
       break;
     case PROP_WRAP_MODE:
       gy_print_compositor_set_wrap_mode (compositor, 
-					 g_value_get_enum (value));
+                                         g_value_get_enum (value));
       break;
     case PROP_BODY_FONT_NAME:
       gy_print_compositor_set_body_font_name (compositor, 
-					      g_value_get_string (value));
+                                              g_value_get_string (value));
       break;
     case PROP_HEADER_FONT_NAME:
       gy_print_compositor_set_header_font_name (compositor, 
-						g_value_get_string (value));
+                                                g_value_get_string (value));
       break;
     case PROP_FOOTER_FONT_NAME:
       gy_print_compositor_set_footer_font_name (compositor, 
-						g_value_get_string (value));
+                                                g_value_get_string (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -346,58 +346,48 @@ gy_print_compositor_class_init (GyPrintCompositorClass *klass)
   object_class->finalize = gy_print_compositor_finalize;
 
   g_object_class_install_property (object_class,
-				   PROP_BUFFER,
-				   g_param_spec_object ("buffer",
-							"Program Buffer",
-							"The GtkTextBuffer object to print",
-							GTK_TYPE_TEXT_BUFFER,
-							G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                   PROP_BUFFER,
+                                   g_param_spec_object ("buffer",
+                                                        "Program Buffer",
+                                                        "The GtkTextBuffer object to print",
+                                                        GTK_TYPE_TEXT_BUFFER,
+                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
 
   g_object_class_install_property (object_class,
-				   PROP_WRAP_MODE,
-				   g_param_spec_enum ("wrap-mode",
-						      "Wrap Mode",
-						      "Whether to wrap lines never, "
-						      "at word boundaries, or at "
-						      "character boundaries.",
-						      GTK_TYPE_WRAP_MODE,
-						      GTK_WRAP_NONE,
-						      G_PARAM_READWRITE));
+                                   PROP_WRAP_MODE,
+                                   g_param_spec_enum ("wrap-mode",
+                                                      "Wrap Mode",
+                                                      "Whether to wrap lines never, at word boundaries, or at character boundaries.",
+                                                      GTK_TYPE_WRAP_MODE,
+                                                      GTK_WRAP_NONE,
+                                                      G_PARAM_READWRITE));
 
   g_object_class_install_property (object_class,
-				   PROP_HEADER_FONT_NAME,
-				   g_param_spec_string ("header-font-name",
-							"Header Font Name",
-							"Name of the font to use for the page header "
-							"(e.g. \"Normal 10\")",
-		     					NULL,
-				     			G_PARAM_READWRITE));
+                                   PROP_HEADER_FONT_NAME,
+                                   g_param_spec_string ("header-font-name",
+                                                        "Header Font Name",
+                                                        "Name of the font to use for the page header (e.g. \"Normal 10\")",
+                                                        NULL, G_PARAM_READWRITE));
 
   g_object_class_install_property (object_class,
-				   PROP_FOOTER_FONT_NAME,
-				   g_param_spec_string ("foother-font-name",
-							"Foother Font Name",
-							"Name of the font to use for the page footer "
-							"(e.g. \"Normal 10\")",
-							NULL,
-							G_PARAM_READWRITE));
+                                   PROP_FOOTER_FONT_NAME,
+                                   g_param_spec_string ("foother-font-name",
+                                                        "Foother Font Name",
+                                                        "Name of the font to use for the page footer (e.g. \"Normal 10\")",
+                                                        NULL, G_PARAM_READWRITE));
   g_object_class_install_property (object_class,
-				   PROP_BODY_FONT_NAME,
-				   g_param_spec_string ("body-font-name",
-							"Body Font Name",
-							"Name of the font to use for the text body "
-							"(e.g. \"Normal 10\")",
-							NULL,
-							G_PARAM_READWRITE));
+                                   PROP_BODY_FONT_NAME,
+                                   g_param_spec_string ("body-font-name",
+                                                        "Body Font Name",
+                                                        "Name of the font to use for the text body (e.g. \"Normal 10\")",
+                                                        NULL, G_PARAM_READWRITE));
   g_object_class_install_property (object_class,
-				   PROP_N_PAGES,
-				   g_param_spec_int ("n-pages",
-						     "Number of pages",
-						     "The number of pages in the document "
-						     "(-1 means the document has not been "
-						     "completely paginated).",
-						     -1, G_MAXINT, -1,
-						     G_PARAM_READABLE));
+                                   PROP_N_PAGES,
+                                   g_param_spec_int ("n-pages",
+                                                     "Number of pages",
+                                                     "The number of pages in the document (-1 means the document has not been completely paginated).",
+                                                     -1, G_MAXINT, -1,
+                                                     G_PARAM_READABLE));
 }
 
 static inline gdouble
@@ -437,8 +427,8 @@ get_text_height (GyPrintCompositor *compositor)
 
 static inline void
 get_layout_size (PangoLayout *layout,
-		 gdouble     *width,
-		 gdouble     *height)
+                 gdouble     *width,
+                 gdouble     *height)
 {
   PangoRectangle rect;
 
@@ -464,8 +454,8 @@ get_text_y (GyPrintCompositor *compositor)
 
 static GSList *
 get_iters_attrs (GyPrintCompositor *compositor G_GNUC_UNUSED,
-		 GtkTextIter       *iter,
-		 GtkTextIter       *limit)
+                 GtkTextIter       *iter,
+                 GtkTextIter       *limit)
 {
   GSList *attrs = NULL, *tags = NULL;
   PangoAttribute *bg = NULL, *fg = NULL, *style = NULL, *ul = NULL;
@@ -489,24 +479,24 @@ get_iters_attrs (GyPrintCompositor *compositor G_GNUC_UNUSED,
     tags = g_slist_delete_link (tags, tags);
 
     g_object_get (tag,
-		  "background-set", &bg_set,
-		  "foreground-set", &fg_set,
-		  "style-set", &style_set,
-		  "underline-set", &ul_set,
-		  "weight-set", &weight_set,
-		  "size-set", &size_set,
-		  "rise-set", &rise_set,
-		  "family-set", &family_set,
-		  "scale-set", &scale_set,
-		  NULL);
+                  "background-set", &bg_set,
+                  "foreground-set", &fg_set,
+                  "style-set", &style_set,
+                  "underline-set", &ul_set,
+                  "weight-set", &weight_set,
+                  "size-set", &size_set,
+                  "rise-set", &rise_set,
+                  "family-set", &family_set,
+                  "scale-set", &scale_set,
+                  NULL);
     if (bg_set)
     {
       GdkRGBA *color = NULL;
       if (bg) pango_attribute_destroy (bg);
       g_object_get (tag, "background-rgba", &color, NULL);
       bg = pango_attr_background_new (RGB16(color->red), 
-				      RGB16(color->green), 
-				      RGB16(color->blue));
+                                      RGB16(color->green),
+                                      RGB16(color->blue));
       gdk_rgba_free (color);
     }
 
@@ -516,8 +506,8 @@ get_iters_attrs (GyPrintCompositor *compositor G_GNUC_UNUSED,
       if (fg) pango_attribute_destroy (fg);
       g_object_get (tag, "foreground-rgba", &color, NULL);
       fg = pango_attr_foreground_new (RGB16(color->red), 
-				      RGB16(color->green), 
-				      RGB16(color->blue));
+                                      RGB16(color->green),
+                                      RGB16(color->blue));
       gdk_rgba_free (color);
     }
 
@@ -603,7 +593,7 @@ get_iters_attrs (GyPrintCompositor *compositor G_GNUC_UNUSED,
 
 static void
 setup_pango_layouts (GyPrintCompositor *compositor,
-		     GtkPrintContext   *context)
+                     GtkPrintContext   *context)
 {
   PangoLayout *layout = NULL;
   GyPrintCompositorPrivate *priv = gy_print_compositor_get_instance_private (compositor);
@@ -654,9 +644,9 @@ setup_pango_layouts (GyPrintCompositor *compositor,
 
 static gdouble
 calculate_header_footer_height (GyPrintCompositor    *compositor,
-				GtkPrintContext      *context,
-				PangoFontDescription *font,
-				gdouble              *d)
+                                GtkPrintContext      *context,
+                                PangoFontDescription *font,
+                                gdouble              *d)
 {
   PangoContext *pango_context;
   PangoFontMetrics *font_metrics;
@@ -667,8 +657,8 @@ calculate_header_footer_height (GyPrintCompositor    *compositor,
   pango_context_set_font_description (pango_context, font);
 
   font_metrics = pango_context_get_metrics (pango_context,
-					    font,
-					    priv->language);
+                                            font,
+                                            priv->language);
   ascent = (gdouble) pango_font_metrics_get_ascent (font_metrics) / PANGO_SCALE;
   descent = (gdouble) pango_font_metrics_get_descent (font_metrics) / PANGO_SCALE;
   pango_font_metrics_unref (font_metrics);
@@ -682,45 +672,44 @@ calculate_header_footer_height (GyPrintCompositor    *compositor,
 
 static void
 calculate_header_height (GyPrintCompositor *compositor,
-			 GtkPrintContext   *context)
+                         GtkPrintContext   *context)
 {
   GyPrintCompositorPrivate *priv = gy_print_compositor_get_instance_private (compositor);
 
   g_return_if_fail (priv->header_font != NULL);
 
   priv->header_height = calculate_header_footer_height (compositor,
-							context,
-							priv->header_font,
-							NULL);
+                                                        context,
+                                                        priv->header_font, NULL);
   DEBUG ({
       g_debug ("header_height: %f pointes :: %f mm",
-     	       priv->header_height,
-	       convert_to_mm (priv->header_height, GTK_UNIT_POINTS));
+               priv->header_height,
+               convert_to_mm (priv->header_height, GTK_UNIT_POINTS));
       });
 }
 
 static void
-calculate_footer_height (GyPrintCompositor *compositor,
-			 GtkPrintContext *context)
+calculate_footer_height (GyPrintCompositor  *compositor,
+                         GtkPrintContext    *context)
 {
   GyPrintCompositorPrivate *priv = gy_print_compositor_get_instance_private (compositor);
 
   g_return_if_fail (priv->footer_font != NULL);
 
   priv->footer_height = calculate_header_footer_height (compositor,
-							context,
-							priv->footer_font,
-							NULL);
+                                                        context,
+                                                        priv->footer_font, NULL);
   DEBUG ({
       g_debug ("footer_height: %f pointes :: %f mm",
-	       priv->footer_height,
-	       convert_to_mm (priv->footer_height, GTK_UNIT_POINTS));
-      });
+               priv->footer_height,
+               convert_to_mm (priv->footer_height, GTK_UNIT_POINTS));
+
+  });
 }
 
 static void
 calculate_page_size_and_margins (GyPrintCompositor *compositor,
-				 GtkPrintContext   *context)
+                                 GtkPrintContext   *context)
 {
   GtkPageSetup *page_setup;
   GyPrintCompositorPrivate *priv = gy_print_compositor_get_instance_private (compositor);
@@ -731,32 +720,32 @@ calculate_page_size_and_margins (GyPrintCompositor *compositor,
   page_setup = gtk_print_context_get_page_setup (context);
 
   priv->page_margin_top = gtk_page_setup_get_top_margin (page_setup,
-							 GTK_UNIT_POINTS);
+                                                         GTK_UNIT_POINTS);
   priv->page_margin_left = gtk_page_setup_get_left_margin (page_setup,
-							   GTK_UNIT_POINTS);
+                                                           GTK_UNIT_POINTS);
 
   priv->real_margin_top = MAX (priv->page_margin_top,
-			       convert_from_mm (priv->margin_top, GTK_UNIT_POINTS));
+                               convert_from_mm (priv->margin_top, GTK_UNIT_POINTS));
   priv->real_margin_bottom = MAX (gtk_page_setup_get_bottom_margin (page_setup, GTK_UNIT_POINTS),
-				  convert_from_mm (priv->margin_bottom, GTK_UNIT_POINTS));
+                                  convert_from_mm (priv->margin_bottom, GTK_UNIT_POINTS));
   priv->real_margin_left = MAX (priv->page_margin_left,
-				convert_from_mm (priv->margin_left, GTK_UNIT_POINTS));
+                                convert_from_mm (priv->margin_left, GTK_UNIT_POINTS));
   priv->real_margin_right = MAX (gtk_page_setup_get_right_margin (page_setup, GTK_UNIT_POINTS),
-				 convert_from_mm (priv->margin_right, GTK_UNIT_POINTS));
+                                 convert_from_mm (priv->margin_right, GTK_UNIT_POINTS));
 
   DEBUG ({
       g_debug ("real_margin_top: %f points :: %f mm",
-	       priv->real_margin_top,
-	       convert_to_mm (priv->real_margin_top, GTK_UNIT_POINTS));
+               priv->real_margin_top,
+               convert_to_mm (priv->real_margin_top, GTK_UNIT_POINTS));
       g_debug ("real_margin_botton: %f points :: %f mm",
-	       priv->real_margin_bottom,
-	       convert_to_mm (priv->real_margin_bottom, GTK_UNIT_POINTS));
+               priv->real_margin_bottom,
+               convert_to_mm (priv->real_margin_bottom, GTK_UNIT_POINTS));
       g_debug ("real_margin_left: %f points :: %f mm",
-	       priv->real_margin_left,
-	       convert_to_mm (priv->real_margin_left, GTK_UNIT_POINTS));
+               priv->real_margin_left,
+               convert_to_mm (priv->real_margin_left, GTK_UNIT_POINTS));
       g_debug ("real_margin_right: %f points :: %f mm",
-	       priv->real_margin_right,
-	       convert_to_mm (priv->real_margin_right, GTK_UNIT_POINTS));
+               priv->real_margin_right,
+               convert_to_mm (priv->real_margin_right, GTK_UNIT_POINTS));
       });
 
   priv->paper_width = gtk_page_setup_get_paper_width (page_setup, GTK_UNIT_POINTS);
@@ -766,20 +755,19 @@ calculate_page_size_and_margins (GyPrintCompositor *compositor,
       gdouble text_width;
       gdouble text_height;
       g_debug ("paper_width: %f points (%f mm)",
-      	       priv->paper_width,
-	       convert_to_mm (priv->paper_width, GTK_UNIT_POINTS));
+               priv->paper_width,
+               convert_to_mm (priv->paper_width, GTK_UNIT_POINTS));
       g_debug ("paper_heigth: %f points (%f mm)",
-      	       priv->paper_height,
-	       convert_to_mm (priv->paper_height, GTK_UNIT_POINTS));
+               priv->paper_height,
+               convert_to_mm (priv->paper_height, GTK_UNIT_POINTS));
       text_width = get_text_width (compositor);
       text_height = get_text_height (compositor);
       g_debug ("text_width: %f points (%f mm)", 
-     	       text_width, convert_to_mm (text_width, GTK_UNIT_POINTS));
+               text_width, convert_to_mm (text_width, GTK_UNIT_POINTS));
       g_debug ("text_height: %f points (%f mm)", 
-     	       text_height, convert_to_mm (text_height, GTK_UNIT_POINTS));
-	    
-  });
+               text_height, convert_to_mm (text_height, GTK_UNIT_POINTS));
 
+  });
 }
 
 static inline void
@@ -790,7 +778,7 @@ set_pango_layouts_width (GyPrintCompositor *compositor)
   g_return_if_fail (priv->layout != NULL);
 
   pango_layout_set_width (priv->layout,
-			  get_text_width (compositor) * PANGO_SCALE);
+                          get_text_width (compositor) * PANGO_SCALE);
 }
 
 static gboolean
@@ -803,7 +791,7 @@ is_empty_line (const gchar *text)
     {
       if (!g_unichar_isspace (*p))
       {
-	return FALSE;
+        return FALSE;
       }
     }
   }
@@ -812,8 +800,8 @@ is_empty_line (const gchar *text)
 
 static void
 layout_paragraph (GyPrintCompositor *compositor,
-		  GtkTextIter       *start,
-		  GtkTextIter       *end)
+                  GtkTextIter       *start,
+                  GtkTextIter       *end)
 {
   gchar *text;
 
@@ -850,24 +838,25 @@ layout_paragraph (GyPrintCompositor *compositor,
 
       if (attrs)
       {
-	si = gtk_text_iter_get_line_index (&segm_start) - start_index;
-	ei = gtk_text_iter_get_line_index (&segm_end) - start_index;
+        si = gtk_text_iter_get_line_index (&segm_start) - start_index;
+        ei = gtk_text_iter_get_line_index (&segm_end) - start_index;
       }
 
       while (attrs)
       {
-	PangoAttribute *a = attrs->data;
-	a->start_index = si;
-	a->end_index = ei;
+        PangoAttribute *a = attrs->data;
+        a->start_index = si;
+        a->end_index = ei;
 
-	if (!attr_list)
-	  attr_list = pango_attr_list_new ();
-	
-	pango_attr_list_insert (attr_list, a);
+        if (!attr_list)
+          attr_list = pango_attr_list_new ();
 
-	attrs = g_slist_delete_link (attrs, attrs);
+        pango_attr_list_insert (attr_list, a);
+
+        attrs = g_slist_delete_link (attrs, attrs);
       }
       segm_start = segm_end;
+
     }
     pango_layout_set_attributes (priv->layout, attr_list);
 
@@ -878,9 +867,9 @@ layout_paragraph (GyPrintCompositor *compositor,
 
 static void
 print_header_string (GyPrintCompositor *compositor,
-		     cairo_t           *cr,
-		     PangoAlignment     alignment,
-		     const gchar       *text)
+                     cairo_t           *cr,
+                     PangoAlignment     alignment,
+                     const gchar       *text)
 {
   GyPrintCompositorPrivate *priv = gy_print_compositor_get_instance_private (compositor);
   if (text != NULL)
@@ -905,30 +894,31 @@ print_header_string (GyPrintCompositor *compositor,
     switch (alignment)
     {
       case PANGO_ALIGN_RIGHT:
-	x = priv->real_margin_left + header_width - layout_width;
-	break;
+      x = priv->real_margin_left + header_width - layout_width;
+      break;
 
       case PANGO_ALIGN_CENTER:
-	x = priv->real_margin_left + header_width / 2 - layout_width / 2;
-	break;
+      x = priv->real_margin_left + header_width / 2 - layout_width / 2;
+      break;
 
       case PANGO_ALIGN_LEFT:
       default:
-	x = priv->real_margin_left;
-	break;
+      x = priv->real_margin_left;
+      break;
     }
 
     DEBUG ({
-	cairo_save (cr);
-	cairo_set_line_width (cr, 1.);
-	cairo_set_source_rgb (cr, 0., 0., 1.);
-	cairo_rectangle (cr, x,
-			 priv->real_margin_top,
-			 layout_width,
-			 layout_height);
-	cairo_stroke (cr);
-	cairo_restore (cr);
-	});
+           cairo_save (cr);
+           cairo_set_line_width (cr, 1.);
+           cairo_set_source_rgb (cr, 0., 0., 1.);
+           cairo_rectangle (cr, x,
+                            priv->real_margin_top,
+                            layout_width,
+                            layout_height);
+           cairo_stroke (cr);
+           cairo_restore (cr);
+
+    });
     line = pango_layout_iter_get_line_readonly (iter);
 
     cairo_move_to (cr, x, priv->real_margin_top + baseline);
@@ -939,7 +929,7 @@ print_header_string (GyPrintCompositor *compositor,
 
 static void
 print_header (GyPrintCompositor *compositor,
-	      cairo_t           *cr)
+              cairo_t           *cr)
 {
   gchar *time_string = NULL;
   gchar *page_string = NULL;
@@ -1015,7 +1005,7 @@ gy_print_compositor_get_wrap_mode (GyPrintCompositor *compositor)
 /**::SETTERS::**/
 void
 gy_print_compositor_set_wrap_mode (GyPrintCompositor *compositor,
-				   GtkWrapMode        wrap_mode)
+                                   GtkWrapMode        wrap_mode)
 {
   GyPrintCompositorPrivate *priv = gy_print_compositor_get_instance_private (compositor);
 
@@ -1032,15 +1022,15 @@ gy_print_compositor_set_wrap_mode (GyPrintCompositor *compositor,
 
 void
 gy_print_compositor_set_body_font_name (GyPrintCompositor *compositor,
-					const gchar       *font_name)
+                                        const gchar       *font_name)
 {
   GyPrintCompositorPrivate *priv = gy_print_compositor_get_instance_private (compositor);
   g_return_if_fail (GY_IS_PRINT_COMPOSITOR (compositor));
   g_return_if_fail (priv->state == INIT);
 
   if (set_font_description_from_name (compositor,
-				      &priv->body_font,
-		 		      font_name))
+                                      &priv->body_font,
+                                      font_name))
   {
     g_object_notify (G_OBJECT (compositor), "body-font-name");
   }
@@ -1048,15 +1038,15 @@ gy_print_compositor_set_body_font_name (GyPrintCompositor *compositor,
 
 void
 gy_print_compositor_set_header_font_name (GyPrintCompositor *compositor,
-					  const gchar       *font_name)
+                                          const gchar       *font_name)
 {
   GyPrintCompositorPrivate *priv = gy_print_compositor_get_instance_private (compositor);
   g_return_if_fail (GY_IS_PRINT_COMPOSITOR (compositor));
   g_return_if_fail (priv->state == INIT);
 
   if (set_font_description_from_name (compositor,
-				      &priv->header_font,
-		 		      font_name))
+                                      &priv->header_font,
+                                      font_name))
   {
     g_object_notify (G_OBJECT (compositor), "header-font-name");
   }
@@ -1064,15 +1054,15 @@ gy_print_compositor_set_header_font_name (GyPrintCompositor *compositor,
 
 void
 gy_print_compositor_set_footer_font_name (GyPrintCompositor *compositor,
-					  const gchar       *font_name)
+                                          const gchar       *font_name)
 {
   GyPrintCompositorPrivate *priv = gy_print_compositor_get_instance_private (compositor);
   g_return_if_fail (GY_IS_PRINT_COMPOSITOR (compositor));
   g_return_if_fail (priv->state == INIT);
 
   if (set_font_description_from_name (compositor,
-				      &priv->footer_font,
-		 		      font_name))
+                                      &priv->footer_font,
+                                      font_name))
   {
     g_object_notify (G_OBJECT (compositor), "footer-font-name");
   }
@@ -1096,11 +1086,10 @@ gy_print_compositor_new_from_view (GtkTextView *view)
   font_name = pango_font_description_to_string (font_desc);
 
   compositor = GY_PRINT_COMPOSITOR (
-	g_object_new (GY_TYPE_PRINT_COMPOSITOR,
-		      "buffer", buffer,
-		      "body-font-name", font_name,
-		      "wrap-mode", gtk_text_view_get_wrap_mode (view),
-		      NULL));
+  g_object_new (GY_TYPE_PRINT_COMPOSITOR,
+                "buffer", buffer,
+                "body-font-name", font_name,
+                "wrap-mode", gtk_text_view_get_wrap_mode (view), NULL));
   g_free (font_name);
   return compositor;
 }
@@ -1108,7 +1097,7 @@ gy_print_compositor_new_from_view (GtkTextView *view)
 /*::PUBLIC METHOD::*/
 gboolean
 gy_print_compositor_paginate (GyPrintCompositor *compositor,
-			      GtkPrintContext   *context)
+                              GtkPrintContext   *context)
 {
   GtkTextIter start, end;
   gint page_start_offset;
@@ -1149,17 +1138,15 @@ gy_print_compositor_paginate (GyPrintCompositor *compositor,
   if (priv->pagination_mark == NULL) /**2**/
   {
     gtk_text_buffer_get_start_iter (priv->buffer, &start);
-    priv->pagination_mark = gtk_text_buffer_create_mark (priv->buffer,
-							 NULL,
-							 &start,
-							 TRUE);
+    priv->pagination_mark = gtk_text_buffer_create_mark (priv->buffer, NULL,
+                                                         &start, TRUE);
     page_start_offset = gtk_text_iter_get_offset (&start);
     g_array_append_val (priv->pages, page_start_offset);
   }
   else
   {
     gtk_text_buffer_get_iter_at_mark (priv->buffer, &start,
-				      priv->pagination_mark);
+                                      priv->pagination_mark);
   }
 
   DEBUG ({
@@ -1192,87 +1179,95 @@ gy_print_compositor_paginate (GyPrintCompositor *compositor,
     if (cur_height + line_height > text_height + EPS)
     {
       if (priv->wrap_mode != GTK_WRAP_NONE &&
-	  pango_layout_get_line_count (priv->layout) > 1)
+          pango_layout_get_line_count (priv->layout) > 1)
       {
-	PangoLayoutIter *layout_iter;
-	PangoRectangle logical_rect;
-	gboolean is_first_line = TRUE;
-	gdouble part_height = 0.0;
-	gint idx;
+        PangoLayoutIter *layout_iter;
+        PangoRectangle logical_rect;
+        gboolean is_first_line = TRUE;
+        gdouble part_height = 0.0;
+        gint idx;
 
-	layout_iter = pango_layout_get_iter (priv->layout);
-	do
-	{
-	  double layout_line_height;
-	  pango_layout_iter_get_line_extents (layout_iter, NULL, &logical_rect);
-	  layout_line_height = logical_rect.height / PANGO_SCALE;
-	  
-	  if (cur_height + part_height + layout_line_height > text_height + EPS)
-	    break;
+        layout_iter = pango_layout_get_iter (priv->layout);
+        do
+          {
+            double layout_line_height;
+            pango_layout_iter_get_line_extents (layout_iter, NULL, &logical_rect);
+            layout_line_height = logical_rect.height / PANGO_SCALE;
 
-	  part_height += layout_line_height;
-	  is_first_line = FALSE;
-	}
-	while (pango_layout_iter_next_line (layout_iter));
+            if (cur_height + part_height + layout_line_height > text_height + EPS)
+              break;
 
-	idx = gtk_text_iter_get_line_index (&start);
-	idx += pango_layout_iter_get_index (layout_iter);
-	gtk_text_iter_set_line_index (&start, idx);
+            part_height += layout_line_height;
+            is_first_line = FALSE;
 
-	pango_layout_iter_free (layout_iter);
-	page_start_offset = gtk_text_iter_get_offset (&start);
+          }
+        while (pango_layout_iter_next_line (layout_iter));
 
-	gtk_text_buffer_move_mark (priv->buffer,
-				   priv->pagination_mark, 
-				   &start);
-	if (line_height - part_height > text_height + EPS)
-	{
-	  cur_height = 0;
-	}
-	else
-	{
-	  cur_height = line_height - part_height;
-	  gtk_text_iter_forward_line (&start);
-	}
+        idx = gtk_text_iter_get_line_index (&start);
+        idx += pango_layout_iter_get_index (layout_iter);
+        gtk_text_iter_set_line_index (&start, idx);
+
+        pango_layout_iter_free (layout_iter);
+        page_start_offset = gtk_text_iter_get_offset (&start);
+
+        gtk_text_buffer_move_mark (priv->buffer,
+                                   priv->pagination_mark, &start);
+        if (line_height - part_height > text_height + EPS)
+          {
+            cur_height = 0;
+
+          }
+        else
+          {
+            cur_height = line_height - part_height;
+            gtk_text_iter_forward_line (&start);
+
+          }
+
       }
       else
-      {
-	page_start_offset = gtk_text_iter_get_offset (&start);
-	gtk_text_buffer_move_mark (priv->buffer,
-				   priv->pagination_mark,
-				   &start);
-	cur_height = line_height;
-	gtk_text_iter_forward_line (&start);
-	cur_height = line_height;
-	gtk_text_iter_forward_line (&start);
-      }
+        {
+          page_start_offset = gtk_text_iter_get_offset (&start);
+          gtk_text_buffer_move_mark (priv->buffer,
+                                     priv->pagination_mark,
+                                     &start);
+          cur_height = line_height;
+          gtk_text_iter_forward_line (&start);
+          cur_height = line_height;
+          gtk_text_iter_forward_line (&start);
+
+        }
       g_array_append_val (priv->pages, page_start_offset);
       ++pages_count;
+
     }
     else
-    {
-      cur_height += line_height;
-      gtk_text_iter_forward_line (&start);
-    }
+      {
+        cur_height += line_height;
+        gtk_text_iter_forward_line (&start);
+
+      }
     done = gtk_text_iter_compare (&start, &end) >= 0;
+
   }
 #undef EPS
 
   if (done)
-  {
-    priv->state = DONE;
-    priv->n_pages = priv->pages->len;
-    gtk_text_buffer_delete_mark (priv->buffer, priv->pagination_mark);
-    priv->pagination_mark = NULL;
-  }
+    {
+      priv->state = DONE;
+      priv->n_pages = priv->pages->len;
+      gtk_text_buffer_delete_mark (priv->buffer, priv->pagination_mark);
+      priv->pagination_mark = NULL;
+
+    }
 
   return (done != FALSE);
 }
 
 void
 gy_print_compositor_draw_page (GyPrintCompositor *compositor,
-			       GtkPrintContext   *context,
-			       gint               page_nr)
+                               GtkPrintContext   *context,
+                               gint               page_nr)
 {
   cairo_t *cr;
   GtkTextIter start, end;
@@ -1297,29 +1292,27 @@ gy_print_compositor_draw_page (GyPrintCompositor *compositor,
   y = get_text_y (compositor);
 
   DEBUG ({
-      cairo_save (cr);
-      cairo_set_line_width (cr, 1.);
-      cairo_set_source_rgb (cr, 0., 0., 1.);
-      cairo_rectangle (cr, priv->real_margin_left,
-		       priv->real_margin_top,
-		       priv->paper_width - priv->real_margin_left - priv->real_margin_right,
-		       priv->paper_height - priv->real_margin_top - priv->real_margin_bottom);
-      cairo_stroke (cr);
+         cairo_save (cr);
+         cairo_set_line_width (cr, 1.);
+         cairo_set_source_rgb (cr, 0., 0., 1.);
+         cairo_rectangle (cr, priv->real_margin_left,
+                          priv->real_margin_top,
+                          priv->paper_width - priv->real_margin_left - priv->real_margin_right,
+                          priv->paper_height - priv->real_margin_top - priv->real_margin_bottom);
+         cairo_stroke (cr);
+         cairo_set_source_rgb (cr, 0., 1., 0.);
+         cairo_rectangle (cr, priv->real_margin_left,
+                          y, get_text_width (compositor),
+                          get_text_height (compositor));
+         cairo_stroke (cr);
+         cairo_set_source_rgb (cr, 1., 0., 0.);
+         cairo_rectangle (cr, 0, 0,
+                          priv->paper_width - 1,
+                          priv->paper_height - 1);
+         cairo_stroke (cr);
+         cairo_restore (cr);
 
-      cairo_set_source_rgb (cr, 0., 1., 0.);
-      cairo_rectangle (cr, priv->real_margin_left,
-		       y, get_text_width (compositor),
-		       get_text_height (compositor));
-      cairo_stroke (cr);
-
-      cairo_set_source_rgb (cr, 1., 0., 0.);
-      cairo_rectangle (cr, 0, 0,
-	  	       priv->paper_width - 1,
-  		       priv->paper_height - 1);
-      cairo_stroke (cr);
-      
-      cairo_restore (cr);
-      });
+  });
 
   g_return_if_fail (priv->layout != NULL);
   pango_cairo_update_layout (cr, priv->layout);
