@@ -41,16 +41,16 @@ G_BEGIN_DECLS
 
 enum
 {
-    GY_OK,
-    GY_MEMORY_ERROR,
-    GY_READ_FILE_ERROR,
-    GY_OPEN_FILE_ERROR,
-    GY_SEEK_FILE_ERROR,
-    GY_EXISTS_FILE_ERROR,
-    GY_INVALID_ID_ERROR,
-    GY_FAILED_OBJECT,
-    GY_UNIMPLEMENTED_METHOD,
-    GY_LAST_ERROR
+  GY_OK,
+  GY_MEMORY_ERROR,
+  GY_READ_FILE_ERROR,
+  GY_OPEN_FILE_ERROR,
+  GY_SEEK_FILE_ERROR,
+  GY_EXISTS_FILE_ERROR,
+  GY_INVALID_ID_ERROR,
+  GY_FAILED_OBJECT,
+  GY_UNIMPLEMENTED_METHOD,
+  GY_LAST_ERROR
 };
 
 typedef struct _GyDict GyDict;
@@ -58,31 +58,34 @@ typedef struct _GyDictClass GyDictClass;
 
 struct _GyDict
 {
-    GObject parent_instance;
+  GObject parent_instance;
 };
 
 struct _GyDictClass
 {
-    GObjectClass parent_class;
+  GObjectClass parent_class;
 
-    /* Virtual Method */
-    guint (*set_dictionary) (GyDict *dict);
-    guint (*init_list) (GyDict *dict);
-    gpointer (*read_definition) (GyDict *dict, guint index);
+  /* Virtual Method */
+  guint     (*set_dictionary)   (GyDict *dict);
+  guint     (*init_list)        (GyDict *dict);
+  gpointer  (*read_definition)  (GyDict *dict,
+                                 guint   index);
 
     /* Signals */
-    void(* __error) (GyDict *self, const gchar *name_error, gpointer data);
+  void(* __error)               (GyDict      *self,
+                                 const gchar *name_error,
+                                 gpointer     data);
 };
 
 GType gy_dict_get_type (void) G_GNUC_CONST;
 guint gy_dict_set_dictionary (GyDict *dict);
 guint gy_dict_init_list (GyDict *dict);
-gpointer gy_dict_read_definition (GyDict *dict, 
-				  guint index);
-void gy_dict_set_tree_model (GyDict *dict, 
-			     GtkTreeModel *model);
-GtkTreeModel *gy_dict_get_tree_model (GyDict *dict);
-const gchar * gy_dict_get_id_string (GyDict *dict);
+gpointer gy_dict_read_definition (GyDict *dict,
+                                  guint index);
+void gy_dict_set_tree_model (GyDict *dict,
+                             GtkTreeModel *model);
+GtkTreeModel *gy_dict_get_tree_model  (GyDict *dict);
+const gchar  *gy_dict_get_id_string (GyDict *dict);
 gint gy_dict_get_encoding (GyDict *dict);
 GyDict *gy_dict_new_object (const gchar *id_string);
 

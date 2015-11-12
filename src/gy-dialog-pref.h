@@ -36,16 +36,16 @@ typedef struct _GyDialogPrefClass GyDialogPrefClass;
 
 struct _GyDialogPref
 {
-	GtkDialog parent_instance;
+  GtkDialog parent_instance;
 };
 
 struct _GyDialogPrefClass
 {
-	GtkDialogClass parent_class;
+  GtkDialogClass parent_class;
 };
 
-GType gy_dialog_pref_get_type (void) G_GNUC_CONST;
-void gy_dialog_pref_show_dialog (GtkWindow *window);
+GType gy_dialog_pref_get_type     (void) G_GNUC_CONST;
+void  gy_dialog_pref_show_dialog  (GtkWindow *window);
 
 G_END_DECLS
 

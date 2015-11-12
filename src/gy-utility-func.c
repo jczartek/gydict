@@ -22,7 +22,7 @@
 
 guint 
 gydict_utility_search_entity (const gchar **tab_encja, 
-			      const gchar *token_encja)
+                              const gchar  *token_encja)
 {
   guint i;
 
@@ -44,18 +44,18 @@ gy_utility_delete_text_in_buffer (GtkTextBuffer *buffer)
 
 gboolean 
 gy_utility_handlers_is_blocked_by_func (gpointer instance, 
-					gpointer func, 
-					gpointer data)
+                                        gpointer func,
+                                        gpointer data)
 {
   return g_signal_handler_find (instance,
-		      	        G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA | G_SIGNAL_MATCH_UNBLOCKED,
-	       			0, 0, NULL, func, data) == 0;
+                                G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA | G_SIGNAL_MATCH_UNBLOCKED,
+                                0, 0, NULL, func, data) == 0;
 }
 
 gint
 gy_utility_strcmp (const gchar *p1,
-	       	   const gchar *p2,
-      		   size_t n)
+                   const gchar *p2,
+                   size_t       n)
 {
   const guchar *s1 = (const guchar *) p1;
   const guchar *s2 = (const guchar *) p2;
@@ -73,7 +73,7 @@ gy_utility_strcmp (const gchar *p1,
     {
       s2++;
       if (*s2 == '\0')
-	return c1 - c2;
+        return c1 - c2;
     }
     if (c1 == '\0' || c1 != c2)
       return c1 - c2;
@@ -85,10 +85,10 @@ gy_utility_strcmp (const gchar *p1,
 
 void
 gy_utility_text_buffer_insert_text_with_tags (GtkTextBuffer  *buffer,
-					      GtkTextIter    *iter,
-					      const gchar    *text,
-					      gint            len,
-					      GHashTable     *table_tags)
+                                              GtkTextIter    *iter,
+                                              const gchar    *text,
+                                              gint            len,
+                                              GHashTable     *table_tags)
 {
   gint 		 start_offset;
   GtkTextIter 	 start;

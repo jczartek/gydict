@@ -18,15 +18,18 @@
 #ifndef __GY_UTILITY_H__
 #define __GY_UTILITY_H__
 
-extern guint gydict_utility_search_entity(const  gchar ** tab_encja, const gchar * token_encja);
+extern guint gydict_utility_search_entity(const  gchar ** tab_encja,
+                                          const gchar * token_encja);
 extern void gy_utility_delete_text_in_buffer(GtkTextBuffer *buffer);
-extern gboolean gy_utility_handlers_is_blocked_by_func(gpointer instance, gpointer func, gpointer data);
+extern gboolean gy_utility_handlers_is_blocked_by_func(gpointer instance,
+                                                       gpointer func,
+                                                       gpointer data);
 extern gint gy_utility_strcmp (const gchar *p1,
-			       const gchar *p2,
-		      	       size_t n);
+                               const gchar *p2,
+                               size_t n);
 extern void gy_utility_text_buffer_insert_text_with_tags (GtkTextBuffer *buffer,
-							  GtkTextIter   *iter,
-							  const gchar   *text,
-							  gint           len,
-							  GHashTable    *table_tags);
+                                                          GtkTextIter   *iter,
+                                                          const gchar   *text,
+                                                          gint           len,
+                                                          GHashTable    *table_tags);
 #endif

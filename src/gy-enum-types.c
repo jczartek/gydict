@@ -23,26 +23,25 @@
 GType
 gy_enum_types_get_type (void)
 {
-    static GType enum_type = 0;
+  static GType enum_type = 0;
 
-    if (enum_type == 0)
+  if (enum_type == 0)
     {
-	static const GEnumValue enum_values[] =
-	{
-	    {GY_ENCODING_NONE, "GY_ENCODING_NONE", "encoding-none"},
-	    {GY_ENCODING_CP1250, "GY_ENCODING_CP1250", "encoding-cp"},
-	    {GY_ENCODING_ISO88592, "GY_ENCODING_ISO88592", "encoding-iso88592"},
-	    {GY_ENCODING_UTF8, "GY_ENCODING_UTF8", "encoding-utf8"},
-	    {0, NULL, NULL}
-	};
+      static const GEnumValue enum_values[] =
+      {
+        {GY_ENCODING_NONE, "GY_ENCODING_NONE", "encoding-none"},
+        {GY_ENCODING_CP1250, "GY_ENCODING_CP1250", "encoding-cp"},
+        {GY_ENCODING_ISO88592, "GY_ENCODING_ISO88592", "encoding-iso88592"},
+        {GY_ENCODING_UTF8, "GY_ENCODING_UTF8", "encoding-utf8"},
+        {0, NULL, NULL}
 
-	enum_type = g_enum_register_static (g_intern_static_string ("GyDictEncoding"),
-					  enum_values);
+      };
+
+      enum_type = g_enum_register_static (g_intern_static_string ("GyDictEncoding"),
+                                          enum_values);
+
 
     }
 
-    return enum_type;
+  return enum_type;
 }
-
-
-

@@ -35,20 +35,20 @@ typedef struct _GyParserDictInterface GyParserDictInterface;
 
 struct _GyParserDictInterface
 {
-    GTypeInterface parent_iface;
+  GTypeInterface parent_iface;
 
-    /* Method iface */
-    void (*parser_dict) (GyParserDict      *parser, 
-			 GtkTextBuffer     *buffer, 
-			 gint               row);
+  /* Method iface */
+  void (*parser_dict) (GyParserDict      *parser,
+                       GtkTextBuffer     *buffer,
+                       gint               row);
 
 };
 
 /* used by GY_TYPE_PARSER */
 GType gy_parser_dict_get_type (void);
 void gy_parser_dict_parse (GyParserDict      *parser,
-			   GtkTextBuffer     *buffer,
-		       	   gint	              row);
+                           GtkTextBuffer     *buffer,
+                           gint               row);
 
 G_END_DECLS
 
