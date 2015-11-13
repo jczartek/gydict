@@ -30,10 +30,10 @@
 
 typedef enum
 {
-    GY_ENCODING_NONE = -1,
-    GY_ENCODING_CP1250,
-    GY_ENCODING_ISO88592,
-    GY_ENCODING_UTF8
+  GY_ENCODING_NONE = -1,
+  GY_ENCODING_CP1250,
+  GY_ENCODING_ISO88592,
+  GY_ENCODING_UTF8
 } GyDictEncoding;
 
 extern const gchar *(*array_of_pointer_to_arrays_of_character_set[2])[];
@@ -42,9 +42,9 @@ extern const gchar *pwn_encje_zam[];
 extern const gchar *pwndict_superscript_to_utf8_table[];
 
 void gy_tabs_convert_character (gchar **buffer,
-				const gchar *c,
-				GyDictEncoding encoding);
+                                const gchar *c,
+                                GyDictEncoding encoding);
 GHashTable *
 gy_tabs_get_entity_table (void);
-    									
+
 #endif /* end of include guard: __Gy_PWNTABS_H__ */

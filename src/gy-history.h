@@ -24,12 +24,12 @@ G_BEGIN_DECLS
 /*
  * Type macros
  */
-#define GY_TYPE_HISTORY 	   (gy_history_get_type ())
-#define GY_HISTORY(obj) 	   (G_TYPE_CHECK_INSTANCE_CAST ((obj), GY_TYPE_HISTORY, GyHistory))
-#define GY_IS_HISTORY(obj) 	   (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GY_TYPE_HISTORY))
-#define GY_HISTORY_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GY_TYPE_HISTORY,  GyHistoryClass))
-#define GY_IS_HISTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GY_TYPE_HISTORY))
-#define GY_HISTORY_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GY_TYPE_HISTORY, GyHistoryClass))
+#define GY_TYPE_HISTORY             (gy_history_get_type ())
+#define GY_HISTORY(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GY_TYPE_HISTORY, GyHistory))
+#define GY_IS_HISTORY(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GY_TYPE_HISTORY))
+#define GY_HISTORY_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), GY_TYPE_HISTORY,  GyHistoryClass))
+#define GY_IS_HISTORY_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GY_TYPE_HISTORY))
+#define GY_HISTORY_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), GY_TYPE_HISTORY, GyHistoryClass))
 
 typedef struct _GyHistory GyHistory;
 typedef struct _GyHistoryClass GyHistoryClass;
@@ -58,7 +58,7 @@ GType gy_history_get_type (void);
  */
 GyHistory* gy_history_new       (void);
 void       gy_history_append    (GyHistory   *obj,
-			         const gchar *str);
+                                 const gchar *str);
 void       gy_history_update    (GyHistory   *obj);
 guint      gy_history_length    (GyHistory   *obj);
 G_END_DECLS

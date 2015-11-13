@@ -38,8 +38,8 @@
 
 typedef enum
 {
-  GY_PARSER_STATE_TAG_OPEN 	= 1 << 0,
-  GY_PARSER_STATE_TAG_CLOSE 	= 1 << 1
+  GY_PARSER_STATE_TAG_OPEN    = 1 << 0,
+  GY_PARSER_STATE_TAG_CLOSE   = 1 << 1
 } GyMarkupParserPwnStateFlags;
 
 struct _GyMarkupParserPwn
@@ -48,7 +48,7 @@ struct _GyMarkupParserPwn
   GyMarkupParserPwnTagEndCallback       __tag_end_cb;
   GyMarkupParserPwnTextCallback         __text_cb;
 
-  gpointer		                __data;
+  gpointer                              __data;
   GDestroyNotify                        __dnotify_cb;
 
   gchar                                *__tag_name;
@@ -61,21 +61,21 @@ struct _GyMarkupParserPwn
   const gchar                          *__text;
   const gchar                          *__text_iter;	/* Aktualna pozycja w parsowanym łańcuchu */
   const gchar                          *__text_end;
-  gsize			                __text_len;
+  gsize                                 __text_len;
 
   GHashTable                           *__entity;
 
-  GyDictEncoding		        __encoding;
-  GyMarkupParserPwnStateFlags	        __flag;
+  GyDictEncoding                        __encoding;
+  GyMarkupParserPwnStateFlags           __flag;
 };
 
 GyMarkupParserPwn* 
 gy_markup_parser_pwn_new (GyMarkupParserPwnTagStartCallback      tag_start_cb,
-			  GyMarkupParserPwnTagEndCallback        tag_end_cb,
-			  GyMarkupParserPwnTextCallback          text_cb,
-			  GHashTable		                *entity,
-			  gpointer                               data,
-			  GDestroyNotify                         dnotify_cb)
+                          GyMarkupParserPwnTagEndCallback        tag_end_cb,
+                          GyMarkupParserPwnTextCallback          text_cb,
+                          GHashTable                            *entity,
+                          gpointer                               data,
+                          GDestroyNotify                         dnotify_cb)
 {
   GyMarkupParserPwn *parser = NULL;
 
@@ -103,13 +103,13 @@ void
 gy_markup_parser_pwn_free (GyMarkupParserPwn *parser)
 {
   g_return_if_fail ((parser != NULL) &&
-		    (parser->__entity != NULL) &&
-		    (parser->__buffer != NULL));
+                    (parser->__entity != NULL) &&
+                    (parser->__buffer != NULL));
 
   g_clear_pointer (&parser->__entity,
-		   g_hash_table_unref);
+                   g_hash_table_unref);
   g_slice_free1 (SIZE_TEXT_BUFFER,
-		 parser->__buffer);
+                 parser->__buffer);
   parser->__buffer = NULL;
 
   if (parser->__dnotify_cb != NULL)
@@ -141,7 +141,7 @@ read_text (GyMarkupParserPwn *parser)
 {
   while ((!__is_angle (*parser->__text_iter)) &&
          (!__is_et (*parser->__text_iter)) &&
-	 (parser->__text_iter != parser->__text_end))
+         (parser->__text_iter != parser->__text_end))
   {
     if (((guchar) *parser->__text_iter) < 127)
     {
@@ -150,8 +150,8 @@ read_text (GyMarkupParserPwn *parser)
     else
     {
       gy_tabs_convert_character (&parser->__buf_iter,
-				 parser->__text_iter,
-				 parser->__encoding);
+                                 parser->__text_iter,
+                                 parser->__encoding);
       parser->__text_iter++;
     }
   }
@@ -162,14 +162,14 @@ convert_entity (GyMarkupParserPwn *parser)
 {
   gchar *entity = NULL;
   const gchar *new_entity = NULL,
-	      *tmp = parser->__text_iter;
+              *tmp = parser->__text_iter;
 
   while (!__is_semicolon(*parser->__text_iter++))
     ;
   
   entity = g_strndup (tmp, parser->__text_iter - tmp - 1);
   new_entity = g_hash_table_lookup (parser->__entity,
-				    (gconstpointer) entity);
+                                    (gconstpointer) entity);
   if (new_entity)
     while (*new_entity)
       *parser->__buf_iter++ = *new_entity++;
@@ -181,7 +181,7 @@ static inline void
 read_attributes (GyMarkupParserPwn *parser)
 {
   gchar *attribute_name = NULL,
-	*attribute_value = NULL;
+  *attribute_value = NULL;
   const gchar *tmp = parser->__text_iter;
   parser->__attribute_name = g_ptr_array_new_with_free_func (g_free);
   parser->__attribute_value = g_ptr_array_new_with_free_func (g_free);
@@ -217,9 +217,9 @@ start:
 
 void 
 gy_markup_parser_pwn_parse (GyMarkupParserPwn *parser,
-			    const gchar       *text,
-			    gint               text_len,
-			    GyDictEncoding     encoding)
+                            const gchar       *text,
+                            gint               text_len,
+                            GyDictEncoding     encoding)
 {
   g_return_if_fail (parser != NULL);
   g_return_if_fail (text !=NULL);
@@ -260,13 +260,13 @@ state_neutral:
     if (parser->__text_iter != parser->__text_end )
     {
       if (*parser->__text_iter == '<')
-	JUMP_SYMBOL (STATE_OPEN_ANGLE);
+        JUMP_SYMBOL (STATE_OPEN_ANGLE);
       else if (*parser->__text_iter == '>') /* To nie będzie chyba potrzebne */
-	JUMP_SYMBOL (STATE_CLOSE_ANGLE);
+        JUMP_SYMBOL (STATE_CLOSE_ANGLE);
       else if (*parser->__text_iter == '&')
-	JUMP_SYMBOL (STATE_ENTITY);
+        JUMP_SYMBOL (STATE_ENTITY);
       else
-	JUMP_SYMBOL (STATE_READ_TEXT);
+        JUMP_SYMBOL (STATE_READ_TEXT);
     }
     else
     {
@@ -286,8 +286,7 @@ state_open_angle:
     /*2*/
     skip_space (parser);
     /*3*/
-    !__is_slash(__give_char) ? __set_flag (parser->__flag, GY_PARSER_STATE_TAG_OPEN)
-			     : __set_flag (parser->__flag, GY_PARSER_STATE_TAG_CLOSE);
+    !__is_slash(__give_char) ? __set_flag (parser->__flag, GY_PARSER_STATE_TAG_OPEN) : __set_flag (parser->__flag, GY_PARSER_STATE_TAG_CLOSE);
     /*4*/
     skip_space (parser);
     /*5*/
@@ -306,12 +305,12 @@ state_read_tag:
     if (__is_angle (*parser->__text_iter))
     {
       __check_flag (parser->__flag, GY_PARSER_STATE_TAG_OPEN) ? parser->__tag_start_cb (parser->__tag_name,
-											NULL, NULL,
-											parser->__data)
-							      : parser->__tag_end_cb (parser->__tag_name,
-										      parser->__data);
+                                                                                        NULL, NULL,
+                                                                                        parser->__data)
+      : parser->__tag_end_cb (parser->__tag_name,
+                              parser->__data);
       g_clear_pointer ((gpointer *) &parser->__tag_name,
-		       g_free);
+                       g_free);
       __clean_flag (parser->__flag);
       JUMP_SYMBOL (STATE_CLOSE_ANGLE);
     }
@@ -322,27 +321,27 @@ state_read_tag:
 state_read_text:
     read_text (parser);
     parser->__text_cb (parser->__buffer,
-		       parser->__buf_iter - parser->__buffer,
-		       parser->__data);
+                       parser->__buf_iter - parser->__buffer,
+                       parser->__data);
     parser->__buf_iter = parser->__buffer;
     memset (parser->__buffer, 0, SIZE_TEXT_BUFFER);
     JUMP_SYMBOL (STATE_NEUTRAL);
 state_entity:
     convert_entity (parser);
     parser->__text_cb (parser->__buffer,
-		       parser->__buf_iter - parser->__buffer,
-		       parser->__data);
+                       parser->__buf_iter - parser->__buffer,
+                       parser->__data);
     parser->__buf_iter = parser->__buffer;
     memset (parser->__buffer, 0, SIZE_TEXT_BUFFER);
     JUMP_SYMBOL (STATE_NEUTRAL);
 state_read_attribute:
     read_attributes (parser);
     parser->__tag_start_cb (parser->__tag_name,
-			    parser->__attribute_name,
-			    parser->__attribute_value,
-			    parser->__data);
+                            parser->__attribute_name,
+                            parser->__attribute_value,
+                            parser->__data);
     g_clear_pointer ((gpointer *) &parser->__tag_name,
-		     g_free);
+                     g_free);
     g_ptr_array_free (parser->__attribute_name, FALSE);
     g_ptr_array_free (parser->__attribute_value, FALSE);
     parser->__attribute_name = parser->__attribute_value = NULL;

@@ -23,28 +23,28 @@
 #include <glib.h>
 
 typedef void (*GyMarkupParserPwnTagStartCallback) (const gchar     *tag_name,
-			  			   const GPtrArray *attribute_name,
-						   const GPtrArray *attribute_value,
-						   gpointer	    data);
+                                                   const GPtrArray *attribute_name,
+                                                   const GPtrArray *attribute_value,
+                                                   gpointer         data);
 
 typedef void (*GyMarkupParserPwnTagEndCallback) (const gchar *tag_name,
-				   		 gpointer     data);
+                                                 gpointer     data);
 
 typedef void (*GyMarkupParserPwnTextCallback) (const gchar *text,
-					       gsize        text_len,
-	      				       gpointer     data);
+                                               gsize        text_len,
+                                               gpointer     data);
 
 typedef struct _GyMarkupParserPwn GyMarkupParserPwn;
 
 GyMarkupParserPwn* gy_markup_parser_pwn_new (GyMarkupParserPwnTagStartCallback      tag_start_cb,
-					     GyMarkupParserPwnTagEndCallback        tag_end_cb,
-					     GyMarkupParserPwnTextCallback          text_cb,
-					     GHashTable 	    		   *entity,
-					     gpointer		                    data,
-					     GDestroyNotify                         dnotify_cb);
+                                             GyMarkupParserPwnTagEndCallback        tag_end_cb,
+                                             GyMarkupParserPwnTextCallback          text_cb,
+                                             GHashTable                            *entity,
+                                             gpointer                               data,
+                                             GDestroyNotify                         dnotify_cb);
 void gy_markup_parser_pwn_free (GyMarkupParserPwn *parser);
 void gy_markup_parser_pwn_parse (GyMarkupParserPwn *parser,
-				 const gchar       *text,
-				 int                text_len,
-				 GyDictEncoding     encoding);
+                                 const gchar       *text,
+                                 int                text_len,
+                                 GyDictEncoding     encoding);
 #endif
