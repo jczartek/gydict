@@ -47,10 +47,10 @@ struct _GySearchBarClass
 
 GType gy_search_bar_get_type (void) G_GNUC_CONST;
 GtkWidget * gy_search_bar_new (void);
-void gy_search_bar_set_search_mode (GySearchBar *bar, 
-				    gboolean         search_mode);
-void gy_search_bar_connect_text_buffer (GySearchBar *bar,
-					GtkTextBuffer   *buffer);
+void gy_search_bar_set_search_mode (GySearchBar     *bar,
+                                    gboolean         search_mode);
+void gy_search_bar_connect_text_buffer (GySearchBar     *bar,
+                                        GtkTextBuffer   *buffer);
 
 G_END_DECLS
 

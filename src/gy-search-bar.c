@@ -47,19 +47,19 @@ enum
 
 /*****************************STATIC PROTOTYPE********************************/
 static void gy_search_bar_get_property (GObject     *object,
-	                                guint        prop_id,
-				        GValue      *value,
-					GParamSpec  *pspec);
-static void gy_search_bar_set_property  (GObject       *object,
-	                                 guint          prop_id,
-					 const GValue  *value,
-			                 GParamSpec    *pspec);
+                                        guint        prop_id,
+                                        GValue      *value,
+                                        GParamSpec  *pspec);
+static void gy_search_bar_set_property (GObject       *object,
+                                        guint          prop_id,
+                                        const GValue  *value,
+                                        GParamSpec    *pspec);
 
 /*****************************STATIC FUNC*************************************/
 
 static gboolean
 is_keynav_event (GdkEvent *event,
-		 guint     keyval)
+                 guint     keyval)
 {
   GdkModifierType state = 0;
 
@@ -85,7 +85,7 @@ is_keynav_event (GdkEvent *event,
 
 static void
 set_search_string (GySearchBar *bar,
-		   const gchar *search_string)
+                   const gchar *search_string)
 {
   GySearchBarPrivate *priv = gy_search_bar_get_instance_private (bar);
 
@@ -94,49 +94,48 @@ set_search_string (GySearchBar *bar,
   g_object_freeze_notify (G_OBJECT (bar));
 
   if (priv->search_string != search_string)
-  {
+    {
       gboolean non_empty = TRUE;
-	
+
       if ((search_string && *search_string == '\0'))
-	  non_empty = FALSE;
+        non_empty = FALSE;
 
-      if ((priv->search_string &&
-	  search_string &&
-	  strcmp ((const gchar *) priv->search_string, search_string) != 0) ||
-	  (priv->search_string == NULL && search_string))
-      {
-	  if (priv->search_string)
-	      g_free (priv->search_string);
+      if ((priv->search_string && search_string &&
+           strcmp ((const gchar *) priv->search_string, search_string) != 0) ||
+          (priv->search_string == NULL && search_string))
+        {
+          if (priv->search_string)
+            g_free (priv->search_string);
 
-	  priv->search_string = g_strdup (search_string);
-	  gtk_widget_set_sensitive (GTK_WIDGET (priv->go_up_button), non_empty);
-	  gtk_widget_set_sensitive (GTK_WIDGET (priv->go_down_button), non_empty);
+          priv->search_string = g_strdup (search_string);
+          gtk_widget_set_sensitive (GTK_WIDGET (priv->go_up_button), non_empty);
+          gtk_widget_set_sensitive (GTK_WIDGET (priv->go_down_button), non_empty);
 
-	  g_object_notify (G_OBJECT (bar), "search-string");
-      }
-  }
+          g_object_notify (G_OBJECT (bar), "search-string");
+        }
+    }
 
   g_object_thaw_notify (G_OBJECT (bar));
 }
 
 inline static void
 clear_tag_buffer(GtkTextBuffer *buffer,
-		 const gchar   *name_tag)
+                 const gchar   *name_tag)
 {
   GtkTextIter i_start, i_end;
 
   if (!name_tag)
-      return;
+    return;
 
   gtk_text_buffer_get_start_iter (buffer, &i_start);
   gtk_text_buffer_get_end_iter (buffer, &i_end);
   gtk_text_buffer_remove_tag_by_name (buffer, name_tag, 
-				      &i_start, &i_end);
+                                      &i_start, &i_end);
 }
 
 static void
 button_down_cb (GtkButton *button G_GNUC_UNUSED,
-	        gpointer   data)
+                gpointer   data)
 {
   GySearchBar *bar = GY_SEARCH_BAR (data);
   GySearchBarPrivate *priv = gy_search_bar_get_instance_private (bar);
@@ -150,12 +149,12 @@ button_down_cb (GtkButton *button G_GNUC_UNUSED,
   m_end = gtk_text_buffer_get_mark (priv->buffer, "last_pos_end");
 
   if (!m_start && !m_end)
-      return;
+    return;
 
   gtk_text_buffer_get_iter_at_mark (priv->buffer,&i_start,m_end);
   found = gtk_text_iter_forward_search (&i_start, priv->search_string, 
-					(GTK_TEXT_SEARCH_VISIBLE_ONLY|GTK_TEXT_SEARCH_TEXT_ONLY),
-					&i_start, &i_end, NULL);
+                                        (GTK_TEXT_SEARCH_VISIBLE_ONLY|GTK_TEXT_SEARCH_TEXT_ONLY),
+                                        &i_start, &i_end, NULL);
 
   if (found)
   {
@@ -164,19 +163,18 @@ button_down_cb (GtkButton *button G_GNUC_UNUSED,
 
     clear_tag_buffer (priv->buffer, "search_next");
     gtk_text_buffer_apply_tag_by_name (priv->buffer, "search_next", 
-				       &i_start, &i_end);
+                                       &i_start, &i_end);
     gtk_text_buffer_move_mark(priv->buffer, m_start, &i_start);
     gtk_text_buffer_move_mark(priv->buffer, m_end, &i_end);
 
     if (gtk_widget_is_toplevel (toplevel))
-	gtk_text_view_scroll_mark_onscreen (GTK_TEXT_VIEW (gy_window_get_text_view (GY_WINDOW (toplevel))), 
-					    m_end);
+      gtk_text_view_scroll_mark_onscreen (GTK_TEXT_VIEW (gy_window_get_text_view (GY_WINDOW (toplevel))), m_end);
   }
 }
 
 static void
 button_up_cb (GtkButton *button G_GNUC_UNUSED,
-	      gpointer   data)
+              gpointer   data)
 {
   GySearchBar *bar = GY_SEARCH_BAR (data);
   GySearchBarPrivate *priv = gy_search_bar_get_instance_private (bar);
@@ -190,12 +188,12 @@ button_up_cb (GtkButton *button G_GNUC_UNUSED,
   m_end = gtk_text_buffer_get_mark (priv->buffer, "last_pos_end");
 
   if (!m_start && !m_end)
-      return;
+    return;
 
   gtk_text_buffer_get_iter_at_mark (priv->buffer, &i_start, m_start);
   found = gtk_text_iter_backward_search (&i_start, priv->search_string,
-					 (GTK_TEXT_SEARCH_VISIBLE_ONLY|GTK_TEXT_SEARCH_TEXT_ONLY),
-					 &i_start ,&i_end, NULL);
+                                         (GTK_TEXT_SEARCH_VISIBLE_ONLY|GTK_TEXT_SEARCH_TEXT_ONLY),
+                                         &i_start ,&i_end, NULL);
 
   if (found)
   {
@@ -207,19 +205,18 @@ button_up_cb (GtkButton *button G_GNUC_UNUSED,
     gtk_text_buffer_get_iter_at_offset (priv->buffer, &i_end, iter_pos);
     clear_tag_buffer (priv->buffer, "search_next");
     gtk_text_buffer_apply_tag_by_name (priv->buffer, "search_next", 
-				       &i_start, &i_end);
+                                       &i_start, &i_end);
     gtk_text_buffer_move_mark(priv->buffer, m_start, &i_start);
     gtk_text_buffer_move_mark(priv->buffer, m_end, &i_end);
 
     if (gtk_widget_is_toplevel (toplevel))
-	gtk_text_view_scroll_mark_onscreen (GTK_TEXT_VIEW (gy_window_get_text_view (GY_WINDOW (toplevel))), 
-					    m_end);
+      gtk_text_view_scroll_mark_onscreen (GTK_TEXT_VIEW (gy_window_get_text_view (GY_WINDOW (toplevel))), m_end);
   }
 }
 
 static void
 button_close_cb (GtkButton *button G_GNUC_UNUSED,
-		 gpointer   data)
+                 gpointer   data)
 {
   GySearchBar *bar = GY_SEARCH_BAR (data);
   GtkWidget *toplevel;
@@ -228,13 +225,13 @@ button_close_cb (GtkButton *button G_GNUC_UNUSED,
 
   if (gtk_widget_is_toplevel (toplevel))
       g_action_group_activate_action (G_ACTION_GROUP (toplevel),
-				      "find-menu", NULL);
+                                      "find-menu", NULL);
 }
 
 static void
 reveal_child_cb (GObject    *object G_GNUC_UNUSED,
-		 GParamSpec *spec G_GNUC_UNUSED,
-		 gpointer    data)
+                 GParamSpec *spec G_GNUC_UNUSED,
+                 gpointer    data)
 {
   GySearchBar *bar = GY_SEARCH_BAR (data);
   GySearchBarPrivate *priv = gy_search_bar_get_instance_private (bar);
@@ -244,7 +241,7 @@ reveal_child_cb (GObject    *object G_GNUC_UNUSED,
     gtk_entry_set_text (GTK_ENTRY (priv->search_entry), "");
 
     if (!gtk_widget_is_focus (priv->search_entry))
-	gtk_widget_grab_focus (priv->search_entry);
+      gtk_widget_grab_focus (priv->search_entry);
   }
 
   if (!priv->search_mode)
@@ -258,17 +255,17 @@ reveal_child_cb (GObject    *object G_GNUC_UNUSED,
     {
       GtkWidget *main_entry;
       main_entry = gy_window_get_entry (GY_WINDOW (toplevel));
-	    
+
       if (!gtk_widget_is_focus (main_entry))
-	  gtk_widget_grab_focus (main_entry);
+        gtk_widget_grab_focus (main_entry);
     }
   }
 }
 
 static void
 search_string_changed_cb (GObject     *object,
-			  GParamSpec  *spec G_GNUC_UNUSED,
-			  gpointer     data G_GNUC_UNUSED)
+                          GParamSpec  *spec G_GNUC_UNUSED,
+                          gpointer     data G_GNUC_UNUSED)
 {
   GySearchBar *bar = GY_SEARCH_BAR (object);
   GySearchBarPrivate *priv = gy_search_bar_get_instance_private (bar);
@@ -280,15 +277,15 @@ search_string_changed_cb (GObject     *object,
   gtk_text_buffer_get_start_iter (priv->buffer, &i_start);
   gtk_text_buffer_get_end_iter (priv->buffer, &i_end);
   gtk_text_buffer_remove_tag_by_name (priv->buffer, "search", 
-				      &i_start, &i_end);
+                                      &i_start, &i_end);
   gtk_text_buffer_remove_tag_by_name (priv->buffer, "search_next", 
-				      &i_start, &i_end);
+                                      &i_start, &i_end);
 
   if (priv->search_string != '\0')
   {
     found = gtk_text_iter_forward_search (&i_start, priv->search_string,
-					  (GTK_TEXT_SEARCH_VISIBLE_ONLY|GTK_TEXT_SEARCH_TEXT_ONLY),
-					  &i_start, &i_end, NULL);
+                                          (GTK_TEXT_SEARCH_VISIBLE_ONLY|GTK_TEXT_SEARCH_TEXT_ONLY),
+                                          &i_start, &i_end, NULL);
 
     if (found)
     {
@@ -297,29 +294,27 @@ search_string_changed_cb (GObject     *object,
 
       gtk_text_buffer_move_mark_by_name (priv->buffer, "last_pos_start", &i_start);
       gtk_text_buffer_move_mark_by_name (priv->buffer, "last_pos_end", &i_end);
-      gtk_text_buffer_apply_tag_by_name (priv->buffer, "search_next", 
-					 &i_start, &i_end);
+      gtk_text_buffer_apply_tag_by_name (priv->buffer, "search_next", &i_start, &i_end);
 
       if (gtk_widget_is_toplevel (toplevel))
-	  gtk_text_view_scroll_mark_onscreen (GTK_TEXT_VIEW (gy_window_get_text_view (GY_WINDOW (toplevel))), 
-					      gtk_text_buffer_get_mark (priv->buffer, "last_pos_end"));
+        gtk_text_view_scroll_mark_onscreen (GTK_TEXT_VIEW (gy_window_get_text_view (GY_WINDOW (toplevel))),
+                                            gtk_text_buffer_get_mark (priv->buffer, "last_pos_end"));
     }
   }
 
   while (found)
   {
-    gtk_text_buffer_apply_tag_by_name (priv->buffer, "search", 
-				       &i_start, &i_end);
+    gtk_text_buffer_apply_tag_by_name (priv->buffer, "search", &i_start, &i_end);
     found = gtk_text_iter_forward_search (&i_end, priv->search_string,
-					  (GTK_TEXT_SEARCH_VISIBLE_ONLY|GTK_TEXT_SEARCH_TEXT_ONLY),
-				      	  &i_start, &i_end, NULL);
+                                          (GTK_TEXT_SEARCH_VISIBLE_ONLY|GTK_TEXT_SEARCH_TEXT_ONLY),
+                                          &i_start, &i_end, NULL);
   }
 }
 
 static gboolean
 entry_key_press_event_cb (GtkWidget  *widget G_GNUC_UNUSED,
-			  GdkEvent   *event,
-			  gpointer    data)
+                          GdkEvent   *event,
+                          gpointer    data)
 {
   GySearchBar *bar = GY_SEARCH_BAR (data);
   guint keyval;
@@ -331,8 +326,7 @@ entry_key_press_event_cb (GtkWidget  *widget G_GNUC_UNUSED,
     toplevel = gtk_widget_get_toplevel (GTK_WIDGET (bar));
 
     if (gtk_widget_is_toplevel (toplevel))
-	g_action_group_activate_action (G_ACTION_GROUP (toplevel),
-					"find-menu", NULL);
+      g_action_group_activate_action (G_ACTION_GROUP (toplevel), "find-menu", NULL);
     return GDK_EVENT_STOP;
   }
 
@@ -344,7 +338,7 @@ entry_key_press_event_cb (GtkWidget  *widget G_GNUC_UNUSED,
 
 static void
 entry_changed_cb (GtkEditable *editable,
-	          gpointer     data)
+                  gpointer     data)
 {
   GySearchBar *bar = GY_SEARCH_BAR (data);
 
@@ -367,19 +361,19 @@ gy_search_bar_init (GySearchBar *bar)
   gtk_widget_set_sensitive (GTK_WIDGET (priv->go_down_button), FALSE);
 
   g_signal_connect (GTK_BUTTON (priv->go_up_button), "clicked",
-		    G_CALLBACK (button_up_cb), (gpointer) bar);
+                    G_CALLBACK (button_up_cb), (gpointer) bar);
   g_signal_connect (GTK_BUTTON (priv->go_down_button), "clicked",
-		    G_CALLBACK (button_down_cb), (gpointer) bar);
+                    G_CALLBACK (button_down_cb), (gpointer) bar);
   g_signal_connect (GTK_BUTTON (priv->close_button), "clicked",
-		    G_CALLBACK (button_close_cb), (gpointer) bar);
+                    G_CALLBACK (button_close_cb), (gpointer) bar);
   g_signal_connect (G_OBJECT (priv->revealer), "notify::reveal-child",
-		    G_CALLBACK (reveal_child_cb), (gpointer) bar);
+                    G_CALLBACK (reveal_child_cb), (gpointer) bar);
   g_signal_connect (priv->search_entry, "key-press-event",
-		    G_CALLBACK (entry_key_press_event_cb), (gpointer) bar);
+                    G_CALLBACK (entry_key_press_event_cb), (gpointer) bar);
   g_signal_connect (GTK_EDITABLE (priv->search_entry), "changed",
-		    G_CALLBACK (entry_changed_cb), (gpointer) bar);
+                    G_CALLBACK (entry_changed_cb), (gpointer) bar);
   g_signal_connect (G_OBJECT (bar), "notify::search-string",
-		    G_CALLBACK (search_string_changed_cb), NULL);
+                    G_CALLBACK (search_string_changed_cb), NULL);
 }
 
 static void
@@ -407,16 +401,16 @@ gy_search_bar_class_init (GySearchBarClass *klass)
   gtk_widget_class_bind_template_child_internal_private (widget_class, GySearchBar, close_button);
 
   g_object_class_install_property (object_class, PROP_SEARCH_STRING,
-				   g_param_spec_string ("search-string", "Search string",
-			      				"The name of the string to be found", NULL,
-		      					G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+                                   g_param_spec_string ("search-string", "Search string",
+                                                        "The name of the string to be found", NULL,
+                                                        G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 }
 
 static void 
 gy_search_bar_get_property (GObject     *object,
-			    guint        prop_id,
-			    GValue      *value,
-			    GParamSpec  *pspec)
+                            guint        prop_id,
+                            GValue      *value,
+                            GParamSpec  *pspec)
 {
   GySearchBar *bar = GY_SEARCH_BAR (object);
   GySearchBarPrivate *priv = gy_search_bar_get_instance_private (bar);
@@ -434,9 +428,9 @@ gy_search_bar_get_property (GObject     *object,
 
 static void 
 gy_search_bar_set_property (GObject       *object,
-			    guint          prop_id,
-			    const GValue  *value,
-			    GParamSpec    *pspec)
+                            guint          prop_id,
+                            const GValue  *value,
+                            GParamSpec    *pspec)
 {
   GySearchBar *bar = GY_SEARCH_BAR (object);
 
@@ -460,7 +454,7 @@ gy_search_bar_new (void)
 
 void
 gy_search_bar_set_search_mode (GySearchBar *bar,
-			       gboolean     search_mode)
+                               gboolean     search_mode)
 {
   GySearchBarPrivate *priv = gy_search_bar_get_instance_private (bar);
 
@@ -472,7 +466,7 @@ gy_search_bar_set_search_mode (GySearchBar *bar,
 
 void
 gy_search_bar_connect_text_buffer (GySearchBar   *bar,
-				   GtkTextBuffer *buffer)
+                                   GtkTextBuffer *buffer)
 {
   GySearchBarPrivate *priv = gy_search_bar_get_instance_private (bar);
 
@@ -480,8 +474,8 @@ gy_search_bar_connect_text_buffer (GySearchBar   *bar,
   g_return_if_fail (buffer == NULL || GTK_IS_TEXT_BUFFER (buffer));
 
   if (!priv->buffer)
-  {
-    priv->buffer = buffer;
-    g_object_add_weak_pointer (G_OBJECT (priv->buffer), (gpointer *) &priv->buffer);
-  }
+    {
+      priv->buffer = buffer;
+      g_object_add_weak_pointer (G_OBJECT (priv->buffer), (gpointer *) &priv->buffer);
+    }
 }
