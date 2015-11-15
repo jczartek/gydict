@@ -3,12 +3,9 @@
 data/gydict.desktop.in.in
 [type: gettext/gsettings]data/org.gtk.gydict.gschema.xml
 src/gy-app.c
-src/gy-callbacks.c
 src/gy-main.c
-src/gy-parser.c
-src/gy-settings.c
 src/gy-window.c
-[type: gettext/glade]src/dialog-pref.ui
-[type: gettext/glade]src/gydict.ui
-[type: gettext/glade]src/menu.ui
+[type: gettext/glade]src/resources/ui/dialog-pref.ui
+[type: gettext/glade]src/resources/ui/gydict.ui
+[type: gettext/glade]src/resources/ui/menu.ui
 
