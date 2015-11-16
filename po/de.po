@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gydict 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 18:53+0200\n"
+"POT-Creation-Date: 2015-11-16 16:01+0000\n"
 "PO-Revision-Date: 2014-04-14 18:16+0200\n"
 "Last-Translator: kuba <kuba@kuba>\n"
 "Language-Team: German\n"
@@ -81,119 +81,118 @@ msgstr ""
 msgid "A font for a widget tree (GtkTreeView)."
 msgstr ""
 
-#: ../src/gy-app.c:133
+#: ../src/gy-app.c:136
 msgid "translator_credits"
 msgstr ""
 
-#. "comments", _("The program is a front-end to PWN's dictionary."),
-#: ../src/gy-app.c:139
+#: ../src/gy-app.c:141
 msgid ""
 "This program supports the various dictionaries. Currently, the program "
 "provides support to the dictionaries: PWN (2006, 2007) and DEPL (www.depl.pl)"
 msgstr ""
 
-#: ../src/gy-main.c:33
+#: ../src/gy-main.c:35
 msgid "Display the version program and exit"
 msgstr ""
 
-#: ../src/gy-window.c:567
-msgid "Back"
-msgstr ""
-
-#: ../src/gy-window.c:572
-msgid "Forward"
-msgstr ""
-
-#: ../src/gy-window.c:615
+#: ../src/gy-window.c:643
 msgid ""
-"Error!!!. Can not open the dictionary.\n"
-"See description error on terminal."
+"Error!!!. Can't open the dictionary.\n"
+" See description error on terminal."
 msgstr ""
 
-#: ../src/dialog-pref.ui.h:1 ../src/menu.ui.h:2
+#: ../src/resources/ui/dialog-pref.ui.h:1 ../src/resources/ui/menu.ui.h:2
 msgid "Preferences"
 msgstr ""
 
-#: ../src/dialog-pref.ui.h:2
+#: ../src/resources/ui/dialog-pref.ui.h:2
 msgid "Cancel"
 msgstr ""
 
-#: ../src/dialog-pref.ui.h:3
+#: ../src/resources/ui/dialog-pref.ui.h:3
 msgid "_Use default"
 msgstr ""
 
-#: ../src/dialog-pref.ui.h:4
+#: ../src/resources/ui/dialog-pref.ui.h:4
 msgid "Select a file"
 msgstr ""
 
-#: ../src/dialog-pref.ui.h:5
+#: ../src/resources/ui/dialog-pref.ui.h:5
 msgid "Dictionary depl: a file b:"
 msgstr ""
 
-#: ../src/dialog-pref.ui.h:6
+#: ../src/resources/ui/dialog-pref.ui.h:6
 msgid "Dictionary depl: a file a:"
 msgstr ""
 
-#: ../src/dialog-pref.ui.h:7
+#: ../src/resources/ui/dialog-pref.ui.h:7
 msgid "_Path to dictionary pl-ang: "
 msgstr ""
 
-#: ../src/dialog-pref.ui.h:8
+#: ../src/resources/ui/dialog-pref.ui.h:8
 msgid "_Path to dictionary ang-pl: "
 msgstr ""
 
-#: ../src/dialog-pref.ui.h:9
+#: ../src/resources/ui/dialog-pref.ui.h:9
 msgid "Dictionaries"
 msgstr ""
 
-#: ../src/dialog-pref.ui.h:10
+#: ../src/resources/ui/dialog-pref.ui.h:10
 msgid "_Use system fonts"
 msgstr ""
 
-#: ../src/dialog-pref.ui.h:11
+#: ../src/resources/ui/dialog-pref.ui.h:11
 msgid "The widget text (GtkTextView):"
 msgstr ""
 
-#: ../src/dialog-pref.ui.h:12
+#: ../src/resources/ui/dialog-pref.ui.h:12
 msgid "The widget list (GtkTreeView): "
 msgstr ""
 
-#: ../src/dialog-pref.ui.h:13
+#: ../src/resources/ui/dialog-pref.ui.h:13
 msgid "Fonts"
 msgstr ""
 
-#: ../src/menu.ui.h:1
-msgid "New window"
-msgstr ""
-
-#: ../src/menu.ui.h:3
-msgid "About Gydict"
-msgstr ""
-
-#: ../src/menu.ui.h:4
-msgid "Quit"
-msgstr ""
-
-#: ../src/menu.ui.h:5
+#: ../src/resources/ui/gydict.ui.h:1
 msgid "_Print"
 msgstr ""
 
-#: ../src/menu.ui.h:6
+#: ../src/resources/ui/gydict.ui.h:2
 msgid "_Copy"
 msgstr ""
 
-#: ../src/menu.ui.h:7
+#: ../src/resources/ui/gydict.ui.h:3
 msgid "Pa_ste"
 msgstr ""
 
-#: ../src/menu.ui.h:8
+#: ../src/resources/ui/gydict.ui.h:4
 msgid "React to clipboard"
 msgstr ""
 
-#: ../src/menu.ui.h:9
+#: ../src/resources/ui/gydict.ui.h:5
 msgid "Diacritic"
 msgstr ""
 
-#: ../src/menu.ui.h:10
+#: ../src/resources/ui/gydict.ui.h:6
 msgid "Cl_ose"
+msgstr ""
+
+#: ../src/resources/ui/gydict.ui.h:7
+msgid "Back"
+msgstr ""
+
+#: ../src/resources/ui/gydict.ui.h:8
+msgid "Forward"
+msgstr ""
+
+#: ../src/resources/ui/menu.ui.h:1
+msgid "New window"
+msgstr ""
+
+#: ../src/resources/ui/menu.ui.h:3
+msgid "About Gydict"
+msgstr ""
+
+#: ../src/resources/ui/menu.ui.h:4
+msgid "Quit"
 msgstr ""

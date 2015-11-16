@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gydict 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 18:53+0200\n"
+"POT-Creation-Date: 2015-11-16 16:01+0000\n"
 "PO-Revision-Date: 2014-04-14 18:51+0200\n"
 "Last-Translator: Jakub <Czartek>\n"
 "Language-Team: polski <kuba@linux.pl>\n"
@@ -83,12 +83,11 @@ msgstr "Font dla listy."
 msgid "A font for a widget tree (GtkTreeView)."
 msgstr "Czcionka dla widżetu listy."
 
-#: ../src/gy-app.c:133
+#: ../src/gy-app.c:136
 msgid "translator_credits"
 msgstr ""
 
-#. "comments", _("The program is a front-end to PWN's dictionary."),
-#: ../src/gy-app.c:139
+#: ../src/gy-app.c:141
 msgid ""
 "This program supports the various dictionaries. Currently, the program "
 "provides support to the dictionaries: PWN (2006, 2007) and DEPL (www.depl.pl)"
@@ -96,110 +95,111 @@ msgstr ""
 "Ten program obsługuje różne słowniki. Aktualnie program dostarcza wsparcia "
 "dla słowników: PWN (2006, 2007) i DEPL (www.depl.pl)"
 
-#: ../src/gy-main.c:33
+#: ../src/gy-main.c:35
 msgid "Display the version program and exit"
 msgstr "Wyświetl wersje programu i wyjdź"
 
-#: ../src/gy-window.c:567
-msgid "Back"
-msgstr "Z powrotem"
-
-#: ../src/gy-window.c:572
-msgid "Forward"
-msgstr "Naprzód"
-
-#: ../src/gy-window.c:615
+#: ../src/gy-window.c:643
+#, fuzzy
 msgid ""
-"Error!!!. Can not open the dictionary.\n"
-"See description error on terminal."
+"Error!!!. Can't open the dictionary.\n"
+" See description error on terminal."
 msgstr ""
 "Błąd!!! Nie można otworzyć słownika.\n"
 "Zobacz opis błędu na terminalu."
 
-#: ../src/dialog-pref.ui.h:1 ../src/menu.ui.h:2
+#: ../src/resources/ui/dialog-pref.ui.h:1 ../src/resources/ui/menu.ui.h:2
 msgid "Preferences"
 msgstr "Preferencje"
 
-#: ../src/dialog-pref.ui.h:2
+#: ../src/resources/ui/dialog-pref.ui.h:2
 msgid "Cancel"
 msgstr "Zamknij"
 
-#: ../src/dialog-pref.ui.h:3
+#: ../src/resources/ui/dialog-pref.ui.h:3
 msgid "_Use default"
 msgstr "_Użyj domyślnych"
 
-#: ../src/dialog-pref.ui.h:4
+#: ../src/resources/ui/dialog-pref.ui.h:4
 msgid "Select a file"
 msgstr "Zaznacz plik"
 
-#: ../src/dialog-pref.ui.h:5
+#: ../src/resources/ui/dialog-pref.ui.h:5
 msgid "Dictionary depl: a file b:"
 msgstr "Słownik depl: plik b"
 
-#: ../src/dialog-pref.ui.h:6
+#: ../src/resources/ui/dialog-pref.ui.h:6
 msgid "Dictionary depl: a file a:"
 msgstr "Słownik depl: plik a:"
 
-#: ../src/dialog-pref.ui.h:7
+#: ../src/resources/ui/dialog-pref.ui.h:7
 msgid "_Path to dictionary pl-ang: "
 msgstr "Ścieżka do słownika pl-ang"
 
-#: ../src/dialog-pref.ui.h:8
+#: ../src/resources/ui/dialog-pref.ui.h:8
 msgid "_Path to dictionary ang-pl: "
 msgstr "Ścieżka do słownika ang-pl"
 
-#: ../src/dialog-pref.ui.h:9
+#: ../src/resources/ui/dialog-pref.ui.h:9
 msgid "Dictionaries"
 msgstr "Słowniki"
 
-#: ../src/dialog-pref.ui.h:10
+#: ../src/resources/ui/dialog-pref.ui.h:10
 msgid "_Use system fonts"
 msgstr "Użyj domyślnych czcionek"
 
-#: ../src/dialog-pref.ui.h:11
+#: ../src/resources/ui/dialog-pref.ui.h:11
 msgid "The widget text (GtkTextView):"
 msgstr "Widżet tekstowy:"
 
-#: ../src/dialog-pref.ui.h:12
+#: ../src/resources/ui/dialog-pref.ui.h:12
 msgid "The widget list (GtkTreeView): "
 msgstr "Widżet listy:"
 
-#: ../src/dialog-pref.ui.h:13
+#: ../src/resources/ui/dialog-pref.ui.h:13
 msgid "Fonts"
 msgstr "Czcionki"
 
-#: ../src/menu.ui.h:1
-msgid "New window"
-msgstr "Nowe okno"
-
-#: ../src/menu.ui.h:3
-msgid "About Gydict"
-msgstr "O Gydict"
-
-#: ../src/menu.ui.h:4
-msgid "Quit"
-msgstr "Wyjdź"
-
-#: ../src/menu.ui.h:5
+#: ../src/resources/ui/gydict.ui.h:1
 msgid "_Print"
 msgstr "Wydrukuj"
 
-#: ../src/menu.ui.h:6
+#: ../src/resources/ui/gydict.ui.h:2
 msgid "_Copy"
 msgstr "Skopiuj"
 
-#: ../src/menu.ui.h:7
+#: ../src/resources/ui/gydict.ui.h:3
 msgid "Pa_ste"
 msgstr "Wklej"
 
-#: ../src/menu.ui.h:8
+#: ../src/resources/ui/gydict.ui.h:4
 msgid "React to clipboard"
 msgstr "Reaguj na schowek"
 
-#: ../src/menu.ui.h:9
+#: ../src/resources/ui/gydict.ui.h:5
 msgid "Diacritic"
 msgstr "Znaki diakrytyczne"
 
-#: ../src/menu.ui.h:10
+#: ../src/resources/ui/gydict.ui.h:6
 msgid "Cl_ose"
 msgstr "Zamknij"
+
+#: ../src/resources/ui/gydict.ui.h:7
+msgid "Back"
+msgstr "Z powrotem"
+
+#: ../src/resources/ui/gydict.ui.h:8
+msgid "Forward"
+msgstr "Naprzód"
+
+#: ../src/resources/ui/menu.ui.h:1
+msgid "New window"
+msgstr "Nowe okno"
+
+#: ../src/resources/ui/menu.ui.h:3
+msgid "About Gydict"
+msgstr "O Gydict"
+
+#: ../src/resources/ui/menu.ui.h:4
+msgid "Quit"
+msgstr "Wyjdź"
