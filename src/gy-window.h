@@ -29,8 +29,8 @@ G_BEGIN_DECLS
  * Type macros
  */
 
-#define GY_TYPE_WINDOW 		  (gy_window_get_type ())
-#define GY_WINDOW(obj)        	  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GY_TYPE_WINDOW, GyWindow))
+#define GY_TYPE_WINDOW            (gy_window_get_type ())
+#define GY_WINDOW(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GY_TYPE_WINDOW, GyWindow))
 #define GY_IS_WINDOW(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GY_TYPE_WINDOW))
 #define GY_WINDOW_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GY_TYPE_WINDOW, GyWindowClass))
 #define GY_IS_WINDOW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GY_TYPE_WINDOW))

@@ -34,45 +34,45 @@
 typedef struct _GyWindowPrivate GyWindowPrivate;
 
 static void gear_menu_cb (GSimpleAction *action,
-			  GVariant 	*parametr,
-			  gpointer 	 data);
+                          GVariant      *parametr,
+                          gpointer       data);
 static void find_menu_cb (GSimpleAction *action,
-			  GVariant 	*parametr,
-			  gpointer 	 data);
+                          GVariant      *parametr,
+                          gpointer       data);
 static void dict_menu_cb (GSimpleAction *action,
-			  GVariant 	*parametr,
-			  gpointer 	 data);
+                          GVariant      *parametr,
+                          gpointer       data);
 static void dict_radio_cb (GSimpleAction *action,
-			   GVariant 	 *parameter,
-			   gpointer 	  data);
+                           GVariant      *parameter,
+                           gpointer       data);
 static void quit_win_cb (GSimpleAction *action,
-			GVariant       *parameter,
-			gpointer        data);
+                         GVariant      *parameter,
+                         gpointer       data);
 static void paste_cb (GSimpleAction *action,
-		      GVariant 	    *parameter,
-	     	      gpointer 	     data);
+                      GVariant      *parameter,
+                      gpointer       data);
 static void copy_cb (GSimpleAction *action,
-	    	     GVariant 	   *parameter,
-    		     gpointer       data);
+                     GVariant      *parameter,
+                     gpointer       data);
 static void go_back_cb (GSimpleAction *action,
-	    	    	GVariant      *parameter,
-    		    	gpointer       data);
+                        GVariant      *parameter,
+                        gpointer       data);
 static void go_forward_cb (GSimpleAction *action,
-			   GVariant 	 *parameter,
-			   gpointer 	  data);
+                           GVariant      *parameter,
+                           gpointer       data);
 static void paste_sign_cb (GSimpleAction *action,
-			   GVariant 	 *parameter,
-			   gpointer 	  data);
+                           GVariant      *parameter,
+                           gpointer       data);
 static void  buttons_signs_cb (GSimpleAction *action,
-			       GVariant      *parametr,
-			       gpointer       data);
+                               GVariant      *parametr,
+                               gpointer       data);
 static void respond_clipboard_cb (GSimpleAction *action,
-				  GVariant	*parameter,
-				  gpointer 	 data);
-static void on_window_size_allocate (GtkWidget *widget,
-				     GtkAllocation *allocation);
-static gboolean on_window_state_event (GtkWidget *widget,
-	   			       GdkEventWindowState *event);
+                                  GVariant      *parameter,
+                                  gpointer       data);
+static void on_window_size_allocate (GtkWidget     *widget,
+                                     GtkAllocation *allocation);
+static gboolean on_window_state_event (GtkWidget           *widget,
+                                       GdkEventWindowState *event);
 static void on_window_destroy (GtkWidget *widget);
 static void on_window_constructed (GObject *object);
 static void dispose (GObject *object);
@@ -152,9 +152,9 @@ static GActionEntry win_entries[] =
 
 /**STATIC FUNCTION**/
 static void
-owner_change_cb (GtkClipboard 	     *clipboard,
-		 GdkEventOwnerChange *event G_GNUC_UNUSED,
-		 gpointer             data)
+owner_change_cb (GtkClipboard        *clipboard,
+                 GdkEventOwnerChange *event G_GNUC_UNUSED,
+                 gpointer             data)
 {
   gchar *text = NULL, *word = NULL;
   GyWindow *window = GY_WINDOW (data);
@@ -166,7 +166,7 @@ owner_change_cb (GtkClipboard 	     *clipboard,
     GMatchInfo *match_info;
 
     regex = g_regex_new ("[[:alpha:]|]+([[:space:]]|[-])?[[:alpha:]|]+",
-			 0, 0, NULL);
+                         0, 0, NULL);
     g_regex_match (regex, text, 0, &match_info);
     word = g_match_info_fetch (match_info, 0);
 
@@ -183,17 +183,17 @@ owner_change_cb (GtkClipboard 	     *clipboard,
 
 static gboolean
 press_button_text_view_cb (GtkWidget      *widget G_GNUC_UNUSED,
-			   GdkEventButton *event G_GNUC_UNUSED,
-			   gpointer        data)
+                           GdkEventButton *event G_GNUC_UNUSED,
+                           gpointer        data)
 {
   GyWindow *window = GY_WINDOW (data);
   GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
   if (!gy_utility_handlers_is_blocked_by_func (priv->clipboard,
-					       owner_change_cb, window))
+                                               owner_change_cb, window))
   {
     g_signal_handlers_block_by_func (priv->clipboard,
-				     owner_change_cb, window);
+                                     owner_change_cb, window);
   }
 
   return FALSE;
@@ -201,17 +201,17 @@ press_button_text_view_cb (GtkWidget      *widget G_GNUC_UNUSED,
 
 static gboolean
 release_button_text_view_cb (GtkWidget      *widget G_GNUC_UNUSED,
-			     GdkEventButton *event G_GNUC_UNUSED,
-			     gpointer        data)
+                             GdkEventButton *event G_GNUC_UNUSED,
+                             gpointer        data)
 {
   GyWindow *window = GY_WINDOW (data);
   GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
   if (gy_utility_handlers_is_blocked_by_func (priv->clipboard,
-					      owner_change_cb, window))
+                                              owner_change_cb, window))
   {
     g_signal_handlers_unblock_by_func (priv->clipboard,
-				       owner_change_cb, window);
+                                       owner_change_cb, window);
     gtk_text_buffer_copy_clipboard (priv->buffer, priv->clipboard);
   }
 
@@ -220,8 +220,8 @@ release_button_text_view_cb (GtkWidget      *widget G_GNUC_UNUSED,
 
 static void
 respond_clipboard_cb (GSimpleAction *action,
-		      GVariant	    *parameter G_GNUC_UNUSED,
-		      gpointer	     data)
+                      GVariant      *parameter G_GNUC_UNUSED,
+                      gpointer       data)
 {
   gboolean respond;
   GVariant *state;
@@ -231,25 +231,25 @@ respond_clipboard_cb (GSimpleAction *action,
   state = g_action_get_state (G_ACTION (action));
   respond = g_variant_get_boolean (state);
   g_action_change_state (G_ACTION (action),
-			 g_variant_new_boolean (!respond));
+                         g_variant_new_boolean (!respond));
   g_variant_unref (state);
 
   if (!respond)
   {
     g_signal_connect (priv->clipboard, "owner-change",
-		      G_CALLBACK (owner_change_cb), window);
+                      G_CALLBACK (owner_change_cb), window);
   }
   else
   {
     g_signal_handlers_disconnect_by_func (priv->clipboard,
-					  owner_change_cb, window);
+                                          owner_change_cb, window);
   }
 }
 
 static void 
 find_menu_cb (GSimpleAction *action,
-	      GVariant 	    *parametr G_GNUC_UNUSED,
-	      gpointer       data)
+              GVariant      *parametr G_GNUC_UNUSED,
+              gpointer       data)
 {
   GyWindow *window = GY_WINDOW(data);
   GyWindowPrivate *priv = gy_window_get_instance_private(window);
@@ -258,17 +258,17 @@ find_menu_cb (GSimpleAction *action,
 
   state = g_action_get_state (G_ACTION (action));
   g_action_change_state (G_ACTION (action),
-			 g_variant_new_boolean (!g_variant_get_boolean (state)));
+                         g_variant_new_boolean (!g_variant_get_boolean (state)));
   gy_search_bar_set_search_mode (GY_SEARCH_BAR (priv->findbar),
-				 !g_variant_get_boolean (state));
+                                 !g_variant_get_boolean (state));
   g_variant_unref (state);
 
 }
 
 static void 
 buttons_signs_cb(GSimpleAction *action,
-		 GVariant      *parametr G_GNUC_UNUSED,
-		 gpointer       data)
+                 GVariant      *parametr G_GNUC_UNUSED,
+                 gpointer       data)
 {
   GyWindow *window = GY_WINDOW(data);
   GyWindowPrivate *priv = gy_window_get_instance_private(window);
@@ -277,86 +277,85 @@ buttons_signs_cb(GSimpleAction *action,
 
   state = g_action_get_state (G_ACTION (action));
   g_action_change_state (G_ACTION (action),
-			 g_variant_new_boolean (!g_variant_get_boolean (state)));
+                         g_variant_new_boolean (!g_variant_get_boolean (state)));
   gtk_revealer_set_reveal_child (GTK_REVEALER (priv->revealer_buttons), 
-				 !g_variant_get_boolean (state));
+                                 !g_variant_get_boolean (state));
   g_variant_unref (state);
 
 }
 
 static void 
 dict_menu_cb(GSimpleAction *action,
-	     GVariant  	   *parametr G_GNUC_UNUSED,
-	     gpointer 	    data G_GNUC_UNUSED)
+             GVariant      *parametr G_GNUC_UNUSED,
+             gpointer       data G_GNUC_UNUSED)
 {
-    GVariant *state;
+  GVariant *state;
 
-    state = g_action_get_state (G_ACTION (action));
-    g_action_change_state (G_ACTION (action),
-			   g_variant_new_boolean (!g_variant_get_boolean (state)));
-    g_variant_unref (state);
+  state = g_action_get_state (G_ACTION (action));
+  g_action_change_state (G_ACTION (action),
+                         g_variant_new_boolean (!g_variant_get_boolean (state)));
+  g_variant_unref (state);
 }
 
 
 static void 
 gear_menu_cb(GSimpleAction *action,
-	     GVariant 	   *parametr G_GNUC_UNUSED,
-	     gpointer 	    data G_GNUC_UNUSED)
+             GVariant      *parametr G_GNUC_UNUSED,
+             gpointer       data G_GNUC_UNUSED)
 {
-    GVariant *state;
+  GVariant *state;
 
-    state = g_action_get_state (G_ACTION (action));
-    g_action_change_state (G_ACTION (action),
-			   g_variant_new_boolean (!g_variant_get_boolean (state)));
-    g_variant_unref (state);
+  state = g_action_get_state (G_ACTION (action));
+  g_action_change_state (G_ACTION (action),
+                         g_variant_new_boolean (!g_variant_get_boolean (state)));
+  g_variant_unref (state);
 }
 
 static void 
 dict_radio_cb (GSimpleAction *action,
-	       GVariant *parameter,
- 	       gpointer data)
+               GVariant *parameter,
+               gpointer data)
 {
-    const gchar *value,
-                *str = NULL;
-    GyWindow *window = GY_WINDOW (data);
-    GyWindowPrivate *priv = gy_window_get_instance_private (window);
-    GyDict *dict;
+  const gchar *value,
+              *str = NULL;
+  GyWindow *window = GY_WINDOW (data);
+  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyDict *dict;
 
-    value = g_variant_get_string (parameter, NULL);
-    priv->qvalue = g_quark_from_string (value);
+  value = g_variant_get_string (parameter, NULL);
+  priv->qvalue = g_quark_from_string (value);
 
   if (!(dict = g_datalist_id_get_data (&priv->datalist, priv->qvalue)))
     {
       GyHistory *history = NULL;
       dict = gy_dict_new_object (value);
 
-      if(gy_dict_set_dictionary (dict) ||
-	 gy_dict_init_list (dict))
-	{
-	  gtk_widget_show (priv->infobar);
-	  return;
-	}
+      if(gy_dict_set_dictionary (dict) || gy_dict_init_list (dict))
+        {
+          gtk_widget_show (priv->infobar);
+          return;
+
+        }
 
       g_datalist_id_set_data_full (&priv->datalist,
-				   priv->qvalue,dict,
-				   g_object_unref);
+                                   priv->qvalue,dict,
+                                   g_object_unref);
 
       if (priv->histories_dictionaries != NULL)
-	{
-	  history = gy_history_new ();
+        {
+          history = gy_history_new ();
+          g_hash_table_insert (priv->histories_dictionaries,
+                               (gpointer) g_strdup (value), history);
 
-	  g_hash_table_insert (priv->histories_dictionaries,
-			      (gpointer) g_strdup (value), history);
-
-	}
+        }
     }
   gtk_tree_view_set_model (GTK_TREE_VIEW (priv->tree_view),
-			   gy_dict_get_tree_model (dict));
+                           gy_dict_get_tree_model (dict));
   gy_utility_delete_text_in_buffer (priv->buffer);
   gtk_entry_set_text (GTK_ENTRY (priv->entry), "");
 
   priv->history = GY_HISTORY (g_hash_table_lookup (priv->histories_dictionaries,
-						   value));
+                                                   value));
 
   if (priv->bind[GY_BINDING_ACTION_PREV] != NULL &&
       priv->bind[GY_BINDING_ACTION_NEXT] != NULL)
@@ -366,12 +365,12 @@ dict_radio_cb (GSimpleAction *action,
     }
 
   priv->bind[GY_BINDING_ACTION_PREV] = g_object_bind_property (G_OBJECT (priv->history), "is-enabled-action-prev",
-							       G_OBJECT (priv->prev),    "enabled",
-							       G_BINDING_DEFAULT);
+                                                               G_OBJECT (priv->prev),    "enabled",
+                                                               G_BINDING_DEFAULT);
 
   priv->bind[GY_BINDING_ACTION_NEXT] = g_object_bind_property (G_OBJECT (priv->history),  "is-enabled-action-next",
-							       G_OBJECT (priv->next),     "enabled",
-							       G_BINDING_DEFAULT);
+                                                               G_OBJECT (priv->next),     "enabled",
+                                                               G_BINDING_DEFAULT);
   gy_history_update (priv->history);
 
   if (gy_history_length (priv->history) != 0)
@@ -381,55 +380,54 @@ dict_radio_cb (GSimpleAction *action,
       gtk_entry_set_text (GTK_ENTRY (priv->entry), str);
     }
 
-  gtk_header_bar_set_title (GTK_HEADER_BAR (priv->header_bar),
-			    str == NULL ? "" : str);
+  gtk_header_bar_set_title (GTK_HEADER_BAR (priv->header_bar), str == NULL ? "" : str);
 
   g_action_change_state (G_ACTION (action), parameter);
 }
 
 static void 
 quit_win_cb (GSimpleAction *action G_GNUC_UNUSED,
-	     GVariant 	   *parameter G_GNUC_UNUSED,
-	     gpointer 	    data)
+             GVariant      *parameter G_GNUC_UNUSED,
+             gpointer       data)
 {
-    GyWindow *window = GY_WINDOW (data);
-    gtk_widget_destroy (GTK_WIDGET (window));
+  GyWindow *window = GY_WINDOW (data);
+  gtk_widget_destroy (GTK_WIDGET (window));
 }
 
 static void 
 copy_cb (GSimpleAction *action G_GNUC_UNUSED,
-	 GVariant      *parameter G_GNUC_UNUSED,
-	 gpointer 	data)
+         GVariant      *parameter G_GNUC_UNUSED,
+         gpointer       data)
 {
-    GtkClipboard * clip;
-    GyWindow * window = GY_WINDOW (data);
-    GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GtkClipboard * clip;
+  GyWindow * window = GY_WINDOW (data);
+  GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
-    clip = gtk_clipboard_get (GDK_NONE);
-    gtk_text_buffer_copy_clipboard (priv->buffer,clip);
+  clip = gtk_clipboard_get (GDK_NONE);
+  gtk_text_buffer_copy_clipboard (priv->buffer,clip);
 }
 
 static void 
 paste_cb (GSimpleAction *action G_GNUC_UNUSED,
-	  GVariant      *parameter G_GNUC_UNUSED,
-     	  gpointer 	 data)
+          GVariant      *parameter G_GNUC_UNUSED,
+          gpointer       data)
 {
-    GtkWidget *focus;
-    GyWindow *window = GY_WINDOW (data);
+  GtkWidget *focus;
+  GyWindow *window = GY_WINDOW (data);
 
-    focus = gtk_window_get_focus (GTK_WINDOW (window));
+  focus = gtk_window_get_focus (GTK_WINDOW (window));
 
-    if (GTK_IS_EDITABLE (focus))
-	gtk_editable_paste_clipboard (GTK_EDITABLE (focus));
+  if (GTK_IS_EDITABLE (focus))
+    gtk_editable_paste_clipboard (GTK_EDITABLE (focus));
 }
 
 static void 
 go_back_cb (GSimpleAction *action G_GNUC_UNUSED,
-	    GVariant 	  *parameter G_GNUC_UNUSED,
-	    gpointer  	   data)
+            GVariant      *parameter G_GNUC_UNUSED,
+            gpointer       data)
 {
-    GyWindow * window = GY_WINDOW (data);
-    GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow * window = GY_WINDOW (data);
+  GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
   gy_history_iterable_previous_item (GY_HISTORY_ITERABLE (priv->history));
   const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (priv->history));
@@ -441,11 +439,11 @@ go_back_cb (GSimpleAction *action G_GNUC_UNUSED,
 
 static void 
 go_forward_cb (GSimpleAction *action G_GNUC_UNUSED,
-	       GVariant      *parameter G_GNUC_UNUSED,
-	       gpointer       data)
+               GVariant      *parameter G_GNUC_UNUSED,
+               gpointer       data)
 {
-    GyWindow * window = GY_WINDOW (data);
-    GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow * window = GY_WINDOW (data);
+  GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
   gy_history_iterable_next_item (GY_HISTORY_ITERABLE (priv->history));
   const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (priv->history));
@@ -456,84 +454,81 @@ go_forward_cb (GSimpleAction *action G_GNUC_UNUSED,
 
 static void 
 paste_sign_cb (GSimpleAction *action G_GNUC_UNUSED,
-	       GVariant *parameter,
-	       gpointer data)
+               GVariant      *parameter,
+               gpointer       data)
 {
-    gchar *concat = NULL;
-    GyWindow *window = GY_WINDOW (data);
-    GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  gchar *concat = NULL;
+  GyWindow *window = GY_WINDOW (data);
+  GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
-    concat = g_strconcat (gtk_entry_get_text (GTK_ENTRY (priv->entry)),
-			  g_variant_get_string (parameter, NULL), NULL);
-    gtk_entry_set_text (GTK_ENTRY (priv->entry), concat);
-    gtk_editable_set_position (GTK_EDITABLE (priv->entry), -1);
-    g_free (concat);
+  concat = g_strconcat (gtk_entry_get_text (GTK_ENTRY (priv->entry)),
+                        g_variant_get_string (parameter, NULL), NULL);
+  gtk_entry_set_text (GTK_ENTRY (priv->entry), concat);
+  gtk_editable_set_position (GTK_EDITABLE (priv->entry), -1);
+  g_free (concat);
 }
 
 static gboolean
 source_func (gpointer data)
 {
-    GyWindow *window = GY_WINDOW (data);
-    GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *window = GY_WINDOW (data);
+  GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
-  gy_history_append (priv->history,
-		     priv->string_history );
+  gy_history_append (priv->history, priv->string_history );
 
-    g_free (priv->string_history);
-    priv->string_history = NULL;
-    priv->timeout_history = 0;
-    return FALSE;
+  g_free (priv->string_history);
+  priv->string_history = NULL;
+  priv->timeout_history = 0;
+  return FALSE;
 }
 
 static void
 tree_selection_cb (GtkTreeSelection *selection, 
-		   gpointer 	     data)
+                   gpointer          data)
 {
-    GtkTreeIter iter;
-    GtkTreeModel *model;
-    GtkTreePath * path;
-    gint * row;
-    GtkTextBuffer * buffer;
-    gchar * value;
-    GyWindow *window = GY_WINDOW (data);
-    GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GtkTreeIter iter;
+  GtkTreeModel *model;
+  GtkTreePath * path;
+  gint * row;
+  GtkTextBuffer * buffer;
+  gchar * value;
+  GyWindow *window = GY_WINDOW (data);
+  GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
-    buffer = gy_window_get_text_buffer (window);
+  buffer = gy_window_get_text_buffer (window);
 
-    if (priv->timeout_history)
+  if (priv->timeout_history)
     {
-	g_source_remove (priv->timeout_history);
-	priv->timeout_history = 0;
+      g_source_remove (priv->timeout_history);
+      priv->timeout_history = 0;
     }
 
-    if (gtk_tree_selection_get_selected (selection, &model, &iter))
+  if (gtk_tree_selection_get_selected (selection, &model, &iter))
     {
-	path = gtk_tree_model_get_path (model, &iter);
-	row = gtk_tree_path_get_indices (path);
+      path = gtk_tree_model_get_path (model, &iter);
+      row = gtk_tree_path_get_indices (path);
 
-	gy_utility_delete_text_in_buffer (buffer);
-	gy_parser_dict_parse (GY_PARSER_DICT (gy_window_get_dictionary (window)), 
-			      buffer, *row);
+      gy_utility_delete_text_in_buffer (buffer);
+      gy_parser_dict_parse (GY_PARSER_DICT (gy_window_get_dictionary (window)),
+                            buffer, *row);
 
-	gtk_tree_model_get (model, &iter, 0, &value, -1);
-	gtk_header_bar_set_title (GTK_HEADER_BAR (gy_window_get_header_bar (window)),
-				 (const gchar *) value);
+      gtk_tree_model_get (model, &iter, 0, &value, -1);
+      gtk_header_bar_set_title (GTK_HEADER_BAR (gy_window_get_header_bar (window)),
+                                (const gchar *) value);
 
-	/* the variable @value is freed in the function source_func */
-	priv->string_history = value;
-	priv->timeout_history = g_timeout_add (2000,
-					(GSourceFunc) source_func,
-					data);
-	gtk_tree_path_free (path);
+      /* the variable @value is freed in the function source_func */
+      priv->string_history = value;
+      priv->timeout_history = g_timeout_add (2000, (GSourceFunc) source_func, data);
+      gtk_tree_path_free (path);
     }
 }
 
 static gboolean
 tree_view_search_equal_func (GtkTreeModel *model,
-			     gint 	   column,
-			     const gchar  *key,
-			     GtkTreeIter  *iter,
-			     gpointer 	   search_data G_GNUC_UNUSED)
+                             gint          column,
+                             const gchar  *key,
+                             GtkTreeIter  *iter,
+                             gpointer      search_data G_GNUC_UNUSED)
 {
   gboolean retval = TRUE;
   const gchar *str;
@@ -549,31 +544,31 @@ tree_view_search_equal_func (GtkTreeModel *model,
   g_value_init (&transformed, G_TYPE_STRING);
 
   if (!g_value_transform (&value, &transformed))
-  {
-    g_value_unset (&value);
-    return TRUE;
-  }
+    {
+      g_value_unset (&value);
+      return TRUE;
+    }
 
   g_value_unset (&value);
 
   str = g_value_get_string (&transformed);
   if (!str)
-  {
-    g_value_unset (&transformed);
-    return TRUE;
-  }
+    {
+      g_value_unset (&transformed);
+      return TRUE;
+    }
 
   normalized_string = g_utf8_normalize (str, -1, G_NORMALIZE_ALL);
   normalized_key = g_utf8_normalize (key, -1, G_NORMALIZE_ALL);
 
   if (normalized_string && normalized_key)
-  {
-    case_normalized_string = g_utf8_casefold (normalized_string, -1);
-    case_normalized_key = g_utf8_casefold (normalized_key, -1);
+    {
+      case_normalized_string = g_utf8_casefold (normalized_string, -1);
+      case_normalized_key = g_utf8_casefold (normalized_key, -1);
 
-    if (gy_utility_strcmp (case_normalized_key, case_normalized_string, strlen (case_normalized_key)) == 0)
-      retval = FALSE;
-  }
+      if (gy_utility_strcmp (case_normalized_key, case_normalized_string, strlen (case_normalized_key)) == 0)
+        retval = FALSE;
+    }
 
   g_value_unset (&transformed);
   g_free (normalized_key);
@@ -586,44 +581,41 @@ tree_view_search_equal_func (GtkTreeModel *model,
 
 static void
 settings_fonts_changed_cb (GySettings  *settings G_GNUC_UNUSED,
-			   const gchar *text_font,
-			   const gchar *tree_font,
-			   gpointer     data)
+                           const gchar *text_font,
+                           const gchar *tree_font,
+                           gpointer     data)
 {
-    GyWindow *window = GY_WINDOW (data);
-    GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *window = GY_WINDOW (data);
+  GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
-    font_desc = pango_font_description_from_string (text_font);
-    gtk_widget_override_font (priv->text_view, font_desc);
-    pango_font_description_free (font_desc);
+  font_desc = pango_font_description_from_string (text_font);
+  gtk_widget_override_font (priv->text_view, font_desc);
+  pango_font_description_free (font_desc);
 
-    font_desc = pango_font_description_from_string (tree_font);
-    gtk_widget_override_font (priv->tree_view, font_desc);
-    pango_font_description_free (font_desc);
-
+  font_desc = pango_font_description_from_string (tree_font);
+  gtk_widget_override_font (priv->tree_view, font_desc);
+  pango_font_description_free (font_desc);
 }
 
 inline static void
 set_font (GyWindow *window)
 {
-    gchar *text_font = NULL, *tree_font = NULL;
-    GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  gchar *text_font = NULL, *tree_font = NULL;
+  GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
-    if (!gy_settings_get_use_fonts_system (priv->settings))
+  if (!gy_settings_get_use_fonts_system (priv->settings))
     {
-	text_font = gy_settings_get_font_text (priv->settings);
-	tree_font = gy_settings_get_font_tree (priv->settings);
+      text_font = gy_settings_get_font_text (priv->settings);
+      tree_font = gy_settings_get_font_tree (priv->settings);
+      font_desc = pango_font_description_from_string (text_font);
+      gtk_widget_override_font(priv->text_view, font_desc);
+      pango_font_description_free (font_desc);
+      font_desc = pango_font_description_from_string (tree_font);
+      gtk_widget_override_font(priv->tree_view, font_desc);
+      pango_font_description_free (font_desc);
 
-	font_desc = pango_font_description_from_string (text_font);
-	gtk_widget_override_font(priv->text_view, font_desc);
-	pango_font_description_free (font_desc);
-
-	font_desc = pango_font_description_from_string (tree_font);
-	gtk_widget_override_font(priv->tree_view, font_desc);
-	pango_font_description_free (font_desc);
-
-	g_free (text_font);
-	g_free (tree_font);
+      g_free (text_font);
+      g_free (tree_font);
     }
 
 }
@@ -648,17 +640,16 @@ create_info_bar (GyWindow *window)
   GtkWidget *label = NULL, *area = NULL;
   GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
-  label = gtk_label_new (_("Error!!!. Can not open the dictionary.\n" 
-			 "See description error on terminal."));
+  label = gtk_label_new (_("Error!!!. Can't open the dictionary.\n See description error on terminal."));
   gtk_widget_show (label);
   area = gtk_info_bar_get_content_area (GTK_INFO_BAR (priv->infobar));
   gtk_container_add (GTK_CONTAINER (area), label);
   gtk_info_bar_set_message_type (GTK_INFO_BAR (priv->infobar),
-				 GTK_MESSAGE_ERROR);
+                                 GTK_MESSAGE_ERROR);
   gtk_info_bar_add_button (GTK_INFO_BAR (priv->infobar), "OK",
-			   GTK_RESPONSE_OK);
+                           GTK_RESPONSE_OK);
   g_signal_connect (priv->infobar, "response",
-		    G_CALLBACK (gtk_widget_hide), NULL);
+                    G_CALLBACK (gtk_widget_hide), NULL);
   gtk_widget_set_no_show_all (priv->infobar, TRUE);
 }
 
@@ -675,8 +666,8 @@ gy_window_init (GyWindow *window)
 
   /* Add actions */
   g_action_map_add_action_entries (G_ACTION_MAP (window),
-				   win_entries, G_N_ELEMENTS (win_entries),
-				   window);
+                                   win_entries, G_N_ELEMENTS (win_entries),
+                                   window);
 
   create_info_bar (window);
 
@@ -686,10 +677,10 @@ gy_window_init (GyWindow *window)
   priv->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree_view));
   gtk_tree_selection_set_mode (priv->selection, GTK_SELECTION_BROWSE);
   gtk_tree_view_set_search_entry (GTK_TREE_VIEW (priv->tree_view),
-				  GTK_ENTRY (priv->entry));
+                                  GTK_ENTRY (priv->entry));
   gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (priv->tree_view),
-				       tree_view_search_equal_func,
-				       NULL, NULL);
+                                       tree_view_search_equal_func,
+                                       NULL, NULL);
 
   /* Create findbar */
   priv->findbar = gy_search_bar_new ();
@@ -697,14 +688,10 @@ gy_window_init (GyWindow *window)
   gy_search_bar_connect_text_buffer (GY_SEARCH_BAR (priv->findbar), priv->buffer);
 
   /* Create history */
-  priv->histories_dictionaries = g_hash_table_new_full (g_str_hash,
-						        g_str_equal,
-							g_free,
-							g_object_unref);
-  priv->next = g_action_map_lookup_action (G_ACTION_MAP (window),
-					   "go-forward");
-  priv->prev = g_action_map_lookup_action (G_ACTION_MAP (window),
-					   "go-back");
+  priv->histories_dictionaries = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                        g_free, g_object_unref);
+  priv->next = g_action_map_lookup_action (G_ACTION_MAP (window), "go-forward");
+  priv->prev = g_action_map_lookup_action (G_ACTION_MAP (window), "go-back");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (priv->next), FALSE);
   g_simple_action_set_enabled (G_SIMPLE_ACTION (priv->prev), FALSE);
   priv->bind[GY_BINDING_ACTION_PREV] = priv->bind[GY_BINDING_ACTION_NEXT] = NULL;
@@ -718,13 +705,13 @@ gy_window_init (GyWindow *window)
 
   /* Connect signals */
   g_signal_connect (G_OBJECT (priv->selection), "changed",
-		    G_CALLBACK (tree_selection_cb), window);
+                    G_CALLBACK(tree_selection_cb), window);
   g_signal_connect (priv->text_view, "button-press-event",
-		    G_CALLBACK (press_button_text_view_cb), window);
+                    G_CALLBACK (press_button_text_view_cb), window);
   g_signal_connect (priv->text_view, "button-release-event",
-		    G_CALLBACK (release_button_text_view_cb), window);
+                    G_CALLBACK (release_button_text_view_cb), window);
   g_signal_connect (priv->settings, "fonts-changed",
-		    G_CALLBACK (settings_fonts_changed_cb), window);
+                    G_CALLBACK (settings_fonts_changed_cb), window);
 }
 
 static void
@@ -741,7 +728,7 @@ gy_window_class_init (GyWindowClass *klass)
   widget_class->destroy = on_window_destroy;
 
   gtk_widget_class_set_template_from_resource (widget_class,
-					       "/org/gtk/gydict/gydict.ui");
+                                               "/org/gtk/gydict/gydict.ui");
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, child_box);
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, infobar);
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, header_bar);
@@ -830,8 +817,8 @@ on_window_constructed (GObject *object)
   window_load_state (window);
 
   gtk_window_set_default_size (GTK_WINDOW (window),
-			       priv->current_width,
-			       priv->current_height);
+                               priv->current_width,
+                               priv->current_height);
 
   if (priv->is_maximized)
     gtk_window_maximize (GTK_WINDOW (window));
@@ -861,13 +848,13 @@ dispose (GObject *object)
 
 static void 
 on_window_size_allocate (GtkWidget *widget,
-			 GtkAllocation *allocation)
+                         GtkAllocation *allocation)
 {
   GyWindow *win = GY_WINDOW (widget);
   GyWindowPrivate *priv = gy_window_get_instance_private (win);
 
   GTK_WIDGET_CLASS (gy_window_parent_class)->size_allocate (widget,
-							    allocation);
+                                                            allocation);
   if (!(priv->is_maximized))
   {
     priv->current_width = allocation->width;
@@ -877,7 +864,7 @@ on_window_size_allocate (GtkWidget *widget,
 
 static gboolean
 on_window_state_event (GtkWidget *widget,
-		       GdkEventWindowState *event)
+                       GdkEventWindowState *event)
 {
   GyWindow *win = GY_WINDOW (widget);
   GyWindowPrivate *priv = gy_window_get_instance_private (win);
@@ -885,8 +872,7 @@ on_window_state_event (GtkWidget *widget,
 
   if (GTK_WIDGET_CLASS (gy_window_parent_class)->window_state_event != NULL)
   {
-    res = GTK_WIDGET_CLASS (gy_window_parent_class)->window_state_event (widget,
-									 event);
+    res = GTK_WIDGET_CLASS (gy_window_parent_class)->window_state_event (widget, event);
   }
 
   priv->is_maximized = (event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED) != 0;
@@ -909,7 +895,7 @@ gy_window_new (GyApp *application)
   GyWindow *window;
 
   window = g_object_new (GY_TYPE_WINDOW,
-			 "application", application, NULL);
+                         "application", application, NULL);
 
   return GTK_WIDGET (window);
 }
