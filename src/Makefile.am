@@ -33,31 +33,32 @@ EXTRA_DIST =                                                                   \
 		$(srcdir)/resources/ui/gydict.ui                               \
 		$(srcdir)/resources/ui/menu.ui	                               \
 		$(resource_files)                                              \
+                $(srcdir)/gy.gresource.xml                                     \
 		$(NULL)
 
 bin_PROGRAMS = gydict
 
 gydict_SOURCES =                                                               \
-		gy-app.c                                                       \
-		gy-depl.c                                                      \
+		gy-app.c gy-app.h                                              \
+		gy-depl.c gy-depl.h                                            \
 		gy-main.c                                                      \
-		gy-dialog-pref.c                                               \
-		gy-window.c                                                    \
-		gy-utility-func.c                                              \
-		gy-dict.c                                                      \
-		gy-parser.c                                                    \
+		gy-dialog-pref.c gy-dialog-pref.h                              \
+		gy-window.c gy-window.h                                        \
+		gy-utility-func.c gy-utility-func.h                            \
+		gy-dict.c gy-dict.h                                            \
+		gy-parser.c gy-parser.h                                        \
 		gy-parser-pwn.c                                                \
 		gy-parser-pwn.h                                                \
-                gy-print.c                                                     \
-		gy-history.c                                                   \
-                gy-history-iterable.c                                          \
-		gy-search-bar.c                                                \
-		gy-settings.c                                                  \
-		gy-print-compositor.c                                          \
-		gy-resources.c                                                 \
-		gy-pwn.c                                                       \
-		gy-enum-types.c                                                \
-		gy-pwntabs.c                                                   \
+                gy-print.c gy-print.h                                          \
+		gy-history.c gy-history.h                                      \
+                gy-history-iterable.c gy-history-iterable.h                    \
+		gy-search-bar.c gy-search-bar.h                                \
+		gy-settings.c gy-settings.h                                    \
+		gy-print-compositor.c gy-print-compositor.h                    \
+		gy-resources.c gy-resources.h                                  \
+		gy-pwn.c gy-pwn.h                                              \
+		gy-enum-types.c gy-enum-types.h                                \
+		gy-pwntabs.c gy-pwntabs.h                                      \
 		$(NULL)
 
 gydict_CPPFLAGS =                                                              \
