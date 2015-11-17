@@ -1,9 +1,6 @@
-2013-08-21  gettextize  <bug-gnu-gettext@gnu.org>
-
-	* Makefile.am (SUBDIRS): Add po.
-	(ACLOCAL_AMFLAGS): New variable.
-	(EXTRA_DIST): New variable.
-	* configure.ac (AC_OUTPUT): Add po/Makefile.in.
-
-
-
+Wersja 0.2.0
+    * Poprawiono historię wcześniej używanych słów (Każdy słownik ma włąsną historię).
+    * Nowy parser dla słowników PWN.
+    * Usunięcie starego kodu.
+    * Uporządkowanie procesu kompilacji.
+    * Sformatowanie kodu (tabulacje -> spacje).
