@@ -166,40 +166,32 @@ quit_cb (GSimpleAction *action G_GNUC_UNUSED,
   }
 }
 
-inline static void
-setup_accelerators (GyApp *application)
+static void
+setup_accels (GyApp *self)
 {
-  GVariant *parameter[3] = {NULL, NULL, NULL};
-  parameter[0] = g_variant_new_string ("dict-pwn-angpol");
-  parameter[1] = g_variant_new_string ("dict-pwn-polang");
-  parameter[2] = g_variant_new_string ("dict-depl-a");
+  static const struct {gchar *action; gchar *accel_key;} accels_key[] = {
+      {"app.quit", "<ctrl>q"},
+      {"app.new-window", "<ctrl>n"},
+      {"win.print", "<ctrl>p"},
+      {"win.copy", "<ctrl>c"},
+      {"win.paste", "<ctrl>v"},
+      {"win.clip", "<ctrl>m"},
+      {"win.close", "<ctrl>w"},
+      {"win.gear-menu", "F10"},
+      {"win.find-menu", "<ctrl>f"},
+      {"win.dict(\"dict-pwn-angpol\")", "<ALT>1"},
+      {"win.dict(\"dict-pwn-polang\")", "<ALT>2"},
+      {"win.dict(\"dict-depl-a\")", "<ALT>3"},
+      {NULL, NULL}
+  };
 
-  gtk_application_add_accelerator (GTK_APPLICATION (application),
-                                   "<PRIMARY>p", "win.print", NULL);
-  gtk_application_add_accelerator (GTK_APPLICATION (application),
-                                   "<PRIMARY>c", "win.copy", NULL);
-  gtk_application_add_accelerator (GTK_APPLICATION (application),
-                                   "<PRIMARY>v", "win.paste", NULL);
-  gtk_application_add_accelerator (GTK_APPLICATION (application),
-                                   "<PRIMARY>m", "win.clip", NULL);
-  gtk_application_add_accelerator (GTK_APPLICATION (application),
-                                   "<PRIMARY>w", "win.close", NULL);
-  gtk_application_add_accelerator (GTK_APPLICATION (application),
-                                   "F10", "win.gear-menu", NULL);
-  gtk_application_add_accelerator (GTK_APPLICATION (application),
-                                   "<PRIMARY>f", "win.find-menu", NULL);
-  gtk_application_add_accelerator (GTK_APPLICATION (application),
-                                   "<PRIMARY>d", "win.dict-menu", NULL);
-  gtk_application_add_accelerator (GTK_APPLICATION (application),
-                                   "<PRIMARY>n", "app.new-window", NULL);
-  gtk_application_add_accelerator (GTK_APPLICATION (application),
-                                   "<PRIMARY>q", "app.quit", NULL);
-  gtk_application_add_accelerator (GTK_APPLICATION (application),
-                                   "<ALT>1", "win.dict", parameter[0]);
-  gtk_application_add_accelerator (GTK_APPLICATION (application),
-                                   "<ALT>2", "win.dict", parameter[1]);
-  gtk_application_add_accelerator (GTK_APPLICATION (application),
-                                   "<ALT>3", "win.dict", parameter[2]);
+  for (gint i = 0; accels_key[i].action; i++)
+    {
+      const gchar *accels[2] = {accels_key[i].accel_key, NULL};
+      gtk_application_set_accels_for_action (GTK_APPLICATION (self),
+                                             accels_key[i].action,
+                                             accels);
+    }
 }
 
 static void
@@ -238,7 +230,7 @@ startup (GApplication *application)
   setup_menu_app (app);
 
   /* Setup accelerators */
-  setup_accelerators (app);
+  setup_accels (app);
 }
 
 static void
