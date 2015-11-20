@@ -22,6 +22,7 @@
 #include "gy-app.h"
 #include "gy-dialog-pref.h"
 #include "gy-window.h"
+#include "gy-preferences-window.h"
 
 typedef struct _GyAppPrivate GyAppPrivate;
 
@@ -43,7 +44,7 @@ static void dispose (GObject *object);
 
 struct _GyAppPrivate
 {
-  gsize padding[2];
+  GyPreferencesWindow *preferences_window;
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE (GyApp, gy_app, GTK_TYPE_APPLICATION);
@@ -118,6 +119,24 @@ preferences_cb (GSimpleAction *action G_GNUC_UNUSED,
 
   window = gy_app_peek_first_window (app);
   gy_dialog_pref_show_dialog (window);
+
+  /*GyApp *self = GY_APP (data);
+  GyAppPrivate *priv = gy_app_get_instance_private (self);
+
+  if (priv->preferences_window == NULL)
+    {
+      GyPreferencesWindow *prefs_window;
+
+      prefs_window = g_object_new (GY_TYPE_PREFERENCES_WINDOW,
+                                   "type-hint", GDK_WINDOW_TYPE_HINT_DIALOG,
+                                   "window-position", GTK_WIN_POS_CENTER, NULL);
+
+      priv->preferences_window = prefs_window;
+      g_object_add_weak_pointer (G_OBJECT (prefs_window),
+                                 (gpointer *)&priv->preferences_window);
+    }
+
+  gtk_window_present (GTK_WINDOW (priv->preferences_window));*/
 }
 
 static void
