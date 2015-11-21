@@ -60,6 +60,8 @@ gydict_SOURCES =                                                               \
 		gy-enum-types.c gy-enum-types.h                                \
 		gy-pwntabs.c gy-pwntabs.h                                      \
                 gy-preferences-window.c gy-preferences-window.h                \
+                gy-preferences-page.c gy-preferences-page.h                    \
+                gy-preferences-page-general.c gy-preferences-page-general.h      \
 		$(NULL)
 
 gydict_CPPFLAGS =                                                              \
