@@ -214,6 +214,21 @@ setup_accels (GyApp *self)
 }
 
 static void
+gy_app_register_theme_overrides (GyApp *self)
+{
+  g_autoptr(GSettings)  settings = NULL;
+  GtkSettings          *gtk_settings;
+  GdkScreen            *screen;
+
+  screen = gdk_screen_get_default ();
+
+  gtk_settings = gtk_settings_get_for_screen (screen);
+  settings = g_settings_new ("org.gtk.gydict");
+  g_settings_bind (settings,     "night-mode",
+                   gtk_settings, "gtk-application-prefer-dark-theme",
+                   G_SETTINGS_BIND_DEFAULT);
+}
+static void
 setup_menu_app (GyApp *application)
 {
   GtkBuilder *builder;
@@ -250,6 +265,9 @@ startup (GApplication *application)
 
   /* Setup accelerators */
   setup_accels (app);
+
+  /* Setup theme */
+  gy_app_register_theme_overrides (app);
 }
 
 static void
