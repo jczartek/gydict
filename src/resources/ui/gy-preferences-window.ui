@@ -3,7 +3,7 @@
   <template class="GyPreferencesWindow" parent="GtkWindow">
     <property name="title" translatable="yes">Preferences</property>
     <property name="default-width">800</property>
-    <property name="default-height">500</property>
+    <property name="default-height">400</property>
     <property name="window-position">GTK_WIN_POS_CENTER_ON_PARENT</property>
     <child type="titlebar">
       <object class="GtkBox" id="titlebar_box">
@@ -30,7 +30,7 @@
             <property name="visible">True</property>
             <property name="expand">True</property>
             <property name="show-close-button">True</property>
-            <property name="decoration_layout">close</property>
+            <property name="decoration_layout">:close</property>
             <child>
               <object class="GtkStack" id="controls_stack">
                 <property name="homogeneous">false</property>
@@ -71,7 +71,17 @@
           <object class="GtkStack" id="stack">
             <property name="visible">True</property>
             <property name="expand">True</property>
+            <property name="visible-child">general_page</property>
             <property name="transition-type">GTK_STACK_TRANSITION_TYPE_CROSSFADE</property>
+            <child>
+              <object class="GyPreferencesPageGeneral" id="general_page">
+                <property name="visible">True</property>
+              </object>
+              <packing>
+                <property name="name">general</property>
+                <property name="title" translatable="yes">General Preferences</property>
+              </packing>
+            </child>
           </object>
         </child>
       </object>

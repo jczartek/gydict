@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "gy-preferences-window.h"
+#include "gy-preferences-page.h"
+#include "gy-preferences-page-general.h"
 
 struct _GyPreferencesWindow
 {

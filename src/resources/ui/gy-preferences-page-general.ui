@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <interface>
   <template class="GyPreferencesPageGeneral" parent="GyPreferencesPage">
-    <property name="title" translatable="yes">General</property>
+    <property name="title" translatable="yes">General Preferences</property>
     <child>
       <object class="GtkScrolledWindow">
         <property name="min-content-height">500</property>
@@ -32,9 +32,40 @@
                 <property name="visible">true</property>
               </object>
             </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Theme</property>
+                <property name="xalign">0.0</property>
+                <property name="margin-top">12</property>
+                <property name="margin-bottom">6</property>
+                <style>
+                  <class name="dim-label" />
+                </style>
+                <attributes>
+                  <attribute name="weight" value="bold" />
+                </attributes>
+              </object>
+            </child>
+            <child>
+              <object class="GyPreferencesSwitch" id="night_mode">
+                <property name="title" translatable="yes">Night Mode</property>
+                <property name="description" translatable="yes">Use dark colors for the application.</property>
+                <property name="settings">settings</property>
+                <property name="settings-schema-key">night-mode</property>
+                <property name="size-group">control_group</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
     </child>
   </template>
+  <object class="GSettings" id="settings">
+    <property name="schema-id">org.gtk.gydict</property>
+  </object>
+  <object class="GtkSizeGroup" id="control_group">
+    <property name="mode">horizontal</property>
+  </object>
 </interface>
