@@ -61,7 +61,8 @@ gydict_SOURCES =                                                               \
 		gy-pwntabs.c gy-pwntabs.h                                      \
                 gy-preferences-window.c gy-preferences-window.h                \
                 gy-preferences-page.c gy-preferences-page.h                    \
-                gy-preferences-page-general.c gy-preferences-page-general.h      \
+                gy-preferences-page-general.c gy-preferences-page-general.h    \
+                gy-preferences-switch.c gy-preferences-switch.h                \
 		$(NULL)
 
 gydict_CPPFLAGS =                                                              \

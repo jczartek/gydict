@@ -7,5 +7,6 @@
     <file alias="gysearchbar.ui" compressed="true" preprocess="xml-stripblanks">./resources/ui/gysearchbar.ui</file>
     <file alias="gy-preferences-window.ui" compressed="true" preprocess="xml-stripblanks">./resources/ui/gy-preferences-window.ui</file>
     <file alias="gy-preferences-page-general.ui" compressed="true" preprocess="xml-stripblanks">./resources/ui/gy-preferences-page-general.ui</file>
+    <file alias="gy-preferences-switch.ui" compressed="true" preprocess="xml-stripblanks">./resources/ui/gy-preferences-switch.ui</file>
   </gresource>
 </gresources>
