@@ -23,7 +23,10 @@ struct _GyPreferencesWindow
 {
   GtkWindow  parent;
 
-  GtkWidget *right_header_bar;
+
+  GtkHeaderBar *right_header_bar;
+  GtkStack     *stack;
+  GtkStack     *controls_stack;
 };
 
 G_DEFINE_TYPE (GyPreferencesWindow, gy_preferences_window, GTK_TYPE_WINDOW)
@@ -33,7 +36,13 @@ enum {
   LAST_PROP
 };
 
+enum {
+  CLOSE,
+  LAST_SIGNAL
+};
+
 static GParamSpec *gParamSpecs [LAST_PROP];
+static guint       gSignals    [LAST_SIGNAL];
 
 GyPreferencesWindow *
 gy_preferences_window_new (void)
@@ -47,6 +56,14 @@ gy_preferences_window_finalize (GObject *object)
   GyPreferencesWindow *self = (GyPreferencesWindow *)object;
 
   G_OBJECT_CLASS (gy_preferences_window_parent_class)->finalize (object);
+}
+
+static void
+gy_preferences_window_close (GyPreferencesWindow *self)
+{
+  g_return_if_fail (GY_IS_PREFERENCES_WINDOW (self));
+
+  gtk_window_close (GTK_WINDOW (self));
 }
 
 static void
@@ -84,6 +101,7 @@ gy_preferences_window_class_init (GyPreferencesWindowClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+  GtkBindingSet *binding_set;
 
   object_class->finalize = gy_preferences_window_finalize;
   object_class->get_property = gy_preferences_window_get_property;
@@ -91,6 +109,18 @@ gy_preferences_window_class_init (GyPreferencesWindowClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-preferences-window.ui");
   gtk_widget_class_bind_template_child (widget_class, GyPreferencesWindow, right_header_bar);
+  gtk_widget_class_bind_template_child (widget_class, GyPreferencesWindow, stack);
+  gtk_widget_class_bind_template_child (widget_class, GyPreferencesWindow, controls_stack);
+
+  gSignals [CLOSE] =
+    g_signal_new_class_handler ("close",
+                                G_TYPE_FROM_CLASS (klass),
+                                (G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION),
+                                G_CALLBACK (gy_preferences_window_close),
+                                NULL, NULL, NULL,
+                                G_TYPE_NONE, 0);
+  binding_set = gtk_binding_set_by_class (klass);
+  gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0, "close", 0);
 }
 
 static void
