@@ -21,12 +21,14 @@
 
 struct _GyPreferencesWindow
 {
-  GtkWindow  parent;
-
+  GtkWindow     parent;
 
   GtkHeaderBar *right_header_bar;
   GtkStack     *stack;
-  GtkStack     *controls_stack;
+  GtkWidget    *visible_child;
+  GBinding     *title_binding;
+
+  guint         destroyed : 1;
 };
 
 G_DEFINE_TYPE (GyPreferencesWindow, gy_preferences_window, GTK_TYPE_WINDOW)
@@ -48,6 +50,28 @@ GyPreferencesWindow *
 gy_preferences_window_new (void)
 {
   return g_object_new (GY_TYPE_PREFERENCES_WINDOW, NULL);
+}
+
+static void
+gy_preferences_window_section_changed (GtkStack            *stack,
+                                       GParamSpec          *pspec,
+                                       GyPreferencesWindow *self)
+{
+  GtkWidget *visible_child;
+
+  g_return_if_fail (GTK_IS_STACK (stack));
+  g_return_if_fail (GY_IS_PREFERENCES_WINDOW (self));
+
+  if (self->destroyed)
+    return;
+
+  visible_child = gtk_stack_get_visible_child (stack);
+
+  if (GY_IS_PREFERENCES_PAGE (visible_child))
+    {
+      const gchar *title = gy_preferences_page_get_title (GY_PREFERENCES_PAGE (visible_child));
+      gtk_header_bar_set_title (self->right_header_bar, title);
+    }
 }
 
 static void
@@ -97,20 +121,44 @@ gy_preferences_window_set_property (GObject      *object,
 }
 
 static void
+gy_preferences_window_constructed (GObject *object)
+{
+  GyPreferencesWindow *self = GY_PREFERENCES_WINDOW (object);
+
+  G_OBJECT_CLASS (gy_preferences_window_parent_class)->constructed (object);
+
+  g_signal_connect (self->stack, "notify::visible-child",
+                    G_CALLBACK (gy_preferences_window_section_changed), self);
+}
+
+static void
+gy_preferences_window_destroy (GtkWidget *widget)
+{
+  GyPreferencesWindow *self = GY_PREFERENCES_WINDOW (widget);
+
+  g_return_if_fail (GY_IS_PREFERENCES_WINDOW (self));
+
+  self->destroyed = TRUE;
+
+  GTK_WIDGET_CLASS (gy_preferences_window_parent_class)->destroy (widget);
+}
+static void
 gy_preferences_window_class_init (GyPreferencesWindowClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
   GtkBindingSet *binding_set;
 
+  object_class->constructed = gy_preferences_window_constructed;
   object_class->finalize = gy_preferences_window_finalize;
   object_class->get_property = gy_preferences_window_get_property;
   object_class->set_property = gy_preferences_window_set_property;
 
+  widget_class->destroy = gy_preferences_window_destroy;
+
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-preferences-window.ui");
   gtk_widget_class_bind_template_child (widget_class, GyPreferencesWindow, right_header_bar);
   gtk_widget_class_bind_template_child (widget_class, GyPreferencesWindow, stack);
-  gtk_widget_class_bind_template_child (widget_class, GyPreferencesWindow, controls_stack);
 
   gSignals [CLOSE] =
     g_signal_new_class_handler ("close",

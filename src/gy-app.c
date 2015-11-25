@@ -114,13 +114,13 @@ preferences_cb (GSimpleAction *action G_GNUC_UNUSED,
                 GVariant      *parametr G_GNUC_UNUSED,
                 gpointer       data)
 {
-  GyApp *app = GY_APP(data);
+  /*GyApp *app = GY_APP(data);
   GtkWindow *window;
 
   window = gy_app_peek_first_window (app);
-  gy_dialog_pref_show_dialog (window);
+  gy_dialog_pref_show_dialog (window);*/
 
-  /*GyApp *self = GY_APP (data);
+  GyApp *self = GY_APP (data);
   GyAppPrivate *priv = gy_app_get_instance_private (self);
 
   if (priv->preferences_window == NULL)
@@ -136,7 +136,7 @@ preferences_cb (GSimpleAction *action G_GNUC_UNUSED,
                                  (gpointer *)&priv->preferences_window);
     }
 
-  gtk_window_present (GTK_WINDOW (priv->preferences_window));*/
+  gtk_window_present (GTK_WINDOW (priv->preferences_window));
 }
 
 static void

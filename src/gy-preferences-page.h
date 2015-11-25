@@ -33,6 +33,7 @@ struct _GyPreferencesPageClass
 
 void gy_preferences_page_set_title (GyPreferencesPage *page,
                                     const gchar       *title);
+const gchar* gy_preferences_page_get_title (GyPreferencesPage *page);
 
 G_END_DECLS
 

@@ -31,6 +31,7 @@
             <property name="expand">True</property>
             <property name="show-close-button">True</property>
             <property name="decoration_layout">:close</property>
+            <property name="title" translatable="yes">General Preferences</property>
             <child>
               <object class="GtkStack" id="controls_stack">
                 <property name="homogeneous">false</property>

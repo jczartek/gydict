@@ -33,16 +33,6 @@ enum {
 
 static GParamSpec *gParamSpecs [LAST_PROP];
 
-static const gchar *
-gy_preferences_page_get_title (GyPreferencesPage *self)
-{
-  GyPreferencesPagePrivate *priv = gy_preferences_page_get_instance_private (self);
-
-  g_return_val_if_fail (GY_IS_PREFERENCES_PAGE (self), NULL);
-
-  return priv->title;
-}
-
 static void
 gy_preferences_page_finalize (GObject *object)
 {
@@ -65,6 +55,7 @@ gy_preferences_page_get_property (GObject    *object,
   switch (prop_id)
     {
     case PROP_TITLE:
+      g_value_set_string (value, gy_preferences_page_get_title (self));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -82,6 +73,7 @@ gy_preferences_page_set_property (GObject      *object,
   switch (prop_id)
     {
     case PROP_TITLE:
+      gy_preferences_page_set_title (self, g_value_get_string (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -126,4 +118,14 @@ gy_preferences_page_set_title (GyPreferencesPage *page,
       g_object_notify_by_pspec (G_OBJECT (page),
                                 gParamSpecs [PROP_TITLE]);
     }
+}
+
+const gchar *
+gy_preferences_page_get_title (GyPreferencesPage *self)
+{
+  GyPreferencesPagePrivate *priv = gy_preferences_page_get_instance_private (self);
+
+  g_return_val_if_fail (GY_IS_PREFERENCES_PAGE (self), NULL);
+
+  return priv->title;
 }
