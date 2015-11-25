@@ -6,6 +6,9 @@
       <summary>Night Mode</summary>
       <description>Prefer dark application chrome.</description>
     </key>
+    <key name="font-name" type="s">
+      <default>"Sans Reqular 12"</default>
+    </key>
   </schema>
 
   <schema id="org.gtk.gydict.path" path="/org/gtk/gydict/path/">
