@@ -18,6 +18,9 @@
 #ifndef __GY_UTILITY_H__
 #define __GY_UTILITY_H__
 
+#include <gtk/gtk.h>
+#include <pango/pango.h>
+
 extern guint gydict_utility_search_entity(const  gchar ** tab_encja,
                                           const gchar * token_encja);
 extern void gy_utility_delete_text_in_buffer(GtkTextBuffer *buffer);
@@ -32,4 +35,6 @@ extern void gy_utility_text_buffer_insert_text_with_tags (GtkTextBuffer *buffer,
                                                           const gchar   *text,
                                                           gint           len,
                                                           GHashTable    *table_tags);
+
+extern gchar *gy_utility_pango_font_description_to_css (const PangoFontDescription *font_desc);
 #endif
