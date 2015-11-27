@@ -630,7 +630,6 @@ gy_window_init (GyWindow *window)
   create_info_bar (window);
 
   priv->buffer = set_text_buffer_on_text_view (priv->text_view);
-  //gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (priv->text_view), GTK_WRAP_WORD);
 
   priv->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree_view));
   gtk_tree_selection_set_mode (priv->selection, GTK_SELECTION_BROWSE);
