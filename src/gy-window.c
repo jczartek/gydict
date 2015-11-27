@@ -30,6 +30,7 @@
 #include "gy-parser.h"
 #include "gy-search-bar.h"
 #include "gy-settings.h"
+#include "gy-text-view.h"
 
 typedef struct _GyWindowPrivate GyWindowPrivate;
 
@@ -89,7 +90,7 @@ struct _GyWindowPrivate
   GtkWidget *main_box;
   GtkWidget *child_box;
   GtkWidget *tree_view;
-  GtkWidget *text_view;
+  GyTextView *text_view;
   GtkWidget *findbar;
   GtkWidget *infobar;
   GtkWidget *header_bar;
@@ -111,8 +112,6 @@ struct _GyWindowPrivate
   GAction  *next;
   GAction  *prev;
   GBinding *bind[GY_N_BINDINGS];
-
-  GySettings *settings;
 
   GtkClipboard *clipboard; /* Non free! */
 
@@ -579,49 +578,8 @@ tree_view_search_equal_func (GtkTreeModel *model,
   return retval;
 }
 
-static void
-settings_fonts_changed_cb (GySettings  *settings G_GNUC_UNUSED,
-                           const gchar *text_font,
-                           const gchar *tree_font,
-                           gpointer     data)
-{
-  GyWindow *window = GY_WINDOW (data);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
-
-  font_desc = pango_font_description_from_string (text_font);
-  gtk_widget_override_font (priv->text_view, font_desc);
-  pango_font_description_free (font_desc);
-
-  font_desc = pango_font_description_from_string (tree_font);
-  gtk_widget_override_font (priv->tree_view, font_desc);
-  pango_font_description_free (font_desc);
-}
-
-inline static void
-set_font (GyWindow *window)
-{
-  gchar *text_font = NULL, *tree_font = NULL;
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
-
-  if (!gy_settings_get_use_fonts_system (priv->settings))
-    {
-      text_font = gy_settings_get_font_text (priv->settings);
-      tree_font = gy_settings_get_font_tree (priv->settings);
-      font_desc = pango_font_description_from_string (text_font);
-      gtk_widget_override_font(priv->text_view, font_desc);
-      pango_font_description_free (font_desc);
-      font_desc = pango_font_description_from_string (tree_font);
-      gtk_widget_override_font(priv->tree_view, font_desc);
-      pango_font_description_free (font_desc);
-
-      g_free (text_font);
-      g_free (tree_font);
-    }
-
-}
-
 static GtkTextBuffer*
-set_text_buffer_on_text_view (GtkWidget* text_view)
+set_text_buffer_on_text_view (GyTextView* text_view)
 {
   GtkTextIter iter;
   GtkTextBuffer *buffer;
@@ -672,7 +630,7 @@ gy_window_init (GyWindow *window)
   create_info_bar (window);
 
   priv->buffer = set_text_buffer_on_text_view (priv->text_view);
-  gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (priv->text_view), GTK_WRAP_WORD);
+  //gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (priv->text_view), GTK_WRAP_WORD);
 
   priv->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree_view));
   gtk_tree_selection_set_mode (priv->selection, GTK_SELECTION_BROWSE);
@@ -696,10 +654,6 @@ gy_window_init (GyWindow *window)
   g_simple_action_set_enabled (G_SIMPLE_ACTION (priv->prev), FALSE);
   priv->bind[GY_BINDING_ACTION_PREV] = priv->bind[GY_BINDING_ACTION_NEXT] = NULL;
 
-  /* Create settings */
-  priv->settings = gy_settings_get ();
-  set_font (window);
-
   /* Set clipboard */
   priv->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
 
@@ -710,8 +664,6 @@ gy_window_init (GyWindow *window)
                     G_CALLBACK (press_button_text_view_cb), window);
   g_signal_connect (priv->text_view, "button-release-event",
                     G_CALLBACK (release_button_text_view_cb), window);
-  g_signal_connect (priv->settings, "fonts-changed",
-                    G_CALLBACK (settings_fonts_changed_cb), window);
 }
 
 static void
@@ -835,7 +787,6 @@ dispose (GObject *object)
   g_datalist_clear (&priv->datalist);
   priv->qvalue = 0;
 
-  g_clear_object (&priv->settings);
   if (priv->histories_dictionaries != NULL)
   {
     g_hash_table_destroy (priv->histories_dictionaries);
@@ -932,6 +883,6 @@ GtkWidget *
 gy_window_get_text_view (GyWindow *window)
 {
   GyWindowPrivate *priv = gy_window_get_instance_private (window);
-  return priv->text_view;
+  return GTK_WIDGET (priv->text_view);
 }
 
