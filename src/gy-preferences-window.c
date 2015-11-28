@@ -18,6 +18,7 @@
 #include "gy-preferences-window.h"
 #include "gy-preferences-page.h"
 #include "gy-preferences-page-general.h"
+#include "gy-preferences-page-dicts.h"
 
 struct _GyPreferencesWindow
 {

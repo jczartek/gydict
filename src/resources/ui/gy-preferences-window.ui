@@ -83,6 +83,15 @@
                 <property name="title" translatable="yes">General Preferences</property>
               </packing>
             </child>
+            <child>
+              <object class="GyPreferencesPageDicts" id="dicts_page">
+                <property name="visible">true</property>
+              </object>
+              <packing>
+                <property name="name">dicts</property>
+                <property name="title" translatable="yes">Dictionaries</property>
+              </packing>
+            </child>
           </object>
         </child>
       </object>

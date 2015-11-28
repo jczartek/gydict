@@ -64,6 +64,7 @@ gydict_SOURCES =                                                               \
                 gy-preferences-page-general.c gy-preferences-page-general.h    \
                 gy-preferences-switch.c gy-preferences-switch.h                \
                 gy-text-view.c gy-text-view.h                                  \
+                gy-preferences-page-dicts.c gy-preferences-page-dicts.h        \
 		$(NULL)
 
 gydict_CPPFLAGS =                                                              \
