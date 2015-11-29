@@ -17,6 +17,7 @@
  */
 
 #include "gy-preferences-page-dicts.h"
+#include "gy-preferences-file-chooser.h"
 
 struct _GyPreferencesPageDicts
 {
