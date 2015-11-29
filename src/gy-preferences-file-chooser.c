@@ -25,6 +25,7 @@ struct _GyPreferencesFileChooser
 
   GtkLabel    *title_label;
   GtkLabel    *description_label;
+  GtkBox      *controls_box;
 };
 
 G_DEFINE_TYPE (GyPreferencesFileChooser, gy_preferences_file_chooser, GTK_TYPE_EVENT_BOX);
@@ -33,10 +34,22 @@ enum {
   PROP_0,
   PROP_TITLE,
   PROP_DESCRIPTION,
+  PROP_SIZE_GROUP,
   LAST_PROP
 };
 
 static GParamSpec *gParamSpecs [LAST_PROP];
+
+static void
+gy_preferences_file_chooser_set_size_group (GyPreferencesFileChooser *self,
+                                            GtkSizeGroup             *group)
+{
+  g_return_if_fail (GY_IS_PREFERENCES_FILE_CHOOSER (self));
+  g_return_if_fail (!group || GTK_IS_SIZE_GROUP (group));
+
+  if (group != NULL)
+    gtk_size_group_add_widget (group, GTK_WIDGET (self->controls_box));
+}
 
 static void
 gy_preferences_file_chooser_finalize (GObject *object)
@@ -77,6 +90,9 @@ gy_preferences_file_chooser_set_property (GObject      *object,
     case PROP_DESCRIPTION:
       gtk_label_set_label (self->description_label, g_value_get_string (value));
       break;
+    case PROP_SIZE_GROUP:
+      gy_preferences_file_chooser_set_size_group (self, g_value_get_object (value));
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -106,11 +122,19 @@ gy_preferences_file_chooser_class_init (GyPreferencesFileChooserClass *klass)
                          NULL,
                          (G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
 
+  gParamSpecs[PROP_SIZE_GROUP] =
+    g_param_spec_object ("size-group",
+                         "Size Group",
+                         "The sizing group for the control.",
+                         GTK_TYPE_SIZE_GROUP,
+                         (G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
+
   g_object_class_install_properties (object_class, LAST_PROP, gParamSpecs);
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-preferences-file-chooser.ui");
   gtk_widget_class_bind_template_child (widget_class, GyPreferencesFileChooser, title_label);
   gtk_widget_class_bind_template_child (widget_class, GyPreferencesFileChooser, description_label);
+  gtk_widget_class_bind_template_child (widget_class, GyPreferencesFileChooser, controls_box);
 }
 
 static void

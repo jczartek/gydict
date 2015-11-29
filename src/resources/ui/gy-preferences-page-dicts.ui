@@ -31,6 +31,7 @@
                 <property name="title" translatable="yes">English</property>
                 <property name="description" translatable="yes">Choose the dictionary file angpol.win.</property>
                 <property name="visible">true</property>
+                <property name="size-group">control_group</property>
               </object>
             </child>
             <child>
@@ -38,6 +39,7 @@
                 <property name="title" translatable="yes">Polish</property>
                 <property name="description" translatable="yes">Choose the dictionary file polang.win.</property>
                 <property name="visible">true</property>
+                <property name="size-group">control_group</property>
               </object>
             </child>
           </object>
@@ -45,4 +47,7 @@
       </object>
     </child>
   </template>
+  <object class="GtkSizeGroup" id="control_group">
+    <property name="mode">horizontal</property>
+  </object>
 </interface>
