@@ -133,6 +133,9 @@ gy_preferences_switch_finalize (GObject *object)
 {
   GyPreferencesSwitch *self = (GyPreferencesSwitch *)object;
 
+  g_clear_pointer (&self->settings_scheme_key, g_free);
+  g_clear_object (&self->settings);
+
   G_OBJECT_CLASS (gy_preferences_switch_parent_class)->finalize (object);
 }
 
