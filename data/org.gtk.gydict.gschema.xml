@@ -6,8 +6,25 @@
       <summary>Night Mode</summary>
       <description>Prefer dark application chrome.</description>
     </key>
+
     <key name="font-name" type="s">
       <default>"Sans Reqular 12"</default>
+    </key>
+
+    <key name="dict-pwn-angpol" type="s">
+      <default>""</default>
+    </key>
+
+    <key name="dict-pwn-polang" type="s">
+      <default>""</default>
+    </key>
+
+    <key name="dict-depl-a" type="s">
+      <default>""</default>
+    </key>
+
+    <key name="dict-depl-b" type="s">
+      <default>""</default>
     </key>
   </schema>
 

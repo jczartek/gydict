@@ -15,7 +15,7 @@
             <child>
               <object class="GtkLabel" id="paths_label">
                 <property name="visible">true</property>
-                <property name="label" translatable="yes">The Paths to the files for the PWN dictionaries</property>
+                <property name="label" translatable="yes">The Paths to the files for the PWN dictionary</property>
                 <property name="xalign">0.0</property>
                 <property name="margin-bottom">6</property>
                 <style>
@@ -32,6 +32,8 @@
                 <property name="description" translatable="yes">Choose the dictionary file angpol.win.</property>
                 <property name="visible">true</property>
                 <property name="size-group">control_group</property>
+                <property name="settings-schema-key">dict-pwn-angpol</property>
+                <property name="settings">settings</property>
               </object>
             </child>
             <child>
@@ -40,6 +42,43 @@
                 <property name="description" translatable="yes">Choose the dictionary file polang.win.</property>
                 <property name="visible">true</property>
                 <property name="size-group">control_group</property>
+                <property name="settings-schema-key">dict-pwn-polang</property>
+                <property name="settings">settings</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">true</property>
+                <property name="label" translatable="yes">The Paths to the files for the depl dictionary</property>
+                <property name="xalign">0.0</property>
+                <property name="margin-top">12</property>
+                <property name="margin-bottom">6</property>
+                <style>
+                  <class name="dim-label" />
+                </style>
+                <attributes>
+                  <attribute name="weight" value="bold" />
+                </attributes>
+              </object>
+            </child>
+            <child>
+              <object class="GyPreferencesFileChooser" id="depl-a">
+                <property name="title" translatable="yes">German</property>
+                <property name="description" translatable="yes">Choose the dictionary file a.dat</property>
+                <property name="visible">true</property>
+                <property name="size-group">control_group</property>
+                <property name="settings-schema-key">dict-depl-a</property>
+                <property name="settings">settings</property>
+              </object>
+            </child>
+            <child>
+              <object class="GyPreferencesFileChooser" id="depl-b">
+                <property name="title" translatable="yes">German</property>
+                <property name="description" translatable="yes">Choose the dictionary file b.dat</property>
+                <property name="visible">true</property>
+                <property name="size-group">control_group</property>
+                <property name="settings_schema_key">dict-depl-b</property>
+                <property name="settings">settings</property>
               </object>
             </child>
           </object>
@@ -49,5 +88,8 @@
   </template>
   <object class="GtkSizeGroup" id="control_group">
     <property name="mode">horizontal</property>
+  </object>
+  <object class="GSettings" id="settings">
+    <property name="schema-id">org.gtk.gydict</property>
   </object>
 </interface>

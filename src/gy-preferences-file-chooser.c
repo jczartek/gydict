@@ -19,6 +19,9 @@
 
 #include "gy-preferences-file-chooser.h"
 
+static void gy_preferences_file_chooser_set_path (GyPreferencesFileChooser *self,
+                                                  const gchar              *path);
+
 struct _GyPreferencesFileChooser
 {
   GtkEventBox  parent;
@@ -29,7 +32,7 @@ struct _GyPreferencesFileChooser
   GtkFileChooserButton *chooser_button;
 
   GSettings            *settings;
-  gchar                *settings_scheme_key;
+  gchar                *settings_schema_key;
   gchar                *path;
 };
 
@@ -52,6 +55,15 @@ static void
 gy_preferences_file_chooser_file_set (GtkFileChooserButton *chooser_button,
                                       gpointer              user_data)
 {
+  GyPreferencesFileChooser *self = GY_PREFERENCES_FILE_CHOOSER (user_data);
+  g_autofree gchar * path = NULL;
+
+  g_return_if_fail (GY_IS_PREFERENCES_FILE_CHOOSER (self));
+
+  path = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser_button));
+
+  if (path)
+    gy_preferences_file_chooser_set_path (self, path);
 }
 
 static void
@@ -67,15 +79,15 @@ gy_preferences_file_chooser_set_size_group (GyPreferencesFileChooser *self,
 
 static void
 gy_preferences_file_chooser_set_settings_schema_key (GyPreferencesFileChooser *self,
-                                                     const gchar              *settings_scheme_key)
+                                                     const gchar              *settings_schema_key)
 {
   g_return_if_fail (GY_IS_PREFERENCES_FILE_CHOOSER (self));
 
-  if (self->settings_scheme_key != settings_scheme_key)
+  if (self->settings_schema_key != settings_schema_key)
     {
-      if (self->settings_scheme_key)
-        g_free (self->settings_scheme_key);
-      self->settings_scheme_key = g_strdup (settings_scheme_key);
+      if (self->settings_schema_key)
+        g_free (self->settings_schema_key);
+      self->settings_schema_key = g_strdup (settings_schema_key);
       g_object_notify_by_pspec (G_OBJECT (self), gParamSpecs[PROP_SETTINGS_SCHEMA_KEY]);
     }
 }
@@ -110,6 +122,9 @@ static void
 gy_preferences_file_chooser_finalize (GObject *object)
 {
   GyPreferencesFileChooser *self = (GyPreferencesFileChooser *)object;
+
+  g_clear_object (&self->settings);
+  g_clear_pointer (&self->settings_schema_key, g_free);
 
   G_OBJECT_CLASS (gy_preferences_file_chooser_parent_class)->finalize (object);
 }
@@ -153,6 +168,9 @@ gy_preferences_file_chooser_set_property (GObject      *object,
       break;
     case PROP_SETTINGS:
       gy_preferences_file_chooser_set_settings (self, g_value_get_object (value));
+      g_settings_bind (self->settings, self->settings_schema_key,
+                       self,           "path",
+                       G_SETTINGS_BIND_SET);
       break;
     case PROP_SETTINGS_SCHEMA_KEY:
       gy_preferences_file_chooser_set_settings_schema_key (self, g_value_get_string (value));
@@ -213,7 +231,7 @@ gy_preferences_file_chooser_class_init (GyPreferencesFileChooserClass *klass)
                          "Settings",
                          "The GSettings for the setting.",
                          G_TYPE_SETTINGS,
-                         (G_PARAM_WRITABLE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
+                         (G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS));
 
   gParamSpecs[PROP_SETTINGS_SCHEMA_KEY] =
     g_param_spec_string ("settings-schema-key",
@@ -242,5 +260,4 @@ static void
 gy_preferences_file_chooser_init (GyPreferencesFileChooser *self)
 {
   gtk_widget_init_template (GTK_WIDGET (self));
-
 }
