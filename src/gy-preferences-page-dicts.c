@@ -82,6 +82,8 @@ gy_preferences_page_dicts_class_init (GyPreferencesPageDictsClass *klass)
   object_class->set_property = gy_preferences_page_dicts_set_property;
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-preferences-page-dicts.ui");
+
+  g_type_ensure (GY_TYPE_PREFERENCES_FILE_CHOOSER);
 }
 
 static void
