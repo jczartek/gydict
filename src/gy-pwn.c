@@ -27,7 +27,6 @@
 #include "gy-pwn.h"
 #include "gy-pwntabs.h"
 #include "gy-utility-func.h"
-#include "gy-settings.h"
 #include "gy-parser-pwn.h"
 #include "gy-window.h"
 
@@ -50,7 +49,7 @@ struct _GyPwnPrivate
 struct _ParserData
 {
   GtkTextBuffer   *buffer;
-  GtkTextIter	   iter;
+  GtkTextIter	     iter;
   GHashTable      *table_tags;
   GtkTextTagTable *table_buffor_tags;
 };
@@ -76,29 +75,25 @@ G_DEFINE_TYPE_WITH_CODE (GyPwn, gy_pwn, GY_TYPE_DICT,
 static guint
 gy_pwn_set_dictionary (GyDict *dict)
 {
-  gchar * path_file = NULL;
-  GySettings *settings = gy_settings_get ();
+  g_autofree gchar * path_file = NULL;
+  g_autoptr(GSettings) settings = NULL;
   GyPwnPrivate *priv = gy_pwn_get_instance_private (GY_PWN (dict));
 
-  path_file = gy_settings_get_path_dictionary (settings,
-                                               gy_dict_get_id_string (dict));
-  g_object_unref(settings);
+  settings = g_settings_new ("org.gtk.gydict");
+  path_file = g_settings_get_string (settings,
+                                     gy_dict_get_id_string (dict));
 
   if (!g_file_test (path_file, G_FILE_TEST_EXISTS))
     {
       g_message ("File: %s does not exist!", path_file);
-      g_free (path_file);
       return GY_EXISTS_FILE_ERROR;
     }
 
   if ( !(priv->file_dict = fopen (path_file, "rb")))
     {
       g_message ("Cannot open the %s!", path_file);
-      g_free (path_file);
       return GY_OPEN_FILE_ERROR;
     }
-
-  g_free (path_file);
 
   return GY_OK;
 }
