@@ -20,7 +20,6 @@
 #include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 #include "gy-app.h"
-#include "gy-dialog-pref.h"
 #include "gy-window.h"
 #include "gy-preferences-window.h"
 
@@ -114,12 +113,6 @@ preferences_cb (GSimpleAction *action G_GNUC_UNUSED,
                 GVariant      *parametr G_GNUC_UNUSED,
                 gpointer       data)
 {
-  /*GyApp *app = GY_APP(data);
-  GtkWindow *window;
-
-  window = gy_app_peek_first_window (app);
-  gy_dialog_pref_show_dialog (window);*/
-
   GyApp *self = GY_APP (data);
   GyAppPrivate *priv = gy_app_get_instance_private (self);
 
