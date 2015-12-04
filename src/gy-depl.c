@@ -491,14 +491,14 @@ end_element_cb (ParserContext *context)
           if ((g_strcmp0 (context->name_tag->str, tag_prev->name_tag) == 0) &&
               (tag_description->offset == tag_prev->offset))
             {
-              g_warning ("The tags </%s> and </%s> have a wrongly position (ones are reversed). A formatting is continued.",
+              g_warning ("The tags </%s> and </%s> have a wrong position (ones are reversed). A formatting is continued.",
                          tag_description->name_tag, tag_prev->name_tag);
               tag_description = tag_prev;
               last = prev;
             }
           else
             {
-              g_critical ("The tags </%s> and </%s> have a wrongly position. "
+              g_critical ("The tags </%s> and </%s> have a wrong position. "
                           "Furtermore, the tags cannot be reversed. A formatting is broken. "
                           "A text will be inserted, but it will not be formatted.",
                           tag_description->name_tag, tag_prev->name_tag);
