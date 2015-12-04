@@ -29,7 +29,6 @@
 #include "gy-dict.h"
 #include "gy-parser.h"
 #include "gy-depl.h"
-#include "gy-settings.h"
 
 #define SIZE_PARSER_BUFFER 256
 #define IS_COMMON_NAME_END_CHAR(c) \
@@ -149,31 +148,29 @@ insert_sign (gchar        *dest,
 static guint
 gy_depl_set_dictionary (GyDict *dict)
 {
-  gchar *path_file = NULL, *buffer = NULL, *buffer_end = NULL, *buffer_tmp = NULL;
+  gchar *buffer = NULL, *buffer_end = NULL, *buffer_tmp = NULL;
   gint fd = 0, i = 0;
   struct stat statbuf;
-  GySettings *settings = gy_settings_get ();
+  g_autoptr(GSettings) settings = NULL;
+  g_autofree gchar *path_file = NULL;
   GyDeplPrivate *priv = gy_depl_get_instance_private (GY_DEPL (dict));
 
-  path_file = gy_settings_get_path_dictionary (settings,
-                                               gy_dict_get_id_string (dict));
-  g_object_unref (settings);
+  settings = g_settings_new ("org.gtk.gydict");
+  path_file = g_settings_get_string (settings,
+                                     gy_dict_get_id_string (dict));
 
   if (!g_file_test (path_file, G_FILE_TEST_EXISTS))
     {
       g_message ("File: %s does not exist!", path_file);
-      g_free (path_file);
       return GY_EXISTS_FILE_ERROR;
     }
 
   if ((fd = open (path_file, O_RDONLY)) < 0)
     {
       g_message ("Cannot open the %s!", path_file);
-      g_free (path_file);
       return GY_OPEN_FILE_ERROR;
     }
 
-  g_free (path_file);
   fstat (fd, &statbuf);
 
   if ((buffer = (gchar *) mmap (0, statbuf.st_size, PROT_READ,
@@ -208,33 +205,31 @@ gy_depl_set_dictionary (GyDict *dict)
 static guint
 gy_depl_init_list (GyDict *dict)
 {
-  gchar *path_file = NULL, *words = NULL, *file_map = NULL, *file_map_end = NULL;
+  g_autofree gchar *path_file = NULL;
+  g_autofree gchar *words = NULL;
+  g_autoptr(GSettings) settings = NULL;
+  gchar *file_map = NULL, *file_map_end = NULL;
   gint fd, i;
   GtkListStore *model = NULL;
   GtkTreeIter iter;
   struct stat statbuf;
-  GySettings *settings = gy_settings_get ();
 
   model = gtk_list_store_new (1, G_TYPE_STRING);
-  path_file = gy_settings_get_path_dictionary (settings,
-                                               "dict-depl-b");
-  g_object_unref(settings);
+  settings = g_settings_new ("org.gtk.gydict");
+  path_file = g_settings_get_string (settings, "dict-depl-b");
 
   if (!g_file_test (path_file, G_FILE_TEST_EXISTS))
     {
       g_message ("File: %s does not exist!", path_file);
-      g_free (path_file);
       return GY_EXISTS_FILE_ERROR;
     }
 
   if ((fd = open (path_file, O_RDONLY)) < 0)
     {
       g_message ("Cannot open the %s!", path_file);
-      g_free (path_file);
       return GY_OPEN_FILE_ERROR;
     }
 
-  g_free (path_file);
   fstat (fd, &statbuf);
 
   if ((file_map = (gchar *) mmap (0, statbuf.st_size, PROT_READ,
@@ -270,7 +265,6 @@ gy_depl_init_list (GyDict *dict)
     }
 
   gy_dict_set_tree_model (dict, GTK_TREE_MODEL (model));
-  g_free (words);
   close (fd);
   if (munmap (file_map - statbuf.st_size, statbuf.st_size))
     return GY_MEMORY_ERROR;
