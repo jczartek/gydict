@@ -29,7 +29,6 @@
 #include "gy-history-iterable.h"
 #include "gy-parser.h"
 #include "gy-search-bar.h"
-#include "gy-settings.h"
 #include "gy-text-view.h"
 
 typedef struct _GyWindowPrivate GyWindowPrivate;
