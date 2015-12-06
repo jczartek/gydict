@@ -3,7 +3,6 @@
   <gresource prefix="/org/gtk/gydict">
     <file alias="gydict.ui" preprocess="xml-stripblanks">./resources/ui/gydict.ui</file>
     <file alias="menu.ui" preprocess="xml-stripblanks">./resources/ui/menu.ui</file>
-    <file alias="dialog-pref.ui" compressed="true" preprocess="xml-stripblanks">./resources/ui/dialog-pref.ui</file>
     <file alias="gysearchbar.ui" compressed="true" preprocess="xml-stripblanks">./resources/ui/gysearchbar.ui</file>
     <file alias="gy-preferences-window.ui" compressed="true" preprocess="xml-stripblanks">./resources/ui/gy-preferences-window.ui</file>
     <file alias="gy-preferences-page-general.ui" compressed="true" preprocess="xml-stripblanks">./resources/ui/gy-preferences-page-general.ui</file>

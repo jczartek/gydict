@@ -42,7 +42,6 @@ gydict_SOURCES =                                                               \
 		gy-app.c gy-app.h                                              \
 		gy-depl.c gy-depl.h                                            \
 		gy-main.c                                                      \
-		gy-dialog-pref.c gy-dialog-pref.h                              \
 		gy-window.c gy-window.h                                        \
 		gy-utility-func.c gy-utility-func.h                            \
 		gy-dict.c gy-dict.h                                            \
@@ -53,7 +52,6 @@ gydict_SOURCES =                                                               \
 		gy-history.c gy-history.h                                      \
                 gy-history-iterable.c gy-history-iterable.h                    \
 		gy-search-bar.c gy-search-bar.h                                \
-		gy-settings.c gy-settings.h                                    \
 		gy-print-compositor.c gy-print-compositor.h                    \
 		gy-resources.c gy-resources.h                                  \
 		gy-pwn.c gy-pwn.h                                              \
