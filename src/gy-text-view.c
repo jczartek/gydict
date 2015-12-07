@@ -25,6 +25,9 @@ struct _GyTextView
 
   GtkCssProvider       *css_provider;
   PangoFontDescription *font_desc;
+
+  GdkRGBA background_pattern_color;
+  guint background_pattern_grid_set:  1;
 };
 
 G_DEFINE_TYPE (GyTextView, gy_text_view, GTK_TYPE_TEXT_VIEW)
@@ -62,6 +65,81 @@ gy_text_view_rebuild_css (GyTextView *self)
       css = g_strdup_printf ("GyTextView { %s }", str ?: "");
       gtk_css_provider_load_from_data (self->css_provider, css, -1, NULL);
     }
+}
+
+static void
+gy_text_view_paint_background_pattern_grid (GyTextView *self,
+                                            cairo_t    *cr)
+{
+  /*
+   * NOTE: This code were taken from gtksourcseview.c
+   * Plese see: https://github.com/GNOME/gtksourceview/blob/master/gtksourceview/gtksourceview.c
+   */
+
+  GdkRectangle clip, vis;
+  gdouble x, y;
+  PangoContext *context;
+  PangoLayout  *layout;
+  gint grid_width = 16;
+  gint grid_height = 16;
+
+  context = gtk_widget_get_pango_context (GTK_WIDGET (self));
+  layout = pango_layout_new (context);
+  pango_layout_set_text (layout, "X", 1);
+  pango_layout_get_pixel_size (layout, &grid_width, &grid_height);
+  g_object_unref (layout);
+
+  /* each character becomes 2 stacked boxes */
+  grid_height = MAX (1, grid_height /2);
+  grid_width = MAX (1, grid_width);
+
+  cairo_save (cr);
+  cairo_set_line_width (cr, 1.0);
+  gdk_cairo_get_clip_rectangle (cr, &clip);
+  gtk_text_view_get_visible_rect (GTK_TEXT_VIEW (self), &vis);
+
+  gdk_cairo_set_source_rgba (cr, &self->background_pattern_color);
+
+  /*
+   * The following constants come from gtktextview.c pixel cache
+	 * settings. Sadly, they are not exposed in the public API,
+	 * just keep them in sync here. 64 for X, height/2 for Y.
+	 */
+  x = (grid_width - (vis.x % grid_width)) - (64 / grid_width * grid_width) - grid_width + 2;
+  y = (grid_height - (vis.y % grid_height)) - (vis.height / 2 / grid_height * grid_height) - grid_height;
+
+  for (; x <= clip.x + clip.width; x += grid_width)
+    {
+      cairo_move_to (cr, x + .5, clip.y - .5);
+      cairo_line_to (cr, x + .5, clip.y + clip.height - .5);
+    }
+
+	for (; y <= clip.y + clip.height; y += grid_height)
+    {
+      cairo_move_to (cr, clip.x + .5, y - .5);
+      cairo_line_to (cr, clip.x + clip.width + .5, y - .5);
+    }
+
+
+	cairo_stroke (cr);
+	cairo_restore (cr);
+}
+
+static void
+gy_text_view_draw_layer (GtkTextView      *view,
+                         GtkTextViewLayer  layer,
+                         cairo_t          *cr)
+{
+  GyTextView *self = GY_TEXT_VIEW (view);
+
+  cairo_save (cr);
+
+  if (layer == GTK_TEXT_VIEW_LAYER_BELOW)
+    {
+      gy_text_view_paint_background_pattern_grid (self, cr);
+    }
+
+  cairo_restore (cr);
 }
 
 static void
@@ -128,11 +206,14 @@ static void
 gy_text_view_class_init (GyTextViewClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  GtkTextViewClass *textview_class = GTK_TEXT_VIEW_CLASS (klass);
 
   object_class->constructed = gy_text_view_constructed;
   object_class->finalize = gy_text_view_finalize;
   object_class->get_property = gy_text_view_get_property;
   object_class->set_property = gy_text_view_set_property;
+
+  textview_class->draw_layer = gy_text_view_draw_layer;
 
   gParamSpecs [PROP_FONT_DESC] =
     g_param_spec_boxed ("font-desc",
@@ -154,6 +235,10 @@ gy_text_view_class_init (GyTextViewClass *klass)
 static void
 gy_text_view_init (GyTextView *self)
 {
+  self->background_pattern_color.red = .125;
+  self->background_pattern_color.green = .125;
+  self->background_pattern_color.blue = .125;
+  self->background_pattern_color.alpha = .025;
 }
 
 void
