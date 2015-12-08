@@ -36,6 +36,7 @@ enum {
   PROP_0,
   PROP_FONT_NAME,
   PROP_FONT_DESC,
+  PROP_BACKGROUND_PATTERN,
   LAST_PROP
 };
 
@@ -136,7 +137,8 @@ gy_text_view_draw_layer (GtkTextView      *view,
 
   if (layer == GTK_TEXT_VIEW_LAYER_BELOW)
     {
-      gy_text_view_paint_background_pattern_grid (self, cr);
+      if (self->background_pattern_grid_set)
+        gy_text_view_paint_background_pattern_grid (self, cr);
     }
 
   cairo_restore (cr);
@@ -162,6 +164,9 @@ gy_text_view_get_property (GObject    *object,
     {
     case PROP_FONT_DESC:
       g_value_set_boxed (value, gy_text_view_get_font_desc (self));
+      break;
+    case PROP_BACKGROUND_PATTERN:
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -182,6 +187,8 @@ gy_text_view_set_property (GObject      *object,
       break;
     case PROP_FONT_DESC:
       gy_text_view_set_font_desc (self, g_value_get_boxed (value));
+      break;
+    case PROP_BACKGROUND_PATTERN:
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -229,12 +236,20 @@ gy_text_view_class_init (GyTextViewClass *klass)
                          "Cantarell",
                          (G_PARAM_WRITABLE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
+  gParamSpecs [PROP_BACKGROUND_PATTERN] =
+    g_param_spec_boolean ("background-pattern",
+                          "Background Pattern",
+                          "Whether to draw the background pattern",
+                          FALSE,
+                          (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+
   g_object_class_install_properties (object_class, LAST_PROP, gParamSpecs);
 }
 
 static void
 gy_text_view_init (GyTextView *self)
 {
+  self->background_pattern_grid_set = FALSE;
   self->background_pattern_color.red = .125;
   self->background_pattern_color.green = .125;
   self->background_pattern_color.blue = .125;
