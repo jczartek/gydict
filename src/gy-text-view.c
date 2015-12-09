@@ -166,6 +166,7 @@ gy_text_view_get_property (GObject    *object,
       g_value_set_boxed (value, gy_text_view_get_font_desc (self));
       break;
     case PROP_BACKGROUND_PATTERN:
+      g_value_set_boolean (value, gy_text_view_get_background_pattern (self));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -189,6 +190,7 @@ gy_text_view_set_property (GObject      *object,
       gy_text_view_set_font_desc (self, g_value_get_boxed (value));
       break;
     case PROP_BACKGROUND_PATTERN:
+      gy_text_view_set_background_pattern (self, g_value_get_boolean (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -297,4 +299,28 @@ gy_text_view_get_font_desc (GyTextView *self)
   g_return_val_if_fail (GY_IS_TEXT_VIEW (self), NULL);
 
   return self->font_desc;
+}
+
+void
+gy_text_view_set_background_pattern (GyTextView *self,
+                                     gboolean    background_pattern)
+{
+  g_return_if_fail (GY_IS_TEXT_VIEW (self));
+
+  if (self->background_pattern_grid_set != background_pattern)
+    {
+      self->background_pattern_grid_set = background_pattern;
+
+      gtk_widget_queue_draw (GTK_WIDGET (self));
+
+      g_object_notify_by_pspec (G_OBJECT (self), gParamSpecs[PROP_BACKGROUND_PATTERN]);
+    }
+}
+
+gboolean
+gy_text_view_get_background_pattern (GyTextView *self)
+{
+  g_return_val_if_fail (GY_IS_TEXT_VIEW (self), FALSE);
+
+  return self->background_pattern_grid_set;
 }

@@ -32,6 +32,9 @@ void gy_text_view_set_font_desc (GyTextView                 *self,
 void gy_text_view_set_font_name (GyTextView  *self,
                                  const gchar  *font_name);
 const PangoFontDescription  *gy_text_view_get_font_desc (GyTextView *self);
+void gy_text_view_set_background_pattern (GyTextView *self,
+                                          gboolean    background_pattern);
+gboolean gy_text_view_get_background_pattern (GyTextView *self);
 
 G_END_DECLS
 
