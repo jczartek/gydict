@@ -7,6 +7,12 @@
       <description>Prefer dark application chrome.</description>
     </key>
 
+    <key name="show-grid-lines" type="b">
+      <default>false</default>
+      <summary>Show grid lines</summary>
+      <description>If enabled, the the program will show grid lines under the text.</description>
+    </key>
+
     <key name="font-name" type="s">
       <default>"Sans Reqular 12"</default>
     </key>
