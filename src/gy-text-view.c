@@ -209,6 +209,9 @@ gy_text_view_constructed (GObject *object)
   g_settings_bind (settings, "font-name",
                    self,     "font-name",
                    G_SETTINGS_BIND_GET);
+  g_settings_bind (settings, "show-grid-lines",
+                   self,     "background-pattern",
+                   G_SETTINGS_BIND_DEFAULT);
 }
 
 static void
