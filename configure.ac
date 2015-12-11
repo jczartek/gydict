@@ -1,7 +1,7 @@
 AC_PREREQ(2.63.2)
 
 m4_define(gydict_major_version, 0)
-m4_define(gydict_minor_version, 2)
+m4_define(gydict_minor_version, 3)
 m4_define(gydict_micro_version, 0)
 m4_define(gydict_version, gydict_major_version.gydict_minor_version.gydict_micro_version)
 
