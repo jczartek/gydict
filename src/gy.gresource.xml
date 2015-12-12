@@ -9,5 +9,9 @@
     <file alias="gy-preferences-switch.ui" compressed="true" preprocess="xml-stripblanks">./resources/ui/gy-preferences-switch.ui</file>
     <file alias="gy-preferences-page-dicts.ui" compressed="true" preprocess="xml-stripblanks">./resources/ui/gy-preferences-page-dicts.ui</file>
     <file alias="gy-preferences-file-chooser.ui" compressed="true" preprocess="xml-stripblanks">./resources/ui/gy-preferences-file-chooser.ui</file>
+
+    <file alias="Adwaita.css">./resources/css/Adwaita.css</file>
+    <file alias="Adwaita-dark.css">./resources/css/Adwaita-dark.css</file>
+    <file alias="Adwaita-shared.css">./resources/css/Adwaita-shared.css</file>
   </gresource>
 </gresources>
