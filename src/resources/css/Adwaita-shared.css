@@ -1,5 +1,9 @@
-GtkTreeView.view.cell:selected
-{
-  color: #ffffff;
-  background-color: #ff8000;
+@import url("resource:///org/gtk/gydict/Default.css");
+
+#left_header_bar {
+  border-top-right-radius: 0px;
+}
+
+#left_header_bar {
+  border-top-left-radius: 0px;
 }

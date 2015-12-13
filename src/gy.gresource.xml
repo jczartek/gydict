@@ -13,5 +13,6 @@
     <file alias="Adwaita.css">./resources/css/Adwaita.css</file>
     <file alias="Adwaita-dark.css">./resources/css/Adwaita-dark.css</file>
     <file alias="Adwaita-shared.css">./resources/css/Adwaita-shared.css</file>
+    <file alias="Default.css">./resources/css/Default.css</file>
   </gresource>
 </gresources>

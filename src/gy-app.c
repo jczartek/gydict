@@ -21,6 +21,7 @@
 #include <gtk/gtk.h>
 #include "gy-app.h"
 #include "gy-window.h"
+#include "gy-css-provider.h"
 #include "gy-preferences-window.h"
 
 typedef struct _GyAppPrivate GyAppPrivate;
@@ -210,10 +211,15 @@ static void
 gy_app_register_theme_overrides (GyApp *self)
 {
   g_autoptr(GSettings)  settings = NULL;
+  g_autoptr(GtkCssProvider) provider = NULL;
   GtkSettings          *gtk_settings;
   GdkScreen            *screen;
 
+  provider = gy_css_provider_new ();
   screen = gdk_screen_get_default ();
+
+  gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (provider),
+                                             GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
   gtk_settings = gtk_settings_get_for_screen (screen);
   settings = g_settings_new ("org.gtk.gydict");
