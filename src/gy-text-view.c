@@ -127,6 +127,51 @@ gy_text_view_paint_background_pattern_grid (GyTextView *self,
 }
 
 static void
+gy_text_view_update_background_pattern (GyTextView *self)
+{
+  GtkSettings *gtk_settings = NULL;
+  gboolean prefer_dark_theme = FALSE;
+  g_return_if_fail (GY_IS_TEXT_VIEW (self));
+
+  gtk_settings = g_object_ref (gtk_settings_get_default ());
+
+  g_assert (GTK_IS_SETTINGS (gtk_settings));
+
+  g_object_get (gtk_settings,
+                "gtk-application-prefer-dark-theme", &prefer_dark_theme,
+                NULL);
+
+  if (prefer_dark_theme)
+    {
+      gdk_rgba_parse (&self->background_pattern_color,
+                      "#e7e7e7");
+      self->background_pattern_color.alpha = 0.027;
+    }
+  else
+    {
+      self->background_pattern_color.red = .125;
+      self->background_pattern_color.green = .125;
+      self->background_pattern_color.blue = .125;
+      self->background_pattern_color.alpha = .025;
+    }
+
+
+  gtk_widget_queue_draw (GTK_WIDGET (self));
+  g_object_unref (gtk_settings);
+}
+
+static void
+gy_text_view__settings_notify_gtk_application_prefer_dark_theme (GyTextView  *self,
+                                                                 GParamSpec  *pspec,
+                                                                 GtkSettings *settings)
+{
+  g_return_if_fail (GY_IS_TEXT_VIEW (self));
+
+  gy_text_view_update_background_pattern (self);
+
+}
+
+static void
 gy_text_view_draw_layer (GtkTextView      *view,
                          GtkTextViewLayer  layer,
                          cairo_t          *cr)
@@ -202,6 +247,7 @@ gy_text_view_constructed (GObject *object)
 {
   GyTextView *self = GY_TEXT_VIEW (object);
   g_autoptr(GSettings) settings = NULL;
+  g_autoptr(GtkSettings) gtk_settings = NULL;
 
   G_OBJECT_CLASS (gy_text_view_parent_class)->constructed (object);
 
@@ -212,6 +258,13 @@ gy_text_view_constructed (GObject *object)
   g_settings_bind (settings, "show-grid-lines",
                    self,     "background-pattern",
                    G_SETTINGS_BIND_DEFAULT);
+
+  gtk_settings = g_object_ref (gtk_settings_get_default ());
+
+  g_signal_connect_swapped (gtk_settings, "notify::gtk-application-prefer-dark-theme",
+                            G_CALLBACK (gy_text_view__settings_notify_gtk_application_prefer_dark_theme), self);
+
+  gy_text_view_update_background_pattern (self);
 }
 
 static void
@@ -255,10 +308,6 @@ static void
 gy_text_view_init (GyTextView *self)
 {
   self->background_pattern_grid_set = FALSE;
-  self->background_pattern_color.red = .125;
-  self->background_pattern_color.green = .125;
-  self->background_pattern_color.blue = .125;
-  self->background_pattern_color.alpha = .025;
 }
 
 void
