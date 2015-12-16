@@ -57,6 +57,16 @@
                 <property name="visible">True</property>
               </object>
             </child>
+            <child>
+              <object class="GyPreferencesSwitch" id="show_grid_lines">
+                <property name="title" translatable="yes">Display Grid Pattern</property>
+                <property name="description" translatable="yes">Display a grid pattern under the text.</property>
+                <property name="settings">settings</property>
+                <property name="settings-schema-key">show-grid-lines</property>
+                <property name="size-group">control_group</property>
+                <property name="visible">true</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>
