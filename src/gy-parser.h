@@ -38,9 +38,9 @@ struct _GyParserDictInterface
   GTypeInterface parent_iface;
 
   /* Method iface */
-  void (*parser_dict) (GyParserDict      *parser,
-                       GtkTextBuffer     *buffer,
-                       gint               row);
+  void (*parse) (GyParserDict      *parser,
+                 GtkTextBuffer     *buffer,
+                 gint               row);
 
 };
 

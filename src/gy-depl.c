@@ -327,7 +327,7 @@ gy_depl_class_init (GyDeplClass *klass)
 static void
 gy_parser_interface_init (GyParserDictInterface *iface)
 {
-  iface->parser_dict = parser_dict;
+  iface->parse = parser_dict;
 }
 
 static void

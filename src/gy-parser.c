@@ -32,5 +32,5 @@ gy_parser_dict_parse (GyParserDict      *parser,
 {
   g_return_if_fail (GY_IS_PARSER_DICT (parser));
 
-  GY_PARSER_DICT_GET_INTERFACE (parser)->parser_dict (parser, buffer, row);
+  GY_PARSER_DICT_GET_INTERFACE (parser)->parse (parser, buffer, row);
 }

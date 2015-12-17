@@ -401,7 +401,7 @@ gy_pwn_class_init (GyPwnClass *klass)
 static void
 gy_parser_dict_interface_init (GyParserDictInterface *iface)
 {
-  iface->parser_dict = parser_dict;
+  iface->parse = parser_dict;
 }
 
 static void
