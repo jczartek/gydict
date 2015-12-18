@@ -611,6 +611,24 @@ create_info_bar (GyWindow *window)
 }
 
 static void
+gy_pwn_finalize (GObject *object)
+{
+  GyWindow *window = GY_WINDOW (object);
+  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+
+  g_datalist_clear (&priv->datalist);
+  priv->qvalue = 0;
+
+  if (priv->histories_dictionaries != NULL)
+  {
+    g_hash_table_destroy (priv->histories_dictionaries);
+    priv->histories_dictionaries = NULL;
+    priv->history = NULL;
+  }
+  G_OBJECT_CLASS (gy_window_parent_class)->finalize (object);
+}
+
+static void
 gy_window_init (GyWindow *window)
 {
   GyWindowPrivate *priv = gy_window_get_instance_private (window);
@@ -671,7 +689,7 @@ gy_window_class_init (GyWindowClass *klass)
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
   object_class->constructed = on_window_constructed;
-  object_class->dispose = dispose;
+  object_class->finalize = gy_pwn_finalize;
 
   widget_class->size_allocate = on_window_size_allocate;
   widget_class->window_state_event = on_window_state_event;
@@ -776,26 +794,8 @@ on_window_constructed (GObject *object)
   G_OBJECT_CLASS (gy_window_parent_class)->constructed (object);
 }
 
+
 static void
-dispose (GObject *object)
-{
-  GyWindow *window = GY_WINDOW (object);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
-
-  g_datalist_clear (&priv->datalist);
-  priv->qvalue = 0;
-
-  if (priv->histories_dictionaries != NULL)
-  {
-    g_hash_table_destroy (priv->histories_dictionaries);
-    priv->histories_dictionaries = NULL;
-    priv->history = NULL;
-  }
-
-  G_OBJECT_CLASS (gy_window_parent_class)->dispose (object);
-}
-
-static void 
 on_window_size_allocate (GtkWidget *widget,
                          GtkAllocation *allocation)
 {
