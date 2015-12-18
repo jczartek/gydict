@@ -64,9 +64,9 @@ static void text_cb (const gchar *text,
                      gsize        text_len,
                      gpointer     data);
 static void gy_parser_dict_interface_init (GyParserDictInterface *iface);
-static void parser_dict (GyParserDict   *parser,
-                         GtkTextBuffer  *buffer,
-                         gint            row);
+static void gy_pwn_parser_dict_parse (GyParserDict   *parser,
+                                      GtkTextBuffer  *buffer,
+                                      gint            row);
 
 G_DEFINE_TYPE_WITH_CODE (GyPwn, gy_pwn, GY_TYPE_DICT,
                          G_ADD_PRIVATE (GyPwn)
@@ -401,7 +401,7 @@ gy_pwn_class_init (GyPwnClass *klass)
 static void
 gy_parser_dict_interface_init (GyParserDictInterface *iface)
 {
-  iface->parse = parser_dict;
+  iface->parse = gy_pwn_parser_dict_parse;
 }
 
 static void
@@ -423,9 +423,9 @@ delete_double_new_lines (GtkTextBuffer *buffer)
   }
 }
 static void
-parser_dict (GyParserDict  *parser,
-             GtkTextBuffer *buffer,
-             gint 	    row)
+gy_pwn_parser_dict_parse (GyParserDict  *parser,
+                          GtkTextBuffer *buffer,
+                          gint 	    row)
 {
   GyDict *dict = GY_DICT (parser);
   GyPwnPrivate *priv = gy_pwn_get_instance_private (GY_PWN (dict));
