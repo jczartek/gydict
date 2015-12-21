@@ -24,7 +24,6 @@
 #include "gy-css-provider.h"
 #include "gy-preferences-window.h"
 
-typedef struct _GyAppPrivate GyAppPrivate;
 
 /**STATIC PROTOTYPES FUNCTIONS**/
 static void new_window_cb (GSimpleAction *action,
@@ -42,12 +41,14 @@ static void about_cb (GSimpleAction *action,
 
 static void dispose (GObject *object);
 
-struct _GyAppPrivate
+struct _GyApp
 {
+  GtkApplication       parent;
+
   GyPreferencesWindow *preferences_window;
 };
 
-G_DEFINE_TYPE_WITH_PRIVATE (GyApp, gy_app, GTK_TYPE_APPLICATION);
+G_DEFINE_TYPE (GyApp, gy_app, GTK_TYPE_APPLICATION);
 
 /**STATIC DATA**/
 
@@ -115,9 +116,8 @@ preferences_cb (GSimpleAction *action G_GNUC_UNUSED,
                 gpointer       data)
 {
   GyApp *self = GY_APP (data);
-  GyAppPrivate *priv = gy_app_get_instance_private (self);
 
-  if (priv->preferences_window == NULL)
+  if (self->preferences_window == NULL)
     {
       GyPreferencesWindow *prefs_window;
 
@@ -125,12 +125,12 @@ preferences_cb (GSimpleAction *action G_GNUC_UNUSED,
                                    "type-hint", GDK_WINDOW_TYPE_HINT_DIALOG,
                                    "window-position", GTK_WIN_POS_CENTER, NULL);
 
-      priv->preferences_window = prefs_window;
+      self->preferences_window = prefs_window;
       g_object_add_weak_pointer (G_OBJECT (prefs_window),
-                                 (gpointer *)&priv->preferences_window);
+                                 (gpointer *)&self->preferences_window);
     }
 
-  gtk_window_present (GTK_WINDOW (priv->preferences_window));
+  gtk_window_present (GTK_WINDOW (self->preferences_window));
 }
 
 static void
