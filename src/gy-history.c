@@ -35,7 +35,6 @@ static void history_set_property (GObject      *object,
                                   guint         prop_id,
                                   const GValue *value,
                                   GParamSpec   *pspec);
-static void dispose (GObject *object);
 
 struct _GyHistoryPrivate
 {
@@ -61,6 +60,18 @@ G_DEFINE_TYPE_WITH_CODE (GyHistory, gy_history, G_TYPE_OBJECT,
 #define GET_PRIVATE(instance) G_TYPE_INSTANCE_GET_PRIVATE (instance, GY_TYPE_HISTORY, GyHistoryPrivate)
 
 static void
+gy_history_finalize (GObject *object)
+{
+  GyHistory *self = GY_HISTORY (object);
+
+  g_list_free_full (self->priv->history, g_free);
+  self->priv->history = NULL;
+  self->priv->iter = NULL;
+
+  G_OBJECT_CLASS (gy_history_parent_class)->finalize (object);
+}
+
+static void
 gy_history_init (GyHistory *self)
 {
   self->priv = GET_PRIVATE (self);
@@ -76,7 +87,7 @@ gy_history_class_init (GyHistoryClass *klass)
 
   object_class->set_property = history_set_property;
   object_class->get_property = history_get_property;
-  object_class->dispose = dispose;
+  object_class->finalize = gy_history_finalize;
 
   g_type_class_add_private (klass, sizeof (GyHistoryPrivate));
 
@@ -137,14 +148,6 @@ history_set_property (GObject      *object,
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
     }
-}
-
-static void
-dispose (GObject *object)
-{
-  GyHistory *self = GY_HISTORY(object);
-
-  G_OBJECT_CLASS (gy_history_parent_class)->dispose(object);
 }
 
 /* PUBLIC METHOD */
