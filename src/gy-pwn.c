@@ -23,7 +23,7 @@
 #include <stdlib.h>
 
 #include "gy-dict.h"
-#include "gy-parser.h"
+#include "gy-parsable.h"
 #include "gy-pwn.h"
 #include "gy-pwntabs.h"
 #include "gy-utility-func.h"
@@ -63,14 +63,14 @@ static void end_tag_cb (const gchar *tag_name,
 static void text_cb (const gchar *text,
                      gsize        text_len,
                      gpointer     data);
-static void gy_parser_dict_interface_init (GyParserDictInterface *iface);
-static void gy_pwn_parser_dict_parse (GyParserDict   *parser,
-                                      GtkTextBuffer  *buffer,
-                                      gint            row);
+static void gy_parser_dict_interface_init (GyParsableInterface *iface);
+static void gy_pwn_parser_dict_parse (GyParsable    *parser,
+                                      GtkTextBuffer *buffer,
+                                      gint           row);
 
 G_DEFINE_TYPE_WITH_CODE (GyPwn, gy_pwn, GY_TYPE_DICT,
                          G_ADD_PRIVATE (GyPwn)
-                         G_IMPLEMENT_INTERFACE (GY_TYPE_PARSER_DICT,
+                         G_IMPLEMENT_INTERFACE (GY_TYPE_PARSABLE,
                                                 gy_parser_dict_interface_init));
 static guint
 gy_pwn_set_dictionary (GyDict *dict)
@@ -399,7 +399,7 @@ gy_pwn_class_init (GyPwnClass *klass)
 /************************IMPLEMENTED INTERFACE********************************/
 
 static void
-gy_parser_dict_interface_init (GyParserDictInterface *iface)
+gy_parser_dict_interface_init (GyParsableInterface *iface)
 {
   iface->parse = gy_pwn_parser_dict_parse;
 }
@@ -423,9 +423,9 @@ delete_double_new_lines (GtkTextBuffer *buffer)
   }
 }
 static void
-gy_pwn_parser_dict_parse (GyParserDict  *parser,
+gy_pwn_parser_dict_parse (GyParsable    *parser,
                           GtkTextBuffer *buffer,
-                          gint 	    row)
+                          gint 	         row)
 {
   GyDict *dict = GY_DICT (parser);
   GyPwnPrivate *priv = gy_pwn_get_instance_private (GY_PWN (dict));

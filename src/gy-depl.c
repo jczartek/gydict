@@ -27,7 +27,7 @@
 #include <string.h>
 #include "gy-pwntabs.h"
 #include "gy-dict.h"
-#include "gy-parser.h"
+#include "gy-parsable.h"
 #include "gy-depl.h"
 
 #define SIZE_PARSER_BUFFER 256
@@ -44,8 +44,8 @@ typedef struct _ParserContext ParserContext;
 typedef struct _ParserTagDescription ParserTagDescription;
 typedef struct _GyDeplPrivate GyDeplPrivate;
 
-static void gy_parser_interface_init (GyParserDictInterface *iface);
-static void gy_depl_parser_dict_parse (GyParserDict  *parser,
+static void gy_parser_interface_init (GyParsableInterface *iface);
+static void gy_depl_parser_dict_parse (GyParsable    *parser,
                                        GtkTextBuffer *buffer,
                                        gint           row);
 static void start_element_cb (ParserContext *context);
@@ -129,7 +129,7 @@ struct _GyDeplPrivate
 
 G_DEFINE_TYPE_WITH_CODE (GyDepl, gy_depl, GY_TYPE_DICT,
                          G_ADD_PRIVATE (GyDepl)
-                         G_IMPLEMENT_INTERFACE (GY_TYPE_PARSER_DICT,
+                         G_IMPLEMENT_INTERFACE (GY_TYPE_PARSABLE,
                                                 gy_parser_interface_init));
 
 static inline void
@@ -325,15 +325,15 @@ gy_depl_class_init (GyDeplClass *klass)
 
 /************************IMPLEMENTED INTERFACE********************************/
 static void
-gy_parser_interface_init (GyParserDictInterface *iface)
+gy_parser_interface_init (GyParsableInterface *iface)
 {
   iface->parse = gy_depl_parser_dict_parse;
 }
 
 static void
-gy_depl_parser_dict_parse (GyParserDict      *parser,
-                           GtkTextBuffer     *buffer,
-                           gint               row)
+gy_depl_parser_dict_parse (GyParsable      *parser,
+                           GtkTextBuffer   *buffer,
+                           gint             row)
 {
   gchar *buf = NULL;
   GyDict *dict = GY_DICT (parser);

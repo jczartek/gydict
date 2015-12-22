@@ -45,7 +45,7 @@ gydict_SOURCES =                                                               \
 		gy-window.c gy-window.h                                        \
 		gy-utility-func.c gy-utility-func.h                            \
 		gy-dict.c gy-dict.h                                            \
-		gy-parser.c gy-parser.h                                        \
+                gy-parsable.c gy-parsable.h                                    \
 		gy-parser-pwn.c                                                \
 		gy-parser-pwn.h                                                \
                 gy-print.c gy-print.h                                          \

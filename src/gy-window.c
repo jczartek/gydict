@@ -27,7 +27,7 @@
 #include "gy-print.h"
 #include "gy-history.h"
 #include "gy-history-iterable.h"
-#include "gy-parser.h"
+#include "gy-parsable.h"
 #include "gy-search-bar.h"
 #include "gy-text-view.h"
 
@@ -507,8 +507,8 @@ tree_selection_cb (GtkTreeSelection *selection,
       row = gtk_tree_path_get_indices (path);
 
       gy_utility_delete_text_in_buffer (buffer);
-      gy_parser_dict_parse (GY_PARSER_DICT (gy_window_get_dictionary (window)),
-                            buffer, *row);
+      gy_parsable_parse (GY_PARSABLE (gy_window_get_dictionary (window)),
+                         buffer, *row);
 
       gtk_tree_model_get (model, &iter, 0, &value, -1);
       gtk_header_bar_set_title (GTK_HEADER_BAR (gy_window_get_header_bar (window)),
