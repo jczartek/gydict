@@ -21,6 +21,8 @@
 
 #include <gtk/gtk.h>
 
+G_BEGIN_DECLS
+
 #define GY_HISTORY_TYPE_ITERABLE                (gy_history_iterable_get_type ())
 #define GY_HISTORY_ITERABLE(obj)                (G_TYPE_CHECK_INSTANCE_CAST ((obj), GY_HISTORY_TYPE_ITERABLE, GyHistoryIterable))
 #define GY_HISTORY_IS_ITERABLE(obj)             (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GY_HISTORY_TYPE_ITERABLE))
@@ -48,5 +50,7 @@ void            gy_history_iterable_previous_item   (GyHistoryIterable *iterable
 gboolean        gy_history_iterable_is_begin        (GyHistoryIterable *iterable);
 gboolean        gy_history_iterable_is_end          (GyHistoryIterable *iterable);
 gconstpointer   gy_history_iterable_get_item        (GyHistoryIterable *iterable);
+
+G_END_DECLS
 
 #endif /* __GY_HISTORY_ITERABLE_H__ */
