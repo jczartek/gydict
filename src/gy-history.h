@@ -1,57 +1,31 @@
-/*
- * This program is free software; you can redistribute it and/or modify
+/* gy-history.h
+ *
+ * Copyright (C) 2014 Jakub Czartek <kuba@linux.pl>
+ *
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- * 
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef __GY_HISTORY_H__
 #define __GY_HISTORY_H__
 
-G_BEGIN_DECLS	
+#include <glib-object.h>
 
-/*
- * Type macros
- */
-#define GY_TYPE_HISTORY             (gy_history_get_type ())
-#define GY_HISTORY(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GY_TYPE_HISTORY, GyHistory))
-#define GY_IS_HISTORY(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GY_TYPE_HISTORY))
-#define GY_HISTORY_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), GY_TYPE_HISTORY,  GyHistoryClass))
-#define GY_IS_HISTORY_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GY_TYPE_HISTORY))
-#define GY_HISTORY_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), GY_TYPE_HISTORY, GyHistoryClass))
+G_BEGIN_DECLS
 
-typedef struct _GyHistory GyHistory;
-typedef struct _GyHistoryClass GyHistoryClass;
-typedef struct _GyHistoryPrivate GyHistoryPrivate;
+#define GY_TYPE_HISTORY (gy_history_get_type ())
 
-struct _GyHistory
-{
-  GObject parent_instance;
-
-  /* instance members */
-  GyHistoryPrivate *priv;
-};
-
-struct _GyHistoryClass
-{
-  GObjectClass parent_class;
-
-    /* class members */
-};
-
-/* used by GY_TYPE_HISTORY */
-GType gy_history_get_type (void);
+G_DECLARE_FINAL_TYPE (GyHistory, gy_history, GY, HISTORY, GObject)
 
 /*
  * Method definitions
@@ -61,6 +35,7 @@ void       gy_history_append    (GyHistory   *obj,
                                  const gchar *str);
 void       gy_history_update    (GyHistory   *obj);
 guint      gy_history_length    (GyHistory   *obj);
+
 G_END_DECLS
 
 #endif /* end of include guard: __GY_HISTORY_H__ */

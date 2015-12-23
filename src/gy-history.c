@@ -1,19 +1,19 @@
-/*
- * This program is free software; you can redistribute it and/or modify
+/* gy-history.c
+ *
+ * Copyright (C) 2014 Jakub Czartek <kuba@linux.pl>
+ *
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- * 
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include <gtk/gtk.h>
@@ -36,8 +36,9 @@ static void history_set_property (GObject      *object,
                                   const GValue *value,
                                   GParamSpec   *pspec);
 
-struct _GyHistoryPrivate
+struct _GyHistory
 {
+  GObject        parent;
   GList         *history;
   GyHistoryIter *iter;
   gboolean       is_enabled_action_next;
@@ -57,16 +58,15 @@ G_DEFINE_TYPE_WITH_CODE (GyHistory, gy_history, G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (GY_HISTORY_TYPE_ITERABLE,
                                                 gy_history_interface_init));
 
-#define GET_PRIVATE(instance) G_TYPE_INSTANCE_GET_PRIVATE (instance, GY_TYPE_HISTORY, GyHistoryPrivate)
 
 static void
 gy_history_finalize (GObject *object)
 {
   GyHistory *self = GY_HISTORY (object);
 
-  g_list_free_full (self->priv->history, g_free);
-  self->priv->history = NULL;
-  self->priv->iter = NULL;
+  g_list_free_full (self->history, g_free);
+  self->history = NULL;
+  self->iter = NULL;
 
   G_OBJECT_CLASS (gy_history_parent_class)->finalize (object);
 }
@@ -74,10 +74,8 @@ gy_history_finalize (GObject *object)
 static void
 gy_history_init (GyHistory *self)
 {
-  self->priv = GET_PRIVATE (self);
-
-  self->priv->history = NULL;
-  self->priv->iter = NULL;
+  self->history = NULL;
+  self->iter = NULL;
 }
 
 static void
@@ -88,8 +86,6 @@ gy_history_class_init (GyHistoryClass *klass)
   object_class->set_property = history_set_property;
   object_class->get_property = history_get_property;
   object_class->finalize = gy_history_finalize;
-
-  g_type_class_add_private (klass, sizeof (GyHistoryPrivate));
 
   obj_properties[PROP_IS_ENABLED_ACTION_NEXT] = g_param_spec_boolean ("is-enabled-action-next",
                                                                       "IsEnabledActionNext",
@@ -117,11 +113,11 @@ history_get_property (GObject    *object,
     {
       case PROP_IS_ENABLED_ACTION_NEXT:
       g_value_set_boolean (value,
-                           GY_HISTORY (object)->priv->is_enabled_action_next);
+                           GY_HISTORY (object)->is_enabled_action_next);
       break;
       case PROP_IS_ENABLED_ACTION_PREV:
       g_value_set_boolean (value,
-                           GY_HISTORY (object)->priv->is_enabled_action_prev);
+                           GY_HISTORY (object)->is_enabled_action_prev);
       break;
       default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -139,10 +135,10 @@ history_set_property (GObject      *object,
   switch(prop_id)
     {
       case PROP_IS_ENABLED_ACTION_NEXT:
-      GY_HISTORY (object)->priv->is_enabled_action_next = g_value_get_boolean (value);
+      GY_HISTORY (object)->is_enabled_action_next = g_value_get_boolean (value);
       break;
       case PROP_IS_ENABLED_ACTION_PREV:
-      GY_HISTORY (object)->priv->is_enabled_action_prev = g_value_get_boolean (value);
+      GY_HISTORY (object)->is_enabled_action_prev = g_value_get_boolean (value);
       break;
       default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -173,25 +169,25 @@ g_history_compare_data_func (gconstpointer a,
  * Adds a new item to the end of @obj.
  */
 void
-gy_history_append (GyHistory   *obj,
+gy_history_append (GyHistory   *self,
                    const gchar *str)
 {
   /* Sprawdź czy słowo znajduje się w liście.*/
-  if (( g_list_find_custom (obj->priv->history, (gconstpointer) str, g_history_compare_data_func)) != NULL)
+  if (( g_list_find_custom (self->history, (gconstpointer) str, g_history_compare_data_func)) != NULL)
       return;
 
-  obj->priv->history = g_list_append (obj->priv->history,
-                                      (gpointer) g_strdup (str));
-  obj->priv->iter = g_list_last (obj->priv->history);
+  self->history = g_list_append (self->history,
+                                 (gpointer) g_strdup (str));
+  self->iter = g_list_last (self->history);
 
-  g_object_set (obj,
-                "is-enabled-action-prev", ((g_list_length (obj->priv->history) != 1 )? TRUE : FALSE),
+  g_object_set (self,
+                "is-enabled-action-prev", ((g_list_length (self->history) != 1 )? TRUE : FALSE),
                 "is-enabled-action-next",  FALSE, NULL);
 
   g_debug ("%s\t\tCount items in history: %d\t\tIsEnabledActionPrev: %d\t\tIsEnabledActionEnd: %d:", __func__,
-           g_list_length (obj->priv->history),
-           obj->priv->is_enabled_action_prev,
-           obj->priv->is_enabled_action_next);
+           g_list_length (self->history),
+           self->is_enabled_action_prev,
+           self->is_enabled_action_next);
 
   return;
 }
@@ -201,12 +197,12 @@ gy_history_append (GyHistory   *obj,
  * @obj: a GyHistory.
  */
 void
-gy_history_update (GyHistory *obj)
+gy_history_update (GyHistory *self)
 {
-  g_return_if_fail (GY_IS_HISTORY (obj));
+  g_return_if_fail (GY_IS_HISTORY (self));
 
-  g_object_set (obj,
-                "is-enabled-action-prev", ((g_list_length (obj->priv->history) == 0) || gy_history_iterable_is_begin (GY_HISTORY_ITERABLE (obj))) ? FALSE : TRUE,
+  g_object_set (self,
+                "is-enabled-action-prev", ((g_list_length (self->history) == 0) || gy_history_iterable_is_begin (GY_HISTORY_ITERABLE (self))) ? FALSE : TRUE,
                 "is-enabled-action-next", FALSE, NULL);
 }
 
@@ -219,9 +215,9 @@ gy_history_update (GyHistory *obj)
  * Returns: the numbers of elements in the history.
  */
 guint
-gy_history_length (GyHistory *obj)
+gy_history_length (GyHistory *self)
 {
-  return obj->priv->history == NULL ? 0 : g_list_length (obj->priv->history);
+  return self->history == NULL ? 0 : g_list_length (self->history);
 }
 
 /***********************INTERFACE IMPLEMENTATION******************************/
@@ -239,47 +235,47 @@ static void
 gy_history_next_item (GyHistoryIterable *iterable)
 {
 
-  GY_HISTORY (iterable)->priv->iter = g_list_next (GY_HISTORY (iterable)->priv->iter);
+  GY_HISTORY (iterable)->iter = g_list_next (GY_HISTORY (iterable)->iter);
 
   g_object_set (GY_HISTORY (iterable),
                 "is-enabled-action-prev", TRUE,
                 "is-enabled-action-next",   gy_history_iterable_is_end (iterable) ? FALSE : TRUE, NULL);
 
       g_debug ("%s\t\tIsEnabledActionPrev: %d\t\tIsEnabledActionEnd: %d:", __func__,
-               GY_HISTORY (iterable)->priv->is_enabled_action_prev,
-               GY_HISTORY (iterable)->priv->is_enabled_action_next);
+               GY_HISTORY (iterable)->is_enabled_action_prev,
+               GY_HISTORY (iterable)->is_enabled_action_next);
 }
 
 static void
 gy_history_previous_item (GyHistoryIterable *iterable)
 {
 
-  GY_HISTORY (iterable)->priv->iter = g_list_previous (GY_HISTORY (iterable)->priv->iter);
+  GY_HISTORY (iterable)->iter = g_list_previous (GY_HISTORY (iterable)->iter);
 
   g_object_set (GY_HISTORY (iterable),
                 "is-enabled-action-prev",  gy_history_iterable_is_begin (iterable) ? FALSE : TRUE,
                 "is-enabled-action-next",  TRUE, NULL);
 
     g_debug ("%s\t\tIsEnabledActionPrev: %d\t\tIsEnabledActionEnd: %d:", __func__,
-             GY_HISTORY (iterable)->priv->is_enabled_action_prev,
-             GY_HISTORY (iterable)->priv->is_enabled_action_next);
+             GY_HISTORY (iterable)->is_enabled_action_prev,
+             GY_HISTORY (iterable)->is_enabled_action_next);
 }
 
 static gboolean
 gy_history_is_begin (GyHistoryIterable *iterable)
 {
-  return (g_list_previous (GY_HISTORY (iterable)->priv->iter)) == NULL;
+  return (g_list_previous (GY_HISTORY (iterable)->iter)) == NULL;
 }
 
 static gboolean
 gy_history_is_end (GyHistoryIterable *iterable)
 {
-  return (g_list_next (GY_HISTORY (iterable)->priv->iter)) == NULL;
+  return (g_list_next (GY_HISTORY (iterable)->iter)) == NULL;
 }
 
 static gconstpointer
 gy_history_get_item (GyHistoryIterable *iterable)
 {
-  return (gconstpointer) GY_HISTORY (iterable)->priv->iter->data;
+  return (gconstpointer) GY_HISTORY (iterable)->iter->data;
 }
 
