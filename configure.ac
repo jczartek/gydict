@@ -15,8 +15,8 @@ dnl ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 dnl + Dependencies                                                             +
 dnl ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-GLIB_REQUIRED=2.40.0
-GTK_REQUIRED=3.14.0
+GLIB_REQUIRED=2.46.0
+GTK_REQUIRED=3.18.0
 
 AC_CONFIG_SRCDIR([src/gy-main.c])
 AC_CONFIG_HEADERS([src/config.h])
