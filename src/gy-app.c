@@ -136,19 +136,34 @@ preferences_cb (GSimpleAction *action G_GNUC_UNUSED,
 static void
 about_cb (GSimpleAction *action G_GNUC_UNUSED,
           GVariant      *parameter G_GNUC_UNUSED,
-          gpointer       user_data G_GNUC_UNUSED)
+          gpointer       user_data)
 {
-  const gchar  *authors[] = 
+  GyApp     *self = GY_APP (user_data);
+  GList     *windows, *iter;
+  GtkWindow *parent;
+  const gchar  *authors[] =
   {
     "Jakub Czartek <kuba@linux.pl>",
-    "Piotr Czartek <kuba@linux.pl>",
+    "Piotr Czartek",
     NULL
   };
-
   const gchar **documenters = NULL;
   const gchar  *translator_credits = _("translator_credits");
 
-  gtk_show_about_dialog (NULL,
+  g_return_if_fail (GY_IS_APP (self));
+
+  windows = gtk_application_get_windows (GTK_APPLICATION (self));
+
+  for (iter = windows; iter ;iter = iter->next)
+    {
+      if (GY_IS_WINDOW (iter->data))
+        {
+          parent = GTK_WINDOW (iter->data);
+          break;
+        }
+    }
+
+  gtk_show_about_dialog (parent,
                          "name", "Gydict",
                          "version", PACKAGE_VERSION,
                          "comments", _("This program supports the various dictionaries. "
