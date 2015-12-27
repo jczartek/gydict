@@ -107,7 +107,7 @@ gy_dict_error (GyDict      *dict,
 }
 
 static void
-dispose (GObject *object)
+gy_dict_finalize (GObject *object)
 {
   GyDictPrivate *priv;
   priv = gy_dict_get_instance_private (GY_DICT (object));
@@ -121,13 +121,7 @@ dispose (GObject *object)
 }
 
 static void
-finalize (GObject *object)
-{
-  G_OBJECT_CLASS (gy_dict_parent_class)->finalize (object);
-}
-
-static void
-gy_dict_set_property (GObject      *object, 
+gy_dict_set_property (GObject      *object,
                       guint         prop_id,
                       const GValue *value,
                       GParamSpec   *pspec)
@@ -196,8 +190,7 @@ gy_dict_class_init (GyDictClass *klass)
 {
     GObjectClass* object_class = G_OBJECT_CLASS (klass);
 
-  object_class->dispose = dispose;
-  object_class->finalize = finalize;
+  object_class->finalize = gy_dict_finalize;
   object_class->set_property = gy_dict_set_property;
   object_class->get_property = gy_dict_get_property;
 
