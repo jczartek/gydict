@@ -117,7 +117,7 @@ gy_dict_finalize (GObject *object)
   if (priv->id_string)
     g_clear_pointer ((gpointer *) &priv->id_string,
                      g_free);
-  G_OBJECT_CLASS (gy_dict_parent_class)->dispose (object);
+  G_OBJECT_CLASS (gy_dict_parent_class)->finalize (object);
 }
 
 static void
