@@ -77,6 +77,8 @@ struct _GyDictClass
                                  gpointer     data);
 };
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (GyDict, g_object_unref)
+
 GType gy_dict_get_type (void) G_GNUC_CONST;
 guint gy_dict_set_dictionary (GyDict *dict);
 guint gy_dict_init_list (GyDict *dict);
