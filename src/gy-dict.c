@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
 /*
  * gy-dictionary.c
  * Copyright (C) 2014 kuba <kuba@fedora>
@@ -65,7 +64,7 @@ enum
 
 static guint dict_signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE_WITH_PRIVATE (GyDict, gy_dict, G_TYPE_OBJECT);
+G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GyDict, gy_dict, G_TYPE_OBJECT);
 
 static guint
 set_dictionary_unimplemented (GyDict *dict)
