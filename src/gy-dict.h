@@ -31,14 +31,6 @@ G_BEGIN_DECLS
 #define GY_IS_DICT_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GY_TYPE_DICT))
 #define GY_DICT_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), GY_TYPE_DICT, GyDictClass))
 
-/*typedef enum
-{
-    GY_ENCODING_NONE = -1,
-    GY_ENCODING_CP1250,
-    GY_ENCODING_ISO88592,
-    GY_ENCODING_UTF8
-} GyDictEncoding;*/
-
 enum
 {
   GY_OK,
@@ -70,6 +62,8 @@ struct _GyDictClass
   guint     (*init_list)        (GyDict *dict);
   gpointer  (*read_definition)  (GyDict *dict,
                                  guint   index);
+  void      (*initialize)       (GyDict  *self,
+                                 GError **err);
 
     /* Signals */
   void(* __error)               (GyDict      *self,
@@ -90,6 +84,8 @@ GtkTreeModel *gy_dict_get_tree_model  (GyDict *dict);
 const gchar  *gy_dict_get_id_string (GyDict *dict);
 gint gy_dict_get_encoding (GyDict *dict);
 GyDict *gy_dict_new_object (const gchar *id_string);
+void gy_dict_initialize (GyDict  *self,
+                         GError **err);
 
 G_END_DECLS
 

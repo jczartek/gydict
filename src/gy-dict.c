@@ -1,20 +1,21 @@
-/*
- * gy-dictionary.c
- * Copyright (C) 2014 kuba <kuba@fedora>
+/* gy-dict.c
  *
- * gy-dictionary.c is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
+ * Copyright (C) 2014 Jakub Czartek <kuba@linux.pl>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
- * gy-dictionary.c is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
@@ -196,6 +197,7 @@ gy_dict_class_init (GyDictClass *klass)
   klass->set_dictionary = set_dictionary_unimplemented;
   klass->init_list = init_list_unimplemented;
   klass->read_definition = read_definition_unimplemented;
+  klass->initialize = NULL;
   klass->__error = gy_dict_error;
 
   g_object_class_install_property (object_class,
@@ -232,6 +234,20 @@ gy_dict_class_init (GyDictClass *klass)
 }
 
 /***************************FUBLIC METHOD***************************/
+void
+gy_dict_initialize (GyDict  *self,
+                    GError **err)
+{
+  GyDictClass *klass;
+  g_return_if_fail (GY_IS_DICT (self));
+
+  klass = GY_DICT_GET_CLASS (self);
+
+  g_return_if_fail (klass->initialize != NULL);
+
+  klass->initialize (self, err);
+}
+
 guint
 gy_dict_set_dictionary (GyDict *dict)
 {
