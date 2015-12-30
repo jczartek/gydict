@@ -20,7 +20,9 @@
 
 struct _GyGermanPwn
 {
- GyDict parent;
+  GyDict parent;
+
+  GFile *file_dict;
 };
 
 G_DEFINE_TYPE (GyGermanPwn, gy_german_pwn, G_TYPE_OBJECT)
@@ -31,6 +33,32 @@ enum {
 };
 
 static GParamSpec *gParamSpecs [LAST_PROP];
+
+static void
+gy_german_pwn_initialize (GyDict  *self,
+                          GError **err)
+{
+
+}
+
+static guint
+gy_german_pwn_set_dictionary (GyDict *self)
+{
+  return GY_OK;
+}
+
+static guint
+gy_german_pwn_init_list (GyDict *self)
+{
+  return GY_OK;
+}
+
+static gpointer
+gy_german_pwn_read_definition (GyDict *self,
+                               guint   index)
+{
+  return NULL;
+}
 
 static void
 gy_german_pwn_finalize (GObject *object)
@@ -74,10 +102,16 @@ static void
 gy_german_pwn_class_init (GyGermanPwnClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  GyDictClass  *dict_class = GY_DICT_CLASS (klass);
 
   object_class->finalize = gy_german_pwn_finalize;
   object_class->get_property = gy_german_pwn_get_property;
   object_class->set_property = gy_german_pwn_set_property;
+
+  dict_class->set_dictionary = gy_german_pwn_set_dictionary;
+  dict_class->init_list = gy_german_pwn_init_list;
+  dict_class->read_definition = gy_german_pwn_read_definition;
+  dict_class->initialize = gy_german_pwn_initialize;
 }
 
 static void
