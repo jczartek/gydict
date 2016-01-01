@@ -32,6 +32,16 @@
     <key name="dict-depl-b" type="s">
       <default>""</default>
     </key>
+
+    <key name="dict-pwn-niempol" type="s">
+      <default>""</default>
+      <summary>The path to the file niempol.win</summary>
+    </key>
+
+    <key name="dict-pwn-polniem" type="s">
+      <default>""</default>
+      <summary>The path to the file polniem.win</summary>
+    </key>
   </schema>
 
 </schemalist>
