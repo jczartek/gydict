@@ -44,52 +44,52 @@ gy_german_pwn_initialize (GyDict  *dict,
                           GError **err)
 {
   guint32 word_count = 0, index_base = 0, word_base = 0;
-	g_autofree gchar *md5 = NULL;
-	g_autofree gchar *path = NULL;
-	g_autofree guint32 *offsets = NULL;
-	g_autoptr(GFileInputStream) in = NULL;
-	g_autoptr(GSettings) settings = NULL;
+  g_autofree gchar *md5 = NULL;
+  g_autofree gchar *path = NULL;
+  g_autofree guint32 *offsets = NULL;
+  g_autoptr(GFileInputStream) in = NULL;
+  g_autoptr(GSettings) settings = NULL;
   GyGermanPwn *self = GY_GERMAN_PWN (dict);
 
   g_return_if_fail (GY_IS_GERMAN_PWN (self));
 
-	settings = g_settings_new ("org.gtk.gydict");
-	path = g_settings_get_string (settings, "dict-pwn-niempol");
+  settings = g_settings_new ("org.gtk.gydict");
+  path = g_settings_get_string (settings, "dict-pwn-niempol");
 
-	self->file = g_file_new_for_path (path);
+  self->file = g_file_new_for_path (path);
 
   if (!(md5 = gy_utility_compute_md5_for_file (self->file, err)))
     goto out;
 
-	if ((g_strcmp0 (md5, MD5_NIEMPOL) != 0) && (g_strcmp0 (md5, MD5_POLNIEM) != 0))
-	  g_warning ("");
+  if ((g_strcmp0 (md5, MD5_NIEMPOL) != 0) && (g_strcmp0 (md5, MD5_POLNIEM) != 0))
+    g_warning ("");
 
-	if (!(in = g_file_read (self->file, NULL, err)))
-	  goto out;
+  if (!(in = g_file_read (self->file, NULL, err)))
+    goto out;
 
-	if (!g_seekable_seek (G_SEEKABLE (in), 0x68, G_SEEK_SET, NULL, err))
-	  goto out;
+  if (!g_seekable_seek (G_SEEKABLE (in), 0x68, G_SEEK_SET, NULL, err))
+    goto out;
 
-	if ((g_input_stream_read (G_INPUT_STREAM (in), &word_count, sizeof(word_count), NULL, err)) <= 0)
-	  goto out;
+  if ((g_input_stream_read (G_INPUT_STREAM (in), &word_count, sizeof(word_count), NULL, err)) <= 0)
+    goto out;
 
-	if ((g_input_stream_read (G_INPUT_STREAM (in), &index_base, sizeof(index_base), NULL, err)) <= 0)
-	  goto out;
+  if ((g_input_stream_read (G_INPUT_STREAM (in), &index_base, sizeof(index_base), NULL, err)) <= 0)
+    goto out;
 
-	if (!g_seekable_seek (G_SEEKABLE (in), 0x04, G_SEEK_CUR, NULL, err))
-	  goto out;
+  if (!g_seekable_seek (G_SEEKABLE (in), 0x04, G_SEEK_CUR, NULL, err))
+    goto out;
 
-	if ((g_input_stream_read (G_INPUT_STREAM (in), &word_base, sizeof(word_base), NULL, err)) <= 0)
-	  goto out;
+  if ((g_input_stream_read (G_INPUT_STREAM (in), &word_base, sizeof(word_base), NULL, err)) <= 0)
+    goto out;
 
-	offsets = (guint32 *) g_malloc0 ((word_count + 1) * sizeof (guint32));
-	self->offsets = (guint32 *) g_malloc0 ((word_count + 1) * sizeof (guint32));
+  offsets = (guint32 *) g_malloc0 ((word_count + 1) * sizeof (guint32));
+  self->offsets = (guint32 *) g_malloc0 ((word_count + 1) * sizeof (guint32));
 
-	if (!g_seekable_seek (G_SEEKABLE (in), index_base, G_SEEK_SET, NULL, err))
-	  goto out;
+  if (!g_seekable_seek (G_SEEKABLE (in), index_base, G_SEEK_SET, NULL, err))
+    goto out;
 
-	if ((g_input_stream_read (G_INPUT_STREAM (in), offsets, (word_count * sizeof (guint32)), NULL, err)) <= 0)
-	  goto out;
+  if ((g_input_stream_read (G_INPUT_STREAM (in), offsets, (word_count * sizeof (guint32)), NULL, err)) <= 0)
+    goto out;
 
 	for (guint i = 0; i < word_count; i++)
     {
@@ -104,7 +104,7 @@ gy_german_pwn_initialize (GyDict  *dict,
       magic = 0;
       offsets[i] &= 0x07ffffff;
 
-		  if (!g_seekable_seek (G_SEEKABLE (in), word_base+offsets[i]+MAGIC_OFFSET, G_SEEK_SET, NULL, err))
+      if (!g_seekable_seek (G_SEEKABLE (in), word_base+offsets[i]+MAGIC_OFFSET, G_SEEK_SET, NULL, err))
         goto out;
 
       if ((g_input_stream_read (G_INPUT_STREAM (in), &magic, sizeof (guint16), NULL, err)) <= 0)
@@ -126,10 +126,10 @@ gy_german_pwn_initialize (GyDict  *dict,
 #undef OFFSET
     }
 
-	return;
+  return;
 out:
-    g_critical ("");
-    return;
+  g_critical ("");
+  return;
 }
 
 static guint
