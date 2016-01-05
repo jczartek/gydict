@@ -1,20 +1,22 @@
-/*
- * This program is free software; you can redistribute it and/or modify
+/* gy-pwntabs.c
+ *
+ * Copyright (C) 2014 Jakub Czartek <kuba@linux.pl>
+ *
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
+ * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- * 
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+
 #include "gy-pwntabs.h"
 
 const gchar *pwn_encje[] = 
@@ -98,6 +100,12 @@ const gchar *pwndict_superscript_to_utf8_table[] =
   "⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"
 };
 
+static const gchar *superscript[] =
+{
+  "⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"
+};
+
+
 const gchar *(*array_of_pointer_to_arrays_of_character_set[2])[] = {&pwndict_cp1250_to_utf8_table,
   &pwndict_iso88592_to_utf8_table};
 
@@ -141,4 +149,12 @@ gy_tabs_get_entity_table (void)
 
   return tab;
 
+}
+
+const gchar *
+gy_tabs_get_superscript (guint n)
+{
+  g_return_val_if_fail ((n >= 0 && n <= 9), NULL);
+
+  return superscript[n];
 }
