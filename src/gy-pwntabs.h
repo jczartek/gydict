@@ -21,6 +21,8 @@
 
 #include <gtk/gtk.h>
 
+G_BEGIN_DECLS
+
 typedef enum
 {
   GY_ENCODING_NONE = -1,
@@ -39,5 +41,7 @@ void gy_tabs_convert_character (gchar **buffer,
                                 GyDictEncoding encoding);
 GHashTable * gy_tabs_get_entity_table (void);
 const gchar * gy_tabs_get_superscript (guint n);
+
+G_END_DECLS
 
 #endif /* end of include guard: __GY_PWNTABS_H__ */
