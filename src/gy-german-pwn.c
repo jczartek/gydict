@@ -16,11 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
+
 #include "gy-german-pwn.h"
 #include "gy-utility-func.h"
+#include "gy-pwntabs.h"
 
 #define MD5_NIEMPOL   "c0f2280d5bedfc5c88620dcef512b897"
 #define MD5_POLNIEM   "2b551364dd36ef263381276ee352c59f"
+
+#define SIZE_BUFFER  128
+#define SIZE_ENTRY   64
 
 struct _GyGermanPwn
 {
@@ -49,6 +55,9 @@ gy_german_pwn_initialize (GyDict  *dict,
   g_autofree guint32 *offsets = NULL;
   g_autoptr(GFileInputStream) in = NULL;
   g_autoptr(GSettings) settings = NULL;
+  gchar buf[SIZE_BUFFER];
+  gchar entry[SIZE_ENTRY];
+  guint16 magic;
   GyGermanPwn *self = GY_GERMAN_PWN (dict);
 
   g_return_if_fail (GY_IS_GERMAN_PWN (self));
@@ -97,10 +106,6 @@ gy_german_pwn_initialize (GyDict  *dict,
 #define MAGIC 0x11dd
 #define OFFSET (12 - (MAGIC_OFFSET + sizeof (guint16)))
 
-      g_autoptr(GString) str = g_string_new_len (NULL, 256);
-      g_autofree gchar *buf = (gchar *) g_malloc0 (300 * sizeof (gchar));
-      guint16 magic;
-
       magic = 0;
       offsets[i] &= 0x07ffffff;
 
@@ -113,13 +118,46 @@ gy_german_pwn_initialize (GyDict  *dict,
       if (magic == MAGIC)
         {
           g_autofree gchar *buf_conv = NULL;
+          gchar *str = NULL;
+          gsize len = 0;
+
+          memset (entry, 0, SIZE_ENTRY);
 
           if ((g_input_stream_read (G_INPUT_STREAM (in), buf, 300, NULL, err)) <= 0)
             goto out;
 
           if (!(buf_conv = g_convert_with_fallback (buf+OFFSET, -1, "UTF-8", "ISO8859-2", NULL, NULL, NULL, err)))
             goto out;
+          str = buf_conv;
 
+          len = strcspn (str, "<");
+          strncat (entry, str,len);
+          str = str + len;
+
+          while (*str)
+            {
+              if (*str == '<')
+                {
+                  str = str + strcspn (str, ">") + 1;
+
+                  if (g_ascii_isdigit (*str))
+                    {
+                      const gchar *sscript = gy_tabs_get_superscript ((*str) - 48);
+                      strncat (entry, sscript, strlen (sscript));
+
+                    }
+
+                  str = str + strcspn (str, ">") + 1;
+
+                }
+              else
+                {
+                  len = strcspn (str, "<");
+                  strncat (entry, str, len);
+                  str = str + len;
+
+                }
+            }
         }
 #undef MAGIC
 #undef MAGIC_OFFSET
