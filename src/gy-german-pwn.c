@@ -32,8 +32,9 @@ struct _GyGermanPwn
 {
   GyDict parent;
 
-  GFile *file;
-  guint32 *offsets;
+  GFile      *file;
+  guint32    *offsets;
+  GHashTable *entities;
 };
 
 G_DEFINE_TYPE (GyGermanPwn, gy_german_pwn, G_TYPE_OBJECT)
@@ -58,12 +59,17 @@ gy_german_pwn_initialize (GyDict  *dict,
   gchar buf[SIZE_BUFFER];
   gchar entry[SIZE_ENTRY];
   guint16 magic;
+  GtkListStore *model = NULL;
+  GtkTreeIter iter;
   GyGermanPwn *self = GY_GERMAN_PWN (dict);
 
   g_return_if_fail (GY_IS_GERMAN_PWN (self));
 
+  model = gtk_list_store_new (1, G_TYPE_STRING);
+
   settings = g_settings_new ("org.gtk.gydict");
-  path = g_settings_get_string (settings, "dict-pwn-niempol");
+  path = g_settings_get_string (settings,
+                                gy_dict_get_id_string (dict));
 
   self->file = g_file_new_for_path (path);
 
@@ -100,7 +106,7 @@ gy_german_pwn_initialize (GyDict  *dict,
   if ((g_input_stream_read (G_INPUT_STREAM (in), offsets, (word_count * sizeof (guint32)), NULL, err)) <= 0)
     goto out;
 
-	for (guint i = 0; i < word_count; i++)
+	for (guint i = 0, j = 0; i < word_count; i++)
     {
 #define MAGIC_OFFSET 0x03
 #define MAGIC 0x11dd
@@ -130,7 +136,7 @@ gy_german_pwn_initialize (GyDict  *dict,
             goto out;
           str = buf_conv;
 
-          len = strcspn (str, "<");
+          len = strcspn (str, "<&");
           strncat (entry, str,len);
           str = str + len;
 
@@ -143,30 +149,42 @@ gy_german_pwn_initialize (GyDict  *dict,
                   if (g_ascii_isdigit (*str))
                     {
                       const gchar *sscript = gy_tabs_get_superscript ((*str) - 48);
-                      strncat (entry, sscript, strlen (sscript));
-
+                      strcat (entry, sscript);
                     }
 
                   str = str + strcspn (str, ">") + 1;
+                }
+              else if (*str == '&')
+                {
+                  g_autofree gchar *entity = NULL;
 
+                  len = strcspn ("str", ";");
+                  entity = g_strndup (str, len);
+
+                  strcat (entry,
+                          (const gchar *) g_hash_table_lookup (self->entities, entity));
+                  str += len + 1;
                 }
               else
                 {
-                  len = strcspn (str, "<");
+                  len = strcspn (str, "<&");
                   strncat (entry, str, len);
                   str = str + len;
 
                 }
             }
+          gtk_list_store_append (model, &iter);
+          gtk_list_store_set (model, &iter, 0, entry, -1);
+          self->offsets[j++] = offsets[i];
         }
 #undef MAGIC
 #undef MAGIC_OFFSET
 #undef OFFSET
     }
-
+  gy_dict_set_tree_model (dict, GTK_TREE_MODEL (model));
   return;
 out:
-  g_critical ("");
+  g_debug ("");
   return;
 }
 
@@ -246,4 +264,5 @@ gy_german_pwn_class_init (GyGermanPwnClass *klass)
 static void
 gy_german_pwn_init (GyGermanPwn *self)
 {
+  self->entities = gy_tabs_get_entity_table ();
 }
