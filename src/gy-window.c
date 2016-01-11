@@ -696,7 +696,7 @@ gy_window_class_init (GyWindowClass *klass)
   widget_class->destroy = on_window_destroy;
 
   gtk_widget_class_set_template_from_resource (widget_class,
-                                               "/org/gtk/gydict/gydict.ui");
+                                               "/org/gtk/gydict/gy-window.ui");
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, child_box);
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, infobar);
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, header_bar);

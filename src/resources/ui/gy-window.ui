@@ -51,6 +51,18 @@
 					<attribute name="target">dict-pwn-polang</attribute>
 				</item>
 			</section>
+		  <section>
+		    <item>
+		      <attribute name="label" translatable="no">De-PL</attribute>
+		      <attribute name="action">win.dict</attribute>
+		      <attribute name="target">dict-pwn-niempol</attribute>
+		    </item>
+		    <item>
+		      <attribute name="label" translatable="no">PL-De</attribute>
+		      <attribute name="action">win.dict</attribute>
+		      <attribute name="target">dict-pwn-polniem</attribute>
+		    </item>
+		  </section>
 		</submenu>
 		<submenu>
 			<attribute name="label" translatable="no">depl</attribute>
