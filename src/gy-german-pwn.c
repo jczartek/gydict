@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#define G_LOG_DOMAIN "GyGermanPwn"
+
 #include <string.h>
 
 #include "gy-german-pwn.h"
@@ -37,7 +39,7 @@ struct _GyGermanPwn
   GHashTable *entities;
 };
 
-G_DEFINE_TYPE (GyGermanPwn, gy_german_pwn, G_TYPE_OBJECT)
+G_DEFINE_TYPE (GyGermanPwn, gy_german_pwn, GY_TYPE_DICT)
 
 enum {
   PROP_0,
@@ -129,7 +131,7 @@ gy_german_pwn_initialize (GyDict  *dict,
 
           memset (entry, 0, SIZE_ENTRY);
 
-          if ((g_input_stream_read (G_INPUT_STREAM (in), buf, 300, NULL, err)) <= 0)
+          if ((g_input_stream_read (G_INPUT_STREAM (in), buf, SIZE_BUFFER, NULL, err)) <= 0)
             goto out;
 
           if (!(buf_conv = g_convert_with_fallback (buf+OFFSET, -1, "UTF-8", "ISO8859-2", NULL, NULL, NULL, err)))
@@ -158,7 +160,7 @@ gy_german_pwn_initialize (GyDict  *dict,
                 {
                   g_autofree gchar *entity = NULL;
 
-                  len = strcspn ("str", ";");
+                  len = strcspn (str, ";");
                   entity = g_strndup (str, len);
 
                   strcat (entry,
@@ -170,12 +172,11 @@ gy_german_pwn_initialize (GyDict  *dict,
                   len = strcspn (str, "<&");
                   strncat (entry, str, len);
                   str = str + len;
-
                 }
             }
           gtk_list_store_append (model, &iter);
           gtk_list_store_set (model, &iter, 0, entry, -1);
-          self->offsets[j++] = offsets[i];
+          self->offsets[j++] = offsets[i] + word_base;
         }
 #undef MAGIC
 #undef MAGIC_OFFSET
@@ -197,6 +198,16 @@ gy_german_pwn_set_dictionary (GyDict *self)
 static guint
 gy_german_pwn_init_list (GyDict *self)
 {
+  GError *err = NULL;
+
+  gy_german_pwn_initialize (self, &err);
+
+  if (err != NULL)
+    {
+      g_critical ("%s", err->message);
+      return GY_FAILED_OBJECT;
+    }
+
   return GY_OK;
 }
 
