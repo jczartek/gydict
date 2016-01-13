@@ -14,7 +14,6 @@
     Currently, the program provides support to the following dictionaries:
     PWN (2006, 2007) and DEPL (www.depl.pl).
   </description>
-  <homepage rdf:resource="https://wiki.gnome.org/Apps/Builder" />
 
   <license rdf:resource="http://www.gnu.org/licenses/gpl-3.0.en.html" />
   <programming-language>C</programming-language>
