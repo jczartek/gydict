@@ -199,6 +199,7 @@ gy_dict_class_init (GyDictClass *klass)
   klass->init_list = init_list_unimplemented;
   klass->read_definition = read_definition_unimplemented;
   klass->initialize = NULL;
+  klass->get_lexical_unit = NULL;
   klass->__error = gy_dict_error;
 
   g_object_class_install_property (object_class,
@@ -247,6 +248,21 @@ gy_dict_initialize (GyDict  *self,
   g_return_if_fail (klass->initialize != NULL);
 
   klass->initialize (self, err);
+}
+
+gchar *
+gy_dict_get_lexical_unit (GyDict *self,
+                          guint   index)
+{
+  GyDictClass *klass;
+
+  g_return_val_if_fail (GY_IS_DICT (self), NULL);
+
+  klass = GY_DICT_GET_CLASS (self);
+
+  g_return_val_if_fail (klass->get_lexical_unit != NULL, NULL);
+
+  return klass->get_lexical_unit (self, index);
 }
 
 guint
