@@ -45,9 +45,11 @@ static gchar * gy_dict_description_error[GY_LAST_ERROR] =
 
 struct _GyDictPrivate
 {
-  GtkTreeModel *model;
-  GyDictEncoding encoding;
-  gchar *id_string;
+  GtkTreeModel   *model;
+  GyDictEncoding  encoding;
+  gchar          *id_string;
+
+  guint           is_map:1;
 };
 
 enum
@@ -55,7 +57,8 @@ enum
   PROP_0,
   PROP_TREE_MODEL,
   PROP_ID_STRING,
-  PROP_ENCODING
+  PROP_ENCODING,
+  PROP_IS_MAP
 };
 
 enum
@@ -143,6 +146,9 @@ gy_dict_set_property (GObject      *object,
       case PROP_ID_STRING:
       priv->id_string = g_value_dup_string (value);
       break;
+      case PROP_IS_MAP:
+      priv->is_map = g_value_get_boolean (value);
+      break;
       default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -159,20 +165,23 @@ gy_dict_get_property (GObject    *object,
   g_return_if_fail (GY_IS_DICT (object));
   priv = gy_dict_get_instance_private (GY_DICT (object));
 
-    switch (prop_id)
-      {
-        case PROP_TREE_MODEL:
-        g_value_take_object (value, priv->model);
-        break;
-        case PROP_ENCODING:
-        g_value_set_enum (value, priv->encoding);
-        break;
-        case PROP_ID_STRING:
-        g_value_set_string (value, priv->id_string);
-        break;
-        default:
-        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        break;
+  switch (prop_id)
+    {
+      case PROP_TREE_MODEL:
+      g_value_take_object (value, priv->model);
+      break;
+      case PROP_ENCODING:
+      g_value_set_enum (value, priv->encoding);
+      break;
+      case PROP_ID_STRING:
+      g_value_set_string (value, priv->id_string);
+      break;
+      case PROP_IS_MAP:
+      g_value_set_boolean (value, priv->is_map);
+      break;
+      default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
       }
 }
 
@@ -184,12 +193,13 @@ gy_dict_init (GyDict *dict)
   priv->id_string = NULL;
   priv->encoding = GY_ENCODING_NONE;
   priv->model = NULL;
+  priv->is_map = FALSE;
 }
 
 static void
 gy_dict_class_init (GyDictClass *klass)
 {
-    GObjectClass* object_class = G_OBJECT_CLASS (klass);
+  GObjectClass* object_class = G_OBJECT_CLASS (klass);
 
   object_class->finalize = gy_dict_finalize;
   object_class->set_property = gy_dict_set_property;
@@ -223,6 +233,13 @@ gy_dict_class_init (GyDictClass *klass)
                                                       GY_TYPE_ENUM_ENCODING,
                                                       GY_ENCODING_NONE,
                                                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
+  g_object_class_install_property (object_class,
+                                   PROP_IS_MAP,
+                                   g_param_spec_boolean ("is-map",
+                                                         "Is map",
+                                                         "Whether the dict is map",
+                                                         FALSE,
+                                                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
 
   dict_signals[GY_ERROR] = g_signal_new ("gydict-error",
