@@ -24,11 +24,8 @@
 G_BEGIN_DECLS
 
 #define GY_TYPE_DICT             (gy_dict_get_type ())
-#define GY_DICT(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), GY_TYPE_DICT, GyDict))
-#define GY_DICT_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), GY_TYPE_DICT, GyDictClass))
-#define GY_IS_DICT(obj)          (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GY_TYPE_DICT))
-#define GY_IS_DICT_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), GY_TYPE_DICT))
-#define GY_DICT_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), GY_TYPE_DICT, GyDictClass))
+
+G_DECLARE_DERIVABLE_TYPE (GyDict, gy_dict, GY, DICT, GObject)
 
 enum
 {
@@ -42,14 +39,6 @@ enum
   GY_FAILED_OBJECT,
   GY_UNIMPLEMENTED_METHOD,
   GY_LAST_ERROR
-};
-
-typedef struct _GyDict GyDict;
-typedef struct _GyDictClass GyDictClass;
-
-struct _GyDict
-{
-  GObject parent_instance;
 };
 
 struct _GyDictClass
@@ -72,8 +61,6 @@ struct _GyDictClass
                                  const gchar *name_error,
                                  gpointer     data);
 };
-
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (GyDict, g_object_unref)
 
 GType gy_dict_get_type (void) G_GNUC_CONST;
 guint gy_dict_set_dictionary (GyDict *dict);
