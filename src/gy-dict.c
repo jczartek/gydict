@@ -208,7 +208,7 @@ gy_dict_class_init (GyDictClass *klass)
   klass->set_dictionary = set_dictionary_unimplemented;
   klass->init_list = init_list_unimplemented;
   klass->read_definition = read_definition_unimplemented;
-  klass->initialize = NULL;
+  klass->map = NULL;
   klass->get_lexical_unit = NULL;
   klass->__error = gy_dict_error;
 
@@ -254,17 +254,17 @@ gy_dict_class_init (GyDictClass *klass)
 
 /***************************FUBLIC METHOD***************************/
 void
-gy_dict_initialize (GyDict  *self,
-                    GError **err)
+gy_dict_map (GyDict  *self,
+             GError **err)
 {
   GyDictClass *klass;
   g_return_if_fail (GY_IS_DICT (self));
 
   klass = GY_DICT_GET_CLASS (self);
 
-  g_return_if_fail (klass->initialize != NULL);
+  g_return_if_fail (klass->map != NULL);
 
-  klass->initialize (self, err);
+  klass->map (self, err);
 }
 
 gchar *

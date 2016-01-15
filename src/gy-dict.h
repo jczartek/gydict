@@ -51,7 +51,7 @@ struct _GyDictClass
   gpointer  (*read_definition)  (GyDict *dict,
                                  guint   index);
   /* New API */
-  void      (*initialize)       (GyDict  *self,
+  void      (*map)              (GyDict  *self,
                                  GError **err);
   gchar *   (*get_lexical_unit) (GyDict  *self,
                                  guint    index);
@@ -73,9 +73,10 @@ GtkTreeModel *gy_dict_get_tree_model  (GyDict *dict);
 const gchar  *gy_dict_get_id_string (GyDict *dict);
 gint gy_dict_get_encoding (GyDict *dict);
 GyDict *gy_dict_new_object (const gchar *id_string);
-void gy_dict_initialize (GyDict  *self,
-                         GError **err);
-gchar *gy_dict_get_lexical_unit (GyDict *self,
+
+void   gy_dict_map              (GyDict  *self,
+                                 GError **err);
+gchar* gy_dict_get_lexical_unit (GyDict *self,
                                  guint   index);
 
 G_END_DECLS
