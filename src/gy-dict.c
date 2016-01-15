@@ -282,6 +282,18 @@ gy_dict_get_lexical_unit (GyDict *self,
   return klass->get_lexical_unit (self, index);
 }
 
+gboolean
+gy_dict_is_map (GyDict *self)
+{
+  GyDictPrivate *priv;
+
+  g_return_val_if_fail (FALSE, GY_IS_DICT (self));
+
+  priv = gy_dict_get_instance_private (self);
+
+  return (gboolean) priv->is_map;
+}
+
 guint
 gy_dict_set_dictionary (GyDict *dict)
 {

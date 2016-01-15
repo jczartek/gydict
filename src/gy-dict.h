@@ -74,10 +74,11 @@ const gchar  *gy_dict_get_id_string (GyDict *dict);
 gint gy_dict_get_encoding (GyDict *dict);
 GyDict *gy_dict_new_object (const gchar *id_string);
 
-void   gy_dict_map              (GyDict  *self,
-                                 GError **err);
-gchar* gy_dict_get_lexical_unit (GyDict *self,
-                                 guint   index);
+void     gy_dict_map              (GyDict  *self,
+                                   GError **err);
+gchar*   gy_dict_get_lexical_unit (GyDict *self,
+                                   guint   index);
+gboolean gy_dict_is_map           (GyDict *self);
 
 G_END_DECLS
 
