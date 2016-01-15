@@ -287,7 +287,7 @@ gy_dict_is_map (GyDict *self)
 {
   GyDictPrivate *priv;
 
-  g_return_val_if_fail (FALSE, GY_IS_DICT (self));
+  g_return_val_if_fail (GY_IS_DICT (self), FALSE);
 
   priv = gy_dict_get_instance_private (self);
 
