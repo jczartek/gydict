@@ -19,6 +19,7 @@
 #define G_LOG_DOMAIN "GyGermanPwn"
 
 #include <string.h>
+#include <zlib.h>
 
 #include "gy-german-pwn.h"
 #include "gy-utility-func.h"
@@ -29,6 +30,8 @@
 
 #define SIZE_BUFFER  128
 #define SIZE_ENTRY   64
+
+#define GY_GERMAN_PWN_ERROR gy_german_pwn_error_quark ()
 
 struct _GyGermanPwn
 {
@@ -48,16 +51,22 @@ enum {
 
 static GParamSpec *gParamSpecs [LAST_PROP];
 
+static GQuark
+gy_german_pwn_error_quark (void)
+{
+  return g_quark_from_static_string ("gy-german-pwn-error-quark");
+}
+
 static void
-gy_german_pwn_initialize (GyDict  *dict,
-                          GError **err)
+gy_german_pwn_map (GyDict  *dict,
+                   GError **err)
 {
   guint32 word_count = 0, index_base = 0, word_base = 0;
   g_autofree gchar *md5 = NULL;
-  g_autofree gchar *path = NULL;
   g_autofree guint32 *offsets = NULL;
   g_autoptr(GFileInputStream) in = NULL;
-  g_autoptr(GSettings) settings = NULL;
+  g_autoptr(GSettings)  settings = NULL;
+  g_autofree gchar     *path = NULL;
   gchar buf[SIZE_BUFFER];
   gchar entry[SIZE_ENTRY];
   guint16 magic;
@@ -67,13 +76,15 @@ gy_german_pwn_initialize (GyDict  *dict,
 
   g_return_if_fail (GY_IS_GERMAN_PWN (self));
 
-  model = gtk_list_store_new (1, G_TYPE_STRING);
-
   settings = g_settings_new ("org.gtk.gydict");
   path = g_settings_get_string (settings,
-                                gy_dict_get_id_string (dict));
+                                gy_dict_get_id_string (GY_DICT(self)));
+  if (self->file)
+    g_object_unref (self->file);
 
   self->file = g_file_new_for_path (path);
+
+  model = gtk_list_store_new (1, G_TYPE_STRING);
 
   if (!(md5 = gy_utility_compute_md5_for_file (self->file, err)))
     goto out;
@@ -183,10 +194,83 @@ gy_german_pwn_initialize (GyDict  *dict,
 #undef OFFSET
     }
   gy_dict_set_tree_model (dict, GTK_TREE_MODEL (model));
+  g_object_set (dict, "is-map", TRUE, NULL);
   return;
 out:
   g_debug ("");
+  g_object_set (dict, "is-map", FALSE, NULL);
   return;
+}
+
+static gchar *
+gy_german_pwn_get_lexical_unit (GyDict  *dict,
+                                guint    index,
+                                GError **err)
+{
+  g_autoptr(GFileInputStream) in = NULL;
+  GyGermanPwn *self = GY_GERMAN_PWN (dict);
+  gchar *in_buffer = NULL;
+  gchar *out_buffer = NULL;
+  guint i = 0;
+
+  g_return_val_if_fail (GY_IS_DICT (dict), NULL);
+  g_return_val_if_fail (gy_dict_is_map (dict), NULL);
+
+#define MAXLEN 1024 * 9
+#define OFFSET 12
+
+  in_buffer = (gchar *) g_alloca (MAXLEN);
+  memset (in_buffer, 0, MAXLEN);
+  out_buffer = (gchar *) g_malloc0 (MAXLEN);
+
+  if (!(in = g_file_read (self->file, NULL, err)))
+    goto out;
+
+  if (!g_seekable_seek (G_SEEKABLE (in), self->offsets[index], G_SEEK_SET, NULL, err))
+    goto out;
+
+  if ((g_input_stream_read (G_INPUT_STREAM (in), in_buffer, MAXLEN, NULL, err)) <= 0)
+    goto out;
+
+  i = 12 + strlen (in_buffer+12) + 2;
+
+  if (in_buffer[i] < 20)
+    {
+      gint zerr;
+      uLongf destlen;
+      i += in_buffer[i]+1;
+      destlen = MAXLEN;
+
+      if ((zerr = uncompress ((Bytef *)out_buffer, &destlen, (const Bytef *)in_buffer+i, MAXLEN)) != Z_OK)
+        {
+          switch (zerr)
+            {
+            case Z_BUF_ERROR:
+              g_set_error (err, GY_GERMAN_PWN_ERROR, zerr,
+                           "The buffer out_buffer was not large enough to hold the uncompressed data!");
+              break;
+            case Z_MEM_ERROR:
+              g_set_error (err, GY_GERMAN_PWN_ERROR, zerr,
+                           "Insufficient memory!");
+              break;
+            case Z_DATA_ERROR:
+              g_set_error (err, GY_GERMAN_PWN_ERROR, zerr,
+                           "The compressed data (referenced by in_buffer) was corrupted!");
+              break;
+            };
+          goto out;
+        }
+    }
+  else
+    {
+      out_buffer = g_strdup (in_buffer + i);
+    }
+
+  return out_buffer;
+out:
+  return NULL;
+#undef MAXLEN
+#undef OFFSET
 }
 
 static guint
@@ -200,7 +284,7 @@ gy_german_pwn_init_list (GyDict *self)
 {
   GError *err = NULL;
 
-  gy_german_pwn_initialize (self, &err);
+  gy_german_pwn_map (self, &err);
 
   if (err != NULL)
     {
@@ -257,23 +341,32 @@ gy_german_pwn_set_property (GObject      *object,
 }
 
 static void
+gy_german_pwn_constructed (GObject *object)
+{
+  G_OBJECT_CLASS (gy_german_pwn_parent_class)->constructed (object);
+}
+
+static void
 gy_german_pwn_class_init (GyGermanPwnClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GyDictClass  *dict_class = GY_DICT_CLASS (klass);
 
   object_class->finalize = gy_german_pwn_finalize;
+  object_class->constructed = gy_german_pwn_constructed;
   object_class->get_property = gy_german_pwn_get_property;
   object_class->set_property = gy_german_pwn_set_property;
 
   dict_class->set_dictionary = gy_german_pwn_set_dictionary;
   dict_class->init_list = gy_german_pwn_init_list;
   dict_class->read_definition = gy_german_pwn_read_definition;
-  dict_class->initialize = gy_german_pwn_initialize;
+  dict_class->map = gy_german_pwn_map;
+  dict_class->get_lexical_unit = gy_german_pwn_get_lexical_unit;
 }
 
 static void
 gy_german_pwn_init (GyGermanPwn *self)
 {
+  self->file = NULL;
   self->entities = gy_tabs_get_entity_table ();
 }

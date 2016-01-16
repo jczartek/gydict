@@ -269,7 +269,8 @@ gy_dict_map (GyDict  *self,
 
 gchar *
 gy_dict_get_lexical_unit (GyDict *self,
-                          guint   index)
+                          guint   index,
+                          GError **err)
 {
   GyDictClass *klass;
 
@@ -279,7 +280,7 @@ gy_dict_get_lexical_unit (GyDict *self,
 
   g_return_val_if_fail (klass->get_lexical_unit != NULL, NULL);
 
-  return klass->get_lexical_unit (self, index);
+  return klass->get_lexical_unit (self, index, err);
 }
 
 gboolean
