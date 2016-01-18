@@ -19,11 +19,14 @@
 #define G_LOG_DOMAIN "GyGermanPwn"
 
 #include <string.h>
+#include <stdlib.h>
 #include <zlib.h>
 
 #include "gy-german-pwn.h"
 #include "gy-utility-func.h"
 #include "gy-pwntabs.h"
+#include "gy-parser-pwn.h"
+#include "gy-parsable.h"
 
 #define MD5_NIEMPOL   "c0f2280d5bedfc5c88620dcef512b897"
 #define MD5_POLNIEM   "2b551364dd36ef263381276ee352c59f"
@@ -32,6 +35,21 @@
 #define SIZE_ENTRY   64
 
 #define GY_GERMAN_PWN_ERROR gy_german_pwn_error_quark ()
+
+static void gy_german_pwn_start_tag (const gchar     *tag_name,
+                                     const GPtrArray *attribute_name,
+                                     const GPtrArray *attribute_value,
+                                     gpointer         data);
+
+static void gy_german_pwn_end_tag (const gchar *tag_name,
+                                   gpointer     data);
+static void gy_german_pwn_insert_text (const gchar *text,
+                                       gsize        len,
+                                       gpointer     data);
+static void gy_german_pwn_parseable_iface_init (GyParsableInterface *iface);
+static void gy_german_pwn_parse_lexical_unit (GyParsable    *parser,
+                                              GtkTextBuffer *buffer,
+                                              gint           index);
 
 struct _GyGermanPwn
 {
@@ -42,7 +60,9 @@ struct _GyGermanPwn
   GHashTable *entities;
 };
 
-G_DEFINE_TYPE (GyGermanPwn, gy_german_pwn, GY_TYPE_DICT)
+G_DEFINE_TYPE_WITH_CODE (GyGermanPwn, gy_german_pwn, GY_TYPE_DICT,
+                         G_IMPLEMENT_INTERFACE (GY_TYPE_PARSABLE,
+                                                gy_german_pwn_parseable_iface_init));
 
 enum {
   PROP_0,
@@ -369,4 +389,53 @@ gy_german_pwn_init (GyGermanPwn *self)
 {
   self->file = NULL;
   self->entities = gy_tabs_get_entity_table ();
+}
+
+/* IFace */
+
+static void
+gy_german_pwn_parseable_iface_init (GyParsableInterface *iface)
+{
+  iface->parse = gy_german_pwn_parse_lexical_unit;
+}
+
+static void
+gy_german_pwn_parse_lexical_unit (GyParsable    *parser,
+                                  GtkTextBuffer *buffer,
+                                  gint           index)
+{
+  GyDict *dict = GY_DICT (parser);
+  GError *err = NULL;
+
+  g_return_if_fail (GY_IS_DICT (dict));
+
+  gchar *lu = gy_german_pwn_get_lexical_unit (dict, index, &err);
+
+  if (err != NULL)
+    {
+      g_critical ("%s", err->message);
+    }
+  g_message ("%s", lu);
+  abort ();
+}
+
+static void
+gy_german_pwn_start_tag (const gchar     *tag_name,
+                         const GPtrArray *attribute_name,
+                         const GPtrArray *attribute_value,
+                         gpointer         data)
+{
+}
+
+static void
+gy_german_pwn_end_tag (const gchar *tag_name,
+                       gpointer     data)
+{
+}
+
+static void
+gy_german_pwn_insert_text (const gchar *text,
+                           gsize        len,
+                           gpointer     data)
+{
 }
