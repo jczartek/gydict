@@ -48,13 +48,8 @@ struct _GyDictClass
   /* Deprecated */
   guint     (*set_dictionary)   (GyDict *dict);
   guint     (*init_list)        (GyDict *dict);
-  gpointer  (*read_definition)  (GyDict *dict,
-                                 guint   index);
   /* New API */
   void      (*map)              (GyDict  *self,
-                                 GError **err);
-  gchar *   (*get_lexical_unit) (GyDict  *self,
-                                 guint    index,
                                  GError **err);
 
     /* Signals */
@@ -66,8 +61,6 @@ struct _GyDictClass
 GType gy_dict_get_type (void) G_GNUC_CONST;
 guint gy_dict_set_dictionary (GyDict *dict);
 guint gy_dict_init_list (GyDict *dict);
-gpointer gy_dict_read_definition (GyDict *dict,
-                                  guint index);
 void gy_dict_set_tree_model (GyDict *dict,
                              GtkTreeModel *model);
 GtkTreeModel *gy_dict_get_tree_model  (GyDict *dict);
@@ -76,9 +69,6 @@ gint gy_dict_get_encoding (GyDict *dict);
 GyDict *gy_dict_new_object (const gchar *id_string);
 
 void     gy_dict_map              (GyDict  *self,
-                                   GError **err);
-gchar*   gy_dict_get_lexical_unit (GyDict  *self,
-                                   guint    index,
                                    GError **err);
 gboolean gy_dict_is_map           (GyDict *self);
 

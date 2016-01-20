@@ -392,7 +392,6 @@ gy_pwn_class_init (GyPwnClass *klass)
 
   dict_class->set_dictionary = gy_pwn_set_dictionary;
   dict_class->init_list = gy_pwn_init_list;
-  dict_class->read_definition = gy_pwn_read_definition;
 }
 
 
@@ -438,7 +437,7 @@ gy_pwn_parser_dict_parse (GyParsable    *parser,
   g_return_if_fail (priv->parser != NULL);
   g_return_if_fail (priv->pdata != NULL);
 
-  buf = gy_dict_read_definition (dict, (guint) row);
+  buf = gy_pwn_read_definition (dict, (guint) row);
   gtk_text_buffer_get_iter_at_offset (buffer, &priv->pdata->iter, 0);
   gy_markup_parser_pwn_parse (priv->parser, (const gchar *) buf, -1, encoding);
 

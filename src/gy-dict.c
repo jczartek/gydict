@@ -89,16 +89,6 @@ init_list_unimplemented (GyDict *dict)
   return GY_UNIMPLEMENTED_METHOD;
 }
 
-static gpointer
-read_definition_unimplemented (GyDict *dict, 
-                               guint   index G_GNUC_UNUSED)
-{
-  g_warning ("GyDictClass::red_definition not implemented for %s",
-             g_type_name (G_TYPE_FROM_INSTANCE (dict)));
-
-  return NULL;
-}
-
 static void
 gy_dict_error (GyDict      *dict,
                const gchar *name_error,
@@ -207,9 +197,7 @@ gy_dict_class_init (GyDictClass *klass)
 
   klass->set_dictionary = set_dictionary_unimplemented;
   klass->init_list = init_list_unimplemented;
-  klass->read_definition = read_definition_unimplemented;
   klass->map = NULL;
-  klass->get_lexical_unit = NULL;
   klass->__error = gy_dict_error;
 
   g_object_class_install_property (object_class,
@@ -267,22 +255,6 @@ gy_dict_map (GyDict  *self,
   klass->map (self, err);
 }
 
-gchar *
-gy_dict_get_lexical_unit (GyDict *self,
-                          guint   index,
-                          GError **err)
-{
-  GyDictClass *klass;
-
-  g_return_val_if_fail (GY_IS_DICT (self), NULL);
-
-  klass = GY_DICT_GET_CLASS (self);
-
-  g_return_val_if_fail (klass->get_lexical_unit != NULL, NULL);
-
-  return klass->get_lexical_unit (self, index, err);
-}
-
 gboolean
 gy_dict_is_map (GyDict *self)
 {
@@ -325,16 +297,8 @@ gy_dict_init_list (GyDict *dict)
   return error;
 }
 
-gpointer
-gy_dict_read_definition (GyDict *dict, 
-                         guint   index)
-{
-  g_return_val_if_fail (GY_IS_DICT (dict), NULL);
-  return GY_DICT_GET_CLASS (dict)->read_definition (dict, index);
-}
-
 void
-gy_dict_set_tree_model (GyDict       *dict, 
+gy_dict_set_tree_model (GyDict       *dict,
                         GtkTreeModel *model)
 {
   GyDictPrivate *priv;

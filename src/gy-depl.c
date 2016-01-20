@@ -320,7 +320,6 @@ gy_depl_class_init (GyDeplClass *klass)
   object_class->dispose = dispose;
   dict_class->set_dictionary = gy_depl_set_dictionary;
   dict_class->init_list = gy_depl_init_list;
-  dict_class->read_definition = gy_depl_read_definition;
 }
 
 /************************IMPLEMENTED INTERFACE********************************/
@@ -340,7 +339,7 @@ gy_depl_parser_dict_parse (GyParsable      *parser,
   GyDeplPrivate *priv = gy_depl_get_instance_private (GY_DEPL (dict));
 
   /* non free! */
-  buf = gy_dict_read_definition (dict, (guint) row);
+  buf = gy_depl_read_definition (dict, (guint) row);
   parse_context_parse (priv->context, buf, -1, buffer);
 }
 
