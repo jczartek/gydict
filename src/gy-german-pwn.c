@@ -27,6 +27,7 @@
 #include "gy-pwntabs.h"
 #include "gy-parser-pwn.h"
 #include "gy-parsable.h"
+#include "gy-window.h"
 
 #define MD5_NIEMPOL   "c0f2280d5bedfc5c88620dcef512b897"
 #define MD5_POLNIEM   "2b551364dd36ef263381276ee352c59f"
@@ -51,6 +52,8 @@ static void gy_german_pwn_parse_lexical_unit (GyParsable    *parser,
                                               GtkTextBuffer *buffer,
                                               gint           index);
 
+typedef struct _ParserData ParserData;
+
 struct _GyGermanPwn
 {
   GyDict parent;
@@ -58,7 +61,19 @@ struct _GyGermanPwn
   GFile      *file;
   guint32    *offsets;
   GHashTable *entities;
+
+  GyMarkupParserPwn *parser;
+  ParserData        *pdata;
 };
+
+struct _ParserData
+{
+  GtkTextBuffer      *buffer;
+  GtkTextIter         iter;
+  GHashTable         *table_tags;
+  GtkTextTagTable    *table_buffer_tags;
+};
+
 
 G_DEFINE_TYPE_WITH_CODE (GyGermanPwn, gy_german_pwn, GY_TYPE_DICT,
                          G_IMPLEMENT_INTERFACE (GY_TYPE_PARSABLE,
@@ -379,16 +394,42 @@ gy_german_pwn_class_init (GyGermanPwnClass *klass)
 
   dict_class->set_dictionary = gy_german_pwn_set_dictionary;
   dict_class->init_list = gy_german_pwn_init_list;
-  dict_class->read_definition = gy_german_pwn_read_definition;
+  //dict_class->read_definition = gy_german_pwn_read_definition;
   dict_class->map = gy_german_pwn_map;
-  dict_class->get_lexical_unit = gy_german_pwn_get_lexical_unit;
+  //dict_class->get_lexical_unit = gy_german_pwn_get_lexical_unit;
 }
 
 static void
 gy_german_pwn_init (GyGermanPwn *self)
 {
+  GApplication *app = NULL;
+  GtkWindow    *win = NULL;
+
   self->file = NULL;
+  self->offsets = NULL;
+  self->parser = NULL;
+  self->pdata = g_malloc0 (sizeof (ParserData));
   self->entities = gy_tabs_get_entity_table ();
+
+  app = g_application_get_default ();
+  win = gtk_application_get_active_window (GTK_APPLICATION (app));
+
+  self->pdata->buffer = gy_window_get_text_buffer (GY_WINDOW (win));
+  self->pdata->table_tags = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                   g_free, NULL);
+  self->pdata->table_buffer_tags = gtk_text_buffer_get_tag_table (self->pdata->buffer);
+
+  g_assert (GTK_IS_TEXT_BUFFER (self->pdata->buffer) &&
+            GTK_IS_TEXT_TAG_TABLE (self->pdata->table_buffer_tags) &&
+            self->pdata->table_tags);
+
+  self->parser = gy_markup_parser_pwn_new (gy_german_pwn_start_tag,
+                                           gy_german_pwn_end_tag,
+                                           gy_german_pwn_insert_text,
+                                           self->entities,
+                                           self->pdata, NULL);
+
+
 }
 
 /* IFace */
@@ -405,19 +446,47 @@ gy_german_pwn_parse_lexical_unit (GyParsable    *parser,
                                   gint           index)
 {
   GyDict *dict = GY_DICT (parser);
+  GyGermanPwn *self = GY_GERMAN_PWN (parser);
   GError *err = NULL;
+  g_autofree gchar *lu = NULL;
+  gboolean is_map = FALSE;
 
   g_return_if_fail (GY_IS_DICT (dict));
 
-  gchar *lu = gy_german_pwn_get_lexical_unit (dict, index, &err);
+  g_object_get (GY_DICT (parser),
+                "is-map", &is_map, NULL);
+
+  g_return_if_fail (is_map);
+
+  lu = gy_german_pwn_get_lexical_unit (dict, index, &err);
 
   if (err != NULL)
     {
       g_critical ("%s", err->message);
+      goto out;
     }
-  g_message ("%s", lu);
-  abort ();
+  gtk_text_buffer_get_iter_at_offset (self->pdata->buffer, &self->pdata->iter, 0);
+  gy_markup_parser_pwn_parse (self->parser, (const gchar *) lu, -1, GY_ENCODING_ISO88592);
+  //g_message ("%s", lu);
+
+out:
+  return;
 }
+
+static gchar *format_tags[] = {"B", "BIG", "PH", "SMALL", "I", "SUB", "SUP"};
+static gchar *roman_numbers[] = {"", "I", "II", "III", "IV", "V", "VI", "VII",
+                                 "VIII", "IX", "X", "XI", "XII", "XIII", "XIV",
+                                 "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
+
+static inline gboolean
+is_tag_format (const gchar *tag)
+{
+  for (gint i = 0; i < G_N_ELEMENTS (format_tags); i++)
+    if (strcmp (tag, format_tags[i]) == 0)
+      return TRUE;
+  return FALSE;
+}
+
 
 static void
 gy_german_pwn_start_tag (const gchar     *tag_name,
@@ -425,12 +494,73 @@ gy_german_pwn_start_tag (const gchar     *tag_name,
                          const GPtrArray *attribute_value,
                          gpointer         data)
 {
+  ParserData *pdata = (ParserData *) data;
+
+  if (is_tag_format (tag_name))
+  {
+    GtkTextTag *tag = NULL;
+    gchar *name = g_utf8_strdown (tag_name, -1);
+
+    tag = gtk_text_tag_table_lookup (pdata->table_buffer_tags,
+                                     (const gchar *) name);
+    g_hash_table_insert (pdata->table_tags,
+                         (gpointer) name,
+                         (gpointer) tag);
+    g_assert (GTK_IS_TEXT_TAG (tag));
+    return;
+  }
+
+  if (strcmp (tag_name, "P") == 0)
+  {
+    gtk_text_buffer_insert (pdata->buffer,
+                            &pdata->iter, "\n", -1);
+    return;
+  }
+
+  if (strcmp (tag_name, "IMG") == 0)
+  {
+    g_return_if_fail (attribute_name->len == attribute_value->len);
+    gchar *str = *attribute_value->pdata;
+    if (g_str_has_prefix (str, "rzym") && g_str_has_suffix (str, ".jpg"))
+    {
+#define LENGTH_PREFIX	4
+#define LENGTH_SUFFIX	4
+      gulong end_pos = LENGTH_PREFIX + (strlen (str) - (LENGTH_PREFIX + LENGTH_SUFFIX));
+      gchar *number = g_utf8_substring (str, LENGTH_SUFFIX, end_pos);
+      gint index = atoi ((const gchar *) number);
+      g_free (number);
+      gy_utility_text_buffer_insert_text_with_tags (pdata->buffer,
+                                                    &pdata->iter,
+                                                    roman_numbers[index], -1,
+                                                    pdata->table_tags);
+#undef LENGTH_PREFIX
+#undef LENGTH_SUFFIX
+    }
+    else if (g_str_has_prefix (str, "idioms"))
+    {
+      gy_utility_text_buffer_insert_text_with_tags (pdata->buffer,
+                                                    &pdata->iter,
+                                                    "IDIOM", -1,
+                                                    pdata->table_tags);
+    }
+    return;
+  }
 }
 
 static void
 gy_german_pwn_end_tag (const gchar *tag_name,
                        gpointer     data)
 {
+  ParserData *pdata = (ParserData *) data;
+
+  if (is_tag_format (tag_name))
+    {
+      gchar *name = g_utf8_strdown (tag_name, -1);
+      g_hash_table_remove (pdata->table_tags, name);
+      g_free (name);
+      return;
+
+    }
 }
 
 static void
@@ -438,4 +568,10 @@ gy_german_pwn_insert_text (const gchar *text,
                            gsize        len,
                            gpointer     data)
 {
+  ParserData *pdata = (ParserData *) data;
+
+  gy_utility_text_buffer_insert_text_with_tags (pdata->buffer,
+                                                &pdata->iter,
+                                                text, len,
+                                                pdata->table_tags);
 }
