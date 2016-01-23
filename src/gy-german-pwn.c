@@ -254,7 +254,6 @@ gy_german_pwn_get_lexical_unit (GyDict  *dict,
 #define OFFSET 12
 
   in_buffer = (gchar *) g_alloca (MAXLEN);
-  //memset (in_buffer, 0, MAXLEN);
   out_buffer = (gchar *) g_malloc0 (MAXLEN);
 
   if (!(in = g_file_read (self->file, NULL, err)))
@@ -393,9 +392,7 @@ gy_german_pwn_class_init (GyGermanPwnClass *klass)
 
   dict_class->set_dictionary = gy_german_pwn_set_dictionary;
   dict_class->init_list = gy_german_pwn_init_list;
-  //dict_class->read_definition = gy_german_pwn_read_definition;
   dict_class->map = gy_german_pwn_map;
-  //dict_class->get_lexical_unit = gy_german_pwn_get_lexical_unit;
 }
 
 static void
