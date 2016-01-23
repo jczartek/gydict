@@ -157,7 +157,6 @@ gy_german_pwn_map (GyDict  *dict,
 	for (guint i = 0, j = 0; i < word_count; i++)
     {
 #define MAGIC_OFFSET 0x03
-#define MAGIC 0x11dd
 #define OFFSET (12 - (MAGIC_OFFSET + sizeof (guint16)))
 
       magic = 0;
@@ -169,7 +168,7 @@ gy_german_pwn_map (GyDict  *dict,
       if ((g_input_stream_read (G_INPUT_STREAM (in), &magic, sizeof (guint16), NULL, err)) <= 0)
         goto out;
 
-      if (magic == MAGIC)
+      if (magic == 0x11dd || magic == 0x11d7)
         {
           g_autofree gchar *buf_conv = NULL;
           gchar *str = NULL;
@@ -251,11 +250,11 @@ gy_german_pwn_get_lexical_unit (GyDict  *dict,
   g_return_val_if_fail (GY_IS_DICT (dict), NULL);
   g_return_val_if_fail (gy_dict_is_map (dict), NULL);
 
-#define MAXLEN 1024 * 9
+#define MAXLEN 1024 * 90
 #define OFFSET 12
 
   in_buffer = (gchar *) g_alloca (MAXLEN);
-  memset (in_buffer, 0, MAXLEN);
+  //memset (in_buffer, 0, MAXLEN);
   out_buffer = (gchar *) g_malloc0 (MAXLEN);
 
   if (!(in = g_file_read (self->file, NULL, err)))
@@ -448,7 +447,7 @@ gy_german_pwn_parse_lexical_unit (GyParsable    *parser,
   GyDict *dict = GY_DICT (parser);
   GyGermanPwn *self = GY_GERMAN_PWN (parser);
   GError *err = NULL;
-  g_autofree gchar *lu = NULL;
+  g_autofree gchar *lexical_unit = NULL;
   gboolean is_map = FALSE;
 
   g_return_if_fail (GY_IS_DICT (dict));
@@ -458,16 +457,18 @@ gy_german_pwn_parse_lexical_unit (GyParsable    *parser,
 
   g_return_if_fail (is_map);
 
-  lu = gy_german_pwn_get_lexical_unit (dict, index, &err);
+  lexical_unit = gy_german_pwn_get_lexical_unit (dict, index, &err);
 
   if (err != NULL)
     {
       g_critical ("%s", err->message);
+      g_clear_error (&err);
       goto out;
     }
-  gtk_text_buffer_get_iter_at_offset (self->pdata->buffer, &self->pdata->iter, 0);
-  gy_markup_parser_pwn_parse (self->parser, (const gchar *) lu, -1, GY_ENCODING_ISO88592);
-  //g_message ("%s", lu);
+  gtk_text_buffer_get_iter_at_offset (self->pdata->buffer,
+                                      &self->pdata->iter, 0);
+  gy_markup_parser_pwn_parse (self->parser, (const gchar *) lexical_unit,
+                              -1, GY_ENCODING_ISO88592);
 
 out:
   return;

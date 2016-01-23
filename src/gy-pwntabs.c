@@ -35,7 +35,7 @@ const gchar *pwn_encje[] =
   "&IPA303", "&IPA138", "&IPA320", "&IPA214", "&epsilontilde", "&auluk", "&ailuk","&apos", "&brvbar", "&reg",
   "&rsquo", "&lsquo","&ccedil","&eacute", "&egrave", "&amp", "&ecirc", "&agrave", "&iuml", "&ocirc",
   "&icirc", "&para", "&mdash", "&rdquo", "&ap", "&rarr", "&pound", "&aelig", "&auml", "&dash",
-  "&uuml","&ouml", "&szlig", "&Auml", "&Ouml", "&Uuml", NULL
+  "&uuml","&ouml", "&szlig", "&Auml", "&Ouml", "&Uuml", "&acirc", NULL
 };
 
 const gchar *pwn_encje_zam[] =
@@ -54,7 +54,7 @@ const gchar *pwn_encje_zam[] =
   "ɛ", "ç", "ʏ", "ʤ", "ε", "au", "ai", "'","|", "®",
   "’", "‘", "ç", "é", "è", "&", "ê", "à", "ï", "ô", 
   "î", "▹", "―", "”", "≈", "↪", "£", "æ", "ä", "-",
-  "ü", "ö", "ß", "Ä", "Ö", "Ü", "?", NULL
+  "ü", "ö", "ß", "Ä", "Ö", "Ü", "â", "?", NULL
 };
 
 static const gchar *pwndict_cp1250_to_utf8_table[] =
