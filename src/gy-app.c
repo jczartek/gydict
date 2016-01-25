@@ -210,6 +210,8 @@ setup_accels (GyApp *self)
       {"win.dict(\"dict-pwn-angpol\")", "<ALT>1"},
       {"win.dict(\"dict-pwn-polang\")", "<ALT>2"},
       {"win.dict(\"dict-depl-a\")", "<ALT>3"},
+      {"win.dict(\"dict-pwn-niempol\")", "<ALT>4"},
+      {"win.dict(\"dict-pwn-polniem\")", "<ALT>5"},
       {NULL, NULL}
   };
 
