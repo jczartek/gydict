@@ -340,6 +340,13 @@ gy_german_pwn_finalize (GObject *object)
 {
   GyGermanPwn *self = (GyGermanPwn *)object;
 
+  g_clear_object (&self->file);
+  g_clear_pointer (&self->offsets, g_free);
+  g_clear_pointer (&self->entities, g_hash_table_unref);
+  g_clear_pointer (&self->parser, gy_markup_parser_pwn_free);
+  g_clear_pointer (&self->pdata->table_tags, g_hash_table_unref);
+  g_clear_pointer (&self->pdata, g_free);
+
   G_OBJECT_CLASS (gy_german_pwn_parent_class)->finalize (object);
 }
 
