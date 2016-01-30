@@ -290,7 +290,7 @@
 	      					<object class="GtkImage" id="dict_image">
 	      						<property name="visible">True</property>
 	      						<property name="icon_size">1</property>
-	      						<property name="icon_name">go-down-symbolic</property>
+	      						<property name="icon_name">pda-symbolic</property>
 	      					</object>
 	      				</child>
 	      			</object> <!-- dict_menu_button -->
