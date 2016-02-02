@@ -5,12 +5,12 @@ gy-resources.h: gy.gresource.xml $(resource_files)
 	glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-header --c-name gy $(srcdir)/gy.gresource.xml
 
 gydict_common_cppflags =                                                       \
-		-I$(srcdir)                                                    \
-		-I$(srcdir)/src                                                \
-		-DPACKAGE_DATA_DIR=\""$(datadir)"\"                            \
-		-DPACKAGE_LOCAL_DIR=\""$(datadir)/locale"\"                    \
-		$(CPPFLAGS)                                                    \
-		$(NULL)
+                -I$(srcdir)                                                    \
+                -I$(srcdir)/contrib/shortcuts                                  \
+                -DPACKAGE_DATA_DIR=\""$(datadir)"\"                            \
+                -DPACKAGE_LOCAL_DIR=\""$(datadir)/locale"\"                    \
+                $(CPPFLAGS)                                                    \
+                $(NULL)
 
 gydict_common_cflags =                                                         \
 		$(CFLAGS)                                                      \
@@ -23,6 +23,39 @@ gydict_common_ldflags =                                                        \
 	  	-export-dynamic                                                \
 		$(LDFLAGS)                                                     \
 		$(NULL)
+
+gydict_shortcuts_source =                                                      \
+                $(srcdir)/contrib/shortcuts/gb-accel-label.c                   \
+                $(srcdir)/contrib/shortcuts/gb-accel-label.h                   \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-column.c              \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-dialog.c              \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-dialog.h              \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-gesture.c             \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-gesture.h             \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-group.c               \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-group.h               \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-page.c                \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-page.h                \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-view.c                \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-view.h                \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-shortcut.c            \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-shortcut.h            \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-window.c              \
+                $(srcdir)/contrib/shortcuts/gb-shortcuts-window.h              \
+                $(srcdir)/contrib/shortcuts/gb-widget.c                        \
+                $(srcdir)/contrib/shortcuts/gb-widget.h                        \
+                $(srcdir)/contrib/shortcuts/egg-counter.c                      \
+                $(srcdir)/contrib/shortcuts/egg-counter.h                      \
+                $(srcdir)/contrib/shortcuts/egg-search-bar.c                   \
+                $(srcdir)/contrib/shortcuts/egg-search-bar.h                   \
+                $(srcdir)/contrib/shortcuts/egg-signal-group.c                 \
+                $(srcdir)/contrib/shortcuts/egg-signal-group.h                 \
+                $(srcdir)/contrib/shortcuts/ide-pattern-spec.c                 \
+                $(srcdir)/contrib/shortcuts/ide-pattern-spec.h                 \
+                $(srcdir)/contrib/shortcuts/gb-scrolled-window.c               \
+                $(srcdir)/contrib/shortcuts/gb-scrolled-window.h               \
+                $(NULL)
+
 
 BUILT_SOURCES =                                                                \
 		gy-resources.c                                                 \
@@ -66,6 +99,7 @@ gydict_SOURCES =                                                               \
                 gy-preferences-file-chooser.c gy-preferences-file-chooser.h    \
                 gy-css-provider.c gy-css-provider.h                            \
                 gy-german-pwn.c gy-german-pwn.h                                \
+                $(gydict_shortcuts_source)                                     \
 		$(NULL)
 
 gydict_CPPFLAGS =                                                              \
@@ -82,6 +116,8 @@ gydict_LDFLAGS =                                                               \
 
 gydict_LDADD =                                                                 \
 		-lz                                                            \
+                -ldl                                                           \
 		$(LIBM)                                                        \
+                $(SHM_LIB)                                                     \
 		$(GYDICT_LIBS)                                                 \
 		$(NULL)

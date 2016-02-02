@@ -73,6 +73,10 @@ PKG_CHECK_MODULES(GYDICT, [
 AC_SUBST(GYDICT_CFLAGS)
 AC_SUBST(GYDICT_LIBS)
 
+AC_CHECK_FUNCS([shm_open], [SHM_LIB=],
+               [AC_CHECK_LIB([rt], [shm_open], [SHM_LIB=-lrt], [SHM_LIB=])])
+AC_SUBST(SHM_LIB)
+
 AC_OUTPUT([
 Makefile
 src/Makefile
