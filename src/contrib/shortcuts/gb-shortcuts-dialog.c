@@ -17,7 +17,7 @@
  */
 
 #include <glib/gi18n.h>
-#include <ide.h>
+#include <ide-pattern-spec.h>
 
 #include "egg-search-bar.h"
 
