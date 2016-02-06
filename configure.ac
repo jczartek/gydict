@@ -48,6 +48,12 @@ AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources)
 GLIB_GSETTINGS
 
 dnl ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+dnl Initialize Libtool
+dnl ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+LT_PREREQ([2.2])
+LT_INIT([disable-shared])
+
+dnl ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 dnl + Internationalization                                                     +
 dnl ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 IT_PROG_INTLTOOL(0.50.2)
@@ -63,6 +69,12 @@ AC_MSG_ERROR(Function uncompress not found!!!)
 
 AC_CHECK_LIBM
 AC_SUBST(LIBM)
+
+PKG_CHECK_MODULES(SHORTCUTS, [
+  gtk+-3.0 >= $GTK_REQUIRED
+  gio-2.0 >= $GLIB_REQUIRED
+  glib-2.0 >= $GLIB_REQUIRED
+])
 
 PKG_CHECK_MODULES(GYDICT, [
   gtk+-3.0 >= $GTK_REQUIRED
@@ -80,6 +92,8 @@ AC_SUBST(SHM_LIB)
 AC_OUTPUT([
 Makefile
 src/Makefile
+src/contrib/Makefile
+src/contrib/shortcuts/Makefile
 data/Makefile
 data/gydict.desktop.in
 icons/Makefile
