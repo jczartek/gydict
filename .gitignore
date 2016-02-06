@@ -42,3 +42,24 @@ aclocal.m4
 po/Makefile.in.in
 po/Makefile.in.in~
 
+src/contrib/shortcuts/.deps/
+src/contrib/shortcuts/.libs/
+src/contrib/shortcuts/Makefile.am
+src/contrib/shortcuts/libshortcuts-private.la
+src/contrib/shortcuts/libshortcuts_private_la-egg-counter.lo
+src/contrib/shortcuts/libshortcuts_private_la-egg-search-bar.lo
+src/contrib/shortcuts/libshortcuts_private_la-egg-signal-group.lo
+src/contrib/shortcuts/libshortcuts_private_la-gb-accel-label.lo
+src/contrib/shortcuts/libshortcuts_private_la-gb-scrolled-window.lo
+src/contrib/shortcuts/libshortcuts_private_la-gb-shortcuts-column.lo
+src/contrib/shortcuts/libshortcuts_private_la-gb-shortcuts-dialog.lo
+src/contrib/shortcuts/libshortcuts_private_la-gb-shortcuts-gesture.lo
+src/contrib/shortcuts/libshortcuts_private_la-gb-shortcuts-group.lo
+src/contrib/shortcuts/libshortcuts_private_la-gb-shortcuts-page.lo
+src/contrib/shortcuts/libshortcuts_private_la-gb-shortcuts-shortcut.lo
+src/contrib/shortcuts/libshortcuts_private_la-gb-shortcuts-view.lo
+src/contrib/shortcuts/libshortcuts_private_la-gb-shortcuts-window.lo
+src/contrib/shortcuts/libshortcuts_private_la-gb-widget.lo
+src/contrib/shortcuts/libshortcuts_private_la-ide-pattern-spec.lo
+src/contrib/shortcuts/tags
+
