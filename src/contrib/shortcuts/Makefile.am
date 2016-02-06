@@ -1,3 +1,7 @@
+DISTCLEANFILES =
+BUILT_SOURCES =
+CLEANFILES =
+EXTRA_DIST =
 
 pkglibdir = $(libdir)/gydict
 pkglib_LTLIBRARIES = libshortcuts-private.la
@@ -34,6 +38,17 @@ libshortcuts_private_la_SOURCES =          \
 	gb-scrolled-window.c               \
 	gb-scrolled-window.h               \
 	$(NULL)
+
+nodist_libshortcuts_private_la_SOURCES =   \
+	shortcuts-resources.c              \
+	shortcuts-resources.h              \
+	$(NULL)
+
+glib_resources_c = shortcuts-resources.c
+glib_resources_h = shortcuts-resources.h
+glib_resources_xml = gy.resource.xml
+glib_resources_namespace = shortcuts
+include $(top_srcdir)/tools/autotools/Makefile.am.gresources
 
 libshortcuts_private_la_CFLAGS = \
 	$(SHORTCUTS_CFLAGS) \
