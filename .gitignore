@@ -24,6 +24,7 @@ po/POTFILES
 po/stamp-it
 src/config.h
 src/stamp-h1
+src/.libs
 
 autom4te.cache/
 build-aux/
@@ -61,4 +62,8 @@ src/contrib/shortcuts/libshortcuts_private_la-gb-shortcuts-window.lo
 src/contrib/shortcuts/libshortcuts_private_la-gb-widget.lo
 src/contrib/shortcuts/libshortcuts_private_la-ide-pattern-spec.lo
 src/contrib/shortcuts/tags
+src/contrib/shortcuts/libshortcuts_private_la-shortcuts-resources.lo
+src/contrib/shortcuts/shortcuts-resources.c
+src/contrib/shortcuts/shortcuts-resources.h
+src/contrib/shortcuts/stamp-resources
 
