@@ -57,4 +57,5 @@ libshortcuts_private_la_CFLAGS = \
 libshortcuts_private_la_LIBADD = \
 	$(SHORTCUTS_LIBS) \
 	$(SHM_LIB) \
+	-ldl \
 	$(NULL)
