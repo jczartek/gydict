@@ -23,6 +23,7 @@
 #include "gy-window.h"
 #include "gy-css-provider.h"
 #include "gy-preferences-window.h"
+#include <gb-shortcuts-window.h>
 
 
 /**STATIC PROTOTYPES FUNCTIONS**/
@@ -38,6 +39,9 @@ static void preferences_cb (GSimpleAction *action,
 static void about_cb (GSimpleAction *action,
                       GVariant      *parameter,
                       gpointer       user_data);
+static void shortcuts_cb (GSimpleAction *action,
+                          GVariant      *variant,
+                          gpointer       data);
 
 static void dispose (GObject *object);
 
@@ -61,6 +65,7 @@ static GActionEntry app_entries[] =
   { "preferences", preferences_cb, NULL, NULL, NULL },
   { "about", about_cb, NULL, NULL, NULL},
   { "quit", quit_cb, NULL, NULL, NULL },
+  { "shortcuts", shortcuts_cb, NULL, NULL, NULL },
 };
 #pragma GCC diagnostic pop
 
@@ -111,6 +116,21 @@ new_window_cb (GSimpleAction *action G_GNUC_UNUSED,
 }
 
 static void 
+shortcuts_cb (GSimpleAction *action,
+              GVariant      *variant,
+              gpointer       data)
+{
+  GbShortcutsWindow *window;
+
+  window = g_object_new (GB_TYPE_SHORTCUTS_WINDOW,
+                         "window-position", GTK_WIN_POS_CENTER,
+                         "default-width", 800,
+                         "default-height", 600, NULL);
+
+  gtk_window_present (GTK_WINDOW (window));
+}
+
+static void
 preferences_cb (GSimpleAction *action G_GNUC_UNUSED,
                 GVariant      *parametr G_GNUC_UNUSED,
                 gpointer       data)
