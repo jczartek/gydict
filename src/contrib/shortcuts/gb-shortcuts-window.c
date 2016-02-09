@@ -30,7 +30,7 @@ gb_shortcuts_window_class_init (GbShortcutsWindowClass *klass)
 {
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/libshortcuts-private/gy-shortcuts.ui");
+  gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/libshortcuts-private/shortcuts-window.ui");
 }
 
 static void
