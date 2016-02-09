@@ -24,6 +24,7 @@
 #include "gy-css-provider.h"
 #include "gy-preferences-window.h"
 #include <gb-shortcuts-window.h>
+#include <shortcuts-resources.h>
 
 
 /**STATIC PROTOTYPES FUNCTIONS**/
@@ -292,6 +293,8 @@ startup (GApplication *application)
 
   /* Chain up parent's class */
   G_APPLICATION_CLASS (gy_app_parent_class)->startup (application);
+
+  g_resources_register (shortcuts_get_resource ());
 
   /* Setup actions */
   setup_actions_app (app);
