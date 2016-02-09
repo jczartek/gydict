@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gtk/libshortcuts-private">
-    <file>gy-shortcuts.ui</file>
+    <file>shortcuts-window.ui</file>
   </gresource>
 </gresources>
