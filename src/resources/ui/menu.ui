@@ -1,12 +1,10 @@
 <?xml version="1.0"?>
 <interface>  
-<requires lib="gtk+" version="3.10"/>
   <menu id="app-menu">
     <section>
       <item>
         <attribute name="label" translatable="yes">New window</attribute>
         <attribute name="action">app.new-window</attribute>
-        <attribute name="accel">&lt;Primary&gt;n</attribute>
       </item>
      </section>
      <section>
@@ -17,13 +15,18 @@
     </section>
     <section>
       <item>
+        <attribute name="label" translatable="yes">Keyboard shortcuts</attribute>
+        <attribute name="action">app.shortcuts</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">About Gydict</attribute>
         <attribute name="action">app.about</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Quit</attribute>
         <attribute name="action">app.quit</attribute>
-        <attribute name="accel">&lt;Primary&gt;q</attribute>
       </item>
     </section>
   </menu>
