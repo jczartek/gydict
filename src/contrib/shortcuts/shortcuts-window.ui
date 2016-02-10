@@ -10,8 +10,56 @@
             <group>
               <property name="title" translatable="yes">General</property>
               <shortcut>
-                <property name="title" translatable="yes">Quit</property>
+                <property name="title" translatable="yes">New Window</property>
+                <property name="accelerator">&lt;ctrl&gt;n</property>
+              </shortcut>
+              <shortcut>
+                <property name="title" translatable="yes">Print</property>
+                <property name="accelerator">&lt;ctrl&gt;p</property>
+              </shortcut>
+              <shortcut>
+                <property name="title" translatable="yes">React to Clipboard</property>
+                <property name="accelerator">&lt;ctrl&gt;m</property>
+              </shortcut>
+              <shortcut>
+                <property name="title" translatable="yes">Find</property>
+                <property name="accelerator">&lt;ctrl&gt;f</property>
+              </shortcut>
+              <shortcut>
+                <property name="title" translatable="yes">Close Window</property>
+                <property name="accelerator">&lt;ctrl&gt;w</property>
+              </shortcut>
+              <shortcut>
+                <property name="title" translatable="yes">Close Application</property>
                 <property name="accelerator">&lt;ctrl&gt;q</property>
+              </shortcut>
+            </group>
+          </column>
+          <column>
+            <group>
+              <property name="title" translatable="yes">PWN Dictionaries</property>
+              <shortcut>
+                <property name="title" translatable="yes">English-Polish</property>
+                <property name="accelerator">&lt;alt&gt;1</property>
+              </shortcut>
+              <shortcut>
+                <property name="title" translatable="yes">Polish-English</property>
+                <property name="accelerator">&lt;alt&gt;2</property>
+              </shortcut>
+              <shortcut>
+                <property name="title" translatable="yes">German-Polish</property>
+                <property name="accelerator">&lt;alt&gt;3</property>
+              </shortcut>
+              <shortcut>
+                <property name="title" translatable="yes">Polish-German</property>
+                <property name="accelerator">&lt;alt&gt;4</property>
+              </shortcut>
+            </group>
+            <group>
+              <property name="title" translatable="yes">DePl Dictionary</property>
+              <shortcut>
+                <property name="title" translatable="yes">Polish-German</property>
+                <property name="accelerator">&lt;alt&gt;5</property>
               </shortcut>
             </group>
           </column>
