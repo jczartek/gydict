@@ -5,22 +5,18 @@
       <item>
         <attribute name="label" translatable="yes">_Print</attribute>
 				<attribute name="action">win.print</attribute>
-				<attribute name="accel">&lt;Primary&gt;p</attribute>
       </item>
 			<item>
 				<attribute name="label" translatable="yes">_Copy</attribute>
 				<attribute name="action">win.copy</attribute>
-				<attribute name="accel">&lt;Primary&gt;c</attribute>
 			</item>
 			<item>
 				<attribute name="label" translatable="yes">Pa_ste</attribute>
 				<attribute name="action">win.paste</attribute>
-				<attribute name="accel">&lt;Primary&gt;v</attribute>
 			</item>
 			<item>
 				<attribute name="label" translatable="yes">React to clipboard</attribute>
 				<attribute name="action">win.clip</attribute>
-				<attribute name="accel">&lt;Primary&gt;m</attribute>
 			</item>
 			<item>
 				<attribute name="label" translatable="yes">Diacritic</attribute>
@@ -31,7 +27,6 @@
 			<item>
 				<attribute name="label" translatable="yes">Cl_ose</attribute>
 				<attribute name="action">win.close</attribute>
-				<attribute name="accel">&lt;Primary&gt;w</attribute>
 			</item>
 		</section>   
 	</menu>

@@ -274,7 +274,7 @@ setup_menu_app (GyApp *application)
 
   builder = gtk_builder_new ();
 
-  if (!gtk_builder_add_from_resource (builder, "/org/gtk/gydict/menu.ui", &error)) 
+  if (!gtk_builder_add_from_resource (builder, "/org/gtk/gydict/gy-app-menu.ui", &error))
   {
     g_error ("%s",error ? error->message : "unknown error");
     g_clear_error (&error);
