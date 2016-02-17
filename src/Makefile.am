@@ -72,6 +72,7 @@ gydict_SOURCES =                                                               \
                 gy-preferences-file-chooser.c gy-preferences-file-chooser.h    \
                 gy-css-provider.c gy-css-provider.h                            \
                 gy-german-pwn.c gy-german-pwn.h                                \
+                gy-english-pwn.c gy-english-pwn.h                              \
 		$(NULL)
 
 gydict_CPPFLAGS =                                                              \
