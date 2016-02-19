@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-<<<<<<< HEAD
 #include <string.h>
 #include <stdlib.h>
 #include <zlib.h>
@@ -30,20 +29,14 @@
 
 #define SIZE_BUFFER  128
 #define SIZE_ENTRY   64
-=======
-#include "gy-english-pwn.h"
->>>>>>> 152305e5a405bfd90dabaccf54c4312a6e75d30e
 
 struct _GyEnglishPwn
 {
   GyDict parent;
-<<<<<<< HEAD
 
   GFile      *file;
   guint32    *offsets;
   GHashTable *entities;
-=======
->>>>>>> 152305e5a405bfd90dabaccf54c4312a6e75d30e
 };
 
 G_DEFINE_TYPE (GyEnglishPwn, gy_english_pwn, GY_TYPE_DICT)
@@ -53,7 +46,6 @@ enum {
   LAST_PROP
 };
 
-<<<<<<< HEAD
 static void
 gy_english_pwn_map (GyDict  *dict,
                    GError **err)
@@ -198,8 +190,6 @@ out:
   return;
 }
 
-=======
->>>>>>> 152305e5a405bfd90dabaccf54c4312a6e75d30e
 static GParamSpec *gParamSpecs [LAST_PROP];
 
 static void
@@ -244,19 +234,13 @@ static void
 gy_english_pwn_class_init (GyEnglishPwnClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
-<<<<<<< HEAD
   GyDictClass  *dict_class = GY_DICT_CLASS (klass);
-=======
->>>>>>> 152305e5a405bfd90dabaccf54c4312a6e75d30e
 
   object_class->finalize = gy_english_pwn_finalize;
   object_class->get_property = gy_english_pwn_get_property;
   object_class->set_property = gy_english_pwn_set_property;
-<<<<<<< HEAD
 
   dict_class->map = gy_english_pwn_map;
-=======
->>>>>>> 152305e5a405bfd90dabaccf54c4312a6e75d30e
 }
 
 static void
