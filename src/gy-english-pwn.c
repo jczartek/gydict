@@ -46,6 +46,8 @@ enum {
   LAST_PROP
 };
 
+static GParamSpec *gParamSpecs [LAST_PROP];
+
 static void
 gy_english_pwn_map (GyDict  *dict,
                    GError **err)
@@ -190,7 +192,6 @@ out:
   return;
 }
 
-static GParamSpec *gParamSpecs [LAST_PROP];
 
 static void
 gy_english_pwn_finalize (GObject *object)

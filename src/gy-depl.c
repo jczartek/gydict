@@ -162,23 +162,23 @@ gy_depl_set_dictionary (GyDict *dict)
   if (!g_file_test (path_file, G_FILE_TEST_EXISTS))
     {
       g_message ("File: %s does not exist!", path_file);
-      return GY_EXISTS_FILE_ERROR;
+      return G_IO_ERROR_NOT_FOUND;
     }
 
   if ((fd = open (path_file, O_RDONLY)) < 0)
     {
       g_message ("Cannot open the %s!", path_file);
-      return GY_OPEN_FILE_ERROR;
+      return G_IO_ERROR_FAILED;
     }
 
   fstat (fd, &statbuf);
 
   if ((buffer = (gchar *) mmap (0, statbuf.st_size, PROT_READ,
                                 MAP_PRIVATE, fd, 0)) == MAP_FAILED)
-    return GY_MEMORY_ERROR;
+    return G_IO_ERROR_FAILED;
 
   if (!(priv->array_words = (gchar **) g_try_malloc0_n (55000, sizeof (gchar *))))
-    return GY_MEMORY_ERROR;
+    return G_IO_ERROR_FAILED;
 
   buffer_end = buffer + statbuf.st_size;
   buffer_tmp = buffer;
@@ -197,9 +197,9 @@ gy_depl_set_dictionary (GyDict *dict)
 
   close (fd);
   if (munmap (buffer - statbuf.st_size, statbuf.st_size))
-    return GY_MEMORY_ERROR;
+    return G_IO_ERROR_FAILED;
 
-  return GY_OK;
+  return 0;
 }
 
 static guint
@@ -221,23 +221,23 @@ gy_depl_init_list (GyDict *dict)
   if (!g_file_test (path_file, G_FILE_TEST_EXISTS))
     {
       g_message ("File: %s does not exist!", path_file);
-      return GY_EXISTS_FILE_ERROR;
+      return G_IO_ERROR_FAILED;
     }
 
   if ((fd = open (path_file, O_RDONLY)) < 0)
     {
       g_message ("Cannot open the %s!", path_file);
-      return GY_OPEN_FILE_ERROR;
+      return G_IO_ERROR_FAILED;
     }
 
   fstat (fd, &statbuf);
 
   if ((file_map = (gchar *) mmap (0, statbuf.st_size, PROT_READ,
                                   MAP_PRIVATE, fd, 0)) == MAP_FAILED)
-    return GY_MEMORY_ERROR;
+    return G_IO_ERROR_FAILED;
 
   if (!(words = (gchar *) g_try_malloc0 (300)))
-    return GY_MEMORY_ERROR;
+    return G_IO_ERROR_FAILED;
 
   file_map_end = file_map + statbuf.st_size;
   g_assert ((file_map_end - file_map) == statbuf.st_size);
@@ -267,9 +267,9 @@ gy_depl_init_list (GyDict *dict)
   gy_dict_set_tree_model (dict, GTK_TREE_MODEL (model));
   close (fd);
   if (munmap (file_map - statbuf.st_size, statbuf.st_size))
-    return GY_MEMORY_ERROR;
+    return G_IO_ERROR_FAILED;
 
-  return GY_OK;
+  return 0;
 }
 
 static gpointer

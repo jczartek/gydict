@@ -309,7 +309,7 @@ out:
 static guint
 gy_german_pwn_set_dictionary (GyDict *self)
 {
-  return GY_OK;
+  return 0;
 }
 
 static guint
@@ -322,10 +322,10 @@ gy_german_pwn_init_list (GyDict *self)
   if (err != NULL)
     {
       g_critical ("%s", err->message);
-      return GY_FAILED_OBJECT;
+      return G_IO_ERROR_FAILED;
     }
 
-  return GY_OK;
+  return 0;
 }
 
 static gpointer

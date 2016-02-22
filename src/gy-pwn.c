@@ -86,16 +86,17 @@ gy_pwn_set_dictionary (GyDict *dict)
   if (!g_file_test (path_file, G_FILE_TEST_EXISTS))
     {
       g_message ("File: %s does not exist!", path_file);
-      return GY_EXISTS_FILE_ERROR;
+      return G_IO_ERROR_FAILED;
+
     }
 
   if ( !(priv->file_dict = fopen (path_file, "rb")))
     {
       g_message ("Cannot open the %s!", path_file);
-      return GY_OPEN_FILE_ERROR;
+      return G_IO_ERROR_FAILED;
     }
 
-  return GY_OK;
+  return 0;
 }
 
 static guint
@@ -280,7 +281,7 @@ gy_pwn_init_list (GyDict *dict)
   g_free (offset);
   g_free (wordbuffer);
 
-  return GY_OK;
+  return 0;
 }
 
 static gpointer
