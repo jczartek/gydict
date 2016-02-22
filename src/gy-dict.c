@@ -30,19 +30,6 @@
 typedef struct _GyDictPrivate GyDictPrivate;
 typedef struct _GyDictionary GyDictionary;
 
-static gchar * gy_dict_description_error[GY_LAST_ERROR] = 
-{
-  "",
-  "Error:: Allocation memory failed (malloc)!!!",
-  "Error:: Load data with file failed (fread)!!!",
-  "Error:: Cannot open the dictionary!!!",
-  "Error:: Moving a file pointer failed (fseek)!!!",
-  "Error:: The dictionary file does not exist!!!",
-  "Error:: Invalid object ID!!!",
-  "Error:: Invalid object!!!",
-  "Error:: Virtual method not implemented!!!"
-};
-
 struct _GyDictPrivate
 {
   GtkTreeModel   *model;
@@ -77,7 +64,8 @@ set_dictionary_unimplemented (GyDict *dict)
   g_warning ("GyDictClass::set_dictionary not implemented for %s",
              g_type_name (G_TYPE_FROM_INSTANCE (dict)));
 
-  return GY_UNIMPLEMENTED_METHOD;
+  return G_IO_ERROR_FAILED;
+
 }
 
 static guint
@@ -86,18 +74,7 @@ init_list_unimplemented (GyDict *dict)
   g_warning ("GyDictClass::init_list not implemented for %s",
              g_type_name (G_TYPE_FROM_INSTANCE (dict)));
 
-  return GY_UNIMPLEMENTED_METHOD;
-}
-
-static void
-gy_dict_error (GyDict      *dict,
-               const gchar *name_error,
-               gpointer     data G_GNUC_UNUSED)
-{
-  g_return_if_fail (GY_IS_DICT (dict));
-  g_critical ("Signal %s. %s For %s.", g_signal_name (dict_signals[GY_ERROR]), name_error,
-              g_type_name (G_TYPE_FROM_INSTANCE (dict)));
-  g_object_unref (dict);
+  return G_IO_ERROR_FAILED;
 }
 
 static void
@@ -198,7 +175,6 @@ gy_dict_class_init (GyDictClass *klass)
   klass->set_dictionary = set_dictionary_unimplemented;
   klass->init_list = init_list_unimplemented;
   klass->map = NULL;
-  klass->__error = gy_dict_error;
 
   g_object_class_install_property (object_class,
                                    PROP_TREE_MODEL,
@@ -229,15 +205,6 @@ gy_dict_class_init (GyDictClass *klass)
                                                          FALSE,
                                                          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
-
-  dict_signals[GY_ERROR] = g_signal_new ("gydict-error",
-                                         G_OBJECT_CLASS_TYPE (klass),
-                                         G_SIGNAL_RUN_LAST | G_SIGNAL_NO_HOOKS,
-                                         G_STRUCT_OFFSET (GyDictClass, __error),
-                                         NULL, NULL,
-                                         g_cclosure_marshal_VOID__STRING,
-                                         G_TYPE_NONE, 1,
-                                         G_TYPE_STRING);
 }
 
 /***************************FUBLIC METHOD***************************/
@@ -271,13 +238,8 @@ guint
 gy_dict_set_dictionary (GyDict *dict)
 {
   guint error;
-  g_return_val_if_fail (GY_IS_DICT (dict), GY_FAILED_OBJECT);
 
   error = GY_DICT_GET_CLASS (dict)->set_dictionary (dict);
-
-  if (error)
-    g_signal_emit (dict, dict_signals[GY_ERROR], 0,
-                   gy_dict_description_error[error], NULL);
 
   return error;
 }
@@ -286,13 +248,8 @@ guint
 gy_dict_init_list (GyDict *dict)
 {
   guint error;
-  g_return_val_if_fail (GY_IS_DICT (dict), GY_FAILED_OBJECT);
 
   error = GY_DICT_GET_CLASS (dict)->init_list (dict);
-
-  if (error)
-    g_signal_emit (dict, dict_signals[GY_ERROR], 0,
-                   gy_dict_description_error[error], NULL);
 
   return error;
 }

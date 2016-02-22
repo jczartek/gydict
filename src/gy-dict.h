@@ -27,19 +27,6 @@ G_BEGIN_DECLS
 
 G_DECLARE_DERIVABLE_TYPE (GyDict, gy_dict, GY, DICT, GObject)
 
-enum
-{
-  GY_OK,
-  GY_MEMORY_ERROR,
-  GY_READ_FILE_ERROR,
-  GY_OPEN_FILE_ERROR,
-  GY_SEEK_FILE_ERROR,
-  GY_EXISTS_FILE_ERROR,
-  GY_INVALID_ID_ERROR,
-  GY_FAILED_OBJECT,
-  GY_UNIMPLEMENTED_METHOD,
-  GY_LAST_ERROR
-};
 
 struct _GyDictClass
 {
@@ -51,11 +38,6 @@ struct _GyDictClass
   /* New API */
   void      (*map)              (GyDict  *self,
                                  GError **err);
-
-    /* Signals */
-  void(* __error)               (GyDict      *self,
-                                 const gchar *name_error,
-                                 gpointer     data);
 };
 
 GType gy_dict_get_type (void) G_GNUC_CONST;
