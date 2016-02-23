@@ -48,14 +48,6 @@ enum
   PROP_IS_MAP
 };
 
-enum
-{
-  GY_ERROR,
-  LAST_SIGNAL
-};
-
-static guint dict_signals[LAST_SIGNAL] = { 0 };
-
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GyDict, gy_dict, G_TYPE_OBJECT);
 
 static guint
