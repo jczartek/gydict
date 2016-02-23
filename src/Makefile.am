@@ -73,6 +73,7 @@ gydict_SOURCES =                                                               \
                 gy-css-provider.c gy-css-provider.h                            \
                 gy-german-pwn.c gy-german-pwn.h                                \
                 gy-english-pwn.c gy-english-pwn.h                              \
+                gy-pwn-dict.c gy-pwn-dict.h                                    \
 		$(NULL)
 
 gydict_CPPFLAGS =                                                              \
