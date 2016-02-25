@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
+#define G_LOG_DOMAIN "GyDepl"
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
@@ -40,6 +40,9 @@
     ((c) == '<')
 #define IS_ANGLE_CLOSE(c) \
     ((c) == '>')
+
+
+#define SIZE_ENTRY 64
 
 typedef struct _ParserContext ParserContext;
 typedef struct _ParserTagDescription ParserTagDescription;
@@ -156,6 +159,7 @@ gy_depl_set_dictionary (GyDict *dict)
   g_autofree gchar *path_file = NULL;
   GyDeplPrivate *priv = gy_depl_get_instance_private (GY_DEPL (dict));
 
+  return 0;
   settings = g_settings_new ("org.gtk.gydict");
   path_file = g_settings_get_string (settings,
                                      gy_dict_get_id_string (dict));
@@ -203,6 +207,68 @@ gy_depl_set_dictionary (GyDict *dict)
   return 0;
 }
 
+static void
+gy_depl_map (GyDict *dict,
+             GError **err)
+{
+  g_autoptr(GFile) file = NULL;
+  g_autoptr(GFileInputStream) in = NULL;
+  g_autoptr(GDataInputStream) data = NULL;
+  g_autoptr(GSettings) settings = NULL;
+  g_autofree gchar *path = NULL;
+  GtkListStore *model = NULL;
+  GtkTreeIter iter;
+  gchar entry[SIZE_ENTRY];
+  gchar *line = NULL;
+  gchar *conv = NULL;
+  gint i = 0;
+  gsize offset = 0;
+
+  GyDepl *self = GY_DEPL (dict);
+  GyDeplPrivate *priv = gy_depl_get_instance_private (GY_DEPL (dict));
+
+  g_return_if_fail (GY_IS_DEPL (self));
+
+  settings = g_settings_new ("org.gtk.gydict");
+  path = g_settings_get_string (settings,
+                                gy_dict_get_id_string (dict));
+
+  file = g_file_new_for_path (path);
+
+  if (!(in = g_file_read (file, NULL, err)))
+    goto out;
+
+  if (!(data = g_data_input_stream_new (G_INPUT_STREAM(in))))
+    goto out;
+
+  model = gtk_list_store_new (1, G_TYPE_STRING);
+  priv->array_words = (gchar **) g_malloc0 (55000 * sizeof (guintptr));
+
+  while ((line = g_data_input_stream_read_line (data, NULL, NULL, err)) != NULL)
+    {
+      if (!(conv = g_convert_with_fallback (line, -1, "UTF-8", "ISO8859-2", NULL, NULL, NULL, err)))
+        {
+          g_free (line);
+          goto out;
+        }
+
+      memset (entry, 0, SIZE_ENTRY);
+      offset = strcspn (conv, " ");
+      strncat (entry, conv, offset);
+      gtk_list_store_append (model, &iter);
+      gtk_list_store_set (model, &iter, 0, entry, -1);
+
+      priv->array_words[i++] = conv;
+      g_free (line);
+    }
+  gy_dict_set_tree_model (dict, GTK_TREE_MODEL (model));
+  g_object_set (dict, "is-map", TRUE, NULL);
+  return;
+out:
+  g_object_set (dict, "is-map", FALSE, NULL);
+  return;
+}
+
 static guint
 gy_depl_init_list (GyDict *dict)
 {
@@ -215,6 +281,8 @@ gy_depl_init_list (GyDict *dict)
   GtkTreeIter iter;
   struct stat statbuf;
 
+  gy_depl_map (dict, NULL);
+  return 0;
   model = gtk_list_store_new (1, G_TYPE_STRING);
   settings = g_settings_new ("org.gtk.gydict");
   path_file = g_settings_get_string (settings, "dict-depl-b");
@@ -321,6 +389,7 @@ gy_depl_class_init (GyDeplClass *klass)
   object_class->dispose = dispose;
   dict_class->set_dictionary = gy_depl_set_dictionary;
   dict_class->init_list = gy_depl_init_list;
+  dict_class->map = gy_depl_map;
 }
 
 /************************IMPLEMENTED INTERFACE********************************/
@@ -561,19 +630,19 @@ insert_text_buffor (ParserContext *context)
 
         }
 
-      if (((guchar) *context->iter) < 127)
+  //    if (((guchar) *context->iter) < 127)
         *context->current_buffer_pos++ = *context->iter++;
-      else
-        {
+  //    else
+  //      {
           /*	    insert_sign_buffer (&context->current_buffer_pos,
            * context->iter,
            * **(array_of_pointer_to_arrays_of_character_set +1));*/
-          gy_tabs_convert_character (&context->current_buffer_pos,
-                                     context->iter,
-                                     GY_ENCODING_ISO88592);
-          context->iter++;
+ //         gy_tabs_convert_character (&context->current_buffer_pos,
+ //                                    context->iter,
+ //                                    GY_ENCODING_ISO88592);
+ //         context->iter++;
 
-        }
+ //       }
     }
 }
 
