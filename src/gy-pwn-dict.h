@@ -23,6 +23,12 @@
 
 G_BEGIN_DECLS
 
+typedef struct _GyDictPwnQuery GyDictPwnQuery;
+
+struct _GyDictPwnQuery
+{
+};
+
 #define GY_TYPE_PWN_DICT (gy_pwn_dict_get_type())
 
 G_DECLARE_DERIVABLE_TYPE (GyPwnDict, gy_pwn_dict, GY, PWN_DICT, GyDict)
@@ -30,6 +36,13 @@ G_DECLARE_DERIVABLE_TYPE (GyPwnDict, gy_pwn_dict, GY, PWN_DICT, GyDict)
 struct _GyPwnDictClass
 {
   GyDictClass parent;
+
+  /* vfuncs */
+  gboolean (*check_checksum) (GyPwnDict      *self,
+                              GFile          *file,
+                              GError        **err);
+  void     (*query)          (GyPwnDict      *self,
+                              GyDictPwnQuery *query);
 };
 
 G_END_DECLS

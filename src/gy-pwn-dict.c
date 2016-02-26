@@ -32,6 +32,37 @@ enum {
 static GParamSpec *gParamSpecs [LAST_PROP];
 
 static void
+gy_pwn_dict_query (GyPwnDict      *self,
+                   GyDictPwnQuery *query)
+{
+  GyPwnDictClass *klass;
+
+  g_return_if_fail (GY_IS_PWN_DICT (self));
+
+  klass = GY_PWN_DICT_GET_CLASS (self);
+
+  g_return_if_fail (klass->query != NULL);
+
+  klass->query (self, query);
+}
+
+static gboolean
+gy_pwn_dict_check_checksum (GyPwnDict  *self,
+                            GFile      *file,
+                            GError    **err)
+{
+  GyPwnDictClass *klass;
+
+  g_return_val_if_fail (GY_IS_PWN_DICT (self), FALSE);
+
+  klass = GY_PWN_DICT_GET_CLASS (self);
+
+  g_return_val_if_fail (klass->check_checksum != NULL, FALSE);
+
+  return klass->check_checksum (self, file, err);
+}
+
+static void
 gy_pwn_dict_finalize (GObject *object)
 {
   GyPwnDict *self = (GyPwnDict *)object;
@@ -78,6 +109,9 @@ gy_pwn_dict_class_init (GyPwnDictClass *klass)
   object_class->finalize = gy_pwn_dict_finalize;
   object_class->get_property = gy_pwn_dict_get_property;
   object_class->set_property = gy_pwn_dict_set_property;
+
+  klass->query = NULL;
+  klass->check_checksum = NULL;
 }
 
 static void
