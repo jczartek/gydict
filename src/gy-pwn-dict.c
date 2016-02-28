@@ -17,9 +17,12 @@
  */
 
 #include "gy-pwn-dict.h"
+#include "gy-german-pwn.h"
+#include "gy-english-pwn.h"
 
 typedef struct
 {
+  GFile *file;
 } GyPwnDictPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (GyPwnDict, gy_pwn_dict, GY_TYPE_DICT)
@@ -131,6 +134,8 @@ gy_pwn_dict_class_init (GyPwnDictClass *klass)
                                      LAST_PROP,
                                      gParamSpecs);
 
+  g_type_ensure (GY_TYPE_GERMAN_PWN);
+  g_type_ensure (GY_TYPE_ENGLISH_PWN);
 }
 
 static void

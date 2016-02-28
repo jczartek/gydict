@@ -26,6 +26,7 @@
 #include "gy-depl.h"
 #include "gy-enum-types.h"
 #include "gy-german-pwn.h"
+#include "gy-pwn-dict.h"
 
 typedef struct _GyDictPrivate GyDictPrivate;
 typedef struct _GyDictionary GyDictionary;
@@ -197,6 +198,8 @@ gy_dict_class_init (GyDictClass *klass)
                                                          FALSE,
                                                          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
 
+  g_type_ensure (GY_TYPE_PWN_DICT);
+  g_type_ensure (GY_TYPE_DEPL);
 }
 
 /***************************FUBLIC METHOD***************************/
