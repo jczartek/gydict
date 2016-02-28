@@ -26,6 +26,7 @@ G_DEFINE_TYPE_WITH_PRIVATE (GyPwnDict, gy_pwn_dict, GY_TYPE_DICT)
 
 enum {
   PROP_0,
+  PROP_ENCODING,
   LAST_PROP
 };
 
@@ -112,6 +113,24 @@ gy_pwn_dict_class_init (GyPwnDictClass *klass)
 
   klass->query = NULL;
   klass->check_checksum = NULL;
+
+  /**
+   * GyPwnDict:encoding
+   * This property represents an authentic dictionary encoding. It should be
+   * overridden in a derived class.
+   *
+   */
+  gParamSpecs [PROP_ENCODING] =
+    g_param_spec_string ("encoding",
+                         "Encoding",
+                         "The authentic encoding of a dictionary.",
+                         NULL,
+                         G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+  g_object_class_install_properties (object_class,
+                                     LAST_PROP,
+                                     gParamSpecs);
+
 }
 
 static void
