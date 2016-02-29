@@ -38,12 +38,21 @@ struct _GyPwnDictClass
   GyDictClass parent;
 
   /* vfuncs */
-  gboolean (*check_checksum) (GyPwnDict      *self,
-                              GFile          *file,
-                              GError        **err);
-  void     (*query)          (GyPwnDict      *self,
-                              GyDictPwnQuery *query);
+  gboolean (*check_checksum)   (GyPwnDict      *self,
+                                GFile          *file,
+                                GError        **err);
+
+  void     (*query)            (GyPwnDict      *self,
+                                GyDictPwnQuery *query);
+
+  gchar *  (*get_lexical_unit) (GyPwnDict      *self,
+                                guint           index,
+                                GError        **err);
 };
+
+gchar * gy_pwn_dict_get_lexical_unit (GyPwnDict  *self,
+                                      guint       index,
+                                      GError    **err);
 
 G_END_DECLS
 

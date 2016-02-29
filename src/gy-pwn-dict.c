@@ -16,13 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
+#include <zlib.h>
+
 #include "gy-pwn-dict.h"
+#include "gy-dict.h"
 #include "gy-german-pwn.h"
 #include "gy-english-pwn.h"
+
+#define GY_PWN_DICT_ERROR gy_pwn_dict_error_quark ()
 
 typedef struct
 {
   GFile *file;
+  guint *offsets;
 } GyPwnDictPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (GyPwnDict, gy_pwn_dict, GY_TYPE_DICT)
@@ -34,6 +41,83 @@ enum {
 };
 
 static GParamSpec *gParamSpecs [LAST_PROP];
+
+static GQuark
+gy_pwn_dict_error_quark (void)
+{
+  return g_quark_from_static_string ("gy-pwn-dict-error-quark");
+}
+
+static gchar *
+gy_pwn_dict____get_lexical_unit (GyPwnDict  *self,
+                                 guint       index,
+                                 GError    **err)
+{
+  g_autoptr(GFileInputStream) in = NULL;
+  gchar *in_buffer = NULL;
+  gchar *out_buffer = NULL;
+  guint i = 0;
+  GyPwnDictPrivate *priv = gy_pwn_dict_get_instance_private (self);
+
+  g_return_val_if_fail (gy_dict_is_map (GY_DICT (self)), NULL);
+
+#define MAXLEN 1024 * 90
+#define OFFSET 12
+
+  in_buffer = (gchar *) g_alloca (MAXLEN);
+
+  if (!(in = g_file_read (priv->file, NULL, err)))
+    goto out;
+
+  if (!g_seekable_seek (G_SEEKABLE (in), priv->offsets[index], G_SEEK_SET, NULL, err))
+    goto out;
+
+  if ((g_input_stream_read (G_INPUT_STREAM (in), in_buffer, MAXLEN, NULL, err)) <= 0)
+    goto out;
+
+  i = OFFSET + strlen (in_buffer + OFFSET) + 2;
+
+  if (in_buffer[i] < 20)
+    {
+      gint zerr;
+      uLongf destlen;
+      i += in_buffer[i]+1;
+      destlen = MAXLEN;
+
+      out_buffer = (gchar *) g_malloc0 (MAXLEN);
+
+      if ((zerr = uncompress ((Bytef *)out_buffer, &destlen, (const Bytef *)in_buffer+i, MAXLEN)) != Z_OK)
+        {
+          switch (zerr)
+            {
+            case Z_BUF_ERROR:
+              g_set_error (err, GY_PWN_DICT_ERROR, zerr,
+                           "The buffer out_buffer was not large enough to hold the uncompressed data!");
+              break;
+            case Z_MEM_ERROR:
+              g_set_error (err, GY_PWN_DICT_ERROR, zerr,
+                           "Insufficient memory!");
+              break;
+            case Z_DATA_ERROR:
+              g_set_error (err, GY_PWN_DICT_ERROR, zerr,
+                           "The compressed data (referenced by in_buffer) was corrupted!");
+              break;
+            };
+          g_free (out_buffer);
+          goto out;
+        }
+    }
+  else
+    {
+      out_buffer = g_strdup (in_buffer + i);
+    }
+
+  return out_buffer;
+out:
+  return NULL;
+#undef MAXLEN
+#undef OFFSET
+}
 
 static void
 gy_pwn_dict_query (GyPwnDict      *self,
@@ -116,6 +200,7 @@ gy_pwn_dict_class_init (GyPwnDictClass *klass)
 
   klass->query = NULL;
   klass->check_checksum = NULL;
+  klass->get_lexical_unit = gy_pwn_dict____get_lexical_unit;
 
   /**
    * GyPwnDict:encoding
@@ -141,4 +226,22 @@ gy_pwn_dict_class_init (GyPwnDictClass *klass)
 static void
 gy_pwn_dict_init (GyPwnDict *self)
 {
+}
+
+/* PUBLIC */
+
+gchar *
+gy_pwn_dict_get_lexical_unit (GyPwnDict  *self,
+                              guint       index,
+                              GError    **err)
+{
+  GyPwnDictClass *klass;
+
+  g_return_val_if_fail (GY_IS_PWN_DICT (self), NULL);
+
+  klass = GY_PWN_DICT_GET_CLASS (self);
+
+  g_return_val_if_fail (klass->get_lexical_unit != NULL, NULL);
+
+  return klass->get_lexical_unit (self, index, err);
 }
