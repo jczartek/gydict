@@ -53,6 +53,7 @@ GyDict *gy_dict_new_object (const gchar *id_string);
 void     gy_dict_map              (GyDict  *self,
                                    GError **err);
 gboolean gy_dict_is_map           (GyDict *self);
+void     gy_dict_initialize       (void);
 
 G_END_DECLS
 

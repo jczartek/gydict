@@ -317,3 +317,9 @@ gy_dict_new_object (const gchar *id_string)
       return GY_DICT (g_object_new (GY_TYPE_DEPL, "id-dict-string", id_string, NULL));
     }
 }
+
+void
+gy_dict_initialize (void)
+{
+  g_type_ensure (GY_TYPE_DICT);
+}
