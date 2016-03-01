@@ -23,13 +23,24 @@
 #include "gy-dict.h"
 #include "gy-german-pwn.h"
 #include "gy-english-pwn.h"
+#include "gy-pwntabs.h"
+
+#define SIZE_BUFFER  128
+#define SIZE_ENTRY   64
 
 #define GY_PWN_DICT_ERROR gy_pwn_dict_error_quark ()
 
+static gboolean gy_pwn_dict_check_checksum (GyPwnDict  *self,
+                                            GFile      *file,
+                                            GError    **err);
+static void gy_pwn_dict_query (GyPwnDict      *self,
+                               GyDictPwnQuery *query);
+
 typedef struct
 {
-  GFile *file;
-  guint *offsets;
+  GFile      *file;
+  guint      *offsets;
+  GHashTable *entities;
 } GyPwnDictPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (GyPwnDict, gy_pwn_dict, GY_TYPE_DICT)
@@ -46,6 +57,151 @@ static GQuark
 gy_pwn_dict_error_quark (void)
 {
   return g_quark_from_static_string ("gy-pwn-dict-error-quark");
+}
+
+static void
+gy_english_pwn_map (GyDict  *dict,
+                    GError **err)
+{
+  guint32 word_count = 0, index_base = 0, word_base = 0;
+  g_autofree gchar *md5 = NULL;
+  g_autofree guint32 *offsets = NULL;
+  g_autoptr(GFileInputStream) in = NULL;
+  g_autoptr(GSettings)  settings = NULL;
+  g_autofree gchar     *path = NULL;
+  gchar buf[SIZE_BUFFER];
+  gchar entry[SIZE_ENTRY];
+  guint16 magic;
+  GtkListStore *model = NULL;
+  GtkTreeIter iter;
+  GyDictPwnQuery query = GY_PWN_DICT_QUERY_INIT;
+  GyPwnDict *self = GY_PWN_DICT (dict);
+  GyPwnDictPrivate *priv = gy_pwn_dict_get_instance_private (self);
+
+  g_return_if_fail (GY_IS_PWN_DICT (self));
+
+  settings = g_settings_new ("org.gtk.gydict");
+  path = g_settings_get_string (settings,
+                                gy_dict_get_id_string (GY_DICT(self)));
+  if (priv->file)
+    g_object_unref (priv->file);
+
+  priv->file = g_file_new_for_path (path);
+
+  model = gtk_list_store_new (1, G_TYPE_STRING);
+
+  gy_pwn_dict_query (self, &query);
+
+  if (!gy_pwn_dict_check_checksum (self, priv->file, err))
+    goto out;
+
+  if (!(in = g_file_read (priv->file, NULL, err)))
+    goto out;
+
+  if (!g_seekable_seek (G_SEEKABLE (in), query.offset1, G_SEEK_SET, NULL, err))
+    goto out;
+
+  if ((g_input_stream_read (G_INPUT_STREAM (in), &word_count, sizeof(word_count), NULL, err)) <= 0)
+    goto out;
+
+  if ((g_input_stream_read (G_INPUT_STREAM (in), &index_base, sizeof(index_base), NULL, err)) <= 0)
+    goto out;
+
+  if (!g_seekable_seek (G_SEEKABLE (in), query.offset2, G_SEEK_CUR, NULL, err))
+    goto out;
+
+  if ((g_input_stream_read (G_INPUT_STREAM (in), &word_base, sizeof(word_base), NULL, err)) <= 0)
+    goto out;
+
+  offsets = (guint32 *) g_malloc0 ((word_count + 1) * sizeof (guint32));
+  priv->offsets = (guint32 *) g_malloc0 ((word_count + 1) * sizeof (guint32));
+
+  if (!g_seekable_seek (G_SEEKABLE (in), index_base, G_SEEK_SET, NULL, err))
+    goto out;
+
+  if ((g_input_stream_read (G_INPUT_STREAM (in), offsets, (word_count * sizeof (guint32)), NULL, err)) <= 0)
+    goto out;
+
+	for (guint i = 0, j = 0; i < word_count; i++)
+    {
+#define MAGIC_OFFSET 0x03
+#define OFFSET (12 - (MAGIC_OFFSET + sizeof (guint16)))
+
+      magic = 0;
+      offsets[i] &= 0x07ffffff;
+
+      if (!g_seekable_seek (G_SEEKABLE (in), word_base+offsets[i]+MAGIC_OFFSET, G_SEEK_SET, NULL, err))
+        goto out;
+
+      if ((g_input_stream_read (G_INPUT_STREAM (in), &magic, sizeof (guint16), NULL, err)) <= 0)
+        goto out;
+
+      if (magic == query.magic1 || magic == query.magic2)
+        {
+          g_autofree gchar *buf_conv = NULL;
+          gchar *str = NULL;
+          gsize len = 0;
+
+          memset (entry, 0, SIZE_ENTRY);
+
+          if ((g_input_stream_read (G_INPUT_STREAM (in), buf, SIZE_BUFFER, NULL, err)) <= 0)
+            goto out;
+
+          if (!(buf_conv = g_convert_with_fallback (buf+OFFSET, -1, "UTF-8", "ISO8859-2", NULL, NULL, NULL, err)))
+            goto out;
+          str = buf_conv;
+
+          len = strcspn (str, "<&");
+          strncat (entry, str,len);
+          str = str + len;
+
+          while (*str)
+            {
+              if (*str == '<')
+                {
+                  str = str + strcspn (str, ">") + 1;
+
+                  if (g_ascii_isdigit (*str))
+                    {
+                      const gchar *sscript = gy_tabs_get_superscript ((*str) - 48);
+                      strcat (entry, sscript);
+                    }
+
+                  str = str + strcspn (str, ">") + 1;
+                }
+              else if (*str == '&')
+                {
+                  g_autofree gchar *entity = NULL;
+
+                  len = strcspn (str, ";");
+                  entity = g_strndup (str, len);
+
+                  strcat (entry,
+                          (const gchar *) g_hash_table_lookup (priv->entities, entity));
+                  str += len + 1;
+                }
+              else
+                {
+                  len = strcspn (str, "<&");
+                  strncat (entry, str, len);
+                  str = str + len;
+                }
+            }
+          gtk_list_store_append (model, &iter);
+          gtk_list_store_set (model, &iter, 0, entry, -1);
+          priv->offsets[j++] = offsets[i] + word_base;
+        }
+#undef MAGIC
+#undef MAGIC_OFFSET
+#undef OFFSET
+    }
+  gy_dict_set_tree_model (dict, GTK_TREE_MODEL (model));
+  g_object_set (dict, "is-map", TRUE, NULL);
+  return;
+out:
+  g_debug ("");
+  g_object_set (dict, "is-map", FALSE, NULL);
+  return;
 }
 
 static gchar *

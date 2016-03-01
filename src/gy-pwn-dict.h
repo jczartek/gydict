@@ -27,7 +27,13 @@ typedef struct _GyDictPwnQuery GyDictPwnQuery;
 
 struct _GyDictPwnQuery
 {
+  goffset offset1;
+  goffset offset2;
+  guint16 magic1;
+  guint16 magic2;
 };
+
+#define GY_PWN_DICT_QUERY_INIT {0,0,0,0}
 
 #define GY_TYPE_PWN_DICT (gy_pwn_dict_get_type())
 
