@@ -48,6 +48,7 @@ G_DEFINE_TYPE_WITH_PRIVATE (GyPwnDict, gy_pwn_dict, GY_TYPE_DICT)
 enum {
   PROP_0,
   PROP_ENCODING,
+  PROP_ENTITY,
   LAST_PROP
 };
 
@@ -312,6 +313,9 @@ gy_pwn_dict_finalize (GObject *object)
   GyPwnDict *self = (GyPwnDict *)object;
   GyPwnDictPrivate *priv = gy_pwn_dict_get_instance_private (self);
 
+  g_clear_pointer (&priv->entities,
+                   g_hash_table_unref);
+
   G_OBJECT_CLASS (gy_pwn_dict_parent_class)->finalize (object);
 }
 
@@ -322,9 +326,13 @@ gy_pwn_dict_get_property (GObject    *object,
                           GParamSpec *pspec)
 {
   GyPwnDict *self = GY_PWN_DICT (object);
+  GyPwnDictPrivate *priv = gy_pwn_dict_get_instance_private (self);
 
   switch (prop_id)
     {
+    case PROP_ENTITY:
+      g_value_set_pointer (value, priv->entities);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -359,7 +367,7 @@ gy_pwn_dict_class_init (GyPwnDictClass *klass)
   klass->get_lexical_unit = gy_pwn_dict____get_lexical_unit;
 
   /**
-   * GyPwnDict:encoding
+   * GyPwnDict:encoding:
    * This property represents an authentic dictionary encoding. It should be
    * overridden in a derived class.
    *
@@ -370,6 +378,17 @@ gy_pwn_dict_class_init (GyPwnDictClass *klass)
                          "The authentic encoding of a dictionary.",
                          NULL,
                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * GyPwnDict:entity:
+   * This property represents PWN entities.
+   *
+   */
+  gParamSpecs [PROP_ENTITY] =
+    g_param_spec_pointer ("entity",
+                          "Entity",
+                          "The table of PWN entities",
+                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (object_class,
                                      LAST_PROP,
@@ -382,6 +401,9 @@ gy_pwn_dict_class_init (GyPwnDictClass *klass)
 static void
 gy_pwn_dict_init (GyPwnDict *self)
 {
+  GyPwnDictPrivate *priv = gy_pwn_dict_get_instance_private (self);
+
+  priv->entities = gy_tabs_get_entity_table ();
 }
 
 /* PUBLIC */
