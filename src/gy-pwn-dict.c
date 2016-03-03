@@ -28,6 +28,8 @@
 #define SIZE_BUFFER  128
 #define SIZE_ENTRY   64
 
+#define DEFAULT_ENCODING "ISO8859-2"
+
 #define GY_PWN_DICT_ERROR gy_pwn_dict_error_quark ()
 
 static gboolean gy_pwn_dict_check_checksum (GyPwnDict  *self,
@@ -330,6 +332,9 @@ gy_pwn_dict_get_property (GObject    *object,
 
   switch (prop_id)
     {
+    case PROP_ENCODING:
+      g_value_set_static_string (value, DEFAULT_ENCODING);
+      break;
     case PROP_ENTITY:
       g_value_set_pointer (value, priv->entities);
       break;
@@ -368,15 +373,17 @@ gy_pwn_dict_class_init (GyPwnDictClass *klass)
 
   /**
    * GyPwnDict:encoding:
-   * This property represents an authentic dictionary encoding. It should be
-   * overridden in a derived class.
+   * This property represents an authentic dictionary encoding.
+   *
+   * If a default encoding of a dictionary is not ISO8859-2, this property
+   * should be overridden in a derived class.
    *
    */
   gParamSpecs [PROP_ENCODING] =
     g_param_spec_string ("encoding",
                          "Encoding",
                          "The authentic encoding of a dictionary.",
-                         NULL,
+                         DEFAULT_ENCODING,
                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
   /**
