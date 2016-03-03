@@ -373,7 +373,7 @@ gy_pwn_dict_class_init (GyPwnDictClass *klass)
 
   /**
    * GyPwnDict:encoding:
-   * This property represents an authentic dictionary encoding.
+   * This property represents an default encoding of a PWN dictionary.
    *
    * If a default encoding of a dictionary is not ISO8859-2, this property
    * should be overridden in a derived class.
@@ -382,7 +382,7 @@ gy_pwn_dict_class_init (GyPwnDictClass *klass)
   gParamSpecs [PROP_ENCODING] =
     g_param_spec_string ("encoding",
                          "Encoding",
-                         "The authentic encoding of a dictionary.",
+                         "The default encoding of a PWN dictionary.",
                          DEFAULT_ENCODING,
                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
