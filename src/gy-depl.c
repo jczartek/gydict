@@ -20,11 +20,6 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
-#include <sys/types.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include <string.h>
 #include "gy-pwntabs.h"
 #include "gy-dict.h"
@@ -149,64 +144,6 @@ insert_sign (gchar        *dest,
     dest[(*index)++] = str[i]; /* *index = *index + 1 */
 }
 
-static guint
-gy_depl_set_dictionary (GyDict *dict)
-{
-  gchar *buffer = NULL, *buffer_end = NULL, *buffer_tmp = NULL;
-  gint fd = 0, i = 0;
-  struct stat statbuf;
-  g_autoptr(GSettings) settings = NULL;
-  g_autofree gchar *path_file = NULL;
-  GyDeplPrivate *priv = gy_depl_get_instance_private (GY_DEPL (dict));
-
-  return 0;
-  settings = g_settings_new ("org.gtk.gydict");
-  path_file = g_settings_get_string (settings,
-                                     gy_dict_get_id_string (dict));
-
-  if (!g_file_test (path_file, G_FILE_TEST_EXISTS))
-    {
-      g_message ("File: %s does not exist!", path_file);
-      return G_IO_ERROR_NOT_FOUND;
-    }
-
-  if ((fd = open (path_file, O_RDONLY)) < 0)
-    {
-      g_message ("Cannot open the %s!", path_file);
-      return G_IO_ERROR_FAILED;
-    }
-
-  fstat (fd, &statbuf);
-
-  if ((buffer = (gchar *) mmap (0, statbuf.st_size, PROT_READ,
-                                MAP_PRIVATE, fd, 0)) == MAP_FAILED)
-    return G_IO_ERROR_FAILED;
-
-  if (!(priv->array_words = (gchar **) g_try_malloc0_n (55000, sizeof (gchar *))))
-    return G_IO_ERROR_FAILED;
-
-  buffer_end = buffer + statbuf.st_size;
-  buffer_tmp = buffer;
-  g_assert (statbuf.st_size == (buffer_end - buffer));
-
-  for (; buffer < buffer_end; buffer++)
-    {
-      if (*buffer == '\n')
-        {
-          priv->array_words[i] = (gchar *) g_malloc0 ((buffer-buffer_tmp)+2);
-          memcpy (priv->array_words[i], buffer_tmp, (buffer - buffer_tmp)+1);
-          i++;
-          buffer_tmp = buffer + 1;
-          }
-    }
-
-  close (fd);
-  if (munmap (buffer - statbuf.st_size, statbuf.st_size))
-    return G_IO_ERROR_FAILED;
-
-  return 0;
-}
-
 static void
 gy_depl_map (GyDict *dict,
              GError **err)
@@ -269,78 +206,6 @@ out:
   return;
 }
 
-static guint
-gy_depl_init_list (GyDict *dict)
-{
-  g_autofree gchar *path_file = NULL;
-  g_autofree gchar *words = NULL;
-  g_autoptr(GSettings) settings = NULL;
-  gchar *file_map = NULL, *file_map_end = NULL;
-  gint fd, i;
-  GtkListStore *model = NULL;
-  GtkTreeIter iter;
-  struct stat statbuf;
-
-  gy_depl_map (dict, NULL);
-  return 0;
-  model = gtk_list_store_new (1, G_TYPE_STRING);
-  settings = g_settings_new ("org.gtk.gydict");
-  path_file = g_settings_get_string (settings, "dict-depl-b");
-
-  if (!g_file_test (path_file, G_FILE_TEST_EXISTS))
-    {
-      g_message ("File: %s does not exist!", path_file);
-      return G_IO_ERROR_FAILED;
-    }
-
-  if ((fd = open (path_file, O_RDONLY)) < 0)
-    {
-      g_message ("Cannot open the %s!", path_file);
-      return G_IO_ERROR_FAILED;
-    }
-
-  fstat (fd, &statbuf);
-
-  if ((file_map = (gchar *) mmap (0, statbuf.st_size, PROT_READ,
-                                  MAP_PRIVATE, fd, 0)) == MAP_FAILED)
-    return G_IO_ERROR_FAILED;
-
-  if (!(words = (gchar *) g_try_malloc0 (300)))
-    return G_IO_ERROR_FAILED;
-
-  file_map_end = file_map + statbuf.st_size;
-  g_assert ((file_map_end - file_map) == statbuf.st_size);
-
-  for (i = 0; file_map < file_map_end; file_map++)
-    {
-      if (*(file_map+1) == '\n')
-        {
-          gtk_list_store_append (model, &iter);
-          gtk_list_store_set (model, &iter, 0, words, -1);
-          memset (words, 0, i+2);
-          i = 0;
-          /* Omiń znak nowego wiersza */
-          file_map++;
-        }
-      else if (((guchar) *file_map) < 127)
-        {
-          words[i++] = *file_map;
-        }
-      else
-        {
-          insert_sign (words, file_map,
-                       **(array_of_pointer_to_arrays_of_character_set+1), &i);
-        }
-    }
-
-  gy_dict_set_tree_model (dict, GTK_TREE_MODEL (model));
-  close (fd);
-  if (munmap (file_map - statbuf.st_size, statbuf.st_size))
-    return G_IO_ERROR_FAILED;
-
-  return 0;
-}
-
 static gpointer
 gy_depl_read_definition (GyDict *dict,
                          guint   index)
@@ -387,8 +252,6 @@ gy_depl_class_init (GyDeplClass *klass)
 
   object_class->finalize = finalize;
   object_class->dispose = dispose;
-  dict_class->set_dictionary = gy_depl_set_dictionary;
-  dict_class->init_list = gy_depl_init_list;
   dict_class->map = gy_depl_map;
 }
 
@@ -630,19 +493,7 @@ insert_text_buffor (ParserContext *context)
 
         }
 
-  //    if (((guchar) *context->iter) < 127)
         *context->current_buffer_pos++ = *context->iter++;
-  //    else
-  //      {
-          /*	    insert_sign_buffer (&context->current_buffer_pos,
-           * context->iter,
-           * **(array_of_pointer_to_arrays_of_character_set +1));*/
- //         gy_tabs_convert_character (&context->current_buffer_pos,
- //                                    context->iter,
- //                                    GY_ENCODING_ISO88592);
- //         context->iter++;
-
- //       }
     }
 }
 

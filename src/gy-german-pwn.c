@@ -306,35 +306,6 @@ out:
 #undef OFFSET
 }
 
-static guint
-gy_german_pwn_set_dictionary (GyDict *self)
-{
-  return 0;
-}
-
-static guint
-gy_german_pwn_init_list (GyDict *self)
-{
-  GError *err = NULL;
-
-  gy_german_pwn_map (self, &err);
-
-  if (err != NULL)
-    {
-      g_critical ("%s", err->message);
-      return G_IO_ERROR_FAILED;
-    }
-
-  return 0;
-}
-
-static gpointer
-gy_german_pwn_read_definition (GyDict *self,
-                               guint   index)
-{
-  return NULL;
-}
-
 static void
 gy_german_pwn_finalize (GObject *object)
 {
@@ -397,8 +368,6 @@ gy_german_pwn_class_init (GyGermanPwnClass *klass)
   object_class->get_property = gy_german_pwn_get_property;
   object_class->set_property = gy_german_pwn_set_property;
 
-  dict_class->set_dictionary = gy_german_pwn_set_dictionary;
-  dict_class->init_list = gy_german_pwn_init_list;
   dict_class->map = gy_german_pwn_map;
 }
 
