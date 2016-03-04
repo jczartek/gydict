@@ -328,12 +328,12 @@ dict_radio_cb (GSimpleAction *action,
       GyHistory *history = NULL;
       dict = gy_dict_new_object (value);
 
-      if(gy_dict_set_dictionary (dict) || gy_dict_init_list (dict))
+ /*     if(gy_dict_set_dictionary (dict) || gy_dict_init_list (dict))
         {
           gtk_widget_show (priv->infobar);
           return;
 
-        }
+        } */
 
       g_datalist_id_set_data_full (&priv->datalist,
                                    priv->qvalue,dict,
@@ -347,6 +347,20 @@ dict_radio_cb (GSimpleAction *action,
 
         }
     }
+
+  if (!gy_dict_is_map (dict))
+    {
+      GError *err = NULL;
+
+      gy_dict_map (dict, &err);
+
+      if (err != NULL)
+        {
+          g_critical ("%s", err->message);
+          return;
+        }
+    }
+
   gtk_tree_view_set_model (GTK_TREE_VIEW (priv->tree_view),
                            gy_dict_get_tree_model (dict));
   gy_utility_delete_text_in_buffer (priv->buffer);
