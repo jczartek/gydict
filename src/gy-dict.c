@@ -26,6 +26,7 @@
 #include "gy-depl.h"
 #include "gy-enum-types.h"
 #include "gy-german-pwn.h"
+#include "gy-english-pwn.h"
 #include "gy-pwn-dict.h"
 
 typedef struct _GyDictPrivate GyDictPrivate;
@@ -305,7 +306,7 @@ gy_dict_new_object (const gchar *id_string)
   if ((g_strcmp0 (id_string, "dict-pwn-angpol") == 0) ||
       (g_strcmp0 (id_string, "dict-pwn-polang") == 0))
     {
-      return GY_DICT (g_object_new (GY_TYPE_PWN, "id-dict-string", id_string, NULL));
+      return GY_DICT (g_object_new (GY_TYPE_ENGLISH_PWN, "id-dict-string", id_string, NULL));
     }
   else if ((g_strcmp0 (id_string, "dict-pwn-polniem") == 0) ||
            (g_strcmp0 (id_string, "dict-pwn-niempol") == 0))
