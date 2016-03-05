@@ -23,6 +23,7 @@
 #include "gy-window.h"
 #include "gy-css-provider.h"
 #include "gy-preferences-window.h"
+#include "gy-dict.h"
 #include <gb-shortcuts-window.h>
 #include <shortcuts-resources.h>
 
@@ -307,6 +308,9 @@ startup (GApplication *application)
 
   /* Setup theme */
   gy_app_register_theme_overrides (app);
+
+  /* Register types */
+  gy_dict_initialize ();
 }
 
 static void
