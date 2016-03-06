@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _GY_DICTIONARY_H_
-#define _GY_DICTIONARY_H_
+#ifndef __GY_DICT_H__
+#define __GY_DICT_H__
 
 #include <gtk/gtk.h>
 
@@ -27,35 +27,26 @@ G_BEGIN_DECLS
 
 G_DECLARE_DERIVABLE_TYPE (GyDict, gy_dict, GY, DICT, GObject)
 
-
 struct _GyDictClass
 {
-  GObjectClass parent_class;
+  GObjectClass __parent__;
 
-  /* Deprecated */
-  guint     (*set_dictionary)   (GyDict *dict);
-  guint     (*init_list)        (GyDict *dict);
-  /* New API */
-  void      (*map)              (GyDict  *self,
-                                 GError **err);
+  void      (*map)   (GyDict  *self,
+                      GError **err);
 };
 
-GType gy_dict_get_type (void) G_GNUC_CONST;
-guint gy_dict_set_dictionary (GyDict *dict);
-guint gy_dict_init_list (GyDict *dict);
-void gy_dict_set_tree_model (GyDict *dict,
-                             GtkTreeModel *model);
-GtkTreeModel *gy_dict_get_tree_model  (GyDict *dict);
-const gchar  *gy_dict_get_id_string (GyDict *dict);
-gint gy_dict_get_encoding (GyDict *dict);
-GyDict *gy_dict_new_object (const gchar *id_string);
+GType         gy_dict_get_type        (void) G_GNUC_CONST;
+void          gy_dict_set_tree_model  (GyDict *dict,
+                                       GtkTreeModel *model);
+GtkTreeModel* gy_dict_get_tree_model  (GyDict *dict);
+GyDict*       gy_dict_new_object      (const gchar *id_string);
 
-void     gy_dict_map              (GyDict  *self,
-                                   GError **err);
-gboolean gy_dict_is_map           (GyDict *self);
-void     gy_dict_initialize       (void);
+void          gy_dict_map             (GyDict  *self,
+                                       GError **err);
+gboolean      gy_dict_is_mapped       (GyDict *self);
+void          gy_dict_initialize      (void);
 
 G_END_DECLS
 
-#endif /* _GY_DICTIONARY_H_ */
+#endif /* __GY_DICT_H__ */
 
