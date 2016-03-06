@@ -27,7 +27,6 @@
 typedef struct _GyDictPrivate
 {
   gchar          *identifier;
-  gchar          *type;
   GtkTreeModel   *model;
   GtkTextBuffer  *buffer;
   guint           is_mapped:1;
@@ -37,7 +36,6 @@ enum
 {
   PROP_0,
   PROP_IDENTIFIER,
-  PROP_TYPE,
   PROP_MODEL,
   PROP_IS_MAPPED,
   PROP_BUFFER,
@@ -67,8 +65,6 @@ gy_dict_finalize (GObject *object)
 
   if (priv->identifier)
     g_clear_pointer (&priv->identifier, g_free);
-  if (priv->type)
-    g_clear_pointer (&priv->type, g_free);
 
   G_OBJECT_CLASS (gy_dict_parent_class)->finalize (object);
 }
@@ -89,9 +85,6 @@ gy_dict_set_property (GObject      *object,
     {
     case PROP_IDENTIFIER:
       priv->identifier = g_value_dup_string (value);
-      break;
-    case PROP_TYPE:
-      priv->type = g_value_dup_string (value);
       break;
     case PROP_MODEL:
       priv->model = g_value_dup_object (value);
@@ -124,9 +117,6 @@ gy_dict_get_property (GObject    *object,
     {
     case PROP_IDENTIFIER:
       g_value_set_static_string (value, priv->identifier);
-      break;
-    case PROP_TYPE:
-      g_value_set_static_string (value, priv->type);
       break;
     case PROP_MODEL:
       g_value_set_object (value, priv->model);
@@ -170,16 +160,6 @@ gy_dict_class_init (GyDictClass *klass)
   gParamSpecs[PROP_IDENTIFIER] =
     g_param_spec_string ("identifier",
                          "Identifier",
-                         "",
-                         NULL,
-                         G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY);
-
-  /**
-   * GyDict:type:
-   */
-  gParamSpecs[PROP_TYPE] =
-    g_param_spec_string ("type",
-                         "Type",
                          "",
                          NULL,
                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY);
@@ -288,7 +268,6 @@ gy_dict_new (const gchar   *identifier,
   GType gtype;
   GObject *object = NULL;
   g_autofree gchar *type_name = NULL;
-  g_autofree gchar *type_dict = NULL;
   gsize offset = 0;
 
   g_return_val_if_fail (identifier != NULL, NULL);
@@ -296,15 +275,13 @@ gy_dict_new (const gchar   *identifier,
 
   offset = strcspn (identifier, ":");
   type_name = g_strndup (identifier, offset);
-  type_dict = g_strdup (identifier + offset + 2);
 
   gtype = g_type_from_name (type_name);
 
   g_assert (gtype);
 
   object = g_object_new (gtype,
-                         "identifier", type_name,
-                         "type",       type_dict,
+                         "identifier", identifier,
                          "buffer",     buffer,
                          NULL);
 
