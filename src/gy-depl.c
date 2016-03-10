@@ -120,29 +120,17 @@ struct _ParserTagDescription
   gint offset;
 };
 
-struct _GyDeplPrivate
+struct _GyDepl
 {
-  gchar **array_words;
+  GyDict         __parent__;
+
+  gchar        **array_words;
   ParserContext *context;
 };
 
 G_DEFINE_TYPE_WITH_CODE (GyDepl, gy_depl, GY_TYPE_DICT,
-                         G_ADD_PRIVATE (GyDepl)
                          G_IMPLEMENT_INTERFACE (GY_TYPE_PARSABLE,
                                                 gy_parser_interface_init));
-
-static inline void
-insert_sign (gchar        *dest,
-             const gchar  *src,
-             const gchar **tab,
-             gint         *index)
-{
-  gchar *str = NULL;
-  gint i;
-
-  for (i = 0, str = (gchar*) tab[((guchar) *src) - 128]; str[i]; i++)
-    dest[(*index)++] = str[i]; /* *index = *index + 1 */
-}
 
 static void
 gy_depl_map (GyDict *dict,
@@ -158,17 +146,18 @@ gy_depl_map (GyDict *dict,
   gchar entry[SIZE_ENTRY];
   gchar *line = NULL;
   gchar *conv = NULL;
+  const gchar *id = NULL;
   gint i = 0;
   gsize offset = 0;
 
   GyDepl *self = GY_DEPL (dict);
-  GyDeplPrivate *priv = gy_depl_get_instance_private (GY_DEPL (dict));
 
   g_return_if_fail (GY_IS_DEPL (self));
 
-  settings = g_settings_new ("org.gtk.gydict");
-  path = g_settings_get_string (settings,
-                                gy_dict_get_id_string (dict));
+  g_object_get (dict, "identifier", &id, NULL);
+
+  settings = g_settings_new ("org.gtk.gydict.paths");
+  path = g_settings_get_string (settings, id);
 
   file = g_file_new_for_path (path);
 
@@ -179,7 +168,7 @@ gy_depl_map (GyDict *dict,
     goto out;
 
   model = gtk_list_store_new (1, G_TYPE_STRING);
-  priv->array_words = (gchar **) g_malloc0 (55000 * sizeof (guintptr));
+  self->array_words = (gchar **) g_malloc0 (55000 * sizeof (guintptr));
 
   while ((line = g_data_input_stream_read_line (data, NULL, NULL, err)) != NULL)
     {
@@ -195,53 +184,49 @@ gy_depl_map (GyDict *dict,
       gtk_list_store_append (model, &iter);
       gtk_list_store_set (model, &iter, 0, entry, -1);
 
-      priv->array_words[i++] = conv;
+      self->array_words[i++] = conv;
       g_free (line);
     }
   gy_dict_set_tree_model (dict, GTK_TREE_MODEL (model));
-  g_object_set (dict, "is-map", TRUE, NULL);
+  g_object_set (dict, "is-mapped", TRUE, NULL);
   return;
 out:
-  g_object_set (dict, "is-map", FALSE, NULL);
+  g_object_set (dict, "is-mapped", FALSE, NULL);
   return;
 }
 
 static gpointer
-gy_depl_read_definition (GyDict *dict,
-                         guint   index)
+gy_depl_get_lexical_unit (GyDict *dict,
+                          guint   index)
 {
-  GyDeplPrivate *priv = gy_depl_get_instance_private (GY_DEPL (dict));
-  return priv->array_words[index];
-}
+  GyDepl *self = GY_DEPL (dict);
 
-static void
-dispose (GObject *object)
-{
-  GyDeplPrivate *priv = gy_depl_get_instance_private (GY_DEPL (object));
-
-  if (priv->array_words)
-    {
-      g_strfreev (priv->array_words);
-      priv->array_words = NULL;
-    }
-
-  if (priv->context)
-    parse_context_free (&priv->context);
-
-  G_OBJECT_CLASS (gy_depl_parent_class)->dispose (object);
+  return self->array_words[index];
 }
 
 static void
 finalize (GObject *object)
 {
+  GyDepl *self = GY_DEPL (object);
+
+  if (self->array_words)
+    {
+      g_strfreev (self->array_words);
+      self->array_words = NULL;
+    }
+
+  if (self->context)
+    parse_context_free (&self->context);
+
   G_OBJECT_CLASS (gy_depl_parent_class)->finalize (object);
 }
 
 static void
 gy_depl_init (GyDepl *dict)
 {
-  GyDeplPrivate *priv = gy_depl_get_instance_private (dict);
-  priv->context = parse_context_new ();
+  GyDepl *self = GY_DEPL (dict);
+
+  self->context = parse_context_new ();
 }
 
 static void
@@ -251,7 +236,6 @@ gy_depl_class_init (GyDeplClass *klass)
   GyDictClass *dict_class = GY_DICT_CLASS (klass);
 
   object_class->finalize = finalize;
-  object_class->dispose = dispose;
   dict_class->map = gy_depl_map;
 }
 
@@ -269,11 +253,10 @@ gy_depl_parser_dict_parse (GyParsable      *parser,
 {
   gchar *buf = NULL;
   GyDict *dict = GY_DICT (parser);
-  GyDeplPrivate *priv = gy_depl_get_instance_private (GY_DEPL (dict));
 
   /* non free! */
-  buf = gy_depl_read_definition (dict, (guint) row);
-  parse_context_parse (priv->context, buf, -1, buffer);
+  buf = gy_depl_get_lexical_unit (dict, (guint) row);
+  parse_context_parse (GY_DEPL (parser)->context, buf, -1, buffer);
 }
 
 /*******CREATE AND DESTROYED ParserTagDescription*******/
