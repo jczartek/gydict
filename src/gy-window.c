@@ -326,7 +326,8 @@ dict_radio_cb (GSimpleAction *action,
   if (!(dict = g_datalist_id_get_data (&priv->datalist, priv->qvalue)))
     {
       GyHistory *history = NULL;
-      dict = gy_dict_new_object (value);
+      dict = GY_DICT(gy_dict_new (value,
+                          priv->buffer));
 
  /*     if(gy_dict_set_dictionary (dict) || gy_dict_init_list (dict))
         {
@@ -348,7 +349,7 @@ dict_radio_cb (GSimpleAction *action,
         }
     }
 
-  if (!gy_dict_is_map (dict))
+  if (!gy_dict_is_mapped (dict))
     {
       GError *err = NULL;
 
