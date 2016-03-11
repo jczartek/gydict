@@ -60,7 +60,6 @@ gydict_SOURCES =                                                               \
 		gy-search-bar.c gy-search-bar.h                                \
 		gy-print-compositor.c gy-print-compositor.h                    \
 		gy-resources.c gy-resources.h                                  \
-		gy-pwn.c gy-pwn.h                                              \
 		gy-enum-types.c gy-enum-types.h                                \
 		gy-pwntabs.c gy-pwntabs.h                                      \
                 gy-preferences-window.c gy-preferences-window.h                \
