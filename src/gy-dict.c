@@ -233,26 +233,6 @@ gy_dict_is_mapped (GyDict *self)
   return (gboolean) priv->is_mapped;
 }
 
-void
-gy_dict_set_tree_model (GyDict       *dict,
-                        GtkTreeModel *model)
-{
-  GyDictPrivate *priv;
-  g_return_if_fail (GY_IS_DICT (dict));
-  g_return_if_fail (GTK_IS_TREE_MODEL (model));
-
-  priv = gy_dict_get_instance_private (dict);
-  g_object_freeze_notify (G_OBJECT (dict));
-
-  if (!priv->model)
-    {
-      priv->model = model;
-      g_object_notify (G_OBJECT (dict), "model");
-    }
-
-  g_object_thaw_notify (G_OBJECT (dict));
-}
-
 GtkTreeModel *
 gy_dict_get_tree_model (GyDict *dict)
 {
@@ -291,12 +271,6 @@ gy_dict_new (const gchar   *identifier,
                          NULL);
 
   return object;
-}
-
-GyDict *
-gy_dict_new_object (const gchar *id_string)
-{
-  return NULL;
 }
 
 void
