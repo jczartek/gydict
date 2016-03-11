@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#define G_LOG_DOMAIN "GyPwnDict"
+
 #include <string.h>
 #include <zlib.h>
 
@@ -63,8 +65,8 @@ gy_pwn_dict_error_quark (void)
 }
 
 static void
-gy_english_pwn_map (GyDict  *dict,
-                    GError **err)
+gy_pwn_dict_map (GyDict  *dict,
+                 GError **err)
 {
   guint32 word_count = 0, index_base = 0, word_base = 0;
   g_autofree gchar *md5 = NULL;
@@ -72,10 +74,11 @@ gy_english_pwn_map (GyDict  *dict,
   g_autoptr(GFileInputStream) in = NULL;
   g_autoptr(GSettings)  settings = NULL;
   g_autofree gchar     *path = NULL;
+  const gchar *id = NULL;
   gchar buf[SIZE_BUFFER];
   gchar entry[SIZE_ENTRY];
   guint16 magic;
-  GtkListStore *model = NULL;
+  g_autoptr(GtkListStore) model = NULL;
   GtkTreeIter iter;
   GyDictPwnQuery query = GY_PWN_DICT_QUERY_INIT;
   GyPwnDict *self = GY_PWN_DICT (dict);
@@ -83,9 +86,11 @@ gy_english_pwn_map (GyDict  *dict,
 
   g_return_if_fail (GY_IS_PWN_DICT (self));
 
-  settings = g_settings_new ("org.gtk.gydict");
-  path = g_settings_get_string (settings,
-                                gy_dict_get_id_string (GY_DICT(self)));
+  g_object_get (dict, "identifier", &id, NULL);
+
+  settings = g_settings_new ("org.gtk.gydict.paths");
+  path = g_settings_get_string (settings, id);
+
   if (priv->file)
     g_object_unref (priv->file);
 
@@ -198,12 +203,12 @@ gy_english_pwn_map (GyDict  *dict,
 #undef MAGIC_OFFSET
 #undef OFFSET
     }
-  gy_dict_set_tree_model (dict, GTK_TREE_MODEL (model));
-  g_object_set (dict, "is-map", TRUE, NULL);
+  g_object_set (dict, "model", model, NULL);
+  g_object_set (dict, "is-mapped", TRUE, NULL);
   return;
 out:
   g_debug ("");
-  g_object_set (dict, "is-map", FALSE, NULL);
+  g_object_set (dict, "is-mapped", FALSE, NULL);
   return;
 }
 
@@ -218,7 +223,7 @@ gy_pwn_dict____get_lexical_unit (GyPwnDict  *self,
   guint i = 0;
   GyPwnDictPrivate *priv = gy_pwn_dict_get_instance_private (self);
 
-  g_return_val_if_fail (gy_dict_is_map (GY_DICT (self)), NULL);
+  g_return_val_if_fail (gy_dict_is_mapped (GY_DICT (self)), NULL);
 
 #define MAXLEN 1024 * 90
 #define OFFSET 12
@@ -336,7 +341,7 @@ gy_pwn_dict_get_property (GObject    *object,
       g_value_set_static_string (value, DEFAULT_ENCODING);
       break;
     case PROP_ENTITY:
-      g_value_set_pointer (value, priv->entities);
+      g_value_set_static_boxed (value, priv->entities);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -362,10 +367,13 @@ static void
 gy_pwn_dict_class_init (GyPwnDictClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  GyDictClass *dict_class = GY_DICT_CLASS (klass);
 
   object_class->finalize = gy_pwn_dict_finalize;
   object_class->get_property = gy_pwn_dict_get_property;
   object_class->set_property = gy_pwn_dict_set_property;
+
+  dict_class->map = gy_pwn_dict_map;
 
   klass->query = NULL;
   klass->check_checksum = NULL;
@@ -392,17 +400,16 @@ gy_pwn_dict_class_init (GyPwnDictClass *klass)
    *
    */
   gParamSpecs [PROP_ENTITY] =
-    g_param_spec_pointer ("entity",
-                          "Entity",
-                          "The table of PWN entities",
-                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+    g_param_spec_boxed ("entities",
+                        "Entities",
+                        "The table of PWN entities",
+                        G_TYPE_HASH_TABLE,
+                        G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (object_class,
                                      LAST_PROP,
                                      gParamSpecs);
 
-  g_type_ensure (GY_TYPE_GERMAN_PWN);
-  g_type_ensure (GY_TYPE_ENGLISH_PWN);
 }
 
 static void
