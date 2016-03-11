@@ -229,11 +229,11 @@ setup_accels (GyApp *self)
       {"win.close", "<ctrl>w"},
       {"win.gear-menu", "F10"},
       {"win.find-menu", "<ctrl>f"},
-      {"win.dict(\"dict-pwn-angpol\")", "<ALT>1"},
-      {"win.dict(\"dict-pwn-polang\")", "<ALT>2"},
-      {"win.dict(\"dict-depl-a\")", "<ALT>5"},
-      {"win.dict(\"dict-pwn-niempol\")", "<ALT>3"},
-      {"win.dict(\"dict-pwn-polniem\")", "<ALT>4"},
+      {"win.dict(\"GyEnglishPwn-english\")", "<ALT>1"},
+      {"win.dict(\"GyEnglishPwn-polish\")", "<ALT>2"},
+      {"win.dict(\"GyGermanPwn-german\")", "<ALT>3"},
+      {"win.dict(\"GyGermanPwn-polish\")", "<ALT>4"},
+      {"win.dict(\"GyDepl-german\")", "<ALT>5"},
       {NULL, NULL}
   };
 
