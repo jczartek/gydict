@@ -56,10 +56,7 @@ typedef struct _ParserData ParserData;
 
 struct _GyGermanPwn
 {
-  GyDict parent;
-
-  GFile      *file;
-  guint32    *offsets;
+  GyPwnDict  __parent__;
   GHashTable *entities;
 
   GyMarkupParserPwn *parser;
@@ -75,7 +72,7 @@ struct _ParserData
 };
 
 
-G_DEFINE_TYPE_WITH_CODE (GyGermanPwn, gy_german_pwn, GY_TYPE_DICT,
+G_DEFINE_TYPE_WITH_CODE (GyGermanPwn, gy_german_pwn, GY_TYPE_PWN_DICT,
                          G_IMPLEMENT_INTERFACE (GY_TYPE_PARSABLE,
                                                 gy_german_pwn_parseable_iface_init));
 
@@ -93,217 +90,21 @@ gy_german_pwn_error_quark (void)
 }
 
 static void
-gy_german_pwn_map (GyDict  *dict,
-                   GError **err)
+gy_german_pwn_query (GyPwnDict      *self,
+                     GyDictPwnQuery *query)
 {
-  guint32 word_count = 0, index_base = 0, word_base = 0;
-  g_autofree gchar *md5 = NULL;
-  g_autofree guint32 *offsets = NULL;
-  g_autoptr(GFileInputStream) in = NULL;
-  g_autoptr(GSettings)  settings = NULL;
-  g_autofree gchar     *path = NULL;
-  gchar buf[SIZE_BUFFER];
-  gchar entry[SIZE_ENTRY];
-  guint16 magic;
-  GtkListStore *model = NULL;
-  GtkTreeIter iter;
-  GyGermanPwn *self = GY_GERMAN_PWN (dict);
-
-  g_return_if_fail (GY_IS_GERMAN_PWN (self));
-
-  settings = g_settings_new ("org.gtk.gydict");
-  path = g_settings_get_string (settings,
-                                gy_dict_get_id_string (GY_DICT(self)));
-  if (self->file)
-    g_object_unref (self->file);
-
-  self->file = g_file_new_for_path (path);
-
-  model = gtk_list_store_new (1, G_TYPE_STRING);
-
-  if (!(md5 = gy_utility_compute_md5_for_file (self->file, err)))
-    goto out;
-
-  if ((g_strcmp0 (md5, MD5_NIEMPOL) != 0) && (g_strcmp0 (md5, MD5_POLNIEM) != 0))
-    g_warning ("");
-
-  if (!(in = g_file_read (self->file, NULL, err)))
-    goto out;
-
-  if (!g_seekable_seek (G_SEEKABLE (in), 0x68, G_SEEK_SET, NULL, err))
-    goto out;
-
-  if ((g_input_stream_read (G_INPUT_STREAM (in), &word_count, sizeof(word_count), NULL, err)) <= 0)
-    goto out;
-
-  if ((g_input_stream_read (G_INPUT_STREAM (in), &index_base, sizeof(index_base), NULL, err)) <= 0)
-    goto out;
-
-  if (!g_seekable_seek (G_SEEKABLE (in), 0x04, G_SEEK_CUR, NULL, err))
-    goto out;
-
-  if ((g_input_stream_read (G_INPUT_STREAM (in), &word_base, sizeof(word_base), NULL, err)) <= 0)
-    goto out;
-
-  offsets = (guint32 *) g_malloc0 ((word_count + 1) * sizeof (guint32));
-  self->offsets = (guint32 *) g_malloc0 ((word_count + 1) * sizeof (guint32));
-
-  if (!g_seekable_seek (G_SEEKABLE (in), index_base, G_SEEK_SET, NULL, err))
-    goto out;
-
-  if ((g_input_stream_read (G_INPUT_STREAM (in), offsets, (word_count * sizeof (guint32)), NULL, err)) <= 0)
-    goto out;
-
-	for (guint i = 0, j = 0; i < word_count; i++)
-    {
-#define MAGIC_OFFSET 0x03
-#define OFFSET (12 - (MAGIC_OFFSET + sizeof (guint16)))
-
-      magic = 0;
-      offsets[i] &= 0x07ffffff;
-
-      if (!g_seekable_seek (G_SEEKABLE (in), word_base+offsets[i]+MAGIC_OFFSET, G_SEEK_SET, NULL, err))
-        goto out;
-
-      if ((g_input_stream_read (G_INPUT_STREAM (in), &magic, sizeof (guint16), NULL, err)) <= 0)
-        goto out;
-
-      if (magic == 0x11dd || magic == 0x11d7)
-        {
-          g_autofree gchar *buf_conv = NULL;
-          gchar *str = NULL;
-          gsize len = 0;
-
-          memset (entry, 0, SIZE_ENTRY);
-
-          if ((g_input_stream_read (G_INPUT_STREAM (in), buf, SIZE_BUFFER, NULL, err)) <= 0)
-            goto out;
-
-          if (!(buf_conv = g_convert_with_fallback (buf+OFFSET, -1, "UTF-8", "ISO8859-2", NULL, NULL, NULL, err)))
-            goto out;
-          str = buf_conv;
-
-          len = strcspn (str, "<&");
-          strncat (entry, str,len);
-          str = str + len;
-
-          while (*str)
-            {
-              if (*str == '<')
-                {
-                  str = str + strcspn (str, ">") + 1;
-
-                  if (g_ascii_isdigit (*str))
-                    {
-                      const gchar *sscript = gy_tabs_get_superscript ((*str) - 48);
-                      strcat (entry, sscript);
-                    }
-
-                  str = str + strcspn (str, ">") + 1;
-                }
-              else if (*str == '&')
-                {
-                  g_autofree gchar *entity = NULL;
-
-                  len = strcspn (str, ";");
-                  entity = g_strndup (str, len);
-
-                  strcat (entry,
-                          (const gchar *) g_hash_table_lookup (self->entities, entity));
-                  str += len + 1;
-                }
-              else
-                {
-                  len = strcspn (str, "<&");
-                  strncat (entry, str, len);
-                  str = str + len;
-                }
-            }
-          gtk_list_store_append (model, &iter);
-          gtk_list_store_set (model, &iter, 0, entry, -1);
-          self->offsets[j++] = offsets[i] + word_base;
-        }
-#undef MAGIC
-#undef MAGIC_OFFSET
-#undef OFFSET
-    }
-  gy_dict_set_tree_model (dict, GTK_TREE_MODEL (model));
-  g_object_set (dict, "is-map", TRUE, NULL);
-  return;
-out:
-  g_debug ("");
-  g_object_set (dict, "is-map", FALSE, NULL);
-  return;
+  query->offset1 = 0x68;
+  query->offset2 = 0x04;
+  query->magic1 = 0x11dd;
+  query->magic2 = 0x11d7;
 }
 
-static gchar *
-gy_german_pwn_get_lexical_unit (GyDict  *dict,
-                                guint    index,
-                                GError **err)
+static gboolean
+gy_german_pwn_check_checksum (GyPwnDict  *self,
+                              GFile      *file,
+                              GError    **err)
 {
-  g_autoptr(GFileInputStream) in = NULL;
-  GyGermanPwn *self = GY_GERMAN_PWN (dict);
-  gchar *in_buffer = NULL;
-  gchar *out_buffer = NULL;
-  guint i = 0;
-
-  g_return_val_if_fail (GY_IS_DICT (dict), NULL);
-  g_return_val_if_fail (gy_dict_is_map (dict), NULL);
-
-#define MAXLEN 1024 * 90
-#define OFFSET 12
-
-  in_buffer = (gchar *) g_alloca (MAXLEN);
-  out_buffer = (gchar *) g_malloc0 (MAXLEN);
-
-  if (!(in = g_file_read (self->file, NULL, err)))
-    goto out;
-
-  if (!g_seekable_seek (G_SEEKABLE (in), self->offsets[index], G_SEEK_SET, NULL, err))
-    goto out;
-
-  if ((g_input_stream_read (G_INPUT_STREAM (in), in_buffer, MAXLEN, NULL, err)) <= 0)
-    goto out;
-
-  i = 12 + strlen (in_buffer+12) + 2;
-
-  if (in_buffer[i] < 20)
-    {
-      gint zerr;
-      uLongf destlen;
-      i += in_buffer[i]+1;
-      destlen = MAXLEN;
-
-      if ((zerr = uncompress ((Bytef *)out_buffer, &destlen, (const Bytef *)in_buffer+i, MAXLEN)) != Z_OK)
-        {
-          switch (zerr)
-            {
-            case Z_BUF_ERROR:
-              g_set_error (err, GY_GERMAN_PWN_ERROR, zerr,
-                           "The buffer out_buffer was not large enough to hold the uncompressed data!");
-              break;
-            case Z_MEM_ERROR:
-              g_set_error (err, GY_GERMAN_PWN_ERROR, zerr,
-                           "Insufficient memory!");
-              break;
-            case Z_DATA_ERROR:
-              g_set_error (err, GY_GERMAN_PWN_ERROR, zerr,
-                           "The compressed data (referenced by in_buffer) was corrupted!");
-              break;
-            };
-          goto out;
-        }
-    }
-  else
-    {
-      out_buffer = g_strdup (in_buffer + i);
-    }
-
-  return out_buffer;
-out:
-  return NULL;
-#undef MAXLEN
-#undef OFFSET
+  return TRUE;
 }
 
 static void
@@ -311,9 +112,6 @@ gy_german_pwn_finalize (GObject *object)
 {
   GyGermanPwn *self = (GyGermanPwn *)object;
 
-  g_clear_object (&self->file);
-  g_clear_pointer (&self->offsets, g_free);
-  g_clear_pointer (&self->entities, g_hash_table_unref);
   g_clear_pointer (&self->parser, gy_markup_parser_pwn_free);
   g_clear_pointer (&self->pdata->table_tags, g_hash_table_unref);
   g_clear_pointer (&self->pdata, g_free);
@@ -354,7 +152,32 @@ gy_german_pwn_set_property (GObject      *object,
 static void
 gy_german_pwn_constructed (GObject *object)
 {
+  GyGermanPwn *self = GY_GERMAN_PWN (object);
+
   G_OBJECT_CLASS (gy_german_pwn_parent_class)->constructed (object);
+
+
+  g_object_get (GY_PWN_DICT (object),
+                "entities", &self->entities, NULL);
+  g_assert (self->entities);
+
+  self->pdata = g_malloc0 (sizeof (ParserData));
+
+  g_object_get (GY_DICT (object),
+                "buffer", &self->pdata->buffer, NULL);
+  g_assert (GTK_IS_TEXT_BUFFER (self->pdata->buffer));
+
+  self->pdata->table_tags = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                   g_free, NULL);
+  self->pdata->table_buffer_tags = gtk_text_buffer_get_tag_table (self->pdata->buffer);
+
+  g_assert (GTK_IS_TEXT_TAG_TABLE (self->pdata->table_buffer_tags) && self->pdata->table_tags);
+
+  self->parser = gy_markup_parser_pwn_new (gy_german_pwn_start_tag,
+                                           gy_german_pwn_end_tag,
+                                           gy_german_pwn_insert_text,
+                                           self->entities,
+                                           self->pdata, NULL);
 }
 
 static void
@@ -362,46 +185,20 @@ gy_german_pwn_class_init (GyGermanPwnClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GyDictClass  *dict_class = GY_DICT_CLASS (klass);
+  GyPwnDictClass *pwn_dict_class = GY_PWN_DICT_CLASS (klass);
 
   object_class->finalize = gy_german_pwn_finalize;
   object_class->constructed = gy_german_pwn_constructed;
   object_class->get_property = gy_german_pwn_get_property;
   object_class->set_property = gy_german_pwn_set_property;
 
-  dict_class->map = gy_german_pwn_map;
+  pwn_dict_class->check_checksum = gy_german_pwn_check_checksum;
+  pwn_dict_class->query = gy_german_pwn_query;
 }
 
 static void
 gy_german_pwn_init (GyGermanPwn *self)
 {
-  GApplication *app = NULL;
-  GtkWindow    *win = NULL;
-
-  self->file = NULL;
-  self->offsets = NULL;
-  self->parser = NULL;
-  self->pdata = g_malloc0 (sizeof (ParserData));
-  self->entities = gy_tabs_get_entity_table ();
-
-  app = g_application_get_default ();
-  win = gtk_application_get_active_window (GTK_APPLICATION (app));
-
-  self->pdata->buffer = gy_window_get_text_buffer (GY_WINDOW (win));
-  self->pdata->table_tags = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                                   g_free, NULL);
-  self->pdata->table_buffer_tags = gtk_text_buffer_get_tag_table (self->pdata->buffer);
-
-  g_assert (GTK_IS_TEXT_BUFFER (self->pdata->buffer) &&
-            GTK_IS_TEXT_TAG_TABLE (self->pdata->table_buffer_tags) &&
-            self->pdata->table_tags);
-
-  self->parser = gy_markup_parser_pwn_new (gy_german_pwn_start_tag,
-                                           gy_german_pwn_end_tag,
-                                           gy_german_pwn_insert_text,
-                                           self->entities,
-                                           self->pdata, NULL);
-
-
 }
 
 /* IFace */
@@ -421,16 +218,17 @@ gy_german_pwn_parse_lexical_unit (GyParsable    *parser,
   GyGermanPwn *self = GY_GERMAN_PWN (parser);
   GError *err = NULL;
   g_autofree gchar *lexical_unit = NULL;
-  gboolean is_map = FALSE;
+  gboolean is_mapped = FALSE;
 
   g_return_if_fail (GY_IS_DICT (dict));
 
   g_object_get (GY_DICT (parser),
-                "is-map", &is_map, NULL);
+                "is-mapped", &is_mapped, NULL);
 
-  g_return_if_fail (is_map);
+  g_return_if_fail (is_mapped);
 
-  lexical_unit = gy_german_pwn_get_lexical_unit (dict, index, &err);
+  lexical_unit = gy_pwn_dict_get_lexical_unit (GY_PWN_DICT (parser),
+                                               index, &err);
 
   if (err != NULL)
     {
