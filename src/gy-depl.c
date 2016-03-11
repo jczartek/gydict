@@ -187,7 +187,7 @@ gy_depl_map (GyDict *dict,
       self->array_words[i++] = conv;
       g_free (line);
     }
-  gy_dict_set_tree_model (dict, GTK_TREE_MODEL (model));
+  g_object_set (dict, "model", model, NULL);
   g_object_set (dict, "is-mapped", TRUE, NULL);
   return;
 out:
