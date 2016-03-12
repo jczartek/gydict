@@ -20,13 +20,13 @@
 #define __GY_ENGLISH_PWN_H__
 
 #include <gtk/gtk.h>
-#include "gy-dict.h"
+#include "gy-pwn-dict.h"
 
 G_BEGIN_DECLS
 
 #define GY_TYPE_ENGLISH_PWN (gy_english_pwn_get_type ())
 
-G_DECLARE_FINAL_TYPE (GyEnglishPwn, gy_english_pwn, GY, ENGLISH_PWN, GyDict)
+G_DECLARE_FINAL_TYPE (GyEnglishPwn, gy_english_pwn, GY, ENGLISH_PWN, GyPwnDict)
 
 G_END_DECLS
 
