@@ -32,7 +32,7 @@
                 <property name="description" translatable="yes">Select the dictionary file angpol.win.</property>
                 <property name="visible">true</property>
                 <property name="size-group">control_group</property>
-                <property name="settings-schema-key">dict-pwn-angpol</property>
+                <property name="settings-schema-key">gyenglishpwn-english</property>
                 <property name="settings">settings</property>
               </object>
             </child>
@@ -42,7 +42,7 @@
                 <property name="description" translatable="yes">Select the dictionary file polang.win.</property>
                 <property name="visible">true</property>
                 <property name="size-group">control_group</property>
-                <property name="settings-schema-key">dict-pwn-polang</property>
+                <property name="settings-schema-key">gyenglishpwn-polish</property>
                 <property name="settings">settings</property>
               </object>
             </child>
@@ -52,7 +52,7 @@
                 <property name="description" translatable="yes">Select the dictionary file niempol.win.</property>
                 <property name="visible">true</property>
                 <property name="size-group">control_group</property>
-                <property name="settings-schema-key">dict-pwn-niempol</property>
+                <property name="settings-schema-key">gygermanpwn-german</property>
                 <property name="settings">settings</property>
               </object>
             </child>
@@ -62,7 +62,7 @@
                 <property name="description" translatable="yes">Select the dictionary file polniem.win.</property>
                 <property name="visible">true</property>
                 <property name="size-group">control_group</property>
-                <property name="settings-schema-key">dict-pwn-polniem</property>
+                <property name="settings-schema-key">gygermanpwn-polish</property>
                 <property name="settings">settings</property>
               </object>
             </child>
@@ -82,22 +82,12 @@
               </object>
             </child>
             <child>
-              <object class="GyPreferencesFileChooser" id="depl-a">
+              <object class="GyPreferencesFileChooser" id="depl">
                 <property name="title" translatable="yes">German</property>
                 <property name="description" translatable="yes">Select the dictionary file a.dat</property>
                 <property name="visible">true</property>
                 <property name="size-group">control_group</property>
-                <property name="settings-schema-key">dict-depl-a</property>
-                <property name="settings">settings</property>
-              </object>
-            </child>
-            <child>
-              <object class="GyPreferencesFileChooser" id="depl-b">
-                <property name="title" translatable="yes">German</property>
-                <property name="description" translatable="yes">Select the dictionary file b.dat</property>
-                <property name="visible">true</property>
-                <property name="size-group">control_group</property>
-                <property name="settings_schema_key">dict-depl-b</property>
+                <property name="settings-schema-key">gydepl-german</property>
                 <property name="settings">settings</property>
               </object>
             </child>
@@ -110,6 +100,6 @@
     <property name="mode">horizontal</property>
   </object>
   <object class="GSettings" id="settings">
-    <property name="schema-id">org.gtk.gydict</property>
+    <property name="schema-id">org.gtk.gydict.paths</property>
   </object>
 </interface>
