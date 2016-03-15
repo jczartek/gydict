@@ -326,15 +326,11 @@ dict_radio_cb (GSimpleAction *action,
   if (!(dict = g_datalist_id_get_data (&priv->datalist, priv->qvalue)))
     {
       GyHistory *history = NULL;
-      dict = GY_DICT(gy_dict_new (value,
-                          priv->buffer));
 
- /*     if(gy_dict_set_dictionary (dict) || gy_dict_init_list (dict))
-        {
-          gtk_widget_show (priv->infobar);
-          return;
+      dict = GY_DICT(gy_dict_new (value, priv->buffer));
 
-        } */
+      if (!dict)
+        return;
 
       g_datalist_id_set_data_full (&priv->datalist,
                                    priv->qvalue,dict,
