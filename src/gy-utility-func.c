@@ -20,21 +20,7 @@
 #include "config.h"
 #include "gy-utility-func.h"
 
-guint 
-gydict_utility_search_entity (const gchar **tab_encja, 
-                              const gchar  *token_encja)
-{
-  guint i;
-
-  for (i=0; tab_encja[i] != NULL; i++)
-  {
-    if (g_strcmp0 (tab_encja[i], token_encja) == 0)
-        break;
-  }
-  return i;
-}
-
-void 
+void
 gy_utility_delete_text_in_buffer (GtkTextBuffer *buffer)
 {
   GtkTextIter start, end;
@@ -42,8 +28,8 @@ gy_utility_delete_text_in_buffer (GtkTextBuffer *buffer)
   gtk_text_buffer_delete(buffer,&start,&end);
 }
 
-gboolean 
-gy_utility_handlers_is_blocked_by_func (gpointer instance, 
+gboolean
+gy_utility_handlers_is_blocked_by_func (gpointer instance,
                                         gpointer func,
                                         gpointer data)
 {

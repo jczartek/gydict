@@ -24,8 +24,6 @@
 
 G_BEGIN_DECLS
 
-extern guint gydict_utility_search_entity(const  gchar ** tab_encja,
-                                          const gchar * token_encja);
 extern void gy_utility_delete_text_in_buffer(GtkTextBuffer *buffer);
 extern gboolean gy_utility_handlers_is_blocked_by_func(gpointer instance,
                                                        gpointer func,
