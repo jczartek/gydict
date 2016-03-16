@@ -97,19 +97,10 @@ static const gchar *pwndict_iso88592_to_utf8_table[] =
   "ř", "ů", "ú", "ű", "ü", "ý", "ţ", "˙",
 };
 
-const gchar *pwndict_superscript_to_utf8_table[] =
-{
-  "⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"
-};
-
 static const gchar *superscript[] =
 {
   "⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"
 };
-
-
-const gchar *(*array_of_pointer_to_arrays_of_character_set[2])[] = {&pwndict_cp1250_to_utf8_table,
-  &pwndict_iso88592_to_utf8_table};
 
 void gy_tabs_convert_character (gchar **buffer,
                                 const gchar *c,
