@@ -141,7 +141,7 @@ gy_depl_map (GyDict *dict,
   g_autoptr(GDataInputStream) data = NULL;
   g_autoptr(GSettings) settings = NULL;
   g_autofree gchar *path = NULL;
-  GtkListStore *model = NULL;
+  g_autoptr (GtkListStore) model = NULL;
   GtkTreeIter iter;
   gchar entry[SIZE_ENTRY];
   gchar *line = NULL;
