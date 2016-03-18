@@ -236,11 +236,19 @@ respond_clipboard_cb (GSimpleAction *action,
   {
     g_signal_connect (priv->clipboard, "owner-change",
                       G_CALLBACK (owner_change_cb), window);
+    g_signal_connect (priv->text_view, "button-press-event",
+                      G_CALLBACK (press_button_text_view_cb), window);
+    g_signal_connect (priv->text_view, "button-release-event",
+                      G_CALLBACK (release_button_text_view_cb), window);
   }
   else
   {
     g_signal_handlers_disconnect_by_func (priv->clipboard,
                                           owner_change_cb, window);
+    g_signal_handlers_disconnect_by_func (priv->text_view,
+                                          press_button_text_view_cb, window);
+    g_signal_handlers_disconnect_by_func (priv->text_view,
+                                          release_button_text_view_cb, window);
   }
 }
 
@@ -687,10 +695,6 @@ gy_window_init (GyWindow *window)
   /* Connect signals */
   g_signal_connect (G_OBJECT (priv->selection), "changed",
                     G_CALLBACK(tree_selection_cb), window);
-  g_signal_connect (priv->text_view, "button-press-event",
-                    G_CALLBACK (press_button_text_view_cb), window);
-  g_signal_connect (priv->text_view, "button-release-event",
-                    G_CALLBACK (release_button_text_view_cb), window);
 }
 
 static void
