@@ -100,10 +100,28 @@ gy_german_pwn_query (GyPwnDict      *self,
 }
 
 static gboolean
-gy_german_pwn_check_checksum (GyPwnDict  *self,
+gy_german_pwn_check_checksum (GyPwnDict  *self G_GNUC_UNUSED,
                               GFile      *file,
                               GError    **err)
 {
+  g_autofree gchar *md5 = NULL;
+
+  md5 = gy_utility_compute_md5_for_file (file, err);
+
+  if (!md5)
+    return FALSE;
+
+  if ((g_strcmp0 (md5, MD5_NIEMPOL) != 0) && (g_strcmp0 (md5, MD5_POLNIEM) != 0))
+    {
+      g_autofree gchar *path = NULL;
+
+      path = g_file_get_path (file);
+
+      g_set_error (err, GY_GERMAN_PWN_ERROR, G_FILE_ERROR_FAILED,
+                   "The %s checksum is not in accordance with the checksum of the file dictionary.", path);
+      return FALSE;
+    }
+
   return TRUE;
 }
 
