@@ -29,6 +29,8 @@
 #define MD5_ANGPOL_06_07  "91f9344b0b9d40dcbb0a4c6027de98c1"
 #define MD5_POLANG_06_07  "a1603dd25a7911d40edbb2b8fa89945d"
 
+#define GY_ENGLISH_PWN_ERROR gy_english_pwn_error_quark ()
+
 
 static void gy_english_pwn_start_tag (const gchar     *tag_name,
                                       const GPtrArray *attribute_name,
@@ -73,6 +75,12 @@ enum {
 
 static GParamSpec *gParamSpecs [LAST_PROP];
 
+static GQuark
+gy_english_pwn_error_quark (void)
+{
+  return g_quark_from_static_string ("gy-english-pwn-error-quark");
+}
+
 static void
 gy_english_pwn_query (GyPwnDict      *self,
                       GyDictPwnQuery *query)
@@ -88,6 +96,23 @@ gy_english_pwn_checksum (GyPwnDict  *self,
                          GFile      *file,
                          GError    **err)
 {
+  g_autofree gchar *md5 = NULL;
+
+  md5 = gy_utility_compute_md5_for_file (file, err);
+
+  if (!md5)
+    return FALSE;
+
+  if ((g_strcmp0 (md5, MD5_ANGPOL_06_07) != 0) && (g_strcmp0 (md5, MD5_POLANG_06_07) != 0))
+    {
+      g_autofree gchar *path = NULL;
+
+      path = g_file_get_path (file);
+
+      g_set_error (err, GY_ENGLISH_PWN_ERROR, G_FILE_ERROR_FAILED,
+                   "The %s checksum is not in accordance with the checksum of the file dictionary.", path);
+      return FALSE;
+    }
   return TRUE;
 }
 
