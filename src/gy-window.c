@@ -91,7 +91,6 @@ struct _GyWindowPrivate
   GtkWidget *tree_view;
   GyTextView *text_view;
   GtkWidget *findbar;
-  GtkWidget *infobar;
   GtkWidget *header_bar;
   GtkWidget *entry;
   GtkWidget *back;
@@ -611,25 +610,6 @@ set_text_buffer_on_text_view (GyTextView* text_view)
 }
 
 static void
-create_info_bar (GyWindow *window)
-{
-  GtkWidget *label = NULL, *area = NULL;
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
-
-  label = gtk_label_new (_("Error!!!. Can't open the dictionary.\n See description error on terminal."));
-  gtk_widget_show (label);
-  area = gtk_info_bar_get_content_area (GTK_INFO_BAR (priv->infobar));
-  gtk_container_add (GTK_CONTAINER (area), label);
-  gtk_info_bar_set_message_type (GTK_INFO_BAR (priv->infobar),
-                                 GTK_MESSAGE_ERROR);
-  gtk_info_bar_add_button (GTK_INFO_BAR (priv->infobar), "OK",
-                           GTK_RESPONSE_OK);
-  g_signal_connect (priv->infobar, "response",
-                    G_CALLBACK (gtk_widget_hide), NULL);
-  gtk_widget_set_no_show_all (priv->infobar, TRUE);
-}
-
-static void
 gy_pwn_finalize (GObject *object)
 {
   GyWindow *window = GY_WINDOW (object);
@@ -662,8 +642,6 @@ gy_window_init (GyWindow *window)
   g_action_map_add_action_entries (G_ACTION_MAP (window),
                                    win_entries, G_N_ELEMENTS (win_entries),
                                    window);
-
-  create_info_bar (window);
 
   priv->buffer = set_text_buffer_on_text_view (priv->text_view);
 
@@ -713,7 +691,6 @@ gy_window_class_init (GyWindowClass *klass)
   gtk_widget_class_set_template_from_resource (widget_class,
                                                "/org/gtk/gydict/gy-window.ui");
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, child_box);
-  gtk_widget_class_bind_template_child_private (widget_class, GyWindow, infobar);
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, header_bar);
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, entry);
   gtk_widget_class_bind_template_child_private (widget_class, GyWindow, tree_view);
