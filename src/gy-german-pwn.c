@@ -32,9 +32,6 @@
 #define MD5_NIEMPOL   "c0f2280d5bedfc5c88620dcef512b897"
 #define MD5_POLNIEM   "2b551364dd36ef263381276ee352c59f"
 
-#define SIZE_BUFFER  128
-#define SIZE_ENTRY   64
-
 #define GY_GERMAN_PWN_ERROR gy_german_pwn_error_quark ()
 
 static void gy_german_pwn_start_tag (const gchar     *tag_name,
