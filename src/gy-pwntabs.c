@@ -19,7 +19,7 @@
 
 #include "gy-pwntabs.h"
 
-const gchar *pwn_encje[] = 
+static const gchar *in_entities[] =
 {
   "&IPA502", "&inodot", "&##952", "&##8747", "&eng", "&square", "&squareb", "&pause", "&##163", "&dots",
   "&rArr", "&IPA118", "&##949", "&IPA413", "&IPA424", "&IPA505", "&IPA135", "&IPA305", "&IPA306", "&IPA313",
@@ -38,7 +38,7 @@ const gchar *pwn_encje[] =
   "&uuml","&ouml", "&szlig", "&Auml", "&Ouml", "&Uuml", "&acirc", NULL
 };
 
-const gchar *pwn_encje_zam[] =
+static const gchar *out_entities[] =
 {
   "ˌ", "ɪ", "θ", "ʃ", "ŋ", "…", "•", "―", "£", "…",
   "→", "ɲ", "ε", " ̟", " ̃", " ̆", "ʒ", "ɑ", "ɔ", "ɒ",
@@ -135,10 +135,10 @@ gy_tabs_get_entity_table (void)
   tab = g_hash_table_new (g_str_hash,
                           g_str_equal);
 
-  for (int i=0; pwn_encje[i] != NULL && pwn_encje_zam[i] != NULL; i++)
+  for (int i=0; in_entities[i] != NULL && out_entities[i] != NULL; i++)
        g_hash_table_insert (tab, 
-                            (gpointer) pwn_encje[i],
-                            (gpointer) pwn_encje_zam[i]);
+                            (gpointer) in_entities[i],
+                            (gpointer) out_entities[i]);
 
   return tab;
 
