@@ -31,9 +31,6 @@ typedef enum
   GY_ENCODING_UTF8
 } GyDictEncoding;
 
-//extern const gchar *pwn_encje[];
-//extern const gchar *pwn_encje_zam[];
-
 void gy_tabs_convert_character (gchar **buffer,
                                 const gchar *c,
                                 GyDictEncoding encoding);
