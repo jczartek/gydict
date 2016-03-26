@@ -5,7 +5,10 @@ data/gydict.desktop.in.in
 src/gy-app.c
 src/gy-main.c
 src/gy-window.c
-[type: gettext/glade]src/resources/ui/dialog-pref.ui
-[type: gettext/glade]src/resources/ui/gydict.ui
-[type: gettext/glade]src/resources/ui/menu.ui
+[type: gettext/glade]src/contrib/shortcuts/shortcuts-window.ui
+[type: gettext/glade]src/resources/ui/gy-app-menu.ui
+[type: gettext/glade]src/resources/ui/gy-preferences-page-dicts.ui
+[type: gettext/glade]src/resources/ui/gy-preferences-page-general.ui
+[type: gettext/glade]src/resources/ui/gy-preferences-window.ui
+[type: gettext/glade]src/resources/ui/gy-window.ui
 
