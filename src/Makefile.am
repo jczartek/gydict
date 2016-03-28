@@ -72,6 +72,7 @@ gydict_SOURCES =                                                               \
                 gy-german-pwn.c gy-german-pwn.h                                \
                 gy-english-pwn.c gy-english-pwn.h                              \
                 gy-pwn-dict.c gy-pwn-dict.h                                    \
+		gy-text-buffer.c gy-text-buffer.h                              \
 		$(NULL)
 
 gydict_CPPFLAGS =                                                              \
