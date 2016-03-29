@@ -32,12 +32,6 @@ enum {
 
 static GParamSpec *gParamSpecs [LAST_PROP];
 
-GyTextBuffer *
-gy_text_buffer_new (void)
-{
-  return g_object_new (GY_TYPE_TEXT_BUFFER, NULL);
-}
-
 static void
 gy_text_buffer_finalize (GObject *object)
 {
@@ -89,4 +83,23 @@ gy_text_buffer_class_init (GyTextBufferClass *klass)
 static void
 gy_text_buffer_init (GyTextBuffer *self)
 {
+}
+
+GyTextBuffer *
+gy_text_buffer_new (void)
+{
+  return g_object_new (GY_TYPE_TEXT_BUFFER, NULL);
+}
+
+void
+gy_text_buffer_clean_buffer (GyTextBuffer *self)
+{
+  GtkTextIter begin, end;
+
+  g_return_if_fail (GY_IS_TEXT_BUFFER (self));
+
+  gtk_text_buffer_get_bounds (GTK_TEXT_BUFFER (self),
+                              &begin, &end);
+  gtk_text_buffer_delete (GTK_TEXT_BUFFER (self),
+                          &begin, &end);
 }
