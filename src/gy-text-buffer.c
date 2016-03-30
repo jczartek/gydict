@@ -103,3 +103,41 @@ gy_text_buffer_clean_buffer (GyTextBuffer *self)
   gtk_text_buffer_delete (GTK_TEXT_BUFFER (self),
                           &begin, &end);
 }
+
+void
+gy_text_buffer_insert_text_with_tags (GyTextBuffer   *self,
+                                      GtkTextIter    *iter,
+                                      const gchar    *text,
+                                      gint            len,
+                                      GHashTable     *table_tags)
+{
+  gint           start_offset;
+  GtkTextIter    start;
+  GList		      *list;
+  GtkTextBuffer *buffer = GTK_TEXT_BUFFER (self);
+
+  g_return_if_fail (GY_IS_TEXT_BUFFER (self));
+  g_return_if_fail (iter != NULL);
+  g_return_if_fail (text != NULL);
+  g_return_if_fail (gtk_text_iter_get_buffer (iter) == buffer);
+
+  start_offset = gtk_text_iter_get_offset (iter);
+
+  gtk_text_buffer_insert (buffer, iter, text, len);
+
+  if (table_tags == NULL)
+    return;
+
+  gtk_text_buffer_get_iter_at_offset (buffer, &start, start_offset);
+
+  list = g_hash_table_get_values (table_tags);
+
+  if (list == NULL)
+    return;
+
+  GList *l;
+  for (l = list; l != NULL; l=l->next)
+    gtk_text_buffer_apply_tag (buffer, (GtkTextTag*) l->data, &start, iter);
+
+  g_list_free (list);
+}

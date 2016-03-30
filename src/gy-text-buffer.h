@@ -27,8 +27,13 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (GyTextBuffer, gy_text_buffer, GY, TEXT_BUFFER, GtkTextBuffer)
 
-GyTextBuffer *gy_text_buffer_new          (void);
-void          gy_text_buffer_clean_buffer (GyTextBuffer *self);
+GyTextBuffer *gy_text_buffer_new                   (void);
+void          gy_text_buffer_clean_buffer          (GyTextBuffer *self);
+void          gy_text_buffer_insert_text_with_tags (GyTextBuffer   *self,
+                                                    GtkTextIter    *iter,
+                                                    const gchar    *text,
+                                                    gint            len,
+                                                    GHashTable     *table_tags);
 
 G_END_DECLS
 
