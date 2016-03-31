@@ -84,42 +84,43 @@ enum
   GY_N_BINDINGS
 };
 
-struct _GyWindowPrivate
+struct _GyWindow
 {
-  GtkWidget *main_box;
-  GtkWidget *child_box;
-  GtkWidget *tree_view;
-  GyTextView *text_view;
-  GtkWidget *findbar;
-  GtkWidget *header_bar;
-  GtkWidget *entry;
-  GtkWidget *back;
-  GtkWidget *forward;
-  GtkWidget *text_box;
-  GtkWidget *revealer_buttons;
+  GtkApplicationWindow  __parent__;
+  GtkWidget            *main_box;
+  GtkWidget            *child_box;
+  GtkWidget            *tree_view;
+  GyTextView           *text_view;
+  GtkWidget            *findbar;
+  GtkWidget            *header_bar;
+  GtkWidget            *entry;
+  GtkWidget            *back;
+  GtkWidget            *forward;
+  GtkWidget            *text_box;
+  GtkWidget            *revealer_buttons;
 
-  GtkTextBuffer *buffer;
-  GtkTreeSelection *selection;
-  GData *datalist;
-  GQuark qvalue;
-  guint timeout_history;
-  gchar *string_history;
+  GtkTextBuffer        *buffer;
+  GtkTreeSelection     *selection;
+  GData                *datalist;
+  GQuark                qvalue;
+  guint                 timeout_history;
+  gchar                *string_history;
 
-  GyHistory *history;
-  GHashTable *histories_dictionaries;
-  GAction  *next;
-  GAction  *prev;
-  GBinding *bind[GY_N_BINDINGS];
+  GyHistory            *history;
+  GHashTable           *histories_dictionaries;
+  GAction              *next;
+  GAction              *prev;
+  GBinding             *bind[GY_N_BINDINGS];
 
-  GtkClipboard *clipboard; /* Non free! */
+  GtkClipboard         *clipboard; /* Non free! */
 
   /* Window State */
-  gint current_width;
-  gint current_height;
-  gboolean is_maximized;
+  gint                  current_width;
+  gint                  current_height;
+  gboolean              is_maximized;
 };
 
-G_DEFINE_TYPE_WITH_PRIVATE (GyWindow, gy_window, GTK_TYPE_APPLICATION_WINDOW);
+G_DEFINE_TYPE (GyWindow, gy_window, GTK_TYPE_APPLICATION_WINDOW);
 
 /**STATIC DATA**/
 
@@ -154,8 +155,7 @@ owner_change_cb (GtkClipboard        *clipboard,
                  gpointer             data)
 {
   gchar *text = NULL, *word = NULL;
-  GyWindow *window = GY_WINDOW (data);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *self = GY_WINDOW (data);
 
   if ((text = gtk_clipboard_wait_for_text (clipboard)))
   {
@@ -168,7 +168,7 @@ owner_change_cb (GtkClipboard        *clipboard,
     word = g_match_info_fetch (match_info, 0);
 
     if (word)
-      gtk_entry_set_text (GTK_ENTRY (priv->entry), (const gchar *) word);
+      gtk_entry_set_text (GTK_ENTRY (self->entry), (const gchar *) word);
 
     g_match_info_free (match_info);
     g_regex_unref (regex);
@@ -183,14 +183,13 @@ press_button_text_view_cb (GtkWidget      *widget G_GNUC_UNUSED,
                            GdkEventButton *event G_GNUC_UNUSED,
                            gpointer        data)
 {
-  GyWindow *window = GY_WINDOW (data);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *self = GY_WINDOW (data);
 
-  if (!gy_utility_handlers_is_blocked_by_func (priv->clipboard,
-                                               owner_change_cb, window))
+  if (!gy_utility_handlers_is_blocked_by_func (self->clipboard,
+                                               owner_change_cb, self))
   {
-    g_signal_handlers_block_by_func (priv->clipboard,
-                                     owner_change_cb, window);
+    g_signal_handlers_block_by_func (self->clipboard,
+                                     owner_change_cb, self);
   }
 
   return FALSE;
@@ -201,15 +200,14 @@ release_button_text_view_cb (GtkWidget      *widget G_GNUC_UNUSED,
                              GdkEventButton *event G_GNUC_UNUSED,
                              gpointer        data)
 {
-  GyWindow *window = GY_WINDOW (data);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *self = GY_WINDOW (data);
 
-  if (gy_utility_handlers_is_blocked_by_func (priv->clipboard,
-                                              owner_change_cb, window))
+  if (gy_utility_handlers_is_blocked_by_func (self->clipboard,
+                                              owner_change_cb, self))
   {
-    g_signal_handlers_unblock_by_func (priv->clipboard,
-                                       owner_change_cb, window);
-    gtk_text_buffer_copy_clipboard (priv->buffer, priv->clipboard);
+    g_signal_handlers_unblock_by_func (self->clipboard,
+                                       owner_change_cb, self);
+    gtk_text_buffer_copy_clipboard (self->buffer, self->clipboard);
   }
 
   return FALSE;
@@ -222,8 +220,7 @@ respond_clipboard_cb (GSimpleAction *action,
 {
   gboolean respond;
   GVariant *state;
-  GyWindow *window = GY_WINDOW (data);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *self = GY_WINDOW (data);
 
   state = g_action_get_state (G_ACTION (action));
   respond = g_variant_get_boolean (state);
@@ -233,21 +230,21 @@ respond_clipboard_cb (GSimpleAction *action,
 
   if (!respond)
   {
-    g_signal_connect (priv->clipboard, "owner-change",
-                      G_CALLBACK (owner_change_cb), window);
-    g_signal_connect (priv->text_view, "button-press-event",
-                      G_CALLBACK (press_button_text_view_cb), window);
-    g_signal_connect (priv->text_view, "button-release-event",
-                      G_CALLBACK (release_button_text_view_cb), window);
+    g_signal_connect (self->clipboard, "owner-change",
+                      G_CALLBACK (owner_change_cb), self);
+    g_signal_connect (self->text_view, "button-press-event",
+                      G_CALLBACK (press_button_text_view_cb), self);
+    g_signal_connect (self->text_view, "button-release-event",
+                      G_CALLBACK (release_button_text_view_cb), self);
   }
   else
   {
-    g_signal_handlers_disconnect_by_func (priv->clipboard,
-                                          owner_change_cb, window);
-    g_signal_handlers_disconnect_by_func (priv->text_view,
-                                          press_button_text_view_cb, window);
-    g_signal_handlers_disconnect_by_func (priv->text_view,
-                                          release_button_text_view_cb, window);
+    g_signal_handlers_disconnect_by_func (self->clipboard,
+                                          owner_change_cb, self);
+    g_signal_handlers_disconnect_by_func (self->text_view,
+                                          press_button_text_view_cb, self);
+    g_signal_handlers_disconnect_by_func (self->text_view,
+                                          release_button_text_view_cb, self);
   }
 }
 
@@ -256,15 +253,14 @@ find_menu_cb (GSimpleAction *action,
               GVariant      *parametr G_GNUC_UNUSED,
               gpointer       data)
 {
-  GyWindow *window = GY_WINDOW(data);
-  GyWindowPrivate *priv = gy_window_get_instance_private(window);
+  GyWindow *self = GY_WINDOW(data);
 
   GVariant *state;
 
   state = g_action_get_state (G_ACTION (action));
   g_action_change_state (G_ACTION (action),
                          g_variant_new_boolean (!g_variant_get_boolean (state)));
-  gy_search_bar_set_search_mode (GY_SEARCH_BAR (priv->findbar),
+  gy_search_bar_set_search_mode (GY_SEARCH_BAR (self->findbar),
                                  !g_variant_get_boolean (state));
   g_variant_unref (state);
 
@@ -275,15 +271,14 @@ buttons_signs_cb(GSimpleAction *action,
                  GVariant      *parametr G_GNUC_UNUSED,
                  gpointer       data)
 {
-  GyWindow *window = GY_WINDOW(data);
-  GyWindowPrivate *priv = gy_window_get_instance_private(window);
+  GyWindow *self = GY_WINDOW(data);
 
   GVariant *state;
 
   state = g_action_get_state (G_ACTION (action));
   g_action_change_state (G_ACTION (action),
                          g_variant_new_boolean (!g_variant_get_boolean (state)));
-  gtk_revealer_set_reveal_child (GTK_REVEALER (priv->revealer_buttons), 
+  gtk_revealer_set_reveal_child (GTK_REVEALER (self->revealer_buttons),
                                  !g_variant_get_boolean (state));
   g_variant_unref (state);
 
@@ -323,30 +318,29 @@ dict_radio_cb (GSimpleAction *action,
 {
   const gchar *value,
               *str = NULL;
-  GyWindow *window = GY_WINDOW (data);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *self = GY_WINDOW (data);
   GyDict *dict;
 
   value = g_variant_get_string (parameter, NULL);
-  priv->qvalue = g_quark_from_string (value);
+  self->qvalue = g_quark_from_string (value);
 
-  if (!(dict = g_datalist_id_get_data (&priv->datalist, priv->qvalue)))
+  if (!(dict = g_datalist_id_get_data (&self->datalist, self->qvalue)))
     {
       GyHistory *history = NULL;
 
-      dict = GY_DICT(gy_dict_new (value, priv->buffer));
+      dict = GY_DICT(gy_dict_new (value, self->buffer));
 
       if (!dict)
         return;
 
-      g_datalist_id_set_data_full (&priv->datalist,
-                                   priv->qvalue,dict,
+      g_datalist_id_set_data_full (&self->datalist,
+                                   self->qvalue,dict,
                                    g_object_unref);
 
-      if (priv->histories_dictionaries != NULL)
+      if (self->histories_dictionaries != NULL)
         {
           history = gy_history_new ();
-          g_hash_table_insert (priv->histories_dictionaries,
+          g_hash_table_insert (self->histories_dictionaries,
                                (gpointer) g_strdup (value), history);
 
         }
@@ -365,38 +359,38 @@ dict_radio_cb (GSimpleAction *action,
         }
     }
 
-  gtk_tree_view_set_model (GTK_TREE_VIEW (priv->tree_view),
+  gtk_tree_view_set_model (GTK_TREE_VIEW (self->tree_view),
                            gy_dict_get_tree_model (dict));
-  gy_utility_delete_text_in_buffer (priv->buffer);
-  gtk_entry_set_text (GTK_ENTRY (priv->entry), "");
+  gy_utility_delete_text_in_buffer (self->buffer);
+  gtk_entry_set_text (GTK_ENTRY (self->entry), "");
 
-  priv->history = GY_HISTORY (g_hash_table_lookup (priv->histories_dictionaries,
+  self->history = GY_HISTORY (g_hash_table_lookup (self->histories_dictionaries,
                                                    value));
 
-  if (priv->bind[GY_BINDING_ACTION_PREV] != NULL &&
-      priv->bind[GY_BINDING_ACTION_NEXT] != NULL)
+  if (self->bind[GY_BINDING_ACTION_PREV] != NULL &&
+      self->bind[GY_BINDING_ACTION_NEXT] != NULL)
     {
-      g_binding_unbind (priv->bind[GY_BINDING_ACTION_PREV]);
-      g_binding_unbind (priv->bind[GY_BINDING_ACTION_NEXT]);
+      g_binding_unbind (self->bind[GY_BINDING_ACTION_PREV]);
+      g_binding_unbind (self->bind[GY_BINDING_ACTION_NEXT]);
     }
 
-  priv->bind[GY_BINDING_ACTION_PREV] = g_object_bind_property (G_OBJECT (priv->history), "is-enabled-action-prev",
-                                                               G_OBJECT (priv->prev),    "enabled",
+  self->bind[GY_BINDING_ACTION_PREV] = g_object_bind_property (G_OBJECT (self->history), "is-enabled-action-prev",
+                                                               G_OBJECT (self->prev),    "enabled",
                                                                G_BINDING_DEFAULT);
 
-  priv->bind[GY_BINDING_ACTION_NEXT] = g_object_bind_property (G_OBJECT (priv->history),  "is-enabled-action-next",
-                                                               G_OBJECT (priv->next),     "enabled",
+  self->bind[GY_BINDING_ACTION_NEXT] = g_object_bind_property (G_OBJECT (self->history),  "is-enabled-action-next",
+                                                               G_OBJECT (self->next),     "enabled",
                                                                G_BINDING_DEFAULT);
-  gy_history_update (priv->history);
+  gy_history_update (self->history);
 
-  if (gy_history_length (priv->history) != 0)
+  if (gy_history_length (self->history) != 0)
     {
       /* Gets the end item in the history. */
-      str = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (priv->history));
-      gtk_entry_set_text (GTK_ENTRY (priv->entry), str);
+      str = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
+      gtk_entry_set_text (GTK_ENTRY (self->entry), str);
     }
 
-  gtk_header_bar_set_title (GTK_HEADER_BAR (priv->header_bar), str == NULL ? "" : str);
+  gtk_header_bar_set_title (GTK_HEADER_BAR (self->header_bar), str == NULL ? "" : str);
 
   g_action_change_state (G_ACTION (action), parameter);
 }
@@ -406,8 +400,8 @@ quit_win_cb (GSimpleAction *action G_GNUC_UNUSED,
              GVariant      *parameter G_GNUC_UNUSED,
              gpointer       data)
 {
-  GyWindow *window = GY_WINDOW (data);
-  gtk_widget_destroy (GTK_WIDGET (window));
+  GyWindow *self = GY_WINDOW (data);
+  gtk_widget_destroy (GTK_WIDGET (self));
 }
 
 static void 
@@ -416,11 +410,10 @@ copy_cb (GSimpleAction *action G_GNUC_UNUSED,
          gpointer       data)
 {
   GtkClipboard * clip;
-  GyWindow * window = GY_WINDOW (data);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *self = GY_WINDOW (data);
 
   clip = gtk_clipboard_get (GDK_NONE);
-  gtk_text_buffer_copy_clipboard (priv->buffer,clip);
+  gtk_text_buffer_copy_clipboard (self->buffer,clip);
 }
 
 static void 
@@ -429,9 +422,9 @@ paste_cb (GSimpleAction *action G_GNUC_UNUSED,
           gpointer       data)
 {
   GtkWidget *focus;
-  GyWindow *window = GY_WINDOW (data);
+  GyWindow *self = GY_WINDOW (data);
 
-  focus = gtk_window_get_focus (GTK_WINDOW (window));
+  focus = gtk_window_get_focus (GTK_WINDOW (self));
 
   if (GTK_IS_EDITABLE (focus))
     gtk_editable_paste_clipboard (GTK_EDITABLE (focus));
@@ -442,14 +435,13 @@ go_back_cb (GSimpleAction *action G_GNUC_UNUSED,
             GVariant      *parameter G_GNUC_UNUSED,
             gpointer       data)
 {
-  GyWindow * window = GY_WINDOW (data);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *self = GY_WINDOW (data);
 
-  gy_history_iterable_previous_item (GY_HISTORY_ITERABLE (priv->history));
-  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (priv->history));
+  gy_history_iterable_previous_item (GY_HISTORY_ITERABLE (self->history));
+  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
 
   if (text)
-    gtk_entry_set_text (GTK_ENTRY (priv->entry), text);
+    gtk_entry_set_text (GTK_ENTRY (self->entry), text);
 
 }
 
@@ -458,14 +450,13 @@ go_forward_cb (GSimpleAction *action G_GNUC_UNUSED,
                GVariant      *parameter G_GNUC_UNUSED,
                gpointer       data)
 {
-  GyWindow * window = GY_WINDOW (data);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow * self = GY_WINDOW (data);
 
-  gy_history_iterable_next_item (GY_HISTORY_ITERABLE (priv->history));
-  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (priv->history));
+  gy_history_iterable_next_item (GY_HISTORY_ITERABLE (self->history));
+  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
 
   if (text)
-    gtk_entry_set_text (GTK_ENTRY (priv->entry), text);
+    gtk_entry_set_text (GTK_ENTRY (self->entry), text);
 }
 
 static void 
@@ -474,27 +465,25 @@ paste_sign_cb (GSimpleAction *action G_GNUC_UNUSED,
                gpointer       data)
 {
   gchar *concat = NULL;
-  GyWindow *window = GY_WINDOW (data);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *self = GY_WINDOW (data);
 
-  concat = g_strconcat (gtk_entry_get_text (GTK_ENTRY (priv->entry)),
+  concat = g_strconcat (gtk_entry_get_text (GTK_ENTRY (self->entry)),
                         g_variant_get_string (parameter, NULL), NULL);
-  gtk_entry_set_text (GTK_ENTRY (priv->entry), concat);
-  gtk_editable_set_position (GTK_EDITABLE (priv->entry), -1);
+  gtk_entry_set_text (GTK_ENTRY (self->entry), concat);
+  gtk_editable_set_position (GTK_EDITABLE (self->entry), -1);
   g_free (concat);
 }
 
 static gboolean
 source_func (gpointer data)
 {
-  GyWindow *window = GY_WINDOW (data);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *self = GY_WINDOW (data);
 
-  gy_history_append (priv->history, priv->string_history );
+  gy_history_append (self->history, self->string_history );
 
-  g_free (priv->string_history);
-  priv->string_history = NULL;
-  priv->timeout_history = 0;
+  g_free (self->string_history);
+  self->string_history = NULL;
+  self->timeout_history = 0;
   return FALSE;
 }
 
@@ -508,15 +497,14 @@ tree_selection_cb (GtkTreeSelection *selection,
   gint * row;
   GtkTextBuffer * buffer;
   gchar * value;
-  GyWindow *window = GY_WINDOW (data);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *self = GY_WINDOW (data);
 
-  buffer = gy_window_get_text_buffer (window);
+  buffer = gy_window_get_text_buffer (self);
 
-  if (priv->timeout_history)
+  if (self->timeout_history)
     {
-      g_source_remove (priv->timeout_history);
-      priv->timeout_history = 0;
+      g_source_remove (self->timeout_history);
+      self->timeout_history = 0;
     }
 
   if (gtk_tree_selection_get_selected (selection, &model, &iter))
@@ -525,16 +513,16 @@ tree_selection_cb (GtkTreeSelection *selection,
       row = gtk_tree_path_get_indices (path);
 
       gy_utility_delete_text_in_buffer (buffer);
-      gy_parsable_parse (GY_PARSABLE (gy_window_get_dictionary (window)),
+      gy_parsable_parse (GY_PARSABLE (gy_window_get_dictionary (self)),
                          buffer, *row);
 
       gtk_tree_model_get (model, &iter, 0, &value, -1);
-      gtk_header_bar_set_title (GTK_HEADER_BAR (gy_window_get_header_bar (window)),
+      gtk_header_bar_set_title (GTK_HEADER_BAR (gy_window_get_header_bar (self)),
                                 (const gchar *) value);
 
       /* the variable @value is freed in the function source_func */
-      priv->string_history = value;
-      priv->timeout_history = g_timeout_add (2000, (GSourceFunc) source_func, data);
+      self->string_history = value;
+      self->timeout_history = g_timeout_add (2000, (GSourceFunc) source_func, data);
       gtk_tree_path_free (path);
     }
 }
@@ -612,67 +600,65 @@ set_text_buffer_on_text_view (GyTextView* text_view)
 static void
 gy_pwn_finalize (GObject *object)
 {
-  GyWindow *window = GY_WINDOW (object);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *self = GY_WINDOW (object);
 
-  g_datalist_clear (&priv->datalist);
-  priv->qvalue = 0;
+  g_datalist_clear (&self->datalist);
+  self->qvalue = 0;
 
-  if (priv->histories_dictionaries != NULL)
+  if (self->histories_dictionaries != NULL)
   {
-    g_hash_table_destroy (priv->histories_dictionaries);
-    priv->histories_dictionaries = NULL;
-    priv->history = NULL;
+    g_hash_table_destroy (self->histories_dictionaries);
+    self->histories_dictionaries = NULL;
+    self->history = NULL;
   }
   G_OBJECT_CLASS (gy_window_parent_class)->finalize (object);
 }
 
 static void
-gy_window_init (GyWindow *window)
+gy_window_init (GyWindow *self)
 {
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
 
-  priv->timeout_history = 0;
-  priv->string_history = NULL;
-  g_datalist_init (&priv->datalist);
+  self->timeout_history = 0;
+  self->string_history = NULL;
+  g_datalist_init (&self->datalist);
 
-  gtk_widget_init_template (GTK_WIDGET (window));
+  gtk_widget_init_template (GTK_WIDGET (self));
 
   /* Add actions */
-  g_action_map_add_action_entries (G_ACTION_MAP (window),
+  g_action_map_add_action_entries (G_ACTION_MAP (self),
                                    win_entries, G_N_ELEMENTS (win_entries),
-                                   window);
+                                   self);
 
-  priv->buffer = set_text_buffer_on_text_view (priv->text_view);
+  self->buffer = set_text_buffer_on_text_view (self->text_view);
 
-  priv->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (priv->tree_view));
-  gtk_tree_selection_set_mode (priv->selection, GTK_SELECTION_BROWSE);
-  gtk_tree_view_set_search_entry (GTK_TREE_VIEW (priv->tree_view),
-                                  GTK_ENTRY (priv->entry));
-  gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (priv->tree_view),
+  self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->tree_view));
+  gtk_tree_selection_set_mode (self->selection, GTK_SELECTION_BROWSE);
+  gtk_tree_view_set_search_entry (GTK_TREE_VIEW (self->tree_view),
+                                  GTK_ENTRY (self->entry));
+  gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (self->tree_view),
                                        tree_view_search_equal_func,
                                        NULL, NULL);
 
   /* Create findbar */
-  priv->findbar = gy_search_bar_new ();
-  gtk_box_pack_end (GTK_BOX (priv->text_box), priv->findbar, FALSE, FALSE, 0);
-  gy_search_bar_connect_text_buffer (GY_SEARCH_BAR (priv->findbar), priv->buffer);
+  self->findbar = gy_search_bar_new ();
+  gtk_box_pack_end (GTK_BOX (self->text_box), self->findbar, FALSE, FALSE, 0);
+  gy_search_bar_connect_text_buffer (GY_SEARCH_BAR (self->findbar), self->buffer);
 
   /* Create history */
-  priv->histories_dictionaries = g_hash_table_new_full (g_str_hash, g_str_equal,
+  self->histories_dictionaries = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                         g_free, g_object_unref);
-  priv->next = g_action_map_lookup_action (G_ACTION_MAP (window), "go-forward");
-  priv->prev = g_action_map_lookup_action (G_ACTION_MAP (window), "go-back");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (priv->next), FALSE);
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (priv->prev), FALSE);
-  priv->bind[GY_BINDING_ACTION_PREV] = priv->bind[GY_BINDING_ACTION_NEXT] = NULL;
+  self->next = g_action_map_lookup_action (G_ACTION_MAP (self), "go-forward");
+  self->prev = g_action_map_lookup_action (G_ACTION_MAP (self), "go-back");
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (self->next), FALSE);
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (self->prev), FALSE);
+  self->bind[GY_BINDING_ACTION_PREV] = self->bind[GY_BINDING_ACTION_NEXT] = NULL;
 
   /* Set clipboard */
-  priv->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
+  self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
 
   /* Connect signals */
-  g_signal_connect (G_OBJECT (priv->selection), "changed",
-                    G_CALLBACK(tree_selection_cb), window);
+  g_signal_connect (G_OBJECT (self->selection), "changed",
+                    G_CALLBACK(tree_selection_cb), self);
 }
 
 static void
@@ -690,24 +676,24 @@ gy_window_class_init (GyWindowClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class,
                                                "/org/gtk/gydict/gy-window.ui");
-  gtk_widget_class_bind_template_child_private (widget_class, GyWindow, child_box);
-  gtk_widget_class_bind_template_child_private (widget_class, GyWindow, header_bar);
-  gtk_widget_class_bind_template_child_private (widget_class, GyWindow, entry);
-  gtk_widget_class_bind_template_child_private (widget_class, GyWindow, tree_view);
-  gtk_widget_class_bind_template_child_private (widget_class, GyWindow, text_view);
-  gtk_widget_class_bind_template_child_private (widget_class, GyWindow, text_box);
-  gtk_widget_class_bind_template_child_private (widget_class, GyWindow, revealer_buttons);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, child_box);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, entry);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, tree_view);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, text_view);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, text_box);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, revealer_buttons);
 }
 
 static void
-window_store_state (GyWindow *window)
+window_store_state (GyWindow *self)
 {
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindowPrivate *priv = gy_window_get_instance_private (self);
   GKeyFile *keyfile = g_key_file_new ();
   
-  g_key_file_set_integer (keyfile, "WindowState", "width", priv->current_width);
-  g_key_file_set_integer (keyfile, "WindowState", "height", priv->current_height);
-  g_key_file_set_boolean (keyfile, "WindowState", "IsMaximized", priv->is_maximized);
+  g_key_file_set_integer (keyfile, "WindowState", "width", self->current_width);
+  g_key_file_set_integer (keyfile, "WindowState", "height", self->current_height);
+  g_key_file_set_boolean (keyfile, "WindowState", "IsMaximized", self->is_maximized);
 
   const gchar *id_app = g_application_get_application_id (g_application_get_default());
   gchar *path = g_build_filename (g_get_user_cache_dir (), id_app, NULL);
@@ -726,9 +712,8 @@ out:
 }
 
 static void
-window_load_state (GyWindow *window)
+window_load_state (GyWindow *self)
 {
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
   const gchar *id_app = g_application_get_application_id (g_application_get_default ());
   gchar *file = g_build_filename (g_get_user_cache_dir (), id_app, "state.ini", NULL);
   GKeyFile *keyfile = g_key_file_new ();
@@ -739,25 +724,25 @@ window_load_state (GyWindow *window)
   }
 
   GError *error = NULL;
-  priv->current_width = g_key_file_get_integer (keyfile, "WindowState", "width", &error);
+  self->current_width = g_key_file_get_integer (keyfile, "WindowState", "width", &error);
   if (error != NULL)
   {
     g_clear_error (&error);
-    priv->current_width = -1;
+    self->current_width = -1;
   }
 
-  priv->current_height = g_key_file_get_integer (keyfile, "WindowState", "height", &error);
+  self->current_height = g_key_file_get_integer (keyfile, "WindowState", "height", &error);
   if (error != NULL)
   {
     g_clear_error (&error);
-    priv->current_height = -1;
+    self->current_height = -1;
   }
 
-  priv->is_maximized = g_key_file_get_boolean (keyfile, "WindowState", "IsMaximized", &error);
+  self->is_maximized = g_key_file_get_boolean (keyfile, "WindowState", "IsMaximized", &error);
   if (error != NULL)
   {
     g_clear_error (&error);
-    priv->is_maximized = FALSE;
+    self->is_maximized = FALSE;
   }
 out:
   g_key_file_unref (keyfile);
@@ -767,21 +752,20 @@ out:
 static void
 on_window_constructed (GObject *object)
 {
-  GyWindow *window = GY_WINDOW (object);
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
+  GyWindow *self = GY_WINDOW (object);
 
-  priv->current_width = -1;
-  priv->current_height = -1;
-  priv->is_maximized = FALSE;
+  self->current_width = -1;
+  self->current_height = -1;
+  self->is_maximized = FALSE;
 
-  window_load_state (window);
+  window_load_state (self);
 
-  gtk_window_set_default_size (GTK_WINDOW (window),
-                               priv->current_width,
-                               priv->current_height);
+  gtk_window_set_default_size (GTK_WINDOW (self),
+                               self->current_width,
+                               self->current_height);
 
-  if (priv->is_maximized)
-    gtk_window_maximize (GTK_WINDOW (window));
+  if (self->is_maximized)
+    gtk_window_maximize (GTK_WINDOW (self));
 
   G_OBJECT_CLASS (gy_window_parent_class)->constructed (object);
 }
@@ -791,15 +775,14 @@ static void
 on_window_size_allocate (GtkWidget *widget,
                          GtkAllocation *allocation)
 {
-  GyWindow *win = GY_WINDOW (widget);
-  GyWindowPrivate *priv = gy_window_get_instance_private (win);
+  GyWindow *self = GY_WINDOW (widget);
 
   GTK_WIDGET_CLASS (gy_window_parent_class)->size_allocate (widget,
                                                             allocation);
-  if (!(priv->is_maximized))
+  if (!(self->is_maximized))
   {
-    priv->current_width = allocation->width;
-    priv->current_height = allocation->height;
+    self->current_width = allocation->width;
+    self->current_height = allocation->height;
   }
 }
 
@@ -807,8 +790,7 @@ static gboolean
 on_window_state_event (GtkWidget *widget,
                        GdkEventWindowState *event)
 {
-  GyWindow *win = GY_WINDOW (widget);
-  GyWindowPrivate *priv = gy_window_get_instance_private (win);
+  GyWindow *self = GY_WINDOW (widget);
   gboolean res = GDK_EVENT_PROPAGATE;
 
   if (GTK_WIDGET_CLASS (gy_window_parent_class)->window_state_event != NULL)
@@ -816,7 +798,7 @@ on_window_state_event (GtkWidget *widget,
     res = GTK_WIDGET_CLASS (gy_window_parent_class)->window_state_event (widget, event);
   }
 
-  priv->is_maximized = (event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED) != 0;
+  self->is_maximized = (event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED) != 0;
 
   return res;
 }
@@ -824,8 +806,8 @@ on_window_state_event (GtkWidget *widget,
 static void 
 on_window_destroy (GtkWidget *widget)
 {
-  GyWindow *win = GY_WINDOW (widget);
-  window_store_state (win);
+  GyWindow *self = GY_WINDOW (widget);
+  window_store_state (self);
   GTK_WIDGET_CLASS (gy_window_parent_class)->destroy (widget);
 }
 
@@ -842,37 +824,32 @@ gy_window_new (GyApp *application)
 }
 
 GtkTextBuffer *
-gy_window_get_text_buffer (GyWindow *window)
+gy_window_get_text_buffer (GyWindow *self)
 {
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
-  return priv->buffer;
+  return self->buffer;
 }
 
 GyDict *
-gy_window_get_dictionary (GyWindow *window)
+gy_window_get_dictionary (GyWindow *self)
 {
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
-  return g_datalist_id_get_data (&priv->datalist,priv->qvalue);
-} 
-
-GtkWidget *
-gy_window_get_header_bar (GyWindow *window)
-{
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
-  return priv->header_bar;
+  return g_datalist_id_get_data (&self->datalist, self->qvalue);
 }
 
 GtkWidget *
-gy_window_get_entry (GyWindow *window)
+gy_window_get_header_bar (GyWindow *self)
 {
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
-  return priv->entry;
+  return self->header_bar;
 }
 
 GtkWidget *
-gy_window_get_text_view (GyWindow *window)
+gy_window_get_entry (GyWindow *self)
 {
-  GyWindowPrivate *priv = gy_window_get_instance_private (window);
-  return GTK_WIDGET (priv->text_view);
+  return self->entry;
+}
+
+GtkWidget *
+gy_window_get_text_view (GyWindow *self)
+{
+  return GTK_WIDGET (self->text_view);
 }
 

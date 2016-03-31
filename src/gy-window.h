@@ -21,46 +21,19 @@
 
 #include "gy-app.h"
 #include "gy-dict.h"
-#include "gy-print-compositor.h"
 
-G_BEGIN_DECLS	
+G_BEGIN_DECLS
 
-/*
- * Type macros
- */
+#define GY_TYPE_WINDOW (gy_window_get_type ())
 
-#define GY_TYPE_WINDOW            (gy_window_get_type ())
-#define GY_WINDOW(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GY_TYPE_WINDOW, GyWindow))
-#define GY_IS_WINDOW(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GY_TYPE_WINDOW))
-#define GY_WINDOW_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), GY_TYPE_WINDOW, GyWindowClass))
-#define GY_IS_WINDOW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GY_TYPE_WINDOW))
-#define GY_WINDOW_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GY_TYPE_WINDOW, GyWindowClass))
+G_DECLARE_FINAL_TYPE (GyWindow, gy_window, GY, WINDOW, GtkApplicationWindow)
 
-typedef struct _GyWindow GyWindow;
-typedef struct _GyWindowClass GyWindowClass;
-
-struct _GyWindow
-{
-  GtkApplicationWindow parent_instance;
-};
-
-struct _GyWindowClass
-{
-  GtkApplicationWindowClass parent_class;
-};
-
-/* used by GY_TYPE_WINDOW */
-GType gy_window_get_type (void);
-
-/*
- * Method definitions
- */
-GtkWidget *gy_window_new (GyApp *application);
-GtkTextBuffer *gy_window_get_text_buffer (GyWindow *window);
-GyDict *gy_window_get_dictionary (GyWindow *window);
-GtkWidget *gy_window_get_header_bar (GyWindow *window);
-GtkWidget *gy_window_get_entry (GyWindow *window);
-GtkWidget *gy_window_get_text_view (GyWindow *window);
+GtkWidget*     gy_window_new             (GyApp *application);
+GtkTextBuffer* gy_window_get_text_buffer (GyWindow *self);
+GyDict*        gy_window_get_dictionary  (GyWindow *self);
+GtkWidget*     gy_window_get_header_bar  (GyWindow *self);
+GtkWidget*     gy_window_get_entry       (GyWindow *self);
+GtkWidget*     gy_window_get_text_view   (GyWindow *self);
 
 G_END_DECLS
 
