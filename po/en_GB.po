@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gydict 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-16 16:01+0000\n"
+"POT-Creation-Date: 2016-04-04 19:13+0100\n"
 "PO-Revision-Date: 2014-04-14 18:15+0200\n"
 "Last-Translator: kuba <kuba@kuba>\n"
 "Language-Team: English (British)\n"
@@ -30,62 +30,27 @@ msgid "Dictionary"
 msgstr "Dictionary"
 
 #: ../data/org.gtk.gydict.gschema.xml.h:1
-msgid "Use system paths"
-msgstr "Use system paths"
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:4
+msgid "Night Mode"
+msgstr ""
 
 #: ../data/org.gtk.gydict.gschema.xml.h:2
-msgid "Use the system default paths."
-msgstr "Use the system default paths."
+msgid "Prefer dark application chrome."
+msgstr ""
 
 #: ../data/org.gtk.gydict.gschema.xml.h:3
-msgid "Path to dictionary"
-msgstr "Path to dictionary"
+msgid "Show grid lines"
+msgstr ""
 
 #: ../data/org.gtk.gydict.gschema.xml.h:4
-msgid "Path to file dictionary ang-pol"
-msgstr "Path to file dictionary ang-pol"
+msgid "If enabled, the the program will show grid lines under the text."
+msgstr ""
 
-#: ../data/org.gtk.gydict.gschema.xml.h:5
-msgid "Path to file dictionary pol-ang"
-msgstr "Path to file dictionary pol-ang"
-
-#: ../data/org.gtk.gydict.gschema.xml.h:6
-msgid "Path to file dictionary a.data"
-msgstr "Path to file dictionary a.data"
-
-#: ../data/org.gtk.gydict.gschema.xml.h:7
-msgid "Path to file dictionary b.data"
-msgstr "Path to file dictionary b.data"
-
-#: ../data/org.gtk.gydict.gschema.xml.h:8
-msgid "Use system fonts"
-msgstr "Use system fonts"
-
-#: ../data/org.gtk.gydict.gschema.xml.h:9
-msgid "Use the system default fonts."
-msgstr "Use the system default fonts."
-
-#: ../data/org.gtk.gydict.gschema.xml.h:10
-msgid "Font for text."
-msgstr "Font for text."
-
-#: ../data/org.gtk.gydict.gschema.xml.h:11
-msgid "A font for a widget text (GtkTextView)."
-msgstr "A font for a widget text (GtkTextView)."
-
-#: ../data/org.gtk.gydict.gschema.xml.h:12
-msgid "Font for tree."
-msgstr "Font for tree."
-
-#: ../data/org.gtk.gydict.gschema.xml.h:13
-msgid "A font for a widget tree (GtkTreeView)."
-msgstr "A font for a widget tree (GtkTreeView)."
-
-#: ../src/gy-app.c:136
+#: ../src/gy-app.c:173
 msgid "translator_credits"
 msgstr "translator_credits"
 
-#: ../src/gy-app.c:141
+#: ../src/gy-app.c:191
 msgid ""
 "This program supports the various dictionaries. Currently, the program "
 "provides support to the dictionaries: PWN (2006, 2007) and DEPL (www.depl.pl)"
@@ -97,164 +62,206 @@ msgstr ""
 msgid "Display the version program and exit"
 msgstr "Display the version program and exit"
 
-#: ../src/gy-window.c:643
-#, fuzzy
-msgid ""
-"Error!!!. Can't open the dictionary.\n"
-" See description error on terminal."
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:1
+msgid "Gydict Shortcuts"
 msgstr ""
-"Error!!!. Can not open the dictionary.\n"
-"See description error on terminal."
 
-#: ../src/resources/ui/dialog-pref.ui.h:1 ../src/resources/ui/menu.ui.h:2
-msgid "Preferences"
-msgstr "Preferences"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:2
+msgid "General"
+msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:2
-msgid "Cancel"
-msgstr "Cancel"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:3
+#, fuzzy
+msgid "New Window"
+msgstr "New window"
 
-#: ../src/resources/ui/dialog-pref.ui.h:3
-msgid "_Use default"
-msgstr "_Use default"
-
-#: ../src/resources/ui/dialog-pref.ui.h:4
-msgid "Select a file"
-msgstr "Select a file"
-
-#: ../src/resources/ui/dialog-pref.ui.h:5
-msgid "Dictionary depl: a file b:"
-msgstr "Dictionary depl: a file b:"
-
-#: ../src/resources/ui/dialog-pref.ui.h:6
-msgid "Dictionary depl: a file a:"
-msgstr "Dictionary depl: a file a:"
-
-#: ../src/resources/ui/dialog-pref.ui.h:7
-msgid "_Path to dictionary pl-ang: "
-msgstr "_Path to dictionary pl-ang: "
-
-#: ../src/resources/ui/dialog-pref.ui.h:8
-msgid "_Path to dictionary ang-pl: "
-msgstr "_Path to dictionary ang-pl: "
-
-#: ../src/resources/ui/dialog-pref.ui.h:9
-msgid "Dictionaries"
-msgstr "Dictionaries"
-
-#: ../src/resources/ui/dialog-pref.ui.h:10
-msgid "_Use system fonts"
-msgstr "_Use system fonts"
-
-#: ../src/resources/ui/dialog-pref.ui.h:11
-msgid "The widget text (GtkTextView):"
-msgstr "The widget text (GtkTextView):"
-
-#: ../src/resources/ui/dialog-pref.ui.h:12
-msgid "The widget list (GtkTreeView): "
-msgstr "The widget list (GtkTreeView): "
-
-#: ../src/resources/ui/dialog-pref.ui.h:13
-msgid "Fonts"
-msgstr "Fonts"
-
-#: ../src/resources/ui/gydict.ui.h:1
-msgid "_Print"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:4
+#, fuzzy
+msgid "Print"
 msgstr "_Print"
 
-#: ../src/resources/ui/gydict.ui.h:2
-msgid "_Copy"
-msgstr "_Copy"
-
-#: ../src/resources/ui/gydict.ui.h:3
-msgid "Pa_ste"
-msgstr "Pa_ste"
-
-#: ../src/resources/ui/gydict.ui.h:4
-msgid "React to clipboard"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:5
+#, fuzzy
+msgid "React to Clipboard"
 msgstr "React to clipboard"
 
-#: ../src/resources/ui/gydict.ui.h:5
-msgid "Diacritic"
-msgstr "Diacritic"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:6
+msgid "Find"
+msgstr ""
 
-#: ../src/resources/ui/gydict.ui.h:6
-msgid "Cl_ose"
-msgstr "Cl_ose"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:7
+#, fuzzy
+msgid "Close Window"
+msgstr "New window"
 
-#: ../src/resources/ui/gydict.ui.h:7
-msgid "Back"
-msgstr "Back"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:8
+msgid "Close Application"
+msgstr ""
 
-#: ../src/resources/ui/gydict.ui.h:8
-msgid "Forward"
-msgstr "Forward"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:9
+#, fuzzy
+msgid "PWN Dictionaries"
+msgstr "Dictionaries"
 
-#: ../src/resources/ui/menu.ui.h:1
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:10
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:3
+msgid "English-Polish"
+msgstr ""
+
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:11
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:5
+msgid "Polish-English"
+msgstr ""
+
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:12
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:7
+msgid "German-Polish"
+msgstr ""
+
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:13
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:9
+msgid "Polish-German"
+msgstr ""
+
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:14
+#, fuzzy
+msgid "DePl Dictionary"
+msgstr "Dictionary"
+
+#: ../src/resources/ui/gy-app-menu.ui.h:1
 msgid "New window"
 msgstr "New window"
 
-#: ../src/resources/ui/menu.ui.h:3
+#: ../src/resources/ui/gy-app-menu.ui.h:2
+#: ../src/resources/ui/gy-preferences-window.ui.h:1
+msgid "Preferences"
+msgstr "Preferences"
+
+#: ../src/resources/ui/gy-app-menu.ui.h:3
+msgid "Keyboard shortcuts"
+msgstr ""
+
+#: ../src/resources/ui/gy-app-menu.ui.h:4
 msgid "About Gydict"
 msgstr "About Gydict"
 
-#: ../src/resources/ui/menu.ui.h:4
+#: ../src/resources/ui/gy-app-menu.ui.h:5
 msgid "Quit"
 msgstr "Quit"
 
-#~ msgid "PWN"
-#~ msgstr "PWN"
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:1
+#: ../src/resources/ui/gy-preferences-window.ui.h:3
+msgid "Dictionaries"
+msgstr "Dictionaries"
 
-#~ msgid "Ang-Pl"
-#~ msgstr "Ang-Pl"
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:2
+msgid "The Paths to the files for the PWN dictionaries"
+msgstr ""
 
-#~ msgid "Pl-Ang"
-#~ msgstr "Pl-Ang"
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:4
+#, fuzzy
+msgid "Select the dictionary file angpol.win."
+msgstr "Path to file dictionary ang-pol"
 
-#~ msgid "depl"
-#~ msgstr "depl"
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:6
+#, fuzzy
+msgid "Select the dictionary file polang.win."
+msgstr "Path to file dictionary pol-ang"
 
-#~ msgid "File: %s does not exist!"
-#~ msgstr "File: %s does not exist!"
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:8
+msgid "Select the dictionary file niempol.win."
+msgstr ""
 
-#~ msgid "Cannot open the %s!"
-#~ msgstr "Cannot open the %s!"
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:10
+msgid "Select the dictionary file polniem.win."
+msgstr ""
 
-#~ msgid "Error:: Allocation memory failed (malloc)!!!"
-#~ msgstr "Error:: Allocation memory failed (malloc)!!!"
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:11
+#, fuzzy
+msgid "The Paths to the files for the depl dictionary"
+msgstr "Path to file dictionary a.data"
 
-#~ msgid "Error:: Load data with file failed (fread)!!!"
-#~ msgstr "Error:: Load data with file failed (fread)!!!"
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:12
+msgid "German"
+msgstr ""
 
-#~ msgid "Error:: Cannot open the dictionary!!!"
-#~ msgstr "Error:: Cannot open the dictionary!!!"
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:13
+#, fuzzy
+msgid "Select the dictionary file a.dat"
+msgstr "Path to file dictionary a.data"
 
-#~ msgid "Error:: Moving a file pointer failed (fseek)!!!"
-#~ msgstr "Error:: Moving a file pointer failed (fseek)!!!"
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:1
+#: ../src/resources/ui/gy-preferences-window.ui.h:2
+#, fuzzy
+msgid "General Preferences"
+msgstr "Preferences"
 
-#~ msgid "Error:: The dictionary file does not exist!!!"
-#~ msgstr "Error:: The dictionary file does not exist!!!"
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:2
+#, fuzzy
+msgid "Font"
+msgstr "Fonts"
 
-#~ msgid "Error:: Invalid object ID!!!"
-#~ msgstr "Error:: Invalid object ID!!!"
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:3
+msgid "Theme"
+msgstr ""
 
-#~ msgid "Error:: Invalid object!!!"
-#~ msgstr "Error:: Invalid object!!!"
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:5
+msgid "Use dark colors for the application."
+msgstr ""
 
-#~ msgid "Error:: Virtual method not implemented!!!"
-#~ msgstr "Error:: Virtual method not implemented!!!"
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:6
+msgid "Display Grid Pattern"
+msgstr ""
 
-#~ msgid "Error:: Load data with file failed!!! (fread)"
-#~ msgstr "Error:: Load data with file failed!!! (fread)"
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:7
+msgid "Display a grid pattern under the text."
+msgstr ""
 
-#~ msgid "ä"
-#~ msgstr "ä"
+#: ../src/resources/ui/gy-window.ui.h:1
+msgid "_Print"
+msgstr "_Print"
 
-#~ msgid "ö"
-#~ msgstr "ö"
+#: ../src/resources/ui/gy-window.ui.h:2
+msgid "_Copy"
+msgstr "_Copy"
 
-#~ msgid "ü"
-#~ msgstr "ü"
+#: ../src/resources/ui/gy-window.ui.h:3
+msgid "Pa_ste"
+msgstr "Pa_ste"
 
-#~ msgid "ß"
-#~ msgstr "ß"
+#: ../src/resources/ui/gy-window.ui.h:4
+msgid "React to clipboard"
+msgstr "React to clipboard"
+
+#: ../src/resources/ui/gy-window.ui.h:5
+msgid "Diacritic"
+msgstr "Diacritic"
+
+#: ../src/resources/ui/gy-window.ui.h:6
+msgid "Cl_ose"
+msgstr "Cl_ose"
+
+#: ../src/resources/ui/gy-window.ui.h:7
+msgid "English-Polish Dictionary"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:8
+msgid "Polish-English Dictionary"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:9
+msgid "German-Polish Dictionary"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:10
+msgid "Polish-German Dictionary"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:11
+msgid "Back"
+msgstr "Back"
+
+#: ../src/resources/ui/gy-window.ui.h:12
+msgid "Forward"
+msgstr "Forward"
+

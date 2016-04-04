@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gydict 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-16 16:01+0000\n"
+"POT-Creation-Date: 2016-04-04 19:14+0100\n"
 "PO-Revision-Date: 2014-04-14 18:16+0200\n"
 "Last-Translator: kuba <kuba@kuba>\n"
 "Language-Team: German\n"
@@ -30,62 +30,27 @@ msgid "Dictionary"
 msgstr ""
 
 #: ../data/org.gtk.gydict.gschema.xml.h:1
-msgid "Use system paths"
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:4
+msgid "Night Mode"
 msgstr ""
 
 #: ../data/org.gtk.gydict.gschema.xml.h:2
-msgid "Use the system default paths."
+msgid "Prefer dark application chrome."
 msgstr ""
 
 #: ../data/org.gtk.gydict.gschema.xml.h:3
-msgid "Path to dictionary"
+msgid "Show grid lines"
 msgstr ""
 
 #: ../data/org.gtk.gydict.gschema.xml.h:4
-msgid "Path to file dictionary ang-pol"
+msgid "If enabled, the the program will show grid lines under the text."
 msgstr ""
 
-#: ../data/org.gtk.gydict.gschema.xml.h:5
-msgid "Path to file dictionary pol-ang"
-msgstr ""
-
-#: ../data/org.gtk.gydict.gschema.xml.h:6
-msgid "Path to file dictionary a.data"
-msgstr ""
-
-#: ../data/org.gtk.gydict.gschema.xml.h:7
-msgid "Path to file dictionary b.data"
-msgstr ""
-
-#: ../data/org.gtk.gydict.gschema.xml.h:8
-msgid "Use system fonts"
-msgstr ""
-
-#: ../data/org.gtk.gydict.gschema.xml.h:9
-msgid "Use the system default fonts."
-msgstr ""
-
-#: ../data/org.gtk.gydict.gschema.xml.h:10
-msgid "Font for text."
-msgstr ""
-
-#: ../data/org.gtk.gydict.gschema.xml.h:11
-msgid "A font for a widget text (GtkTextView)."
-msgstr ""
-
-#: ../data/org.gtk.gydict.gschema.xml.h:12
-msgid "Font for tree."
-msgstr ""
-
-#: ../data/org.gtk.gydict.gschema.xml.h:13
-msgid "A font for a widget tree (GtkTreeView)."
-msgstr ""
-
-#: ../src/gy-app.c:136
+#: ../src/gy-app.c:173
 msgid "translator_credits"
 msgstr ""
 
-#: ../src/gy-app.c:141
+#: ../src/gy-app.c:191
 msgid ""
 "This program supports the various dictionaries. Currently, the program "
 "provides support to the dictionaries: PWN (2006, 2007) and DEPL (www.depl.pl)"
@@ -95,104 +60,193 @@ msgstr ""
 msgid "Display the version program and exit"
 msgstr ""
 
-#: ../src/gy-window.c:643
-msgid ""
-"Error!!!. Can't open the dictionary.\n"
-" See description error on terminal."
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:1
+msgid "Gydict Shortcuts"
 msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:1 ../src/resources/ui/menu.ui.h:2
-msgid "Preferences"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:2
+msgid "General"
 msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:2
-msgid "Cancel"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:3
+msgid "New Window"
 msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:3
-msgid "_Use default"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:4
+msgid "Print"
 msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:4
-msgid "Select a file"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:5
+msgid "React to Clipboard"
 msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:5
-msgid "Dictionary depl: a file b:"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:6
+msgid "Find"
 msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:6
-msgid "Dictionary depl: a file a:"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:7
+msgid "Close Window"
 msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:7
-msgid "_Path to dictionary pl-ang: "
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:8
+msgid "Close Application"
 msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:8
-msgid "_Path to dictionary ang-pl: "
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:9
+msgid "PWN Dictionaries"
 msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:9
-msgid "Dictionaries"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:10
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:3
+msgid "English-Polish"
 msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:10
-msgid "_Use system fonts"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:11
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:5
+msgid "Polish-English"
 msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:11
-msgid "The widget text (GtkTextView):"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:12
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:7
+msgid "German-Polish"
 msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:12
-msgid "The widget list (GtkTreeView): "
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:13
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:9
+msgid "Polish-German"
 msgstr ""
 
-#: ../src/resources/ui/dialog-pref.ui.h:13
-msgid "Fonts"
+#: ../src/contrib/shortcuts/shortcuts-window.ui.h:14
+msgid "DePl Dictionary"
 msgstr ""
 
-#: ../src/resources/ui/gydict.ui.h:1
-msgid "_Print"
-msgstr ""
-
-#: ../src/resources/ui/gydict.ui.h:2
-msgid "_Copy"
-msgstr ""
-
-#: ../src/resources/ui/gydict.ui.h:3
-msgid "Pa_ste"
-msgstr ""
-
-#: ../src/resources/ui/gydict.ui.h:4
-msgid "React to clipboard"
-msgstr ""
-
-#: ../src/resources/ui/gydict.ui.h:5
-msgid "Diacritic"
-msgstr ""
-
-#: ../src/resources/ui/gydict.ui.h:6
-msgid "Cl_ose"
-msgstr ""
-
-#: ../src/resources/ui/gydict.ui.h:7
-msgid "Back"
-msgstr ""
-
-#: ../src/resources/ui/gydict.ui.h:8
-msgid "Forward"
-msgstr ""
-
-#: ../src/resources/ui/menu.ui.h:1
+#: ../src/resources/ui/gy-app-menu.ui.h:1
 msgid "New window"
 msgstr ""
 
-#: ../src/resources/ui/menu.ui.h:3
+#: ../src/resources/ui/gy-app-menu.ui.h:2
+#: ../src/resources/ui/gy-preferences-window.ui.h:1
+msgid "Preferences"
+msgstr ""
+
+#: ../src/resources/ui/gy-app-menu.ui.h:3
+msgid "Keyboard shortcuts"
+msgstr ""
+
+#: ../src/resources/ui/gy-app-menu.ui.h:4
 msgid "About Gydict"
 msgstr ""
 
-#: ../src/resources/ui/menu.ui.h:4
+#: ../src/resources/ui/gy-app-menu.ui.h:5
 msgid "Quit"
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:1
+#: ../src/resources/ui/gy-preferences-window.ui.h:3
+msgid "Dictionaries"
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:2
+msgid "The Paths to the files for the PWN dictionaries"
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:4
+msgid "Select the dictionary file angpol.win."
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:6
+msgid "Select the dictionary file polang.win."
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:8
+msgid "Select the dictionary file niempol.win."
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:10
+msgid "Select the dictionary file polniem.win."
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:11
+msgid "The Paths to the files for the depl dictionary"
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:12
+msgid "German"
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:13
+msgid "Select the dictionary file a.dat"
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:1
+#: ../src/resources/ui/gy-preferences-window.ui.h:2
+msgid "General Preferences"
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:2
+msgid "Font"
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:3
+msgid "Theme"
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:5
+msgid "Use dark colors for the application."
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:6
+msgid "Display Grid Pattern"
+msgstr ""
+
+#: ../src/resources/ui/gy-preferences-page-general.ui.h:7
+msgid "Display a grid pattern under the text."
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:1
+msgid "_Print"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:2
+msgid "_Copy"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:3
+msgid "Pa_ste"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:4
+msgid "React to clipboard"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:5
+msgid "Diacritic"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:6
+msgid "Cl_ose"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:7
+msgid "English-Polish Dictionary"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:8
+msgid "Polish-English Dictionary"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:9
+msgid "German-Polish Dictionary"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:10
+msgid "Polish-German Dictionary"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:11
+msgid "Back"
+msgstr ""
+
+#: ../src/resources/ui/gy-window.ui.h:12
+msgid "Forward"
 msgstr ""
