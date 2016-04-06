@@ -25,12 +25,14 @@
 #include "gy-pwn-dict.h"
 #include "gy-english-pwn.h"
 #include "gy-german-pwn.h"
+#include "gy-history.h"
 
 typedef struct _GyDictPrivate
 {
   gchar          *identifier;
   GtkTreeModel   *model;
   GtkTextBuffer  *buffer;
+  GyHistory      *history;
   guint           is_mapped:1;
 } GyDictPrivate;
 
@@ -41,6 +43,7 @@ enum
   PROP_MODEL,
   PROP_IS_MAPPED,
   PROP_BUFFER,
+  PROP_HISTORY,
   LAST_PROP
 };
 
@@ -94,6 +97,9 @@ gy_dict_set_property (GObject      *object,
     case PROP_BUFFER:
       priv->buffer = g_value_dup_object (value);
       break;
+    case PROP_HISTORY:
+      priv->history = g_value_dup_object (value);
+      break;
     case PROP_IS_MAPPED:
       priv->is_mapped = g_value_get_boolean (value);
       break;
@@ -125,6 +131,9 @@ gy_dict_get_property (GObject    *object,
       break;
     case PROP_BUFFER:
       g_value_set_object (value, priv->buffer);
+      break;
+    case PROP_HISTORY:
+      g_value_set_object (value, priv->history);
       break;
     case PROP_IS_MAPPED:
       g_value_set_boolean (value, priv->is_mapped);
@@ -201,6 +210,18 @@ gy_dict_class_init (GyDictClass *klass)
                          "The buffer which is displayed.",
                          GTK_TYPE_TEXT_BUFFER,
                          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY);
+
+  /**
+   *
+   * GyDict:history:
+   *
+   */
+  gParamSpecs[PROP_HISTORY] =
+    g_param_spec_object ("history",
+                         "History",
+                         "The history of a dictionary.",
+                         GY_TYPE_HISTORY,
+                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (object_class, LAST_PROP, gParamSpecs);
 
