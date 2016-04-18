@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 2; tab-width: 2 -*-  */
 /*
  * gy-print-compositor.c
  * Copyright (C) 2014 Jakub Czartek <kuba@linux.pl>
@@ -16,8 +15,11 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 /*
- * Wiekszość tego kodu pochodzi z biblioteki GtkSourceView z pliku gtksoureprintcompositor.c */
+ * NOTE: Most of this code were taken from gtksourceprintcompositor.c
+ * Please see: https://git.gnome.org/browse/gtksourceview/tree/gtksourceview/gtksourceprintcompositor.c
+ */
 #include <unistd.h>
 #include <time.h>
 #include <locale.h>
