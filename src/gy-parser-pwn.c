@@ -171,8 +171,14 @@ convert_entity (GyMarkupParserPwn *parser)
   new_entity = g_hash_table_lookup (parser->__entity,
                                     (gconstpointer) entity);
   if (new_entity)
-    while (*new_entity)
-      *parser->__buf_iter++ = *new_entity++;
+    {
+      while (*new_entity)
+        *parser->__buf_iter++ = *new_entity++;
+    }
+  else
+    {
+      g_warning ("Unknown entity: %s", entity);
+    }
 
   g_free (entity);
 }
