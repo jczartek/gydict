@@ -35,7 +35,7 @@ static const gchar *in_entities[] =
   "&IPA303", "&IPA138", "&IPA320", "&IPA214", "&epsilontilde", "&auluk", "&ailuk","&apos", "&brvbar", "&reg",
   "&rsquo", "&lsquo","&ccedil","&eacute", "&egrave", "&amp", "&ecirc", "&agrave", "&iuml", "&ocirc",
   "&icirc", "&para", "&mdash", "&rdquo", "&ap", "&rarr", "&pound", "&aelig", "&auml", "&dash",
-  "&uuml","&ouml", "&szlig", "&Auml", "&Ouml", "&Uuml", "&acirc", NULL
+  "&uuml","&ouml", "&szlig", "&Auml", "&Ouml", "&Uuml", "&acirc", "&ndotbl.x", NULL
 };
 
 static const gchar *out_entities[] =
@@ -54,7 +54,7 @@ static const gchar *out_entities[] =
   "ɛ", "ç", "ʏ", "ʤ", "ε", "au", "ai", "'","|", "®",
   "’", "‘", "ç", "é", "è", "&", "ê", "à", "ï", "ô", 
   "î", "▹", "―", "”", "≈", "↪", "£", "æ", "ä", "-",
-  "ü", "ö", "ß", "Ä", "Ö", "Ü", "â", "?", NULL
+  "ü", "ö", "ß", "Ä", "Ö", "Ü", "â", "n̩", NULL
 };
 
 static const gchar *pwndict_cp1250_to_utf8_table[] =
