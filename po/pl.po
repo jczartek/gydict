@@ -73,17 +73,14 @@ msgid "General"
 msgstr "Ogólne"
 
 #: ../src/contrib/shortcuts/shortcuts-window.ui.h:3
-#, fuzzy
 msgid "New Window"
 msgstr "Nowe okno"
 
 #: ../src/contrib/shortcuts/shortcuts-window.ui.h:4
-#, fuzzy
 msgid "Print"
 msgstr "Wydrukuj"
 
 #: ../src/contrib/shortcuts/shortcuts-window.ui.h:5
-#, fuzzy
 msgid "React to Clipboard"
 msgstr "Reaguj na schowek"
 
@@ -92,7 +89,6 @@ msgid "Find"
 msgstr "Znajdź"
 
 #: ../src/contrib/shortcuts/shortcuts-window.ui.h:7
-#, fuzzy
 msgid "Close Window"
 msgstr "Nowe okno"
 
@@ -101,9 +97,8 @@ msgid "Close Application"
 msgstr "Zamknij aplikacje"
 
 #: ../src/contrib/shortcuts/shortcuts-window.ui.h:9
-#, fuzzy
 msgid "PWN Dictionaries"
-msgstr "Słowniki"
+msgstr "Słowniki PWN"
 
 #: ../src/contrib/shortcuts/shortcuts-window.ui.h:10
 #: ../src/resources/ui/gy-preferences-page-dicts.ui.h:3
@@ -126,7 +121,6 @@ msgid "Polish-German"
 msgstr "Polsko-Niemiecki"
 
 #: ../src/contrib/shortcuts/shortcuts-window.ui.h:14
-#, fuzzy
 msgid "DePl Dictionary"
 msgstr "Słownik Depl"
 
@@ -141,7 +135,7 @@ msgstr "Preferencje"
 
 #: ../src/resources/ui/gy-app-menu.ui.h:3
 msgid "Keyboard shortcuts"
-msgstr ""
+msgstr "Skróty klawiszowe"
 
 #: ../src/resources/ui/gy-app-menu.ui.h:4
 msgid "About Gydict"
@@ -161,45 +155,39 @@ msgid "The Paths to the files for the PWN dictionaries"
 msgstr "Ścieżki do plików Słownika PWN"
 
 #: ../src/resources/ui/gy-preferences-page-dicts.ui.h:4
-#, fuzzy
 msgid "Select the dictionary file angpol.win."
-msgstr "Ścieżka do słownika ang-pol"
+msgstr "Zaznacz plik słownika angpol.win"
 
 #: ../src/resources/ui/gy-preferences-page-dicts.ui.h:6
-#, fuzzy
 msgid "Select the dictionary file polang.win."
-msgstr "Ścieżka do słownika pol-ang"
+msgstr "Zaznacz plik słownika polang.win"
 
 #: ../src/resources/ui/gy-preferences-page-dicts.ui.h:8
 msgid "Select the dictionary file niempol.win."
-msgstr ""
+msgstr "Zaznacz plik słownika niempol.win"
 
 #: ../src/resources/ui/gy-preferences-page-dicts.ui.h:10
 msgid "Select the dictionary file polniem.win."
-msgstr ""
+msgstr "Zaznacz plik słownika polniem.win"
 
 #: ../src/resources/ui/gy-preferences-page-dicts.ui.h:11
-#, fuzzy
 msgid "The Paths to the files for the depl dictionary"
 msgstr "Ścieżka do pliku słownika a.data"
 
 #: ../src/resources/ui/gy-preferences-page-dicts.ui.h:12
 msgid "German"
-msgstr ""
+msgstr "Niemiecki"
 
 #: ../src/resources/ui/gy-preferences-page-dicts.ui.h:13
-#, fuzzy
 msgid "Select the dictionary file a.dat"
 msgstr "Ścieżka do pliku słownika a.data"
 
 #: ../src/resources/ui/gy-preferences-page-general.ui.h:1
 #: ../src/resources/ui/gy-preferences-window.ui.h:2
-#, fuzzy
 msgid "General Preferences"
-msgstr "Preferencje"
+msgstr "Ogólne Preferencje"
 
 #: ../src/resources/ui/gy-preferences-page-general.ui.h:2
-#, fuzzy
 msgid "Font"
 msgstr "Czcionki"
 
@@ -245,19 +233,19 @@ msgstr "Zamknij"
 
 #: ../src/resources/ui/gy-window.ui.h:7
 msgid "English-Polish Dictionary"
-msgstr ""
+msgstr "Słownik Angielsko-Polski"
 
 #: ../src/resources/ui/gy-window.ui.h:8
 msgid "Polish-English Dictionary"
-msgstr ""
+msgstr "Słownik Polsko-Angielski"
 
 #: ../src/resources/ui/gy-window.ui.h:9
 msgid "German-Polish Dictionary"
-msgstr ""
+msgstr "Słownik Niemiecko-Polski"
 
 #: ../src/resources/ui/gy-window.ui.h:10
 msgid "Polish-German Dictionary"
-msgstr ""
+msgstr "Słownik Polsko-Niemiecki"
 
 #: ../src/resources/ui/gy-window.ui.h:11
 msgid "Back"

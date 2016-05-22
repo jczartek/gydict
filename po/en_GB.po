@@ -71,17 +71,14 @@ msgid "General"
 msgstr ""
 
 #: ../src/contrib/shortcuts/shortcuts-window.ui.h:3
-#, fuzzy
 msgid "New Window"
 msgstr "New window"
 
 #: ../src/contrib/shortcuts/shortcuts-window.ui.h:4
-#, fuzzy
 msgid "Print"
 msgstr "_Print"
 
 #: ../src/contrib/shortcuts/shortcuts-window.ui.h:5
-#, fuzzy
 msgid "React to Clipboard"
 msgstr "React to clipboard"
 
@@ -90,7 +87,6 @@ msgid "Find"
 msgstr ""
 
 #: ../src/contrib/shortcuts/shortcuts-window.ui.h:7
-#, fuzzy
 msgid "Close Window"
 msgstr "New window"
 
@@ -99,7 +95,6 @@ msgid "Close Application"
 msgstr ""
 
 #: ../src/contrib/shortcuts/shortcuts-window.ui.h:9
-#, fuzzy
 msgid "PWN Dictionaries"
 msgstr "Dictionaries"
 
@@ -124,7 +119,6 @@ msgid "Polish-German"
 msgstr ""
 
 #: ../src/contrib/shortcuts/shortcuts-window.ui.h:14
-#, fuzzy
 msgid "DePl Dictionary"
 msgstr "Dictionary"
 
@@ -159,12 +153,10 @@ msgid "The Paths to the files for the PWN dictionaries"
 msgstr ""
 
 #: ../src/resources/ui/gy-preferences-page-dicts.ui.h:4
-#, fuzzy
 msgid "Select the dictionary file angpol.win."
 msgstr "Path to file dictionary ang-pol"
 
 #: ../src/resources/ui/gy-preferences-page-dicts.ui.h:6
-#, fuzzy
 msgid "Select the dictionary file polang.win."
 msgstr "Path to file dictionary pol-ang"
 
@@ -177,7 +169,6 @@ msgid "Select the dictionary file polniem.win."
 msgstr ""
 
 #: ../src/resources/ui/gy-preferences-page-dicts.ui.h:11
-#, fuzzy
 msgid "The Paths to the files for the depl dictionary"
 msgstr "Path to file dictionary a.data"
 
@@ -186,18 +177,15 @@ msgid "German"
 msgstr ""
 
 #: ../src/resources/ui/gy-preferences-page-dicts.ui.h:13
-#, fuzzy
 msgid "Select the dictionary file a.dat"
 msgstr "Path to file dictionary a.data"
 
 #: ../src/resources/ui/gy-preferences-page-general.ui.h:1
 #: ../src/resources/ui/gy-preferences-window.ui.h:2
-#, fuzzy
 msgid "General Preferences"
 msgstr "Preferences"
 
 #: ../src/resources/ui/gy-preferences-page-general.ui.h:2
-#, fuzzy
 msgid "Font"
 msgstr "Fonts"
 
