@@ -17,6 +17,7 @@
  */
 
 #include "gy-text-buffer.h"
+#include "gy-text-buffer-private.h"
 
 struct _GyTextBuffer
 {
