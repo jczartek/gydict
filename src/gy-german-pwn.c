@@ -23,6 +23,7 @@
 #include <zlib.h>
 
 #include "gy-german-pwn.h"
+#include "gy-text-buffer.h"
 #include "gy-utility-func.h"
 #include "gy-pwntabs.h"
 #include "gy-parser-pwn.h"
@@ -357,8 +358,8 @@ gy_german_pwn_insert_text (const gchar *text,
 {
   ParserData *pdata = (ParserData *) data;
 
-  gy_utility_text_buffer_insert_text_with_tags (pdata->buffer,
-                                                &pdata->iter,
-                                                text, len,
-                                                pdata->table_tags);
+  gy_text_buffer_insert_text_with_tags (GY_TEXT_BUFFER (pdata->buffer),
+                                        &pdata->iter,
+                                        text, len,
+                                        pdata->table_tags);
 }

@@ -17,6 +17,7 @@
  */
 
 #include "gy-text-view.h"
+#include "gy-text-buffer.h"
 #include "gy-utility-func.h"
 
 struct _GyTextView

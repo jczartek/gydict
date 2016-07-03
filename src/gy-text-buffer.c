@@ -72,10 +72,19 @@ gy_text_buffer_set_property (GObject      *object,
 }
 
 static void
+gy_text_buffer_constructed (GObject *object)
+{
+  G_OBJECT_CLASS (gy_text_buffer_parent_class)->constructed (object);
+
+  gy_text_buffer_set_attrs_tags (GTK_TEXT_BUFFER (object));
+}
+
+static void
 gy_text_buffer_class_init (GyTextBufferClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+  object_class->constructed = gy_text_buffer_constructed;
   object_class->finalize = gy_text_buffer_finalize;
   object_class->get_property = gy_text_buffer_get_property;
   object_class->set_property = gy_text_buffer_set_property;

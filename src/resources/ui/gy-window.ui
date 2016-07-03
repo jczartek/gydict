@@ -73,7 +73,8 @@
 		<child type="tag">
 			<object class="GtkTextTag" id="tbig">
 				<property name="name">big</property>
-				<property name="size">14336</property> <!-- result: 14 * PANGO_SCALE -->
+				<!-- <property name="size">14336</property> --> <!-- result: 14 * PANGO_SCALE -->
+			  <property name="scale">1.2</property>
 			</object>
 		</child>
 		<child type="tag">
@@ -98,8 +99,9 @@
 			<object class="GtkTextTag" id="tsub">
 				<property name="name">sub</property>
 				<property name="family">serif</property>
-				<property name="size">14336</property> <!-- result: 14 * PANGO_SCALE -->
+			<!--	<property name="size">14336</property> --> <!-- result: 14 * PANGO_SCALE -->
 				<property name="weight">700</property>
+			  <property name="scale">1.2</property>
 			</object>
 		</child>
 		<child type="tag">
@@ -118,7 +120,8 @@
 			<object class="GtkTextTag" id="tsuperscript">
 				<property name="name">sup</property>
 				<property name="rise">6144</property> <!-- result: 6 * PANGO_SCALE -->
-				<property name="size">7168</property>
+				<!-- <property name="size">7168</property> -->
+			  <property name="scale">0.8333333333333</property>
 			</object>
 		</child>
 		<child type="tag">
@@ -167,8 +170,8 @@
 		</child>
 	</object>
 	
-	<object class="GtkTextBuffer" id="text_buffer">
-		<property name="tag_table">table_tag</property>
+	<object class="GyTextBuffer" id="text_buffer">
+		<!-- <property name="tag_table">table_tag</property> -->
 	</object>
 		
 	<template class="GyWindow" parent="GtkApplicationWindow">
