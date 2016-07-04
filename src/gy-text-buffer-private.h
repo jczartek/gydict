@@ -202,7 +202,7 @@ static struct GyAttributeTag attrs_tags[] = {
     }
 };
 
-#define ATTR_TAG(attr) (attrs_tags[begin].attr)
+#define ATTR_TAG(attr) (attrs_tags[iter].attr)
 
 static void
 gy_text_buffer_set_attrs_tags (GtkTextBuffer *buffer)
@@ -210,7 +210,7 @@ gy_text_buffer_set_attrs_tags (GtkTextBuffer *buffer)
   GtkTextTag *tag = NULL;
   g_return_if_fail (GTK_IS_TEXT_BUFFER (buffer));
 
-  for (int begin = 0, end = G_N_ELEMENTS (attrs_tags); begin < end; begin++)
+  for (int iter = 0, end = G_N_ELEMENTS (attrs_tags); iter < end; iter++)
     {
       tag = gtk_text_buffer_create_tag (buffer,
                                         ATTR_TAG (name),
