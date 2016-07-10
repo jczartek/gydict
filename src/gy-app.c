@@ -45,8 +45,6 @@ static void shortcuts_cb (GSimpleAction *action,
                           GVariant      *variant,
                           gpointer       data);
 
-static void dispose (GObject *object);
-
 struct _GyApp
 {
   GtkApplication       parent;
@@ -325,14 +323,7 @@ gy_app_class_init (GyAppClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GApplicationClass *app_class = G_APPLICATION_CLASS (klass); 
 
-  object_class->dispose = dispose;
   app_class->startup = startup;
-}
-
-static void
-dispose (GObject *object G_GNUC_UNUSED)
-{
-  G_OBJECT_CLASS (gy_app_parent_class)->dispose;
 }
 
 /**PUBLIC METHOD**/
