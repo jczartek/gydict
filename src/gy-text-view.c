@@ -64,7 +64,12 @@ gy_text_view_rebuild_css (GyTextView *self)
       g_autofree gchar *css = NULL;
 
       str = gy_utility_pango_font_description_to_css (self->font_desc);
+
+#if (GTK_MAJOR_VERSION >= 3) && (GTK_MINOR_VERSION >= 20)
+      css = g_strdup_printf ("textview { %s }", str ?: "");
+#else
       css = g_strdup_printf ("GyTextView { %s }", str ?: "");
+#endif
       gtk_css_provider_load_from_data (self->css_provider, css, -1, NULL);
     }
 }
