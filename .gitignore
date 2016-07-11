@@ -4,6 +4,7 @@
 configure
 Makefile
 Makefile.in
+.buildconfig
 
 
 src/.deps/
