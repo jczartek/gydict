@@ -1,5 +1,6 @@
 @import url("resource:///org/gtk/gydict/Adwaita-shared.css");
 
+/* For Gtk+3.18 or the lower versions */
 GbAccelLabel GtkFrame {
   background-color: #222;
   border: 1px solid #cecece;
@@ -11,3 +12,14 @@ GbAccelLabel GtkFrame {
               0px -1px 0px #111 inset;
 }
 
+/* For Gtk+3.20 */
+#gb-accel-label frame {
+  background-color: #222;
+  border: 1px solid #cecece;
+  border-color: #1c1f1f;
+  border-radius: 5px;
+  color: #eeeeec;
+  padding: 3px 8px 3px 8px;
+  box-shadow: 0px 1px 0px #333 inset,
+              0px -1px 0px #111 inset;
+}

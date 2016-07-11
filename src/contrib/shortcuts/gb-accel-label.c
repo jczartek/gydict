@@ -173,6 +173,7 @@ static void
 gb_accel_label_init (GbAccelLabel *self)
 {
   gtk_box_set_spacing (GTK_BOX (self), 6);
+  gtk_widget_set_name (GTK_WIDGET (self), "gb-accel-label");
 }
 
 GtkWidget *
