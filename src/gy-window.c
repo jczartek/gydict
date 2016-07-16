@@ -30,6 +30,7 @@
 #include "gy-parsable.h"
 #include "gy-search-bar.h"
 #include "gy-text-view.h"
+#include "gy-text-buffer.h"
 
 typedef struct _GyWindowPrivate GyWindowPrivate;
 
@@ -361,7 +362,7 @@ dict_radio_cb (GSimpleAction *action,
 
   gtk_tree_view_set_model (GTK_TREE_VIEW (self->tree_view),
                            gy_dict_get_tree_model (dict));
-  gy_utility_delete_text_in_buffer (self->buffer);
+  gy_text_buffer_clean_buffer (GY_TEXT_BUFFER (self->buffer));
   gtk_entry_set_text (GTK_ENTRY (self->entry), "");
 
   self->history = GY_HISTORY (g_hash_table_lookup (self->histories_dictionaries,
@@ -512,7 +513,7 @@ tree_selection_cb (GtkTreeSelection *selection,
       path = gtk_tree_model_get_path (model, &iter);
       row = gtk_tree_path_get_indices (path);
 
-      gy_utility_delete_text_in_buffer (buffer);
+      gy_text_buffer_clean_buffer (GY_TEXT_BUFFER (buffer));
       gy_parsable_parse (GY_PARSABLE (gy_window_get_dictionary (self)),
                          buffer, *row);
 
@@ -583,20 +584,6 @@ tree_view_search_equal_func (GtkTreeModel *model,
   return retval;
 }
 
-static GtkTextBuffer*
-set_text_buffer_on_text_view (GyTextView* text_view)
-{
-  GtkTextIter iter;
-  GtkTextBuffer *buffer;
-
-  buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (text_view));
-  gtk_text_buffer_get_start_iter (buffer,&iter);
-  gtk_text_buffer_create_mark (buffer,"last_pos_start",&iter,FALSE);
-  gtk_text_buffer_create_mark (buffer,"last_pos_end",&iter,FALSE);
-
-  return buffer;
-}
-
 static void
 gy_pwn_finalize (GObject *object)
 {
@@ -629,7 +616,7 @@ gy_window_init (GyWindow *self)
                                    win_entries, G_N_ELEMENTS (win_entries),
                                    self);
 
-  self->buffer = set_text_buffer_on_text_view (self->text_view);
+  self->buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (self->text_view));
 
   self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->tree_view));
   gtk_tree_selection_set_mode (self->selection, GTK_SELECTION_BROWSE);

@@ -317,19 +317,19 @@ gy_german_pwn_start_tag (const gchar     *tag_name,
       gchar *number = g_utf8_substring (str, LENGTH_SUFFIX, end_pos);
       gint index = atoi ((const gchar *) number);
       g_free (number);
-      gy_utility_text_buffer_insert_text_with_tags (pdata->buffer,
-                                                    &pdata->iter,
-                                                    roman_numbers[index], -1,
-                                                    pdata->table_tags);
+      gy_text_buffer_insert_text_with_tags (GY_TEXT_BUFFER (pdata->buffer),
+                                            &pdata->iter,
+                                            roman_numbers[index], -1,
+                                            pdata->table_tags);
 #undef LENGTH_PREFIX
 #undef LENGTH_SUFFIX
     }
     else if (g_str_has_prefix (str, "idioms"))
     {
-      gy_utility_text_buffer_insert_text_with_tags (pdata->buffer,
-                                                    &pdata->iter,
-                                                    "IDIOM", -1,
-                                                    pdata->table_tags);
+      gy_text_buffer_insert_text_with_tags (GY_TEXT_BUFFER (pdata->buffer),
+                                            &pdata->iter,
+                                            "IDIOM", -1,
+                                            pdata->table_tags);
     }
     return;
   }

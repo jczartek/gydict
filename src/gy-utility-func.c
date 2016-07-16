@@ -20,14 +20,6 @@
 #include "config.h"
 #include "gy-utility-func.h"
 
-void
-gy_utility_delete_text_in_buffer (GtkTextBuffer *buffer)
-{
-  GtkTextIter start, end;
-  gtk_text_buffer_get_bounds(buffer,&start,&end);
-  gtk_text_buffer_delete(buffer,&start,&end);
-}
-
 gboolean
 gy_utility_handlers_is_blocked_by_func (gpointer instance,
                                         gpointer func,
@@ -67,43 +59,6 @@ gy_utility_strcmp (const gchar *p1,
   }
 
   return c1 - c2;
-}
-
-void
-gy_utility_text_buffer_insert_text_with_tags (GtkTextBuffer  *buffer,
-                                              GtkTextIter    *iter,
-                                              const gchar    *text,
-                                              gint            len,
-                                              GHashTable     *table_tags)
-{
-  gint 		 start_offset;
-  GtkTextIter 	 start;
-  GList		*list;
-
-  g_return_if_fail (GTK_IS_TEXT_BUFFER (buffer));
-  g_return_if_fail (iter != NULL);
-  g_return_if_fail (text != NULL);
-  g_return_if_fail (gtk_text_iter_get_buffer (iter) == buffer);
-
-  start_offset = gtk_text_iter_get_offset (iter);
-  
-  gtk_text_buffer_insert (buffer, iter, text, len);
-
-  if (table_tags == NULL)
-    return;
-
-  gtk_text_buffer_get_iter_at_offset (buffer, &start, start_offset);
-  
-  list = g_hash_table_get_values (table_tags);
-
-  if (list == NULL)
-    return;
-
-  GList *l;
-  for (l = list; l != NULL; l=l->next)
-    gtk_text_buffer_apply_tag (buffer, (GtkTextTag*) l->data, &start, iter);
-
-  g_list_free (list);
 }
 
 #define FONT_FAMILY  "font-family"

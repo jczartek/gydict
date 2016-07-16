@@ -24,19 +24,12 @@
 
 G_BEGIN_DECLS
 
-extern void gy_utility_delete_text_in_buffer(GtkTextBuffer *buffer);
 extern gboolean gy_utility_handlers_is_blocked_by_func(gpointer instance,
                                                        gpointer func,
                                                        gpointer data);
 extern gint gy_utility_strcmp (const gchar *p1,
                                const gchar *p2,
                                size_t n);
-extern void gy_utility_text_buffer_insert_text_with_tags (GtkTextBuffer *buffer,
-                                                          GtkTextIter   *iter,
-                                                          const gchar   *text,
-                                                          gint           len,
-                                                          GHashTable    *table_tags);
-
 extern gchar *gy_utility_pango_font_description_to_css (const PangoFontDescription *font_desc);
 
 extern gchar *gy_utility_compute_md5_for_file (GFile  *file,

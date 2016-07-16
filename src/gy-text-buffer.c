@@ -74,9 +74,15 @@ gy_text_buffer_set_property (GObject      *object,
 static void
 gy_text_buffer_constructed (GObject *object)
 {
+  GtkTextIter iter;
+
   G_OBJECT_CLASS (gy_text_buffer_parent_class)->constructed (object);
 
   gy_text_buffer_set_attrs_tags (GTK_TEXT_BUFFER (object));
+
+  gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (object), &iter);
+  gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (object), "last_pos_start", &iter, FALSE);
+  gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (object), "last_pos_end", &iter, FALSE);
 }
 
 static void
