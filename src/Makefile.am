@@ -73,6 +73,7 @@ gydict_SOURCES =                                                               \
                 gy-english-pwn.c gy-english-pwn.h                              \
                 gy-pwn-dict.c gy-pwn-dict.h                                    \
 		gy-text-buffer.c gy-text-buffer.h gy-text-buffer-private.h     \
+                gy-tree-view.c gy-tree-view.h                                  \
 		$(NULL)
 
 gydict_CPPFLAGS =                                                              \
