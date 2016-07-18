@@ -16,7 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include "gy-tree-view.h"
+#include "gy-utility-func.h"
+
 
 struct _GyTreeView
 {
@@ -31,6 +34,62 @@ enum {
 };
 
 static GParamSpec *properties [N_PROPS];
+
+static gboolean
+gy_tree_view_search_equal_func (GtkTreeModel *model,
+                                gint          column,
+                                const gchar  *key,
+                                GtkTreeIter  *iter,
+                                gpointer      search_data G_GNUC_UNUSED)
+{
+  gboolean retval = TRUE;
+  const gchar *str;
+  gchar *normalized_string;
+  gchar *normalized_key;
+  gchar *case_normalized_string = NULL;
+  gchar *case_normalized_key = NULL;
+  GValue value = G_VALUE_INIT;
+  GValue transformed = G_VALUE_INIT;
+
+  gtk_tree_model_get_value (model, iter, column, &value);
+
+  g_value_init (&transformed, G_TYPE_STRING);
+
+  if (!g_value_transform (&value, &transformed))
+    {
+      g_value_unset (&value);
+      return TRUE;
+    }
+
+  g_value_unset (&value);
+
+  str = g_value_get_string (&transformed);
+  if (!str)
+    {
+      g_value_unset (&transformed);
+      return TRUE;
+    }
+
+  normalized_string = g_utf8_normalize (str, -1, G_NORMALIZE_ALL);
+  normalized_key = g_utf8_normalize (key, -1, G_NORMALIZE_ALL);
+
+  if (normalized_string && normalized_key)
+    {
+      case_normalized_string = g_utf8_casefold (normalized_string, -1);
+      case_normalized_key = g_utf8_casefold (normalized_key, -1);
+
+      if (gy_utility_strcmp (case_normalized_key, case_normalized_string, strlen (case_normalized_key)) == 0)
+        retval = FALSE;
+    }
+
+  g_value_unset (&transformed);
+  g_free (normalized_key);
+  g_free (normalized_string);
+  g_free (case_normalized_key);
+  g_free (case_normalized_string);
+
+  return retval;
+}
 
 static void
 gy_tree_view_finalize (GObject *object)
@@ -71,10 +130,21 @@ gy_tree_view_set_property (GObject      *object,
 }
 
 static void
+gy_tree_view_constructed (GObject *object)
+{
+  G_OBJECT_CLASS (gy_tree_view_parent_class)->constructed (object);
+
+  gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (object),
+                                       gy_tree_view_search_equal_func,
+                                       NULL, NULL);
+}
+
+static void
 gy_tree_view_class_init (GyTreeViewClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+  object_class->constructed = gy_tree_view_constructed;
   object_class->finalize = gy_tree_view_finalize;
   object_class->get_property = gy_tree_view_get_property;
   object_class->set_property = gy_tree_view_set_property;

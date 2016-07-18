@@ -31,6 +31,7 @@
 #include "gy-search-bar.h"
 #include "gy-text-view.h"
 #include "gy-text-buffer.h"
+#include "gy-tree-view.h"
 
 typedef struct _GyWindowPrivate GyWindowPrivate;
 
@@ -528,62 +529,6 @@ tree_selection_cb (GtkTreeSelection *selection,
     }
 }
 
-static gboolean
-tree_view_search_equal_func (GtkTreeModel *model,
-                             gint          column,
-                             const gchar  *key,
-                             GtkTreeIter  *iter,
-                             gpointer      search_data G_GNUC_UNUSED)
-{
-  gboolean retval = TRUE;
-  const gchar *str;
-  gchar *normalized_string;
-  gchar *normalized_key;
-  gchar *case_normalized_string = NULL;
-  gchar *case_normalized_key = NULL;
-  GValue value = G_VALUE_INIT;
-  GValue transformed = G_VALUE_INIT;
-
-  gtk_tree_model_get_value (model, iter, column, &value);
-
-  g_value_init (&transformed, G_TYPE_STRING);
-
-  if (!g_value_transform (&value, &transformed))
-    {
-      g_value_unset (&value);
-      return TRUE;
-    }
-
-  g_value_unset (&value);
-
-  str = g_value_get_string (&transformed);
-  if (!str)
-    {
-      g_value_unset (&transformed);
-      return TRUE;
-    }
-
-  normalized_string = g_utf8_normalize (str, -1, G_NORMALIZE_ALL);
-  normalized_key = g_utf8_normalize (key, -1, G_NORMALIZE_ALL);
-
-  if (normalized_string && normalized_key)
-    {
-      case_normalized_string = g_utf8_casefold (normalized_string, -1);
-      case_normalized_key = g_utf8_casefold (normalized_key, -1);
-
-      if (gy_utility_strcmp (case_normalized_key, case_normalized_string, strlen (case_normalized_key)) == 0)
-        retval = FALSE;
-    }
-
-  g_value_unset (&transformed);
-  g_free (normalized_key);
-  g_free (normalized_string);
-  g_free (case_normalized_key);
-  g_free (case_normalized_string);
-
-  return retval;
-}
-
 static void
 gy_pwn_finalize (GObject *object)
 {
@@ -622,9 +567,6 @@ gy_window_init (GyWindow *self)
   gtk_tree_selection_set_mode (self->selection, GTK_SELECTION_BROWSE);
   gtk_tree_view_set_search_entry (GTK_TREE_VIEW (self->tree_view),
                                   GTK_ENTRY (self->entry));
-  gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (self->tree_view),
-                                       tree_view_search_equal_func,
-                                       NULL, NULL);
 
   /* Create findbar */
   self->findbar = gy_search_bar_new ();

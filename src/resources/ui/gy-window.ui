@@ -339,7 +339,7 @@
 	  	      				<property name="can_focus">True</property>
 	    	      			<property name="shadow_type">in</property>
 		      					<child>
-											<object class="GtkTreeView" id="tree_view">
+											<object class="GyTreeView" id="tree_view">
 												<property name="visible">True</property>
 			  								<property name="can_focus">True</property>
 			  								<property name="rules_hint">True</property>
