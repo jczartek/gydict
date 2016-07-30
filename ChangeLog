@@ -4,3 +4,10 @@ Wersja 0.2.0
     * Usunięcie starego kodu.
     * Uporządkowanie procesu kompilacji.
     * Sformatowanie kodu (tabulacje -> spacje).
+Wersja 0.3.0
+    * Nowy okno preferencji.
+    * Nowe opcji preferencji (wybór motywu)
+    * Poprawinie kodu obsługującego słowniki PWN
+    * Dodanie modułu dla nowego słownika PWN (Wielki multimedialny słownik Niemiecko-Polski, Polsko-Niemiecki)
+    * Rysownie siatki pod definicją słowa
+    * Css
