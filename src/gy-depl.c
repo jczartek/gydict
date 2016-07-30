@@ -38,6 +38,7 @@
 
 
 #define SIZE_ENTRY 64
+#define NUMBER_WORDS 60000
 
 typedef struct _ParserContext ParserContext;
 typedef struct _ParserTagDescription ParserTagDescription;
@@ -168,7 +169,7 @@ gy_depl_map (GyDict *dict,
     goto out;
 
   model = gtk_list_store_new (1, G_TYPE_STRING);
-  self->array_words = (gchar **) g_malloc0 (55000 * sizeof (guintptr));
+  self->array_words = (gchar **) g_malloc0 (NUMBER_WORDS * sizeof (guintptr));
 
   while ((line = g_data_input_stream_read_line (data, NULL, NULL, err)) != NULL)
     {
