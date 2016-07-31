@@ -1,6 +1,6 @@
 # Project: Gydict
 
-![alt gydict](gydict.png "Gydict")
+![](gydict.png "Gydict")
 
 ## Program Gydict
 **Gydict** jest programem do obsługi różnych słowników multimedialnych (darmowych i komercyjnych) dostępnych pod Windows. Program działa pod systemem Linux.
@@ -32,7 +32,7 @@ Od wersji 0.3.0 Gydict obsługuje kolejny słownik PWN. Niezbędne jest posiadan
 
 ### Słownik DEPL
 Jest to darmowy słownik niemiecko-polski. Aby słownik działał należy wejść na stronę www.depl.pl i pobrać aktualną bazę wyrazów lub w konsoli wpisać polecenie: wget http://www.depl.pl/wyrazy.zip
-Z archiwum **wyrazy.zip** bierzemy pliki **a.dat** i **b.dat**.
+Z archiwum **wyrazy.zip** bierzemy plik **a.dat**.
 
 ## Konfiguracja programu Gydict
 
