@@ -68,3 +68,9 @@ src/contrib/shortcuts/shortcuts-resources.c
 src/contrib/shortcuts/shortcuts-resources.h
 src/contrib/shortcuts/stamp-resources
 
+po/de.po~
+po/en_GB.po~
+po/gydict.pot
+po/pl.po~
+po/stamp-po
+ABOUT-NLS~
