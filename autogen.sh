@@ -9,9 +9,4 @@ test -z "$srcdir" && srcdir=.
   exit 1
 }
 
-which gnome-autogen.sh || {
-  echo "You need to install gnome-common."
-  exit 1
-}
-
-. gnome-autogen.sh
+autoreconf --force --install -Wno-portability || exit 1

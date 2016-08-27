@@ -1,14 +1,15 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
 data/gydict.desktop.in.in
-[type: gettext/gsettings]data/org.gtk.gydict.gschema.xml
+src/contrib/shortcuts/shortcuts-window.ui
+src/resources/ui/gy-app-menu.ui
+src/resources/ui/gy-preferences-file-chooser.ui
+src/resources/ui/gy-preferences-page-dicts.ui
+src/resources/ui/gy-preferences-page-general.ui
+src/resources/ui/gy-preferences-switch.ui
+src/resources/ui/gy-preferences-window.ui
+src/resources/ui/gysearchbar.ui
+src/resources/ui/gy-window.ui
 src/gy-app.c
 src/gy-main.c
 src/gy-window.c
-[type: gettext/glade]src/contrib/shortcuts/shortcuts-window.ui
-[type: gettext/glade]src/resources/ui/gy-app-menu.ui
-[type: gettext/glade]src/resources/ui/gy-preferences-page-dicts.ui
-[type: gettext/glade]src/resources/ui/gy-preferences-page-general.ui
-[type: gettext/glade]src/resources/ui/gy-preferences-window.ui
-[type: gettext/glade]src/resources/ui/gy-window.ui
-

@@ -1,257 +1,252 @@
-# Polish translations for gydict package.
-# Copyright (C) 2014 THE gydict'S COPYRIGHT HOLDER
+# Polish translations for gydict package
+# Polskie tłumaczenia dla pakietu gydict.
+# Copyright (C) 2016 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gydict package.
-# kuba <kuba@kuba>, 2014.
-# Jakub <Czartek>, 2014.
+# kuba <kuba@linux.pl>, 2016.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gydict 0.1.0\n"
+"Project-Id-Version: gydict 0.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-04-04 19:14+0100\n"
-"PO-Revision-Date: 2014-04-14 18:51+0200\n"
-"Last-Translator: Jakub <Czartek>\n"
-"Language-Team: polski <kuba@linux.pl>\n"
+"POT-Creation-Date: 2016-08-22 19:28+0100\n"
+"PO-Revision-Date: 2016-08-27 18:17+0100\n"
+"Last-Translator: kuba <kuba@linux.pl>\n"
+"Language-Team: Polish\n"
 "Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 2.91.6\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
 
-#: ../data/gydict.desktop.in.in.h:1
+#: data/gydict.desktop.in.in:3
 msgid "Gydict"
 msgstr ""
 
-#: ../data/gydict.desktop.in.in.h:2
+#: data/gydict.desktop.in.in:4
 msgid "Dictionary PWN"
 msgstr "Słownik PWN"
 
-#: ../data/gydict.desktop.in.in.h:3
+#: data/gydict.desktop.in.in:5
 msgid "Dictionary"
 msgstr "Słownik"
 
-#: ../data/org.gtk.gydict.gschema.xml.h:1
-#: ../src/resources/ui/gy-preferences-page-general.ui.h:4
+#: data/gydict.desktop.in.in:6
+msgid "office;dictionary;"
+msgstr ""
+
+#: data/gydict.desktop.in.in:10
+msgid "gydict"
+msgstr ""
+
+#: src/contrib/shortcuts/shortcuts-window.ui:7
+msgid "Gydict Shortcuts"
+msgstr "Skróty Klawiszowe"
+
+#: src/contrib/shortcuts/shortcuts-window.ui:11
+msgid "General"
+msgstr "Ogólne"
+
+#: src/contrib/shortcuts/shortcuts-window.ui:13
+msgid "New Window"
+msgstr "Nowe okno"
+
+#: src/contrib/shortcuts/shortcuts-window.ui:17
+msgid "Print"
+msgstr "Wydrukuj"
+
+#: src/contrib/shortcuts/shortcuts-window.ui:21
+msgid "React to Clipboard"
+msgstr "Reaguj na Schowek"
+
+#: src/contrib/shortcuts/shortcuts-window.ui:25
+msgid "Find"
+msgstr "Znajdź"
+
+#: src/contrib/shortcuts/shortcuts-window.ui:29
+msgid "Close Window"
+msgstr "Zamknij okno"
+
+#: src/contrib/shortcuts/shortcuts-window.ui:33
+msgid "Close Application"
+msgstr "Zamknij Aplikacje"
+
+#: src/contrib/shortcuts/shortcuts-window.ui:40
+msgid "PWN Dictionaries"
+msgstr "Słowniki PWN"
+
+#: src/contrib/shortcuts/shortcuts-window.ui:42
+#: src/resources/ui/gy-preferences-page-dicts.ui:31
+msgid "English-Polish"
+msgstr "Angielsko-Polski"
+
+#: src/contrib/shortcuts/shortcuts-window.ui:46
+#: src/resources/ui/gy-preferences-page-dicts.ui:41
+msgid "Polish-English"
+msgstr "Polsko-Angielski"
+
+#: src/contrib/shortcuts/shortcuts-window.ui:50
+#: src/resources/ui/gy-preferences-page-dicts.ui:51
+msgid "German-Polish"
+msgstr "Niemiecko-Polski"
+
+#: src/contrib/shortcuts/shortcuts-window.ui:54
+#: src/contrib/shortcuts/shortcuts-window.ui:61
+#: src/resources/ui/gy-preferences-page-dicts.ui:61
+msgid "Polish-German"
+msgstr "Polso-Angielski"
+
+#: src/contrib/shortcuts/shortcuts-window.ui:59
+msgid "DePl Dictionary"
+msgstr "Słownik DePl"
+
+#: src/resources/ui/gy-app-menu.ui:6
+msgid "New window"
+msgstr "Nowe okno"
+
+#: src/resources/ui/gy-app-menu.ui:12
+#: src/resources/ui/gy-preferences-window.ui:4
+#: src/resources/ui/gy-preferences-window.ui:17
+msgid "Preferences"
+msgstr "Preferencje"
+
+#: src/resources/ui/gy-app-menu.ui:18
+msgid "Keyboard shortcuts"
+msgstr "Skróty Klawiszowe"
+
+#: src/resources/ui/gy-app-menu.ui:24
+msgid "About Gydict"
+msgstr "O Gydict"
+
+#: src/resources/ui/gy-app-menu.ui:28
+msgid "Quit"
+msgstr "Wyjdź"
+
+#: src/resources/ui/gy-preferences-page-dicts.ui:4
+#: src/resources/ui/gy-preferences-window.ui:92
+msgid "Dictionaries"
+msgstr "Słowniki"
+
+#: src/resources/ui/gy-preferences-page-dicts.ui:18
+msgid "The Paths to the files for the PWN dictionaries"
+msgstr "Ścieżki do  plików dla Słowników PWN"
+
+#: src/resources/ui/gy-preferences-page-dicts.ui:32
+msgid "Select the dictionary file angpol.win."
+msgstr "Zaznacz plik słownika angpol.win."
+
+#: src/resources/ui/gy-preferences-page-dicts.ui:42
+msgid "Select the dictionary file polang.win."
+msgstr "Zaznacz plik słownika polang.win."
+
+#: src/resources/ui/gy-preferences-page-dicts.ui:52
+msgid "Select the dictionary file niempol.win."
+msgstr "Zaznacz plik słownika niempol.win."
+
+#: src/resources/ui/gy-preferences-page-dicts.ui:62
+msgid "Select the dictionary file polniem.win."
+msgstr "Zaznacz plik słownika polniem.win."
+
+#: src/resources/ui/gy-preferences-page-dicts.ui:72
+msgid "The Paths to the files for the depl dictionary"
+msgstr "Ścieżki do plików dla słownika depl"
+
+#: src/resources/ui/gy-preferences-page-dicts.ui:86
+msgid "German"
+msgstr "Niemiecki"
+
+#: src/resources/ui/gy-preferences-page-dicts.ui:87
+msgid "Select the dictionary file a.dat"
+msgstr "Zaznacz plik słownika a.dat."
+
+#: src/resources/ui/gy-preferences-page-general.ui:4
+#: src/resources/ui/gy-preferences-window.ui:34
+#: src/resources/ui/gy-preferences-window.ui:83
+msgid "General Preferences"
+msgstr "Ogólne Preferencje"
+
+#: src/resources/ui/gy-preferences-page-general.ui:18
+msgid "Font"
+msgstr "Czcionka"
+
+#: src/resources/ui/gy-preferences-page-general.ui:38
+msgid "Theme"
+msgstr "Temat"
+
+#: src/resources/ui/gy-preferences-page-general.ui:52
 msgid "Night Mode"
-msgstr "Tryb Nocny"
+msgstr "Tryb nocny"
 
-#: ../data/org.gtk.gydict.gschema.xml.h:2
-msgid "Prefer dark application chrome."
-msgstr ""
+#: src/resources/ui/gy-preferences-page-general.ui:53
+msgid "Use dark colors for the application."
+msgstr "Użyj ciemnych kolorów dla aplikacji."
 
-#: ../data/org.gtk.gydict.gschema.xml.h:3
-msgid "Show grid lines"
-msgstr ""
+#: src/resources/ui/gy-preferences-page-general.ui:62
+msgid "Display Grid Pattern"
+msgstr "Wyświetl wzór siatki."
 
-#: ../data/org.gtk.gydict.gschema.xml.h:4
-msgid "If enabled, the the program will show grid lines under the text."
-msgstr ""
+#: src/resources/ui/gy-preferences-page-general.ui:63
+msgid "Display a grid pattern under the text."
+msgstr "Wyśpietlaj wzór siatki pod tekstem."
 
-#: ../src/gy-app.c:173
+#: src/resources/ui/gy-window.ui:6
+msgid "_Print"
+msgstr "Drukuj"
+
+#: src/resources/ui/gy-window.ui:10
+msgid "_Copy"
+msgstr "Kopiuj"
+
+#: src/resources/ui/gy-window.ui:14
+msgid "Pa_ste"
+msgstr "Wlej"
+
+#: src/resources/ui/gy-window.ui:18
+msgid "React to clipboard"
+msgstr "Reaguj na schowek"
+
+#: src/resources/ui/gy-window.ui:22
+msgid "Diacritic"
+msgstr "Znaki diakrytyczne"
+
+#: src/resources/ui/gy-window.ui:28
+msgid "Cl_ose"
+msgstr "Zamknij"
+
+#: src/resources/ui/gy-window.ui:38
+msgid "English-Polish Dictionary"
+msgstr "Słownik Angielsko-Polski"
+
+#: src/resources/ui/gy-window.ui:43
+msgid "Polish-English Dictionary"
+msgstr "Słownik Polsko-Angielski"
+
+#: src/resources/ui/gy-window.ui:50 src/resources/ui/gy-window.ui:63
+msgid "German-Polish Dictionary"
+msgstr "Słownik Niemiecko-Polski"
+
+#: src/resources/ui/gy-window.ui:55
+msgid "Polish-German Dictionary"
+msgstr "Słownik Polsko-Niemiecki"
+
+#: src/resources/ui/gy-window.ui:97
+msgid "Back"
+msgstr "Z tył"
+
+#: src/resources/ui/gy-window.ui:120
+msgid "Forward"
+msgstr "Do przodu"
+
+#: src/gy-app.c:171
 msgid "translator_credits"
 msgstr ""
 
-#: ../src/gy-app.c:191
+#: src/gy-app.c:189
 msgid ""
 "This program supports the various dictionaries. Currently, the program "
 "provides support to the dictionaries: PWN (2006, 2007) and DEPL (www.depl.pl)"
 msgstr ""
-"Ten program obsługuje różne słowniki. Aktualnie program dostarcza wsparcia "
-"dla słowników: PWN (2006, 2007) i DEPL (www.depl.pl)"
 
-#: ../src/gy-main.c:35
+#: src/gy-main.c:35
 msgid "Display the version program and exit"
 msgstr "Wyświetl wersje programu i wyjdź"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:1
-msgid "Gydict Shortcuts"
-msgstr "Skróty klawiszowe"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:2
-msgid "General"
-msgstr "Ogólne"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:3
-msgid "New Window"
-msgstr "Nowe okno"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:4
-msgid "Print"
-msgstr "Wydrukuj"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:5
-msgid "React to Clipboard"
-msgstr "Reaguj na schowek"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:6
-msgid "Find"
-msgstr "Znajdź"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:7
-msgid "Close Window"
-msgstr "Nowe okno"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:8
-msgid "Close Application"
-msgstr "Zamknij aplikacje"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:9
-msgid "PWN Dictionaries"
-msgstr "Słowniki PWN"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:10
-#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:3
-msgid "English-Polish"
-msgstr "Angielsko-Polski"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:11
-#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:5
-msgid "Polish-English"
-msgstr "Polsko-Angielski"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:12
-#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:7
-msgid "German-Polish"
-msgstr "Niemiecko-Polski"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:13
-#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:9
-msgid "Polish-German"
-msgstr "Polsko-Niemiecki"
-
-#: ../src/contrib/shortcuts/shortcuts-window.ui.h:14
-msgid "DePl Dictionary"
-msgstr "Słownik Depl"
-
-#: ../src/resources/ui/gy-app-menu.ui.h:1
-msgid "New window"
-msgstr "Nowe okno"
-
-#: ../src/resources/ui/gy-app-menu.ui.h:2
-#: ../src/resources/ui/gy-preferences-window.ui.h:1
-msgid "Preferences"
-msgstr "Preferencje"
-
-#: ../src/resources/ui/gy-app-menu.ui.h:3
-msgid "Keyboard shortcuts"
-msgstr "Skróty klawiszowe"
-
-#: ../src/resources/ui/gy-app-menu.ui.h:4
-msgid "About Gydict"
-msgstr "O Gydict"
-
-#: ../src/resources/ui/gy-app-menu.ui.h:5
-msgid "Quit"
-msgstr "Wyjdź"
-
-#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:1
-#: ../src/resources/ui/gy-preferences-window.ui.h:3
-msgid "Dictionaries"
-msgstr "Słowniki"
-
-#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:2
-msgid "The Paths to the files for the PWN dictionaries"
-msgstr "Ścieżki do plików Słownika PWN"
-
-#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:4
-msgid "Select the dictionary file angpol.win."
-msgstr "Zaznacz plik słownika angpol.win"
-
-#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:6
-msgid "Select the dictionary file polang.win."
-msgstr "Zaznacz plik słownika polang.win"
-
-#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:8
-msgid "Select the dictionary file niempol.win."
-msgstr "Zaznacz plik słownika niempol.win"
-
-#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:10
-msgid "Select the dictionary file polniem.win."
-msgstr "Zaznacz plik słownika polniem.win"
-
-#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:11
-msgid "The Paths to the files for the depl dictionary"
-msgstr "Ścieżka do pliku słownika a.data"
-
-#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:12
-msgid "German"
-msgstr "Niemiecki"
-
-#: ../src/resources/ui/gy-preferences-page-dicts.ui.h:13
-msgid "Select the dictionary file a.dat"
-msgstr "Ścieżka do pliku słownika a.data"
-
-#: ../src/resources/ui/gy-preferences-page-general.ui.h:1
-#: ../src/resources/ui/gy-preferences-window.ui.h:2
-msgid "General Preferences"
-msgstr "Ogólne Preferencje"
-
-#: ../src/resources/ui/gy-preferences-page-general.ui.h:2
-msgid "Font"
-msgstr "Czcionki"
-
-#: ../src/resources/ui/gy-preferences-page-general.ui.h:3
-msgid "Theme"
-msgstr "Temat"
-
-#: ../src/resources/ui/gy-preferences-page-general.ui.h:5
-msgid "Use dark colors for the application."
-msgstr "Używa ciemnych kolorów dla interfejsu programu."
-
-#: ../src/resources/ui/gy-preferences-page-general.ui.h:6
-msgid "Display Grid Pattern"
-msgstr "Wzór siatki"
-
-#: ../src/resources/ui/gy-preferences-page-general.ui.h:7
-msgid "Display a grid pattern under the text."
-msgstr "Wyświetla wzór siatki pod tekstem."
-
-#: ../src/resources/ui/gy-window.ui.h:1
-msgid "_Print"
-msgstr "Wydrukuj"
-
-#: ../src/resources/ui/gy-window.ui.h:2
-msgid "_Copy"
-msgstr "Skopiuj"
-
-#: ../src/resources/ui/gy-window.ui.h:3
-msgid "Pa_ste"
-msgstr "Wklej"
-
-#: ../src/resources/ui/gy-window.ui.h:4
-msgid "React to clipboard"
-msgstr "Reaguj na schowek"
-
-#: ../src/resources/ui/gy-window.ui.h:5
-msgid "Diacritic"
-msgstr "Znaki diakrytyczne"
-
-#: ../src/resources/ui/gy-window.ui.h:6
-msgid "Cl_ose"
-msgstr "Zamknij"
-
-#: ../src/resources/ui/gy-window.ui.h:7
-msgid "English-Polish Dictionary"
-msgstr "Słownik Angielsko-Polski"
-
-#: ../src/resources/ui/gy-window.ui.h:8
-msgid "Polish-English Dictionary"
-msgstr "Słownik Polsko-Angielski"
-
-#: ../src/resources/ui/gy-window.ui.h:9
-msgid "German-Polish Dictionary"
-msgstr "Słownik Niemiecko-Polski"
-
-#: ../src/resources/ui/gy-window.ui.h:10
-msgid "Polish-German Dictionary"
-msgstr "Słownik Polsko-Niemiecki"
-
-#: ../src/resources/ui/gy-window.ui.h:11
-msgid "Back"
-msgstr "Z powrotem"
-
-#: ../src/resources/ui/gy-window.ui.h:12
-msgid "Forward"
-msgstr "Naprzód"
-

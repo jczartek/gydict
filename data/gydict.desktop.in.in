@@ -1,7 +1,7 @@
 [Desktop Entry]
-_Name=Gydict
-_Comment=Dictionary PWN
-_GenericName=Dictionary
+Name=Gydict
+Comment=Dictionary PWN
+GenericName=Dictionary
 Keywords=office;dictionary;
 Exec=gydict
 Terminal=false
