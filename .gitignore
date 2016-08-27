@@ -74,3 +74,12 @@ po/gydict.pot
 po/pl.po~
 po/stamp-po
 ABOUT-NLS~
+po/Rules-quot~
+po/boldquot.sed~
+po/en@boldquot.header~
+po/en@quot.header~
+po/insert-header.sin~
+po/quot.sed~
+po/remove-potcdate.sed
+po/remove-potcdate.sin~
+
