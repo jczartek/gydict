@@ -56,7 +56,6 @@ LT_INIT([disable-shared])
 dnl ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 dnl + Internationalization                                                     +
 dnl ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#IT_PROG_INTLTOOL(0.50.2)
 GETTEXT_PACKAGE=gydict
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Package name for gettext])
