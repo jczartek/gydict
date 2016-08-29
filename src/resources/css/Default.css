@@ -1,9 +1,3 @@
-/* For Gtk+3.18 or the lower versions */
-GtkTextView {
-  padding-bottom: 50px;
-}
-
-/* For Gtk+3.20 */
 textview {
   padding-bottom: 50px;
 }
