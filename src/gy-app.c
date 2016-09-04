@@ -24,8 +24,7 @@
 #include "gy-css-provider.h"
 #include "gy-preferences-window.h"
 #include "gy-dict.h"
-#include <gb-shortcuts-window.h>
-#include <shortcuts-resources.h>
+#include "gy-shortcuts-window.h"
 
 
 /**STATIC PROTOTYPES FUNCTIONS**/
@@ -120,12 +119,32 @@ shortcuts_cb (GSimpleAction *action,
               GVariant      *variant,
               gpointer       data)
 {
-  GbShortcutsWindow *window;
+  GyApp *self = GY_APP (data);
+  GtkWindow *window, *parent = NULL;
+  GList *list;
 
-  window = g_object_new (GB_TYPE_SHORTCUTS_WINDOW,
+  g_assert (GY_IS_APP (self));
+
+  list = gtk_application_get_windows (GTK_APPLICATION (self));
+
+  for (; list; list = list->next)
+    {
+      window = list->data;
+
+      if (GY_IS_SHORTCUTS_WINDOW (window))
+        {
+          gtk_window_present (window);
+          return;
+        }
+
+      if (GY_IS_WINDOW (window))
+        parent = window;
+    }
+
+  window = g_object_new (GY_TYPE_SHORTCUTS_WINDOW,
+                         "application", self,
                          "window-position", GTK_WIN_POS_CENTER,
-                         "default-width", 800,
-                         "default-height", 600, NULL);
+                         "transient-for", parent, NULL);
 
   gtk_window_present (GTK_WINDOW (window));
 }
@@ -292,8 +311,6 @@ startup (GApplication *application)
 
   /* Chain up parent's class */
   G_APPLICATION_CLASS (gy_app_parent_class)->startup (application);
-
-  g_resources_register (shortcuts_get_resource ());
 
   /* Setup actions */
   setup_actions_app (app);

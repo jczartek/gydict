@@ -74,6 +74,7 @@ gydict_SOURCES =                                                               \
                 gy-pwn-dict.c gy-pwn-dict.h                                    \
 		gy-text-buffer.c gy-text-buffer.h gy-text-buffer-private.h     \
                 gy-tree-view.c gy-tree-view.h                                  \
+                gy-shortcuts-window.c gy-shortcuts-window.h                    \
 		$(NULL)
 
 gydict_CPPFLAGS =                                                              \
