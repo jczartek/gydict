@@ -1,5 +1,3 @@
-SUBDIRS = contrib
-
 resource_files = $(shell glib-compile-resources --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/gy.gresource.xml)
 gy-resources.c: gy.gresource.xml $(resource_files)
 	glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-source --c-name gy $(srcdir)/gy.gresource.xml
@@ -8,7 +6,6 @@ gy-resources.h: gy.gresource.xml $(resource_files)
 
 gydict_common_cppflags =                                                       \
                 -I$(srcdir)                                                    \
-                -I$(srcdir)/contrib/shortcuts                                  \
                 -DPACKAGE_DATA_DIR=\""$(datadir)"\"                            \
                 -DPACKAGE_LOCAL_DIR=\""$(datadir)/locale"\"                    \
                 $(CPPFLAGS)                                                    \
@@ -25,10 +22,6 @@ gydict_common_ldflags =                                                        \
 	  	-export-dynamic                                                \
 		$(LDFLAGS)                                                     \
 		$(NULL)
-
-gydict_common_libs =                                                           \
-               $(srcdir)/contrib/shortcuts/libshortcuts-private.la             \
-               $(NULL)
 
 BUILT_SOURCES =                                                                \
 		gy-resources.c                                                 \
@@ -93,4 +86,4 @@ gydict_LDADD =                                                                 \
 		-lz                                                            \
 		$(LIBM)                                                        \
 		$(GYDICT_LIBS)                                                 \
-		$(gydict_common_libs)
+		$(NULL)

@@ -70,12 +70,6 @@ AC_MSG_ERROR(Function uncompress not found!!!)
 AC_CHECK_LIBM
 AC_SUBST(LIBM)
 
-PKG_CHECK_MODULES(SHORTCUTS, [
-  gtk+-3.0 >= $GTK_REQUIRED
-  gio-2.0 >= $GLIB_REQUIRED
-  glib-2.0 >= $GLIB_REQUIRED
-])
-
 PKG_CHECK_MODULES(GYDICT, [
   gtk+-3.0 >= $GTK_REQUIRED
   gio-2.0 >= $GLIB_REQUIRED
@@ -93,7 +87,6 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 src/contrib/Makefile
-src/contrib/shortcuts/Makefile
 data/Makefile
 data/gydict.desktop.in
 icons/Makefile
