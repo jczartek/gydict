@@ -497,11 +497,11 @@ tree_selection_cb (GtkTreeSelection *selection,
   GtkTreeModel *model;
   GtkTreePath * path;
   gint * row;
-  GtkTextBuffer * buffer;
+  g_autoptr(GtkTextBuffer) buffer;
   gchar * value;
   GyWindow *self = GY_WINDOW (data);
 
-  buffer = gy_window_get_text_buffer (self);
+  buffer = g_object_ref(self->buffer);
 
   if (self->timeout_history)
     {
@@ -519,7 +519,7 @@ tree_selection_cb (GtkTreeSelection *selection,
                          buffer, *row);
 
       gtk_tree_model_get (model, &iter, 0, &value, -1);
-      gtk_header_bar_set_title (GTK_HEADER_BAR (gy_window_get_header_bar (self)),
+      gtk_header_bar_set_title (GTK_HEADER_BAR (self->header_bar),
                                 (const gchar *) value);
 
       /* the variable @value is freed in the function source_func */
@@ -752,22 +752,10 @@ gy_window_new (GyApp *application)
   return GTK_WIDGET (window);
 }
 
-GtkTextBuffer *
-gy_window_get_text_buffer (GyWindow *self)
-{
-  return self->buffer;
-}
-
 GyDict *
 gy_window_get_dictionary (GyWindow *self)
 {
   return g_datalist_id_get_data (&self->datalist, self->qvalue);
-}
-
-GtkWidget *
-gy_window_get_header_bar (GyWindow *self)
-{
-  return self->header_bar;
 }
 
 GtkWidget *

@@ -29,9 +29,7 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (GyWindow, gy_window, GY, WINDOW, GtkApplicationWindow)
 
 GtkWidget*     gy_window_new             (GyApp *application);
-GtkTextBuffer* gy_window_get_text_buffer (GyWindow *self);
 GyDict*        gy_window_get_dictionary  (GyWindow *self);
-GtkWidget*     gy_window_get_header_bar  (GyWindow *self);
 GtkWidget*     gy_window_get_entry       (GyWindow *self);
 GtkWidget*     gy_window_get_text_view   (GyWindow *self);
 
