@@ -710,8 +710,9 @@ on_window_size_allocate (GtkWidget *widget,
                                                             allocation);
   if (!(self->is_maximized))
   {
-    self->current_width = allocation->width;
-    self->current_height = allocation->height;
+    gtk_window_get_size (GTK_WINDOW (widget),
+                         &self->current_width,
+                         &self->current_height);;
   }
 }
 
