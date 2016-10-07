@@ -86,7 +86,6 @@ AC_SUBST(SHM_LIB)
 AC_OUTPUT([
 Makefile
 src/Makefile
-src/contrib/Makefile
 data/Makefile
 data/gydict.desktop.in
 icons/Makefile
