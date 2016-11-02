@@ -70,14 +70,16 @@ AC_MSG_ERROR(Function uncompress not found!!!)
 AC_CHECK_LIBM
 AC_SUBST(LIBM)
 
-PKG_CHECK_MODULES(GYDICT, [
-  gtk+-3.0 >= $GTK_REQUIRED
-  gio-2.0 >= $GLIB_REQUIRED
-  glib-2.0 >= $GLIB_REQUIRED
-])
+dnl ***************************************************************************
+dnl Check for Required Packages
+dnl ***************************************************************************
+m4_define([gtk_required_version], [3.20.0])
+m4_define([glib_required_version], [2.38.0])
 
-AC_SUBST(GYDICT_CFLAGS)
-AC_SUBST(GYDICT_LIBS)
+PKG_CHECK_MODULES(GYDICT,    [gtk+-3.0 >= gtk_required_version
+                              gio-2.0 >= glib_required_version
+                              glib-2.0 >= glib_required_version])
+PKG_CHECK_MODULES(PANEL_GTK, [gtk+-3.0 >= gtk_required_version])
 
 AC_CHECK_FUNCS([shm_open], [SHM_LIB=],
                [AC_CHECK_LIB([rt], [shm_open], [SHM_LIB=-lrt], [SHM_LIB=])])
@@ -85,6 +87,9 @@ AC_SUBST(SHM_LIB)
 
 AC_OUTPUT([
 Makefile
+contrib/Makefile
+contrib/pnl/Makefile
+contrib/pnl/pnl-version.h
 src/Makefile
 data/Makefile
 data/gydict.desktop.in
