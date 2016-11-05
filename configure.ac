@@ -81,9 +81,23 @@ PKG_CHECK_MODULES(GYDICT,    [gtk+-3.0 >= gtk_required_version
                               glib-2.0 >= glib_required_version])
 PKG_CHECK_MODULES(PANEL_GTK, [gtk+-3.0 >= gtk_required_version])
 
+dnl ****************************************************************************
+dnl Check if shm_open Requires a Library
+dnl ****************************************************************************
 AC_CHECK_FUNCS([shm_open], [SHM_LIB=],
                [AC_CHECK_LIB([rt], [shm_open], [SHM_LIB=-lrt], [SHM_LIB=])])
 AC_SUBST(SHM_LIB)
+
+dnl ****************************************************************************
+dnl Always build tests
+dnl ****************************************************************************
+AC_ARG_ENABLE([tests],
+              AS_HELP_STRING([--enable-tests],
+                             [Enable always building tests during 'make all' [default=no]]),
+              [enable_tests=$enableval], [enable_tests=no])
+
+AM_CONDITIONAL([ENABLE_TESTS], test "$enable_tests" = "yes")
+
 
 AC_OUTPUT([
 Makefile
@@ -98,11 +112,16 @@ src/Makefile
 tests/Makefile
 ])
 
-echo "
-     Prefix............................... ${prefix}
-   Compiler............................... ${CC}
-     CFlags............................... ${CFLAGS}
-GydictFlags............................... ${GYDICT_CFLAGS}
-       Libs............................... ${LIBS}
- GydictLibs............................... ${GYDICT_LIBS}"
+echo ""
+echo " ${PACKAGE} - ${VERSION}"
+echo ""
+echo " Options"
+echo ""
+echo "  Prefix ..............................: ${prefix}"
+echo "  Libdir ..............................: ${libdir}"
+echo ""
+echo " Development Options"
+echo ""
+echo "  Build Test Suite ....................: ${enable_tests}"
+echo ""
 

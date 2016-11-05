@@ -18,4 +18,8 @@ test_hello_CFLAGS = $(tests_cflags)
 test_hello_LDADD = $(tests_libs)
 test_hello_LDFLAGS = $(tests_ldflags)
 
+if ENABLE_TESTS
+noinst_PROGRAMS = $(TESTS)
+endif
+
 check_PROGRAMS = $(TESTS)
