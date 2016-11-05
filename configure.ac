@@ -90,11 +90,12 @@ Makefile
 contrib/Makefile
 contrib/pnl/Makefile
 contrib/pnl/pnl-version.h
-src/Makefile
 data/Makefile
 data/gydict.desktop.in
 icons/Makefile
 po/Makefile.in
+src/Makefile
+tests/Makefile
 ])
 
 echo "
