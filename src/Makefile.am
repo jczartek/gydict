@@ -83,7 +83,6 @@ gydict_LDFLAGS =                                                               \
 		$(NULL)
 
 gydict_LDADD =                                                                 \
-		-lz                                                            \
 		$(LIBM)                                                        \
 		$(GYDICT_LIBS)                                                 \
 		$(NULL)
