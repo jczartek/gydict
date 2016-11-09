@@ -47,6 +47,33 @@ AC_HEADER_STDC
 AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources)
 GLIB_GSETTINGS
 
+dnl ***********************************************************************
+dnl Additional C Compiler Flags
+dnl **********************************************************************
+m4_include([tools/autotools/ax_append_compile_flags.m4])
+AX_APPEND_COMPILE_FLAGS([ \
+	-Wall \
+	-Wcast-align \
+	-Wdeclaration-after-statement \
+	-Werror=format-security \
+	-Werror=format=2 \
+	-Wextra \
+	-Wformat-nonliteral \
+	-Wformat-security \
+	-Wmissing-include-dirs \
+	-Wnested-externs \
+	-Wno-missing-field-initializers \
+	-Wno-sign-compare \
+	-Wno-strict-aliasing \
+	-Wno-unused-parameter \
+	-Wpointer-arith \
+	-Wredundant-decls \
+	-Wshadow \
+	-Wswitch-default \
+	-Wswitch-enum \
+	-Wundef \
+], [], [])
+
 dnl ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 dnl Initialize Libtool
 dnl ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
