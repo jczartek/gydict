@@ -198,8 +198,6 @@ gy_text_view_draw_layer (GtkTextView      *view,
 static void
 gy_text_view_finalize (GObject *object)
 {
-  GyTextView *self = (GyTextView *)object;
-
   G_OBJECT_CLASS (gy_text_view_parent_class)->finalize (object);
 }
 

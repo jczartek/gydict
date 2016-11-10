@@ -26,49 +26,10 @@ struct _GyTextBuffer
 
 G_DEFINE_TYPE (GyTextBuffer, gy_text_buffer, GTK_TYPE_TEXT_BUFFER)
 
-enum {
-  PROP_0,
-  LAST_PROP
-};
-
-static GParamSpec *gParamSpecs [LAST_PROP];
-
 static void
 gy_text_buffer_finalize (GObject *object)
 {
-  GyTextBuffer *self = (GyTextBuffer *)object;
-
   G_OBJECT_CLASS (gy_text_buffer_parent_class)->finalize (object);
-}
-
-static void
-gy_text_buffer_get_property (GObject    *object,
-                             guint       prop_id,
-                             GValue     *value,
-                             GParamSpec *pspec)
-{
-  GyTextBuffer *self = GY_TEXT_BUFFER (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-gy_text_buffer_set_property (GObject      *object,
-                             guint         prop_id,
-                             const GValue *value,
-                             GParamSpec   *pspec)
-{
-  GyTextBuffer *self = GY_TEXT_BUFFER (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
 }
 
 static void
@@ -92,8 +53,6 @@ gy_text_buffer_class_init (GyTextBufferClass *klass)
 
   object_class->constructed = gy_text_buffer_constructed;
   object_class->finalize = gy_text_buffer_finalize;
-  object_class->get_property = gy_text_buffer_get_property;
-  object_class->set_property = gy_text_buffer_set_property;
 }
 
 static void
@@ -151,8 +110,7 @@ gy_text_buffer_insert_text_with_tags (GyTextBuffer   *self,
   if (list == NULL)
     return;
 
-  GList *l;
-  for (l = list; l != NULL; l=l->next)
+  for (GList *l = list; l != NULL; l=l->next)
     gtk_text_buffer_apply_tag (buffer, (GtkTextTag*) l->data, &start, iter);
 
   g_list_free (list);

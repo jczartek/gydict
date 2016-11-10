@@ -145,7 +145,7 @@ gy_tabs_get_entity_table (void)
 }
 
 const gchar *
-gy_tabs_get_superscript (guint n)
+gy_tabs_get_superscript (gint n)
 {
   g_return_val_if_fail ((n >= 0 && n <= 9), NULL);
 

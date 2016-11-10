@@ -35,7 +35,7 @@ void gy_tabs_convert_character (gchar **buffer,
                                 const gchar *c,
                                 GyDictEncoding encoding);
 GHashTable * gy_tabs_get_entity_table (void);
-const gchar * gy_tabs_get_superscript (guint n);
+const gchar * gy_tabs_get_superscript (gint n);
 
 G_END_DECLS
 

@@ -207,7 +207,6 @@ gy_pwn_dict_map (GyDict  *dict,
   g_object_set (dict, "is-mapped", TRUE, NULL);
   return;
 out:
-  g_debug ("");
   g_object_set (dict, "is-mapped", FALSE, NULL);
   return;
 }
@@ -266,6 +265,8 @@ gy_pwn_dict____get_lexical_unit (GyPwnDict  *self,
               g_set_error (err, GY_PWN_DICT_ERROR, zerr,
                            "The compressed data (referenced by in_buffer) was corrupted!");
               break;
+            default:
+              ;
             };
           g_free (out_buffer);
           goto out;
@@ -349,21 +350,6 @@ gy_pwn_dict_get_property (GObject    *object,
 }
 
 static void
-gy_pwn_dict_set_property (GObject      *object,
-                          guint         prop_id,
-                          const GValue *value,
-                          GParamSpec   *pspec)
-{
-  GyPwnDict *self = GY_PWN_DICT (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
 gy_pwn_dict_class_init (GyPwnDictClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -371,7 +357,6 @@ gy_pwn_dict_class_init (GyPwnDictClass *klass)
 
   object_class->finalize = gy_pwn_dict_finalize;
   object_class->get_property = gy_pwn_dict_get_property;
-  object_class->set_property = gy_pwn_dict_set_property;
 
   dict_class->map = gy_pwn_dict_map;
 

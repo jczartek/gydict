@@ -77,7 +77,6 @@ static gboolean on_window_state_event (GtkWidget           *widget,
                                        GdkEventWindowState *event);
 static void on_window_destroy (GtkWidget *widget);
 static void on_window_constructed (GObject *object);
-static void dispose (GObject *object);
 
 enum
 {
@@ -124,9 +123,6 @@ struct _GyWindow
 
 G_DEFINE_TYPE (GyWindow, gy_window, GTK_TYPE_APPLICATION_WINDOW);
 
-/**STATIC DATA**/
-
-static PangoFontDescription *font_desc = NULL;
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
@@ -617,9 +613,8 @@ gy_window_class_init (GyWindowClass *klass)
 static void
 window_store_state (GyWindow *self)
 {
-  GyWindowPrivate *priv = gy_window_get_instance_private (self);
   GKeyFile *keyfile = g_key_file_new ();
-  
+
   g_key_file_set_integer (keyfile, "WindowState", "width", self->current_width);
   g_key_file_set_integer (keyfile, "WindowState", "height", self->current_height);
   g_key_file_set_boolean (keyfile, "WindowState", "IsMaximized", self->is_maximized);

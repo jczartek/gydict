@@ -35,16 +35,10 @@ struct _GyPreferencesWindow
 G_DEFINE_TYPE (GyPreferencesWindow, gy_preferences_window, GTK_TYPE_WINDOW)
 
 enum {
-  PROP_0,
-  LAST_PROP
-};
-
-enum {
   CLOSE,
   LAST_SIGNAL
 };
 
-static GParamSpec *gParamSpecs [LAST_PROP];
 static guint       gSignals    [LAST_SIGNAL];
 
 GyPreferencesWindow *
@@ -76,49 +70,11 @@ gy_preferences_window_section_changed (GtkStack            *stack,
 }
 
 static void
-gy_preferences_window_finalize (GObject *object)
-{
-  GyPreferencesWindow *self = (GyPreferencesWindow *)object;
-
-  G_OBJECT_CLASS (gy_preferences_window_parent_class)->finalize (object);
-}
-
-static void
 gy_preferences_window_close (GyPreferencesWindow *self)
 {
   g_return_if_fail (GY_IS_PREFERENCES_WINDOW (self));
 
   gtk_window_close (GTK_WINDOW (self));
-}
-
-static void
-gy_preferences_window_get_property (GObject    *object,
-                                    guint       prop_id,
-                                    GValue     *value,
-                                    GParamSpec *pspec)
-{
-  GyPreferencesWindow *self = GY_PREFERENCES_WINDOW (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-gy_preferences_window_set_property (GObject      *object,
-                                    guint         prop_id,
-                                    const GValue *value,
-                                    GParamSpec   *pspec)
-{
-  GyPreferencesWindow *self = GY_PREFERENCES_WINDOW (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
 }
 
 static void
@@ -151,9 +107,6 @@ gy_preferences_window_class_init (GyPreferencesWindowClass *klass)
   GtkBindingSet *binding_set;
 
   object_class->constructed = gy_preferences_window_constructed;
-  object_class->finalize = gy_preferences_window_finalize;
-  object_class->get_property = gy_preferences_window_get_property;
-  object_class->set_property = gy_preferences_window_set_property;
 
   widget_class->destroy = gy_preferences_window_destroy;
 

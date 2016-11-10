@@ -74,13 +74,6 @@ G_DEFINE_TYPE_WITH_CODE (GyGermanPwn, gy_german_pwn, GY_TYPE_PWN_DICT,
                          G_IMPLEMENT_INTERFACE (GY_TYPE_PARSABLE,
                                                 gy_german_pwn_parseable_iface_init));
 
-enum {
-  PROP_0,
-  LAST_PROP
-};
-
-static GParamSpec *gParamSpecs [LAST_PROP];
-
 static GQuark
 gy_german_pwn_error_quark (void)
 {
@@ -136,42 +129,11 @@ gy_german_pwn_finalize (GObject *object)
 }
 
 static void
-gy_german_pwn_get_property (GObject    *object,
-                            guint       prop_id,
-                            GValue     *value,
-                            GParamSpec *pspec)
-{
-  GyGermanPwn *self = GY_GERMAN_PWN (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-gy_german_pwn_set_property (GObject      *object,
-                            guint         prop_id,
-                            const GValue *value,
-                            GParamSpec   *pspec)
-{
-  GyGermanPwn *self = GY_GERMAN_PWN (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
 gy_german_pwn_constructed (GObject *object)
 {
   GyGermanPwn *self = GY_GERMAN_PWN (object);
 
   G_OBJECT_CLASS (gy_german_pwn_parent_class)->constructed (object);
-
 
   g_object_get (GY_PWN_DICT (object),
                 "entities", &self->entities, NULL);
@@ -200,13 +162,10 @@ static void
 gy_german_pwn_class_init (GyGermanPwnClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
-  GyDictClass  *dict_class = GY_DICT_CLASS (klass);
   GyPwnDictClass *pwn_dict_class = GY_PWN_DICT_CLASS (klass);
 
   object_class->finalize = gy_german_pwn_finalize;
   object_class->constructed = gy_german_pwn_constructed;
-  object_class->get_property = gy_german_pwn_get_property;
-  object_class->set_property = gy_german_pwn_set_property;
 
   pwn_dict_class->check_checksum = gy_german_pwn_check_checksum;
   pwn_dict_class->query = gy_german_pwn_query;

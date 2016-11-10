@@ -28,13 +28,6 @@ struct _GyTreeView
 
 G_DEFINE_TYPE (GyTreeView, gy_tree_view, GTK_TYPE_TREE_VIEW)
 
-enum {
-  PROP_0,
-  N_PROPS
-};
-
-static GParamSpec *properties [N_PROPS];
-
 static gboolean
 gy_tree_view_search_equal_func (GtkTreeModel *model,
                                 gint          column,
@@ -94,39 +87,7 @@ gy_tree_view_search_equal_func (GtkTreeModel *model,
 static void
 gy_tree_view_finalize (GObject *object)
 {
-  GyTreeView *self = (GyTreeView *)object;
-
   G_OBJECT_CLASS (gy_tree_view_parent_class)->finalize (object);
-}
-
-static void
-gy_tree_view_get_property (GObject    *object,
-                           guint       prop_id,
-                           GValue     *value,
-                           GParamSpec *pspec)
-{
-  GyTreeView *self = GY_TREE_VIEW (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-gy_tree_view_set_property (GObject      *object,
-                           guint         prop_id,
-                           const GValue *value,
-                           GParamSpec   *pspec)
-{
-  GyTreeView *self = GY_TREE_VIEW (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
 }
 
 static void
@@ -146,8 +107,6 @@ gy_tree_view_class_init (GyTreeViewClass *klass)
 
   object_class->constructed = gy_tree_view_constructed;
   object_class->finalize = gy_tree_view_finalize;
-  object_class->get_property = gy_tree_view_get_property;
-  object_class->set_property = gy_tree_view_set_property;
 }
 
 static void

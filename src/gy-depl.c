@@ -705,13 +705,12 @@ parse_context_parse (ParserContext *context,
 
           }
           case STATE_ERROR:
+          default:
           {
             g_critical ("A undefined error! Parsing is broken.");
             parse_context_free_contents_parser_context (context);
             return FALSE;
-
           }
-
         }
 
     }

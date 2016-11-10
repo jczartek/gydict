@@ -68,30 +68,6 @@ static GActionEntry app_entries[] =
 };
 #pragma GCC diagnostic pop
 
-/**FUNCTION STATIC**/
-static GtkWindow *
-gy_app_peek_first_window (GyApp *app)
-{
-  GList *l;
-
-  g_return_val_if_fail (GY_IS_APP (app), NULL);
-
-  for (l = gtk_application_get_windows (GTK_APPLICATION (app)); 
-       l; 
-       l = g_list_next (l)) 
-  {
-    if (GY_IS_WINDOW (l->data)) 
-      return GTK_WINDOW (l->data);
-  }
-
-  /* Create a new window */
-  g_action_group_activate_action (G_ACTION_GROUP (app), 
-                                  "new-window", NULL);
-
-  /* And look for the newly created window again */
-  return gy_app_peek_first_window (app);
-}
-
 inline static void
 setup_actions_app (GyApp *application)
 {
@@ -101,7 +77,7 @@ setup_actions_app (GyApp *application)
                                    application);
 }
 
-static void 
+static void
 new_window_cb (GSimpleAction *action G_GNUC_UNUSED,
                GVariant      *parametr G_GNUC_UNUSED,
                gpointer       data)
@@ -114,7 +90,7 @@ new_window_cb (GSimpleAction *action G_GNUC_UNUSED,
   gtk_widget_show_all (window);
 }
 
-static void 
+static void
 shortcuts_cb (GSimpleAction *action,
               GVariant      *variant,
               gpointer       data)
@@ -179,7 +155,7 @@ about_cb (GSimpleAction *action G_GNUC_UNUSED,
 {
   GyApp     *self = GY_APP (user_data);
   GList     *windows, *iter;
-  GtkWindow *parent;
+  GtkWindow *parent = NULL;
   const gchar  *authors[] =
   {
     "Jakub Czartek <kuba@linux.pl>",
@@ -337,8 +313,7 @@ gy_app_init (GyApp *application G_GNUC_UNUSED)
 static void
 gy_app_class_init (GyAppClass *klass)
 {
-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
-  GApplicationClass *app_class = G_APPLICATION_CLASS (klass); 
+  GApplicationClass *app_class = G_APPLICATION_CLASS (klass);
 
   app_class->startup = startup;
 }

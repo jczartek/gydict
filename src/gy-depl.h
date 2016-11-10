@@ -28,8 +28,6 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (GyDepl, gy_depl, GY, DEPL, GyDict)
 
-GType gy_depl_get_type (void) G_GNUC_CONST;
-
 G_END_DECLS
 
 #endif /* _GY_DEPL_H_ */

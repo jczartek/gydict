@@ -117,7 +117,7 @@ G_DEFINE_TYPE_WITH_PRIVATE (GyPrintCompositor, gy_print_compositor, G_TYPE_OBJEC
 
 static gdouble G_GNUC_UNUSED
 convert_to_mm (gdouble len,
-	       GtkUnit unit) 
+               GtkUnit unit)
 {
   switch (unit)
   {
@@ -129,7 +129,11 @@ convert_to_mm (gdouble len,
       g_warning ("Unsupported unit");
     case GTK_UNIT_POINTS:
       return len * (MM_PER_INCH / POINTS_PER_INCH);
+    default:
+      g_critical ("Unsupported unit!");
   }
+
+  return 0.0;
 }
 
 static gdouble
@@ -146,7 +150,10 @@ convert_from_mm (gdouble len,
       g_warning ("Unsupported unit");
     case GTK_UNIT_POINTS:
       return len / (MM_PER_INCH / POINTS_PER_INCH);
+    default:
+      g_critical ("Unsupported unit!");
   }
+  return 0.0;
 }
 
 static gboolean
@@ -616,6 +623,7 @@ setup_pango_layouts (GyPrintCompositor *compositor,
       pango_layout_set_wrap (layout, PANGO_WRAP_WORD_CHAR);
       break;
     case GTK_WRAP_NONE:
+    default:
       pango_layout_set_ellipsize (layout, PANGO_ELLIPSIZE_END);
       break;
   }
@@ -1163,11 +1171,9 @@ gy_print_compositor_paginate (GyPrintCompositor *compositor,
 
   while (!done && (pages_count < PAGINATION_CHUNK_SIZE))
   {
-    gint line_number;
     GtkTextIter line_end;
     gdouble line_height;
 
-    line_number = gtk_text_iter_get_line (&start);
     line_end = start;
 
     if (!gtk_text_iter_ends_line (&line_end))
@@ -1185,7 +1191,6 @@ gy_print_compositor_paginate (GyPrintCompositor *compositor,
       {
         PangoLayoutIter *layout_iter;
         PangoRectangle logical_rect;
-        gboolean is_first_line = TRUE;
         gdouble part_height = 0.0;
         gint idx;
 
@@ -1200,8 +1205,6 @@ gy_print_compositor_paginate (GyPrintCompositor *compositor,
               break;
 
             part_height += layout_line_height;
-            is_first_line = FALSE;
-
           }
         while (pango_layout_iter_next_line (layout_iter));
 
@@ -1335,7 +1338,6 @@ gy_print_compositor_draw_page (GyPrintCompositor *compositor,
   while (gtk_text_iter_compare (&start, &end) < 0)
   {
     GtkTextIter line_end;
-    gint line_number;
     gdouble line_height;
     gdouble baseline_offset;
 
@@ -1346,15 +1348,6 @@ gy_print_compositor_draw_page (GyPrintCompositor *compositor,
 
     if (gtk_text_iter_compare (&line_end, &end) > 0)
       line_end = end;
-
-    if (gtk_text_iter_starts_line (&start))
-    {
-      line_number = gtk_text_iter_get_line (&start);
-    }
-    else
-    {
-      line_number = -1;
-    }
 
     layout_paragraph (compositor, &start, &line_end);
 

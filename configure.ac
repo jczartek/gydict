@@ -54,7 +54,6 @@ m4_include([tools/autotools/ax_append_compile_flags.m4])
 AX_APPEND_COMPILE_FLAGS([ \
 	-Wall \
 	-Wcast-align \
-	-Wdeclaration-after-statement \
 	-Werror=format-security \
 	-Werror=format=2 \
 	-Wextra \

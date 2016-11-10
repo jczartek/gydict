@@ -69,13 +69,6 @@ G_DEFINE_TYPE_WITH_CODE (GyEnglishPwn, gy_english_pwn, GY_TYPE_PWN_DICT,
                          G_IMPLEMENT_INTERFACE (GY_TYPE_PARSABLE,
                                                 gy_english_pwn_parseable_iface_init))
 
-enum {
-  PROP_0,
-  LAST_PROP
-};
-
-static GParamSpec *gParamSpecs [LAST_PROP];
-
 static GQuark
 gy_english_pwn_error_quark (void)
 {
@@ -121,39 +114,7 @@ gy_english_pwn_checksum (GyPwnDict  *self,
 static void
 gy_english_pwn_finalize (GObject *object)
 {
-  GyEnglishPwn *self = (GyEnglishPwn *)object;
-
   G_OBJECT_CLASS (gy_english_pwn_parent_class)->finalize (object);
-}
-
-static void
-gy_english_pwn_get_property (GObject    *object,
-                             guint       prop_id,
-                             GValue     *value,
-                             GParamSpec *pspec)
-{
-  GyEnglishPwn *self = GY_ENGLISH_PWN (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-gy_english_pwn_set_property (GObject      *object,
-                             guint         prop_id,
-                             const GValue *value,
-                             GParamSpec   *pspec)
-{
-  GyEnglishPwn *self = GY_ENGLISH_PWN (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
 }
 
 static void
@@ -194,12 +155,9 @@ gy_english_pwn_class_init (GyEnglishPwnClass *klass)
 
   object_class->constructed = gy_english_pwn_constructed;
   object_class->finalize = gy_english_pwn_finalize;
-  object_class->get_property = gy_english_pwn_get_property;
-  object_class->set_property = gy_english_pwn_set_property;
 
   pwn_dict_class->check_checksum = gy_english_pwn_checksum;
   pwn_dict_class->query = gy_english_pwn_query;
-
 }
 
 static void

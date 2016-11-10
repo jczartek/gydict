@@ -29,13 +29,6 @@ struct _GyCssProvider
 
 G_DEFINE_TYPE (GyCssProvider, gy_css_provider, GTK_TYPE_CSS_PROVIDER)
 
-enum {
-  PROP_0,
-  LAST_PROP
-};
-
-static GParamSpec *gParamSpecs [LAST_PROP];
-
 GtkCssProvider *
 gy_css_provider_new (void)
 {
@@ -102,36 +95,6 @@ gy_css_provider_finalize (GObject *object)
 }
 
 static void
-gy_css_provider_get_property (GObject    *object,
-                              guint       prop_id,
-                              GValue     *value,
-                              GParamSpec *pspec)
-{
-  GyCssProvider *self = GY_CSS_PROVIDER (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-gy_css_provider_set_property (GObject      *object,
-                              guint         prop_id,
-                              const GValue *value,
-                              GParamSpec   *pspec)
-{
-  GyCssProvider *self = GY_CSS_PROVIDER (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
 gy_css_provider_constructed (GObject *object)
 {
   GyCssProvider *self = GY_CSS_PROVIDER (object);
@@ -182,8 +145,6 @@ gy_css_provider_class_init (GyCssProviderClass *klass)
 
   object_class->constructed = gy_css_provider_constructed;
   object_class->finalize = gy_css_provider_finalize;
-  object_class->get_property = gy_css_provider_get_property;
-  object_class->set_property = gy_css_provider_set_property;
 
   provider_class->parsing_error = gy_css_provider_parsing_error;
 }

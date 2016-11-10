@@ -35,7 +35,6 @@ struct _GyDictClass
                       GError **err);
 };
 
-GType         gy_dict_get_type        (void) G_GNUC_CONST;
 GtkTreeModel* gy_dict_get_tree_model  (GyDict *dict);
 GyDict*       gy_dict_new_object      (const gchar *id_string);
 

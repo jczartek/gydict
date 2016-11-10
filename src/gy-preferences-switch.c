@@ -140,21 +140,6 @@ gy_preferences_switch_finalize (GObject *object)
 }
 
 static void
-gy_preferences_switch_get_property (GObject    *object,
-                                    guint       prop_id,
-                                    GValue     *value,
-                                    GParamSpec *pspec)
-{
-  GyPreferencesSwitch *self = GY_PREFERENCES_SWITCH (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
 gy_preferences_switch_set_property (GObject      *object,
                                     guint         prop_id,
                                     const GValue *value,
@@ -273,7 +258,6 @@ gy_preferences_switch_class_init (GyPreferencesSwitchClass *klass)
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
   object_class->finalize = gy_preferences_switch_finalize;
-  object_class->get_property = gy_preferences_switch_get_property;
   object_class->set_property = gy_preferences_switch_set_property;
 
   widget_class->draw = gy_preferences_switch_draw;
