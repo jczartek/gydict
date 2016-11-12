@@ -15,7 +15,6 @@ gydict_common_cflags =                                                         \
 		$(CFLAGS)                                                      \
 		$(GYDICT_CFLAGS)                                               \
 		-pipe                                                          \
-		-std=c99                                                       \
 		$(NULL)
 
 gydict_common_ldflags =                                                        \
@@ -29,8 +28,6 @@ BUILT_SOURCES =                                                                \
 		$(NULL)
 
 EXTRA_DIST =                                                                   \
-		$(srcdir)/resources/ui/gydict.ui                               \
-		$(srcdir)/resources/ui/menu.ui	                               \
 		$(resource_files)                                              \
                 $(srcdir)/gy.gresource.xml                                     \
 		$(NULL)

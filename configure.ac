@@ -47,9 +47,20 @@ AC_HEADER_STDC
 AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources)
 GLIB_GSETTINGS
 
-dnl ***********************************************************************
-dnl Additional C Compiler Flags
-dnl **********************************************************************
+
+dnl ****************************************************************************
+dnl * Ensure C99 is Supported                                                  *
+dnl ****************************************************************************
+m4_include([tools/autotools/ax_check_compile_flag.m4])
+AX_CHECK_COMPILE_FLAG([-std=gnu99],
+                      [CFLAGS="$CFLAGS -std=gnu99"],
+                      [AC_MSG_ERROR([C compiler cannot compile GNU C99 code])])
+
+
+
+dnl ****************************************************************************
+dnl * Additional C Compiler Flags                                              *
+dnl ****************************************************************************
 m4_include([tools/autotools/ax_append_compile_flags.m4])
 AX_APPEND_COMPILE_FLAGS([ \
 	-Wall \
@@ -73,9 +84,9 @@ AX_APPEND_COMPILE_FLAGS([ \
 	-Wundef \
 ], [], [])
 
-dnl ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-dnl Initialize Libtool
-dnl ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+dnl ****************************************************************************
+dnl * Initialize Libtool                                                       *
+dnl ****************************************************************************
 LT_PREREQ([2.2])
 LT_INIT([disable-shared])
 
@@ -122,9 +133,9 @@ AC_ARG_ENABLE([tests],
 AM_CONDITIONAL([ENABLE_TESTS], test "$enable_tests" = "yes")
 
 
-dnl ***********************************************************************
-dnl Check if we should instrument our targets
-dnl ***********************************************************************
+dnl ****************************************************************************
+dnl * Check if we should instrument our targets                                *
+dnl ****************************************************************************
 AC_MSG_CHECKING([for --enable-profiling])
 AC_ARG_ENABLE(profiling,
               AC_HELP_STRING([--enable-profiling],
@@ -152,6 +163,8 @@ icons/Makefile
 po/Makefile.in
 src/Makefile
 tests/Makefile
+tools/Makefile
+tools/autotools/Makefile
 ])
 
 echo ""
@@ -164,7 +177,7 @@ echo "  Libdir .............................. : ${libdir}"
 echo ""
 echo " Development Options"
 echo ""
-echo "  Enable Profiling (-pg)............... : ${enable_profiling}"
+echo "  Enable Profiling (-pg) .............. : ${enable_profiling}"
 echo "  Build Test Suite .................... : ${enable_tests}"
 echo ""
 

@@ -91,3 +91,5 @@ contrib/pnl/tags
 tests/.deps/
 tests/tags
 
+tests/test-hello
+tests/test-panel-gtk

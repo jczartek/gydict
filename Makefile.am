@@ -1,8 +1,13 @@
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
-SUBDIRS = data contrib icons po tests src
+SUBDIRS = contrib data icons po src tests tools
 
-EXTRA_DIST = autogen.sh
+EXTRA_DIST =  \
+	autogen.sh \
+	gydict.doap \
+	gydict.png \
+	README.md \
+	$(NULL)
 
 gydictdocdir = ${prefix}/doc/gydict
 gydictdoc_DATA = \
