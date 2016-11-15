@@ -93,3 +93,7 @@ tests/tags
 
 tests/test-hello
 tests/test-panel-gtk
+tests/test-*.log
+tests/test-*.trs
+tests/*.out
+tests/.libs

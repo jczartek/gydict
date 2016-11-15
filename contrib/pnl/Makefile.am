@@ -17,6 +17,8 @@ headers_DATA = \
 	pnl-dock-paned.h \
 	pnl-dock-revealer.h \
 	pnl-dock-stack.h \
+	pnl-dock-tab-strip.h \
+	pnl-dock-transient-grab.h \
 	pnl-dock-types.h \
 	pnl-dock-widget.h \
 	pnl-dock-window.h \
@@ -45,9 +47,7 @@ libpanel_gtk_la_SOURCES = \
 	pnl-dock-revealer.c \
 	pnl-dock-stack.c \
 	pnl-dock-tab-strip.c \
-	pnl-dock-tab-strip.h \
 	pnl-dock-transient-grab.c \
-	pnl-dock-transient-grab.h \
 	pnl-dock-widget.c \
 	pnl-dock-window.c \
 	pnl-dock.c \

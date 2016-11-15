@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="TestAppWindow" parent="GtkApplicationWindow">
+    <property name="default-width">600</property>
+    <property name="default-height">400</property>
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="header_bar">
+        <property name="show-close-button">true</property>
+        <property name="visible">true</property>
+      </object>
+    </child>
+    <child>
+      <object class="PnlDockOverlay" id="dockoverlay">
+        <property name="visible">true</property>
+        <property name="manager">manager</property>
+        <child>
+          <object class="PnlDockBin" id="dockbin">
+            <property name="visible">true</property>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="expand">true</property>
+                <property name="visible">true</property>
+                <child>
+                  <object class="GtkTextView">
+                    <property name="visible">true</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+  <object class="PnlDockManager" id="manager">
+  </object>
+</interface>
+
