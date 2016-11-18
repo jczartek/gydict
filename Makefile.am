@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
-SUBDIRS = contrib data icons po src tests tools
+SUBDIRS = contrib data icons libgydict po src tests tools
 
 EXTRA_DIST =  \
 	autogen.sh \

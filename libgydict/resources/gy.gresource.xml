@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gtk/gydict">
+    <file alias="gy-window.ui" preprocess="xml-stripblanks">./ui/gy-window.ui</file>
+    <file alias="gy-app-menu.ui" preprocess="xml-stripblanks">./ui/gy-app-menu.ui</file>
+    <file alias="gysearchbar.ui" compressed="true" preprocess="xml-stripblanks">./ui/gysearchbar.ui</file>
+    <file alias="gy-preferences-window.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-preferences-window.ui</file>
+    <file alias="gy-preferences-page-general.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-preferences-page-general.ui</file>
+    <file alias="gy-preferences-switch.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-preferences-switch.ui</file>
+    <file alias="gy-preferences-page-dicts.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-preferences-page-dicts.ui</file>
+    <file alias="gy-preferences-file-chooser.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-preferences-file-chooser.ui</file>
+    <file alias="gy-shortcuts-window.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-shortcuts-window.ui</file>
+
+    <file alias="Adwaita.css">./css/Adwaita.css</file>
+    <file alias="Adwaita-dark.css">./css/Adwaita-dark.css</file>
+    <file alias="Adwaita-shared.css">./css/Adwaita-shared.css</file>
+    <file alias="Default.css">./css/Default.css</file>
+  </gresource>
+</gresources>

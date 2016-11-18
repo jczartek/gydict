@@ -31,8 +31,9 @@ AC_CONFIG_AUX_DIR([build-aux])
 dnl ****************************************************************************
 dnl * Initialize Automake                                                      *
 dnl ****************************************************************************
-AM_INIT_AUTOMAKE([1.11 tar-ustar dist-xz no-dist-gzip -Wall])
+AM_INIT_AUTOMAKE([1.11 foreign subdir-objects tar-ustar dist-xz no-dist-gzip])
 AM_SILENT_RULES([yes])
+AM_MAINTAINER_MODE([enable])
 
 dnl ****************************************************************************
 dnl * Check for Required Programs                                              *
@@ -160,6 +161,7 @@ contrib/pnl/pnl-version.h
 data/Makefile
 data/gydict.desktop.in
 icons/Makefile
+libgydict/Makefile
 po/Makefile.in
 src/Makefile
 tests/Makefile
