@@ -1,85 +1,48 @@
-resource_files = $(shell glib-compile-resources --sourcedir=$(srcdir) --generate-dependencies $(srcdir)/gy.gresource.xml)
-gy-resources.c: gy.gresource.xml $(resource_files)
-	glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-source --c-name gy $(srcdir)/gy.gresource.xml
-gy-resources.h: gy.gresource.xml $(resource_files)
-	glib-compile-resources --target=$@ --sourcedir=$(srcdir) --generate-header --c-name gy $(srcdir)/gy.gresource.xml
+CLEANFILES =
+DISTCLEANFILES =
+BUILT_SOURCES =
+EXTRA_DIST =
 
-gydict_common_cppflags =                                                       \
-                -I$(srcdir)                                                    \
-                -DPACKAGE_DATA_DIR=\""$(datadir)"\"                            \
-                -DPACKAGE_LOCAL_DIR=\""$(datadir)/locale"\"                    \
-                $(CPPFLAGS)                                                    \
-                $(NULL)
+gydict_common_cppflags =                                               \
+	-I$(srcdir)                                                    \
+	-I$(top_srcdir)/libgydict                                      \
+	-DPACKAGE_DATA_DIR=\""$(datadir)"\"                            \
+	-DPACKAGE_LOCAL_DIR=\""$(datadir)/locale"\"                    \
+        $(CPPFLAGS)                                                    \
+        $(NULL)
 
-gydict_common_cflags =                                                         \
-		$(CFLAGS)                                                      \
-		$(GYDICT_CFLAGS)                                               \
-		-pipe                                                          \
-		$(NULL)
+gydict_common_cflags =                                                 \
+	$(CFLAGS)                                                      \
+	$(GYDICT_CFLAGS)                                               \
+	$(NULL)
 
-gydict_common_ldflags =                                                        \
-	  	-export-dynamic                                                \
-		$(LDFLAGS)                                                     \
-		$(NULL)
-
-BUILT_SOURCES =                                                                \
-		gy-resources.c                                                 \
-		gy-resources.h                                                 \
-		$(NULL)
-
-EXTRA_DIST =                                                                   \
-		$(resource_files)                                              \
-                $(srcdir)/gy.gresource.xml                                     \
-		$(NULL)
+gydict_common_ldflags =                                                \
+	-export-dynamic                                                \
+	$(LDFLAGS)                                                     \
+	$(NULL)
 
 bin_PROGRAMS = gydict
 
-gydict_SOURCES =                                                               \
-		gy-app.c gy-app.h                                              \
-		gy-depl.c gy-depl.h                                            \
-		gy-main.c                                                      \
-		gy-window.c gy-window.h                                        \
-		gy-utility-func.c gy-utility-func.h                            \
-		gy-dict.c gy-dict.h                                            \
-                gy-parsable.c gy-parsable.h                                    \
-		gy-parser-pwn.c                                                \
-		gy-parser-pwn.h                                                \
-                gy-print.c gy-print.h                                          \
-		gy-history.c gy-history.h                                      \
-                gy-history-iterable.c gy-history-iterable.h                    \
-		gy-search-bar.c gy-search-bar.h                                \
-		gy-print-compositor.c gy-print-compositor.h                    \
-		gy-resources.c gy-resources.h                                  \
-		gy-pwntabs.c gy-pwntabs.h                                      \
-                gy-preferences-window.c gy-preferences-window.h                \
-                gy-preferences-page.c gy-preferences-page.h                    \
-                gy-preferences-page-general.c gy-preferences-page-general.h    \
-                gy-preferences-switch.c gy-preferences-switch.h                \
-                gy-text-view.c gy-text-view.h                                  \
-                gy-preferences-page-dicts.c gy-preferences-page-dicts.h        \
-                gy-preferences-file-chooser.c gy-preferences-file-chooser.h    \
-                gy-css-provider.c gy-css-provider.h                            \
-                gy-german-pwn.c gy-german-pwn.h                                \
-                gy-english-pwn.c gy-english-pwn.h                              \
-                gy-pwn-dict.c gy-pwn-dict.h                                    \
-		gy-text-buffer.c gy-text-buffer.h gy-text-buffer-private.h     \
-                gy-tree-view.c gy-tree-view.h                                  \
-                gy-shortcuts-window.c gy-shortcuts-window.h                    \
-		$(NULL)
+gydict_SOURCES =                                                       \
+	gy-main.c                                                      \
+	$(null)
 
-gydict_CPPFLAGS =                                                              \
-		$(gydict_common_cppflags)                                      \
-		$(NULL)
+gydict_CPPFLAGS =                                                      \
+	$(gydict_common_cppflags)                                      \
+	$(NULL)
 
-gydict_CFLAGS =                                                                \
-		$(gydict_common_cflags)                                        \
-		$(NULL)
+gydict_CFLAGS =                                                        \
+	$(gydict_common_cflags)                                        \
+	$(NULL)
 
-gydict_LDFLAGS =                                                               \
-		$(gydict_common_ldflags)                                       \
-		$(NULL)
+gydict_LDFLAGS =                                                       \
+	$(gydict_common_ldflags)                                       \
+	$(NULL)
 
-gydict_LDADD =                                                                 \
-		$(LIBM)                                                        \
-		$(GYDICT_LIBS)                                                 \
-		$(NULL)
+gydict_LDADD =                                                         \
+	$(top_srcdir)/libgydict/libgydict.la                           \
+	$(LIBM)                                                        \
+	$(GYDICT_LIBS)                                                 \
+	$(NULL)
+
+-include $(top_srcdir)/git.mk

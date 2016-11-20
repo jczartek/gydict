@@ -22,7 +22,7 @@
 #include <glib/gi18n.h>
 #include <stdlib.h>
 
-#include "gy-app.h"
+#include <gydict.h>
 
 static gboolean option_version;
 

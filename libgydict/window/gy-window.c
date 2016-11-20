@@ -598,6 +598,9 @@ gy_window_class_init (GyWindowClass *klass)
   widget_class->window_state_event = on_window_state_event;
   widget_class->destroy = on_window_destroy;
 
+  g_type_ensure (GY_TYPE_TREE_VIEW);
+  g_type_ensure (GY_TYPE_TEXT_VIEW);
+
   gtk_widget_class_set_template_from_resource (widget_class,
                                                "/org/gtk/gydict/gy-window.ui");
   gtk_widget_class_bind_template_child (widget_class, GyWindow, child_box);

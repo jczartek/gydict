@@ -6,7 +6,6 @@ Makefile
 Makefile.in
 .buildconfig
 
-
 src/.deps/
 src/gydict
 src/gy-resources.c
@@ -59,35 +58,6 @@ po/quot.sed~
 po/remove-potcdate.sed
 po/remove-potcdate.sin~
 
-contrib/pnl/.deps/
-contrib/pnl/.libs/
-contrib/pnl/libpanel-gtk.la
-contrib/pnl/libpanel_gtk_la-pnl-animation.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock-bin-edge.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock-bin.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock-item.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock-manager.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock-overlay-edge.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock-overlay.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock-paned.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock-revealer.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock-stack.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock-tab-strip.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock-transient-grab.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock-widget.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock-window.lo
-contrib/pnl/libpanel_gtk_la-pnl-dock.lo
-contrib/pnl/libpanel_gtk_la-pnl-frame-source.lo
-contrib/pnl/libpanel_gtk_la-pnl-multi-paned.lo
-contrib/pnl/libpanel_gtk_la-pnl-resources.lo
-contrib/pnl/libpanel_gtk_la-pnl-tab-strip.lo
-contrib/pnl/libpanel_gtk_la-pnl-tab.lo
-contrib/pnl/libpanel_gtk_la-pnl-util.lo
-contrib/pnl/pnl-resources.c
-contrib/pnl/pnl-resources.h
-contrib/pnl/pnl-version.h
-contrib/pnl/stamp-resources
-contrib/pnl/tags
 tests/.deps/
 tests/tags
 

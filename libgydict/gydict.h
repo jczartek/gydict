@@ -19,7 +19,7 @@
 #ifndef __GYDICT_H__
 #define __GYDICT_H__
 
-#include <gtk/gtk.>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

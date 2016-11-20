@@ -81,3 +81,4 @@ glib_resources_xml = pnl.gresource.xml
 glib_resources_namespace = pnl
 include $(top_srcdir)/tools/autotools/Makefile.am.gresources
 
+-include $(top_srcdir)/git.mk

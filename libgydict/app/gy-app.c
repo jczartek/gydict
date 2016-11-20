@@ -24,6 +24,7 @@
 #include "preferences/gy-preferences-window.h"
 #include "dictionaries/gy-dict.h"
 #include "shortcuts/gy-shortcuts-window.h"
+#include "resources/gy-resources.h"
 
 
 /**STATIC PROTOTYPES FUNCTIONS**/
@@ -287,6 +288,8 @@ startup (GApplication *application)
   /* Chain up parent's class */
   G_APPLICATION_CLASS (gy_app_parent_class)->startup (application);
 
+  /* Register resources */
+  g_resources_register (gy_get_resource ());
   /* Setup actions */
   setup_actions_app (app);
 
