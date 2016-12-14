@@ -18,6 +18,7 @@
 
 #include "gy-preferences-page-general.h"
 #include "gy-preferences-switch.h"
+#include "gy-preferences-page-dicts.h"
 
 struct _GyPreferencesPageGeneral
 {
@@ -52,6 +53,8 @@ gy_preferences_page_general_class_init (GyPreferencesPageGeneralClass *klass)
 
   object_class->constructed = gy_preferences_page_general_constructed;
 
+  g_type_ensure (GY_TYPE_PREFERENCES_SWITCH);
+  g_type_ensure (GY_TYPE_PREFERENCES_PAGE_DICTS);
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-preferences-page-general.ui");
   gtk_widget_class_bind_template_child (widget_class, GyPreferencesPageGeneral, font_button);
   gtk_widget_class_bind_template_child (widget_class, GyPreferencesPageGeneral, settings);
