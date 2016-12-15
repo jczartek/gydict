@@ -1,15 +1,15 @@
 # List of source files containing translatable strings.
 # Please keep this file sorted alphabetically.
 data/gydict.desktop.in.in
-src/contrib/shortcuts/shortcuts-window.ui
-src/resources/ui/gy-app-menu.ui
-src/resources/ui/gy-preferences-file-chooser.ui
-src/resources/ui/gy-preferences-page-dicts.ui
-src/resources/ui/gy-preferences-page-general.ui
-src/resources/ui/gy-preferences-switch.ui
-src/resources/ui/gy-preferences-window.ui
-src/resources/ui/gysearchbar.ui
-src/resources/ui/gy-window.ui
-src/gy-app.c
+libgydict/app/gy-app.c
+libgydict/resources/ui/gy-shortcuts-window.ui
+libgydict/resources/ui/gy-app-menu.ui
+libgydict/resources/ui/gy-preferences-file-chooser.ui
+libgydict/resources/ui/gy-preferences-page-dicts.ui
+libgydict/resources/ui/gy-preferences-page-general.ui
+libgydict/resources/ui/gy-preferences-switch.ui
+libgydict/resources/ui/gy-preferences-window.ui
+libgydict/resources/ui/gysearchbar.ui
+libgydict/resources/ui/gy-window.ui
+libgydict/window/gy-window.c
 src/gy-main.c
-src/gy-window.c
