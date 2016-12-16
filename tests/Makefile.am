@@ -1,3 +1,6 @@
+CLEANFILES =
+DISTCLEANFILES =
+BUILT_SOURCES =
 EXTRA_DIST =
 
 tests_cflags = \
@@ -42,3 +45,5 @@ noinst_PROGRAMS = $(TESTS)
 endif
 
 check_PROGRAMS = $(TESTS)
+
+-include $(top_srcdir)/git.mk

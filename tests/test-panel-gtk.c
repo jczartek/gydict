@@ -24,18 +24,19 @@
 #define TEST_TYPE_APP (test_app_get_type())
 G_DECLARE_FINAL_TYPE (TestApp, test_app, TEST, APP, GtkApplication)
 
-typedef struct _TestApp {
+struct _TestApp {
   GtkApplication __parent__;
-} TestApp;
+};
 
 G_DEFINE_TYPE (TestApp, test_app, GTK_TYPE_APPLICATION)
 
 #define TEST_TYPE_APP_WINDOW (test_app_window_get_type())
 G_DECLARE_FINAL_TYPE (TestAppWindow, test_app_window, TEST, APP_WINDOW, GtkApplicationWindow)
 
-typedef struct _TestAppWindow {
+struct _TestAppWindow {
   GtkApplicationWindow __parent__;
-} TestAppWindow;
+  GtkWidget*           dockbin;
+};
 
 G_DEFINE_TYPE (TestAppWindow, test_app_window, GTK_TYPE_APPLICATION_WINDOW)
 
@@ -61,16 +62,18 @@ test_read_all_bytes (void)
 static void
 test_app_window_class_init (TestAppWindowClass *klass)
 {
+  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+
   gtk_widget_class_set_template (GTK_WIDGET_CLASS (klass),
                                  test_read_all_bytes ());
+
+  gtk_widget_class_bind_template_child (widget_class, TestAppWindow, dockbin);
+
 }
 
 static void
 test_app_window_init (TestAppWindow *self)
 {
-  //PnlDockOverlay *pno;
-
-  //pno = pnl_dock_overlay_new ();
   gtk_widget_init_template (GTK_WIDGET (self));
 }
 
@@ -87,9 +90,19 @@ static void
 test_app_activate (GApplication *app)
 {
   TestAppWindow *win = NULL;
+  PnlDockBin *dock;
+  PnlDockRevealer *edge;
+  GActionGroup *group;
 
   win = test_app_window_new (TEST_APP(app));
   gtk_window_present (GTK_WINDOW (win));
+
+  dock = PNL_DOCK_BIN (win->dockbin);
+  edge = PNL_DOCK_REVEALER (pnl_dock_bin_get_left_edge (dock));
+  pnl_dock_revealer_set_position (PNL_DOCK_REVEALER (edge), 200);
+  pnl_dock_revealer_set_reveal_child (edge, TRUE);
+  group = gtk_widget_get_action_group (GTK_WIDGET (dock), "dockbin");
+  gtk_widget_insert_action_group (GTK_WIDGET (win), "dockbin", group);
 }
 
 static void
