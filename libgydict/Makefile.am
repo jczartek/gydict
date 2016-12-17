@@ -34,6 +34,7 @@ libgydict_la_public_headers = \
 	printing/gy-print-compositor.h \
 	search/gy-search-bar.h \
 	shortcuts/gy-shortcuts-window.h \
+	window/gy-header-bar.h \
 	window/gy-window.h \
 	gydict.h \
 	$(NULL)
@@ -67,6 +68,7 @@ libgydict_la_SOURCES = \
 	printing/gy-print-compositor.c \
 	search/gy-search-bar.c \
 	shortcuts/gy-shortcuts-window.c \
+	window/gy-header-bar.c \
 	window/gy-window.c \
 	$(NULL)
 
@@ -75,10 +77,12 @@ nodist_libgydict_la_SOURCES = \
 	resources/gy-resources.c \
 	$(NULL)
 
-libgydict_ls_CPPFLAGS = \
+libgydict_la_CPPFLAGS = \
 	-I$(srcdir) \
 	-I$(top_builddir)/contrib/pnl \
 	-I$(top_srcdir)/contrib/pnl \
+	-I$(top_builddir)/contrib/egg \
+	-I$(top_srcdir)/contrib/egg \
 	$(CPPFLAGS) \
 	$(NULL)
 
@@ -90,6 +94,7 @@ libgydict_la_CFLAGS = \
 libgydict_la_LIBADD = \
 	$(LIBM) \
 	$(GYDICT_LIBS) \
+	$(top_builddir)/contrib/egg/libegg-private.la \
 	$(top_builddir)/contrib/pnl/libpanel-gtk.la \
 	$(NULL)
 

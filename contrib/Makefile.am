@@ -1,3 +1,1 @@
-SUBDIRS = \
-	pnl \
-	$(null)
+SUBDIRS = egg pnl

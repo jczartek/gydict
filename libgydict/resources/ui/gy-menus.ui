@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<interface>
+  <menu id="app-menu">
+    <section id="app-menu-new-section">
+      <item>
+        <attribute name="label" translatable="yes">New window</attribute>
+        <attribute name="action">app.new-window</attribute>
+      </item>
+     </section>
+     <section id="app-menu-preferences-section">
+      <item>
+        <attribute name="label" translatable="yes">Preferences</attribute>
+        <attribute name="action">app.preferences</attribute>
+      </item>
+     </section>
+     <section id="app-menu-help-section">
+      <item>
+        <attribute name="label" translatable="yes">Keyboard shortcuts</attribute>
+        <attribute name="action">app.shortcuts</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">About Gydict</attribute>
+        <attribute name="action">app.about</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Quit</attribute>
+        <attribute name="action">app.quit</attribute>
+      </item>
+    </section>
+  </menu>
+  <!-- <menu id="gear-menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Print</attribute>
+				<attribute name="action">win.print</attribute>
+      </item>
+			<item>
+				<attribute name="label" translatable="yes">_Copy</attribute>
+				<attribute name="action">win.copy</attribute>
+			</item>
+			<item>
+				<attribute name="label" translatable="yes">Pa_ste</attribute>
+				<attribute name="action">win.paste</attribute>
+			</item>
+			<item>
+				<attribute name="label" translatable="yes">React to clipboard</attribute>
+				<attribute name="action">win.clip</attribute>
+			</item>
+			<item>
+				<attribute name="label" translatable="yes">Diacritic</attribute>
+				<attribute name="action">win.signs</attribute>
+			</item>
+    </section>
+		<section>
+			<item>
+				<attribute name="label" translatable="yes">Cl_ose</attribute>
+				<attribute name="action">win.close</attribute>
+			</item>
+		</section>
+	</menu>
+  <menu id="dict-menu">
+    <section>
+      <attribute name="label" translatable="no">PWN</attribute>
+      <item>
+        <attribute name="label" translatable="yes">English-Polish Dictionary</attribute>
+        <attribute name="action">win.dict</attribute>
+        <attribute name="target">GyEnglishPwn-english</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Polish-English Dictionary</attribute>
+        <attribute name="action">win.dict</attribute>
+        <attribute name="target">GyEnglishPwn-polish</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">German-Polish Dictionary</attribute>
+        <attribute name="action">win.dict</attribute>
+		    <attribute name="target">GyGermanPwn-german</attribute>
+		  </item>
+		  <item>
+		    <attribute name="label" translatable="yes">Polish-German Dictionary</attribute>
+		    <attribute name="action">win.dict</attribute>
+		    <attribute name="target">GyGermanPwn-polish</attribute>
+		  </item>
+    </section>
+    <section>
+      <attribute name="label" translatable="no">DEPL</attribute>
+      <item>
+        <attribute name="label" translatable="yes">German-Polish Dictionary</attribute>
+        <attribute name="action">win.dict</attribute>
+        <attribute name="target">GyDepl-german</attribute>
+      </item>
+    </section>
+  </menu> -->
+</interface>

@@ -10,6 +10,7 @@
     <file alias="gy-preferences-page-dicts.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-preferences-page-dicts.ui</file>
     <file alias="gy-preferences-file-chooser.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-preferences-file-chooser.ui</file>
     <file alias="gy-shortcuts-window.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-shortcuts-window.ui</file>
+    <file alias="gy-menus.ui" preprocess="xml-stripblanks">./ui/gy-menus.ui</file>
 
     <file alias="Adwaita.css">./css/Adwaita.css</file>
     <file alias="Adwaita-dark.css">./css/Adwaita-dark.css</file>

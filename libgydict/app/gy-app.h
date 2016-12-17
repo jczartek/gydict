@@ -27,9 +27,10 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (GyApp, gy_app, GY, APP, GtkApplication)
 
-GyApp* gy_app_new (void);
-void gy_app_new_window (GyApp *application);
-
+GyApp *gy_app_new            (void);
+void   gy_app_new_window     (GyApp *self);
+GMenu *gy_app_get_menu_by_id (GyApp       *self,
+                              const gchar *id);
 G_END_DECLS
 
 #endif /* end of include guard: __GY_APP_H__ */

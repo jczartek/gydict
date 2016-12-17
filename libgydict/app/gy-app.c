@@ -18,6 +18,7 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
+#include <egg-menu-manager.h>
 #include "gy-app.h"
 #include "window/gy-window.h"
 #include "css/gy-css-provider.h"
@@ -46,9 +47,9 @@ static void shortcuts_cb (GSimpleAction *action,
 
 struct _GyApp
 {
-  GtkApplication       parent;
-
-  GyPreferencesWindow *preferences_window;
+  GtkApplication       __parent__;
+  GyPreferencesWindow   *preferences_window;
+  EggMenuManager        *menu_manager;
 };
 
 G_DEFINE_TYPE (GyApp, gy_app, GTK_TYPE_APPLICATION);
@@ -259,25 +260,19 @@ gy_app_register_theme_overrides (GyApp *self)
                    gtk_settings, "gtk-application-prefer-dark-theme",
                    G_SETTINGS_BIND_DEFAULT);
 }
+
 static void
-setup_menu_app (GyApp *application)
+gy_app_register_menus (GyApp *self)
 {
-  GtkBuilder *builder;
-  GMenuModel *model;
-  GError *error = NULL;
+  GMenu *app_menu;
 
-  builder = gtk_builder_new ();
+  g_assert (GY_IS_APP (self));
 
-  if (!gtk_builder_add_from_resource (builder, "/org/gtk/gydict/gy-app-menu.ui", &error))
-  {
-    g_error ("%s",error ? error->message : "unknown error");
-    g_clear_error (&error);
-  }
+  self->menu_manager = egg_menu_manager_new ();
+  egg_menu_manager_add_resource (self->menu_manager, "/org/gtk/gydict/gy-menus.ui", NULL);
 
-  model = G_MENU_MODEL (gtk_builder_get_object (builder, "app-menu"));
-  gtk_application_set_app_menu (GTK_APPLICATION (application), model);
-
-  g_object_unref (builder);
+  app_menu = egg_menu_manager_get_menu_by_id (self->menu_manager, "app-menu");
+  gtk_application_set_app_menu (GTK_APPLICATION (self), G_MENU_MODEL (app_menu));
 }
 
 static void
@@ -294,7 +289,7 @@ startup (GApplication *application)
   setup_actions_app (app);
 
   /* Setup menu application */
-  setup_menu_app (app);
+  gy_app_register_menus (app);
 
   /* Setup accelerators */
   setup_accels (app);
@@ -335,8 +330,35 @@ gy_app_new(void)
 }
 
 void
-gy_app_new_window (GyApp *application)
+gy_app_new_window (GyApp *self)
 {
-  g_action_group_activate_action (G_ACTION_GROUP (application),
+  g_return_if_fail (GY_IS_APP (self));
+
+  g_action_group_activate_action (G_ACTION_GROUP (self),
                                   "new-window",NULL);
+}
+
+/**
+ * gy_app_get_menu_by_id:
+ * @self: An #GyApp.
+ * @id: The id of the menu to lookup.
+ *
+ * Similar to gtk_application_get_menu_by_id() but takes into account merging
+ * the menus provided by, and extended by, plugins.
+ *
+ * Returns: (transfer none): A #GMenu.
+ */
+GMenu *
+gy_app_get_menu_by_id (GyApp          *self,
+                       const gchar    *id)
+{
+  g_return_val_if_fail (GY_IS_APP (self), NULL);
+  g_return_val_if_fail (id != NULL, NULL);
+
+  if (self->menu_manager != NULL)
+    return egg_menu_manager_get_menu_by_id (self->menu_manager, id);
+
+  g_critical ("%s() called by non-UI process", G_STRFUNC);
+
+  return NULL;
 }

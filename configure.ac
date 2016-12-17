@@ -112,6 +112,7 @@ PKG_CHECK_MODULES(GYDICT,    [gtk+-3.0 >= gtk_required_version
                               glib-2.0 >= glib_required_version
                               zlib >= zlib_required_version])
 PKG_CHECK_MODULES(PANEL_GTK, [gtk+-3.0 >= gtk_required_version])
+PKG_CHECK_MODULES(EGG,       [gtk+-3.0 >= gtk_required_version])
 
 AC_CHECK_LIBM
 AC_SUBST(LIBM)
@@ -156,6 +157,7 @@ AC_MSG_RESULT([$enable_profiling])
 AC_OUTPUT([
 Makefile
 contrib/Makefile
+contrib/egg/Makefile
 contrib/pnl/Makefile
 contrib/pnl/pnl-version.h
 data/Makefile
