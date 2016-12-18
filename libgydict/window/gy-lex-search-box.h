@@ -1,4 +1,4 @@
-/* test-hello.c
+/* gy-lex-search-box.h
  *
  * Copyright (C) 2016 Jakub Czartek <kuba@linux.pl>
  *
@@ -16,12 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <glib.h>
-#include <gydict.h>
+#ifndef GY_LEX_SEARCH_BOX_H
+#define GY_LEX_SEARCH_BOX_H
 
-gint
-main (gint   argc,
-      gchar *argv[])
-{
-  return 0;
-}
+#include <gtk/gtk.h>
+
+G_BEGIN_DECLS
+
+#define GY_TYPE_LEX_SEARCH_BOX (gy_lex_search_box_get_type())
+
+G_DECLARE_FINAL_TYPE (GyLexSearchBox, gy_lex_search_box, GY, LEX_SEARCH_BOX, GtkBox)
+
+GyLexSearchBox *gy_lex_search_box_new (void);
+
+G_END_DECLS
+
+#endif /* GY_LEX_SEARCH_BOX_H */
+

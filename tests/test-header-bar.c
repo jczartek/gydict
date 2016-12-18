@@ -1,4 +1,4 @@
-/* test-hello.c
+/* test-header-bar.c
  *
  * Copyright (C) 2016 Jakub Czartek <kuba@linux.pl>
  *
@@ -16,12 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <glib.h>
+#include <gtk/gtk.h>
 #include <gydict.h>
 
 gint
 main (gint   argc,
       gchar *argv[])
 {
+  GtkWidget *window;
+  GyHeaderBar *header_bar;
+
+  gtk_init (&argc, &argv);
+  g_type_ensure (GY_TYPE_LEX_SEARCH_BOX);
+  g_resources_register (gy_get_resource ());
+  header_bar = gy_header_bar_new ();
+  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_default_size (GTK_WINDOW (window), 500, 300);
+  gtk_window_set_titlebar (GTK_WINDOW (window), GTK_WIDGET (header_bar));
+  gtk_widget_show_all (window);
+
+  g_signal_connect (window, "delete-event", G_CALLBACK (gtk_main_quit), NULL);
+
+  gtk_main ();
   return 0;
 }

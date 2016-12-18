@@ -23,7 +23,8 @@
 
 G_BEGIN_DECLS
 
-#define GY_TYPE_APP (gy_app_get_type ())
+#define GY_TYPE_APP    (gy_app_get_type ())
+#define GY_APP_DEFAULT (GY_APP (g_application_get_default ()))
 
 G_DECLARE_FINAL_TYPE (GyApp, gy_app, GY, APP, GtkApplication)
 

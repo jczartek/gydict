@@ -26,6 +26,9 @@ G_BEGIN_DECLS
 #define GYDICT_INSIDE
 
 #include "app/gy-app.h"
+#include "resources/gy-resources.h"
+#include "window/gy-header-bar.h"
+#include "window/gy-lex-search-box.h"
 
 #undef GYDICT_INSIDE
 

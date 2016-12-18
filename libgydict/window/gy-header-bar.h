@@ -1,4 +1,4 @@
-/* test-hello.c
+/* gy-header-bar.h
  *
  * Copyright (C) 2016 Jakub Czartek <kuba@linux.pl>
  *
@@ -16,12 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <glib.h>
-#include <gydict.h>
+#ifndef __GY_HEADER_BAR_H__
+#define __GY_HEADER_BAR_H__
 
-gint
-main (gint   argc,
-      gchar *argv[])
-{
-  return 0;
-}
+#include <gtk/gtk.h>
+
+G_BEGIN_DECLS
+
+#define GY_TYPE_HEADER_BAR (gy_header_bar_get_type())
+
+G_DECLARE_FINAL_TYPE (GyHeaderBar, gy_header_bar, GY, HEADER_BAR, GtkHeaderBar)
+
+GyHeaderBar *gy_header_bar_new (void);
+
+G_END_DECLS
+
+#endif /* __GY_HEADER_BAR_H__ */
+

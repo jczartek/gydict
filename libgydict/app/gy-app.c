@@ -285,6 +285,8 @@ startup (GApplication *application)
 
   /* Register resources */
   g_resources_register (gy_get_resource ());
+  g_application_set_resource_base_path (application, "/org/gtk/gydict");
+
   /* Setup actions */
   setup_actions_app (app);
 

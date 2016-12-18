@@ -57,9 +57,9 @@
 				<attribute name="action">win.close</attribute>
 			</item>
 		</section>
-	</menu>
+	</menu> -->
   <menu id="dict-menu">
-    <section>
+    <section id="dict-menu-PWN-section">
       <attribute name="label" translatable="no">PWN</attribute>
       <item>
         <attribute name="label" translatable="yes">English-Polish Dictionary</attribute>
@@ -71,8 +71,6 @@
         <attribute name="action">win.dict</attribute>
         <attribute name="target">GyEnglishPwn-polish</attribute>
       </item>
-    </section>
-    <section>
       <item>
         <attribute name="label" translatable="yes">German-Polish Dictionary</attribute>
         <attribute name="action">win.dict</attribute>
@@ -84,7 +82,7 @@
 		    <attribute name="target">GyGermanPwn-polish</attribute>
 		  </item>
     </section>
-    <section>
+    <section id="dict-menu-DEPL-section">
       <attribute name="label" translatable="no">DEPL</attribute>
       <item>
         <attribute name="label" translatable="yes">German-Polish Dictionary</attribute>
@@ -92,5 +90,5 @@
         <attribute name="target">GyDepl-german</attribute>
       </item>
     </section>
-  </menu> -->
+  </menu>
 </interface>

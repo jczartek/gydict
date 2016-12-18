@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GyHeaderBar" parent="GtkHeaderBar">
+    <property name="visible">true</property>
+    <property name="show-close-button">true</property>
+
+    <child>
+      <object class="GtkBox" id="right_box">
+        <property name="visible">true</property>
+        <property name="spacing">6</property>
+        <property name="hexpand">true</property>
+        <child>
+          <object class="GtkMenuButton" id="dicts_button">
+            <property name="visible">true</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="margin-end">6</property>
+                <property name="margin-start">6</property>
+                <property name="spacing">8</property>
+                <property name="visible">true</property>
+                <style>
+                  <class name="image-button" />
+                </style>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon_name">view-dual-symbolic</property>
+                    <property name="visible">true</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon-name">pan-down-symbolic</property>
+                    <property name="visible">true</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="pack-type">end</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkMenuButton" id="menu_button">
+            <property name="visible">true</property>
+            <style>
+              <class name="image-button"/>
+            </style>
+            <child>
+              <object class="GtkImage">
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="visible">true</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="pack-type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="pack-type">end</property>
+      </packing>
+    </child>
+
+    <child type="title">
+      <object class="GyLexSearchBox">
+        <property name="visible">true</property>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkBox" id="left_box">
+        <property name="visible">true</property>
+        <property name="spacing">6</property>
+        <property name="hexpand">true</property>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">true</property>
+            <style>
+              <class name="linked" />
+            </style>
+            <child>
+              <object class="GtkButton">
+                <property name="visible">true</property>
+                <property name="valign">start</property>
+                <property name="tooltip_text" translatable="yes">Go Previous</property>
+                <property name="action_name">win.go-previous</property>
+                <style>
+                  <class name="image-button" />
+                </style>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">true</property>
+                    <property name="icon_size">1</property>
+                    <property name="icon_name">go-previous-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="visible">true</property>
+                <property name="valign">center</property>
+                <property name="tooltip_text" translatable="yes">Go Next</property>
+                <property name="action_name">win.go-next</property>
+                <style>
+                  <class name="image-button" />
+                </style>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">true</property>
+                    <property name="icon_size">1</property>
+                    <property name="icon_name">go-next-symbolic</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="pack-type">start</property>
+      </packing>
+    </child>
+
+  </template>
+</interface>

@@ -3,12 +3,18 @@ DISTCLEANFILES =
 BUILT_SOURCES =
 EXTRA_DIST =
 
+tests_cppflags = \
+	-I$(top_builddir)/libgydict \
+	$(NULL)
+
 tests_cflags = \
-	$(GYDICT_CFLAGS)
+	$(tests_cppflags) \
+	$(GYDICT_CFLAGS) \
 	$(NULL)
 
 tests_libs = \
-	$(GYDICT_LIBS)
+	$(GYDICT_LIBS) \
+	$(top_srcdir)/libgydict/libgydict.la \
 	$(NULL)
 
 tests_ldflags = \
@@ -38,7 +44,14 @@ test_panel_gtk_CFLAGS = $(tests_panel_gtk_cflags)
 test_panel_gtk_LDADD = $(tests_panel_gtk_libs)
 test_panel_gtk_LDFLAGS = $(tests_ldflags)
 EXTRA_DIST += \
-	test-panel-gtk.ui
+	test-panel-gtk.ui \
+	$(NULL)
+
+TESTS += test-header-bar
+test_header_bar_SOURCES = test-header-bar.c
+test_header_bar_CFLAGS = $(tests_cflags)
+test_header_bar_LDADD = $(tests_libs)
+test_header_bar_LDFLAGS = $(tests_ldflags)
 
 if ENABLE_TESTS
 noinst_PROGRAMS = $(TESTS)
