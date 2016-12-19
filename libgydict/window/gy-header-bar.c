@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "gy-header-bar.h"
+#include "gy-lex-search-box.h"
 #include "app/gy-app.h"
 
 struct _GyHeaderBar
@@ -32,8 +33,6 @@ enum {
   N_PROPS
 };
 
-static GParamSpec *properties [N_PROPS];
-
 GyHeaderBar *
 gy_header_bar_new (void)
 {
@@ -41,52 +40,8 @@ gy_header_bar_new (void)
 }
 
 static void
-gy_header_bar_finalize (GObject *object)
-{
-  GyHeaderBar *self = (GyHeaderBar *)object;
-
-  G_OBJECT_CLASS (gy_header_bar_parent_class)->finalize (object);
-}
-
-static void
-gy_header_bar_get_property (GObject    *object,
-                            guint       prop_id,
-                            GValue     *value,
-                            GParamSpec *pspec)
-{
-  GyHeaderBar *self = GY_HEADER_BAR (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-gy_header_bar_set_property (GObject      *object,
-                            guint         prop_id,
-                            const GValue *value,
-                            GParamSpec   *pspec)
-{
-  GyHeaderBar *self = GY_HEADER_BAR (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
 gy_header_bar_class_init (GyHeaderBarClass *klass)
 {
-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-  object_class->finalize = gy_header_bar_finalize;
-  object_class->get_property = gy_header_bar_get_property;
-  object_class->set_property = gy_header_bar_set_property;
-
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gtk/gydict/gy-header-bar.ui");
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, dicts_button);
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, menu_button);
@@ -102,9 +57,29 @@ gy_header_bar_init (GyHeaderBar *self)
 
   model = gy_app_get_menu_by_id (GY_APP_DEFAULT, "dict-menu");
   popover = gtk_popover_new_from_model (NULL, G_MENU_MODEL (model));
+  gtk_widget_set_size_request (popover, 250, -1);
   gtk_menu_button_set_popover (self->dicts_button, popover);
 
   model = gy_app_get_menu_by_id (GY_APP_DEFAULT, "gear-menu");
   popover = gtk_popover_new_from_model (NULL, G_MENU_MODEL (model));
+  gtk_widget_set_size_request (popover, 225, -1);
   gtk_menu_button_set_popover (self->menu_button, popover);
+}
+
+void
+gy_header_bar_connect_entry_with_tree_view (GyHeaderBar *self,
+                                            GtkTreeView *tree_view)
+{
+  GyLexSearchBox *search_box;
+  GtkEntry       *entry;
+
+  g_return_if_fail (GY_IS_HEADER_BAR (self));
+  g_return_if_fail (GTK_IS_TREE_VIEW (tree_view));
+
+  search_box = GY_LEX_SEARCH_BOX (gtk_header_bar_get_custom_title (GTK_HEADER_BAR (self)));
+
+  g_assert (GY_IS_LEX_SEARCH_BOX (search_box));
+
+  entry = GTK_ENTRY (_gy_lex_search_box_get_search_entry (search_box));
+  gtk_tree_view_set_search_entry (tree_view, entry);
 }

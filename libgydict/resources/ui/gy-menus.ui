@@ -28,36 +28,38 @@
       </item>
     </section>
   </menu>
-  <!-- <menu id="gear-menu">
-    <section>
+  <menu id="gear-menu">
+    <section id="gear-menu-general-section">
+      <attribute name="id">general-section</attribute>
+      <attribute name="display-hint">horizontal-buttons</attribute>
+      <attribute name="text-direction">ltr</attribute>
       <item>
-        <attribute name="label" translatable="yes">_Print</attribute>
-				<attribute name="action">win.print</attribute>
+        <attribute name="label" translatable="yes">Show left panel</attribute>
+        <!-- <attribute name="action"></attribute> -->
+        <attribute name="verb-icon">panel-left-pane-symbolic</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes">Print</attribute>
+        <attribute name="action">win.print</attribute>
+        <attribute name="verb-icon">printer-symbolic</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Find</attribute>
+        <attribute name="action">win.find</attribute>
+        <attribute name="verb-icon">edit-find-symbolic</attribute>
+      </item>
+    </section>
+    <section id="gear-menu-help-section">
 			<item>
-				<attribute name="label" translatable="yes">_Copy</attribute>
-				<attribute name="action">win.copy</attribute>
-			</item>
-			<item>
-				<attribute name="label" translatable="yes">Pa_ste</attribute>
-				<attribute name="action">win.paste</attribute>
-			</item>
-			<item>
-				<attribute name="label" translatable="yes">React to clipboard</attribute>
+				<attribute name="label" translatable="yes">Clipboard</attribute>
 				<attribute name="action">win.clip</attribute>
 			</item>
 			<item>
-				<attribute name="label" translatable="yes">Diacritic</attribute>
-				<attribute name="action">win.signs</attribute>
-			</item>
-    </section>
-		<section>
-			<item>
-				<attribute name="label" translatable="yes">Cl_ose</attribute>
+				<attribute name="label" translatable="yes">Close</attribute>
 				<attribute name="action">win.close</attribute>
 			</item>
 		</section>
-	</menu> -->
+	</menu>
   <menu id="dict-menu">
     <section id="dict-menu-PWN-section">
       <attribute name="label" translatable="no">PWN</attribute>
@@ -89,6 +91,10 @@
         <attribute name="action">win.dict</attribute>
         <attribute name="target">GyDepl-german</attribute>
       </item>
+    </section>
+  </menu>
+  <menu id="chars-menu">
+    <section id="chars-menu-diacritical-point-german">
     </section>
   </menu>
 </interface>

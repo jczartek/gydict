@@ -16,10 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "gy-lex-search-box.h"
+#include "app/gy-app.h"
 
 struct _GyLexSearchBox
 {
-  GtkBox __parent__;
+  GtkBox          __parent__;
+
+  GtkSearchEntry *search_entry;
+  GtkMenuButton  *chars_button;
 };
 
 G_DEFINE_TYPE (GyLexSearchBox, gy_lex_search_box, GTK_TYPE_BOX)
@@ -85,10 +89,21 @@ gy_lex_search_box_class_init (GyLexSearchBoxClass *klass)
   object_class->set_property = gy_lex_search_box_set_property;
 
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gtk/gydict/gy-lex-search-box.ui");
+  gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyLexSearchBox, search_entry);
+  gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyLexSearchBox, chars_button);
 }
 
 static void
 gy_lex_search_box_init (GyLexSearchBox *self)
 {
   gtk_widget_init_template (GTK_WIDGET (self));
+}
+
+
+GtkSearchEntry *
+_gy_lex_search_box_get_search_entry (GyLexSearchBox *self)
+{
+  g_return_val_if_fail (GY_IS_LEX_SEARCH_BOX (self), NULL);
+
+  return self->search_entry;
 }

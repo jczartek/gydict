@@ -27,7 +27,8 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (GyLexSearchBox, gy_lex_search_box, GY, LEX_SEARCH_BOX, GtkBox)
 
-GyLexSearchBox *gy_lex_search_box_new (void);
+GyLexSearchBox *gy_lex_search_box_new               (void);
+GtkSearchEntry *_gy_lex_search_box_get_search_entry (GyLexSearchBox *self);
 
 G_END_DECLS
 

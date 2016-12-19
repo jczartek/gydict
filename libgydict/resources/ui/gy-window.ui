@@ -1,71 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <menu id="gear_menu">
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">_Print</attribute>
-				<attribute name="action">win.print</attribute>
-      </item>
-			<item>
-				<attribute name="label" translatable="yes">_Copy</attribute>
-				<attribute name="action">win.copy</attribute>
-			</item>
-			<item>
-				<attribute name="label" translatable="yes">Pa_ste</attribute>
-				<attribute name="action">win.paste</attribute>
-			</item>
-			<item>
-				<attribute name="label" translatable="yes">React to clipboard</attribute>
-				<attribute name="action">win.clip</attribute>
-			</item>
-			<item>
-				<attribute name="label" translatable="yes">Diacritic</attribute>
-				<attribute name="action">win.signs</attribute>
-			</item>
-    </section>
-		<section>
-			<item>
-				<attribute name="label" translatable="yes">Cl_ose</attribute>
-				<attribute name="action">win.close</attribute>
-			</item>
-		</section>   
-	</menu>
-	
-  <menu id="dict_menu">
-    <section>
-      <attribute name="label" translatable="no">PWN</attribute>
-      <item>
-        <attribute name="label" translatable="yes">English-Polish Dictionary</attribute>
-        <attribute name="action">win.dict</attribute>
-        <attribute name="target">GyEnglishPwn-english</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Polish-English Dictionary</attribute>
-        <attribute name="action">win.dict</attribute>
-        <attribute name="target">GyEnglishPwn-polish</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">German-Polish Dictionary</attribute>
-        <attribute name="action">win.dict</attribute>
-		    <attribute name="target">GyGermanPwn-german</attribute>
-		  </item>
-		  <item>
-		    <attribute name="label" translatable="yes">Polish-German Dictionary</attribute>
-		    <attribute name="action">win.dict</attribute>
-		    <attribute name="target">GyGermanPwn-polish</attribute>
-		  </item>
-    </section>
-    <section>
-      <attribute name="label" translatable="no">DEPL</attribute>
-      <item>
-        <attribute name="label" translatable="yes">German-Polish Dictionary</attribute>
-        <attribute name="action">win.dict</attribute>
-        <attribute name="target">GyDepl-german</attribute>
-      </item>
-    </section>
-  </menu>
 
 	<object class="GyTextBuffer" id="text_buffer">
 	</object>
@@ -74,154 +8,8 @@
 		<property name="can_focus">False</property>
 		<property name="has_focus">False</property>
 		<property name="is_focus">False</property>
-  	<child type="titlebar">
-	  	<object class="GtkHeaderBar" id="header_bar">
-  	  	<property name="visible">True</property>
-  	    <property name="can_focus">False</property>
-	      <property name="vexpand">False</property>
-	  	  <property name="title">Gydict</property>
-	      <property name="show_close_button">True</property>
-	      <child>
-	      	<object class="GtkBox" id="box_buttons_history">
-	      		<property name="visible">True</property>
-	      		<property name="valign">center</property>
-	      		<property name="can_focus">False</property>
-	      		<style>
-	      			<class name="linked" />
-	      		</style>
-	      		<child>
-	      			<object class="GtkButton" id="back_button">
-	      				<property name="visible">True</property>
-	      				<property name="valign">center</property>
-	      				<property name="can_focus">False</property>
-	      				<property name="tooltip_text" translatable="yes">Back</property>
-	      				<property name="action_name">win.go-back</property>
-	      				<style>
-	      					<class name="image-button" />
-	      				</style>
-	      				<child>
-	      					<object class="GtkImage" id="back_button_image">
-	      						<property name="visible">True</property>
-	      						<property name="icon_size">1</property>
-	      						<property name="icon_name">go-previous-symbolic</property>
-	      					</object>
-	      				</child>
-	      			</object> <!-- back -->
-	      			<packing>
-		  					<property name="expand">False</property>
-		  					<property name="fill">False</property>
-							</packing>
-	      		</child>
-	      		<child>
-	      			<object class="GtkButton" id="forward_button">
-	      				<property name="visible">True</property>
-	      				<property name="valign">center</property>
-	      				<property name="can_focus">False</property>
-	      				<property name="tooltip_text" translatable="yes">Forward</property>
-	      				<property name="action_name">win.go-forward</property>
-	      				<style>
-	      					<class name="image-button"/>
-	      				</style>
-	      				<child>
-	      					<object class="GtkImage" id="forward_button_image">
-	      						<property name="visible">True</property>
-	      						<property name="icon_size">1</property>
-	      						<property name="icon_name">go-next-symbolic</property>
-	      					</object>
-	      				</child>
-	      			</object> <!-- forward_button -->
-	      			<packing>
-	      				<property name="expand">False</property>
-	      				<property name="fill">False</property>
-	      			</packing>
-	      		</child>
-	      	</object> <!-- box_buttons_history -->
-	      	<packing>
-	      		<property name="pack_type">start</property>
-	      	</packing>
-	      </child>
-	      <child>
-					<object class="GtkBox" id="menu_box">
-						<property name="visible">True</property>
-						<property name="valign">center</property>
-						<property name="can_focus">False</property>
-						<style>
-							<class name="linked"/>
-						</style>
-						<child>
-							<object class="GtkToggleButton" id="find_button">
-	      				<property name="visible">True</property>
-	      				<property name="valign">center</property>
-	      				<property name="can_focus">False</property>
-	      				<property name="action_name">win.find-menu</property>
-	      				<style>
-	      					<class name="image-button"/>
-	      				</style>
-	      				<child>
-	      					<object class="GtkImage" id="find_button_image">
-	      						<property name="visible">True</property>
-	      						<property name="icon_size">1</property>
-	      						<property name="icon_name">edit-find-symbolic</property>
-	      					</object>
-	      				</child>
-	      			</object> <!-- find_button -->
-							<packing>
-								<property name="expand">False</property>
-								<property name="fill">False</property>
-							</packing>
-						</child>
-						<child>
-			      	<object class="GtkMenuButton" id="dict_menu_button">
-	      				<property name="visible">True</property>
-	      				<property name="valign">center</property>
-	      				<property name="can_focus">False</property>
-	      				<property name="action_name">win.dict-menu</property>
-	      				<property name="menu_model">dict_menu</property>
-	      				<style>
-	      					<class name="image-button"/>
-	      				</style>
-	      				<child>
-	      					<object class="GtkImage" id="dict_image">
-	      						<property name="visible">True</property>
-	      						<property name="icon_size">1</property>
-	      						<property name="icon_name">pda-symbolic</property>
-	      					</object>
-	      				</child>
-	      			</object> <!-- dict_menu_button -->
-							<packing>
-								<property name="expand">False</property>
-								<property name="fill">False</property>
-							</packing>
-						</child>
-						<child>
-			      	<object class="GtkMenuButton" id="gear_menu_button">
-	      				<property name="visible">True</property>
-	      				<property name="valign">center</property>
-	      				<property name="can_focus">False</property>
-	      				<property name="action_name">win.gear-menu</property>
-	      				<property name="menu_model">gear_menu</property>
-	      				<style>
-	      					<class name="image-button"/>
-	      				</style>
-	      				<child>
-	      					<object class="GtkImage" id="gear_image">
-	      						<property name="visible">True</property>
-	      						<property name="icon_size">1</property>
-	      						<property name="icon_name">open-menu-symbolic</property>
-	      					</object>
-	      				</child>
-	      			</object> <!-- gear_menu_button -->
-							<packing>
-								<property name="expand">False</property>
-								<property name="fill">False</property>
-							</packing>
-						</child>
-					</object> <!-- menu_box -->
-					<packing>
-						<property name="pack_type">end</property>
-					</packing>
-				</child> 
-	    </object> <!-- header_bar -->
+	  <child type="titlebar">
+	    <object class="GyHeaderBar" id="header_bar"></object>
 	  </child>
 	  <child>
 			<object class="GtkBox" id="child_box">
@@ -238,21 +26,6 @@
 								<property name="visible">True</property>
 								<property name="can_focus">False</property>
 								<property name="orientation">vertical</property>
-								<child>
-									<object class="GtkSearchEntry" id="entry">
-										<property name="visible">True</property>
-										<property name="can_focus">True</property>
-										<property name="invisible_char">●</property>
-										<property name="invisible_char_set">True</property>
-										<property name="width-request">200</property>
-									</object> <!-- entry -->
-									<packing>
-										<property name="expand">False</property>
-										<property name="fill">True</property>
-										<property name="position">0</property>
-									</packing>
-								</child>
-                <!--toolbar_buttons-->
 								<child>
 									<object class="GtkRevealer" id="revealer_buttons">
 										<property name="visible">True</property>
@@ -324,7 +97,7 @@
 			      								<property name="homogeneous">True</property>
 			    								</packing>
 			  								</child>
-											</object>	
+											</object>
   		      				</child>
 		    					</object>
 		    					<packing>
@@ -400,7 +173,7 @@
   			  							<property name="right_margin">10</property>
   			  							<property name="buffer">text_buffer</property>
 											  <property name="wrap-mode">GTK_WRAP_WORD</property>
-  										</object>	
+  										</object>
 		      					</child> <!-- end text_view -->
 		    					</object>
 		    					<packing>

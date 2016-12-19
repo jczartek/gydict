@@ -27,7 +27,9 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (GyHeaderBar, gy_header_bar, GY, HEADER_BAR, GtkHeaderBar)
 
-GyHeaderBar *gy_header_bar_new (void);
+GyHeaderBar *gy_header_bar_new                          (void);
+void         gy_header_bar_connect_entry_with_tree_view (GyHeaderBar *self,
+                                                         GtkTreeView *tree_view);
 
 G_END_DECLS
 

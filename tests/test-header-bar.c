@@ -27,7 +27,7 @@ main (gint   argc,
   GyHeaderBar *header_bar;
 
   gtk_init (&argc, &argv);
-  g_type_ensure (GY_TYPE_LEX_SEARCH_BOX);
+  //g_type_ensure (GY_TYPE_LEX_SEARCH_BOX);
   g_resources_register (gy_get_resource ());
   header_bar = gy_header_bar_new ();
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);

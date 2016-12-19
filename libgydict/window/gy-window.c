@@ -21,6 +21,7 @@
 #include <gtk/gtk.h>
 
 #include "gy-window.h"
+#include "gy-header-bar.h"
 #include "helpers/gy-utility-func.h"
 #include "dictionaries/gy-dict.h"
 #include "printing/gy-print.h"
@@ -91,13 +92,13 @@ struct _GyWindow
   GtkWidget            *child_box;
   GtkWidget            *tree_view;
   GyTextView           *text_view;
-  GtkWidget            *findbar;
-  GtkWidget            *header_bar;
   GtkWidget            *entry;
+  GtkWidget            *findbar;
   GtkWidget            *back;
   GtkWidget            *forward;
   GtkWidget            *text_box;
   GtkWidget            *revealer_buttons;
+  GyHeaderBar          *header_bar;
 
   GtkTextBuffer        *buffer;
   GtkTreeSelection     *selection;
@@ -137,7 +138,7 @@ static GActionEntry win_entries[] =
   { "go-back", go_back_cb, NULL, NULL, NULL },
   { "go-forward", go_forward_cb, NULL, NULL, NULL },
   { "dict", dict_radio_cb, "s", "''", NULL },
-  { "find-menu", find_menu_cb, NULL, "false", NULL },
+  { "find", find_menu_cb, NULL, "false", NULL },
   { "dict-menu", dict_menu_cb, NULL, "false", NULL },
   { "gear-menu", gear_menu_cb, NULL, "false", NULL },
   { "paste-sign", paste_sign_cb, "s", "''", NULL },
@@ -152,7 +153,7 @@ owner_change_cb (GtkClipboard        *clipboard,
                  gpointer             data)
 {
   gchar *text = NULL, *word = NULL;
-  GyWindow *self = GY_WINDOW (data);
+  //GyWindow *self = GY_WINDOW (data);
 
   if ((text = gtk_clipboard_wait_for_text (clipboard)))
   {
@@ -164,8 +165,8 @@ owner_change_cb (GtkClipboard        *clipboard,
     g_regex_match (regex, text, 0, &match_info);
     word = g_match_info_fetch (match_info, 0);
 
-    if (word)
-      gtk_entry_set_text (GTK_ENTRY (self->entry), (const gchar *) word);
+  /*  if (word)
+      gtk_entry_set_text (GTK_ENTRY (self->entry), (const gchar *) word); */
 
     g_match_info_free (match_info);
     g_regex_unref (regex);
@@ -387,8 +388,6 @@ dict_radio_cb (GSimpleAction *action,
       gtk_entry_set_text (GTK_ENTRY (self->entry), str);
     }
 
-  gtk_header_bar_set_title (GTK_HEADER_BAR (self->header_bar), str == NULL ? "" : str);
-
   g_action_change_state (G_ACTION (action), parameter);
 }
 
@@ -435,10 +434,10 @@ go_back_cb (GSimpleAction *action G_GNUC_UNUSED,
   GyWindow *self = GY_WINDOW (data);
 
   gy_history_iterable_previous_item (GY_HISTORY_ITERABLE (self->history));
-  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
+//  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
 
-  if (text)
-    gtk_entry_set_text (GTK_ENTRY (self->entry), text);
+ // if (text)
+  //  gtk_entry_set_text (GTK_ENTRY (self->entry), text);
 
 }
 
@@ -450,10 +449,10 @@ go_forward_cb (GSimpleAction *action G_GNUC_UNUSED,
   GyWindow * self = GY_WINDOW (data);
 
   gy_history_iterable_next_item (GY_HISTORY_ITERABLE (self->history));
-  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
+ // const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
 
-  if (text)
-    gtk_entry_set_text (GTK_ENTRY (self->entry), text);
+  //if (text)
+  //  gtk_entry_set_text (GTK_ENTRY (self->entry), text);
 }
 
 static void
@@ -514,8 +513,8 @@ tree_selection_cb (GtkTreeSelection *selection,
                          buffer, *row);
 
       gtk_tree_model_get (model, &iter, 0, &value, -1);
-      gtk_header_bar_set_title (GTK_HEADER_BAR (self->header_bar),
-                                (const gchar *) value);
+    //  gtk_header_bar_set_title (GTK_HEADER_BAR (self->header_bar),
+    //                            (const gchar *) value);
 
       /* the variable @value is freed in the function source_func */
       self->string_history = value;
@@ -560,8 +559,9 @@ gy_window_init (GyWindow *self)
 
   self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->tree_view));
   gtk_tree_selection_set_mode (self->selection, GTK_SELECTION_BROWSE);
-  gtk_tree_view_set_search_entry (GTK_TREE_VIEW (self->tree_view),
-                                  GTK_ENTRY (self->entry));
+  //gtk_tree_view_set_search_entry (GTK_TREE_VIEW (self->tree_view),
+  //                                GTK_ENTRY (self->entry));
+  gy_header_bar_connect_entry_with_tree_view (self->header_bar, GTK_TREE_VIEW (self->tree_view));
 
   /* Create findbar */
   self->findbar = gy_search_bar_new ();
@@ -605,7 +605,7 @@ gy_window_class_init (GyWindowClass *klass)
                                                "/org/gtk/gydict/gy-window.ui");
   gtk_widget_class_bind_template_child (widget_class, GyWindow, child_box);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
-  gtk_widget_class_bind_template_child (widget_class, GyWindow, entry);
+  //gtk_widget_class_bind_template_child (widget_class, GyWindow, entry);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, tree_view);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, text_view);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, text_box);
