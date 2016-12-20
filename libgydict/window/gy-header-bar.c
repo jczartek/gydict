@@ -28,11 +28,6 @@ struct _GyHeaderBar
 
 G_DEFINE_TYPE (GyHeaderBar, gy_header_bar, GTK_TYPE_HEADER_BAR)
 
-enum {
-  PROP_0,
-  N_PROPS
-};
-
 GyHeaderBar *
 gy_header_bar_new (void)
 {
@@ -82,4 +77,20 @@ gy_header_bar_connect_entry_with_tree_view (GyHeaderBar *self,
 
   entry = GTK_ENTRY (_gy_lex_search_box_get_search_entry (search_box));
   gtk_tree_view_set_search_entry (tree_view, entry);
+}
+
+void gy_header_bar_set_text_in_entry (GyHeaderBar *self,
+                                      const gchar *text)
+{
+  GyLexSearchBox *search_box;
+  GtkEntry       *entry;
+
+  g_return_if_fail (GY_IS_HEADER_BAR (self));
+
+  search_box = GY_LEX_SEARCH_BOX (gtk_header_bar_get_custom_title (GTK_HEADER_BAR (self)));
+
+  g_assert (GY_IS_LEX_SEARCH_BOX (search_box));
+
+  entry = GTK_ENTRY (_gy_lex_search_box_get_search_entry (search_box));
+  gtk_entry_set_text (entry, text);
 }

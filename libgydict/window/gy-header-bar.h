@@ -30,6 +30,8 @@ G_DECLARE_FINAL_TYPE (GyHeaderBar, gy_header_bar, GY, HEADER_BAR, GtkHeaderBar)
 GyHeaderBar *gy_header_bar_new                          (void);
 void         gy_header_bar_connect_entry_with_tree_view (GyHeaderBar *self,
                                                          GtkTreeView *tree_view);
+void         gy_header_bar_set_text_in_entry            (GyHeaderBar *self,
+                                                         const gchar *text);
 
 G_END_DECLS
 
