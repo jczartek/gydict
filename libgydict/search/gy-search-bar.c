@@ -246,19 +246,19 @@ reveal_child_cb (GObject    *object G_GNUC_UNUSED,
 
   if (!priv->search_mode)
   {
-    GtkWidget *toplevel;
-    toplevel = gtk_widget_get_toplevel (GTK_WIDGET (bar));
+    //GtkWidget *toplevel;
+    //toplevel = gtk_widget_get_toplevel (GTK_WIDGET (bar));
     clear_tag_buffer (priv->buffer, "search_next");
     clear_tag_buffer (priv->buffer, "search");
 
-    if (gtk_widget_is_toplevel (toplevel))
+    /*if (gtk_widget_is_toplevel (toplevel))
     {
       GtkWidget *main_entry;
       main_entry = gy_window_get_entry (GY_WINDOW (toplevel));
 
       if (!gtk_widget_is_focus (main_entry))
         gtk_widget_grab_focus (main_entry);
-    }
+    }*/
   }
 }
 

@@ -33,7 +33,6 @@
 #include "entryview/gy-text-buffer.h"
 #include "entrylist/gy-tree-view.h"
 
-typedef struct _GyWindowPrivate GyWindowPrivate;
 
 static void gear_menu_cb (GSimpleAction *action,
                           GVariant      *parametr,
@@ -50,24 +49,12 @@ static void dict_radio_cb (GSimpleAction *action,
 static void quit_win_cb (GSimpleAction *action,
                          GVariant      *parameter,
                          gpointer       data);
-static void paste_cb (GSimpleAction *action,
-                      GVariant      *parameter,
-                      gpointer       data);
-static void copy_cb (GSimpleAction *action,
-                     GVariant      *parameter,
-                     gpointer       data);
 static void go_back_cb (GSimpleAction *action,
                         GVariant      *parameter,
                         gpointer       data);
 static void go_forward_cb (GSimpleAction *action,
                            GVariant      *parameter,
                            gpointer       data);
-static void paste_sign_cb (GSimpleAction *action,
-                           GVariant      *parameter,
-                           gpointer       data);
-static void  buttons_signs_cb (GSimpleAction *action,
-                               GVariant      *parametr,
-                               gpointer       data);
 static void respond_clipboard_cb (GSimpleAction *action,
                                   GVariant      *parameter,
                                   gpointer       data);
@@ -92,12 +79,10 @@ struct _GyWindow
   GtkWidget            *child_box;
   GtkWidget            *tree_view;
   GyTextView           *text_view;
-  GtkWidget            *entry;
   GtkWidget            *findbar;
   GtkWidget            *back;
   GtkWidget            *forward;
   GtkWidget            *text_box;
-  GtkWidget            *revealer_buttons;
   GyHeaderBar          *header_bar;
 
   GtkTextBuffer        *buffer;
@@ -130,10 +115,7 @@ G_DEFINE_TYPE (GyWindow, gy_window, GTK_TYPE_APPLICATION_WINDOW);
 static GActionEntry win_entries[] =
 {
   { "print", gy_print_do_printing, NULL, NULL, NULL },
-  { "copy", copy_cb, NULL, NULL, NULL },
-  { "paste", paste_cb, NULL, NULL, NULL },
   { "clip", respond_clipboard_cb, NULL, "false", NULL },
-  { "signs", buttons_signs_cb, NULL, "false", NULL },
   { "close", quit_win_cb, NULL, NULL, NULL },
   { "go-back", go_back_cb, NULL, NULL, NULL },
   { "go-forward", go_forward_cb, NULL, NULL, NULL },
@@ -141,7 +123,6 @@ static GActionEntry win_entries[] =
   { "find", find_menu_cb, NULL, "false", NULL },
   { "dict-menu", dict_menu_cb, NULL, "false", NULL },
   { "gear-menu", gear_menu_cb, NULL, "false", NULL },
-  { "paste-sign", paste_sign_cb, "s", "''", NULL },
 };
 
 #pragma GCC diagnostic pop
@@ -153,7 +134,7 @@ owner_change_cb (GtkClipboard        *clipboard,
                  gpointer             data)
 {
   gchar *text = NULL, *word = NULL;
-  //GyWindow *self = GY_WINDOW (data);
+  GyWindow *self = GY_WINDOW (data);
 
   if ((text = gtk_clipboard_wait_for_text (clipboard)))
   {
@@ -165,8 +146,8 @@ owner_change_cb (GtkClipboard        *clipboard,
     g_regex_match (regex, text, 0, &match_info);
     word = g_match_info_fetch (match_info, 0);
 
-  /*  if (word)
-      gtk_entry_set_text (GTK_ENTRY (self->entry), (const gchar *) word); */
+    if (word)
+      gy_header_bar_set_text_in_entry (self->header_bar, (const gchar *) word);
 
     g_match_info_free (match_info);
     g_regex_unref (regex);
@@ -265,24 +246,6 @@ find_menu_cb (GSimpleAction *action,
 }
 
 static void
-buttons_signs_cb(GSimpleAction *action,
-                 GVariant      *parametr G_GNUC_UNUSED,
-                 gpointer       data)
-{
-  GyWindow *self = GY_WINDOW(data);
-
-  GVariant *state;
-
-  state = g_action_get_state (G_ACTION (action));
-  g_action_change_state (G_ACTION (action),
-                         g_variant_new_boolean (!g_variant_get_boolean (state)));
-  gtk_revealer_set_reveal_child (GTK_REVEALER (self->revealer_buttons),
-                                 !g_variant_get_boolean (state));
-  g_variant_unref (state);
-
-}
-
-static void
 dict_menu_cb(GSimpleAction *action,
              GVariant      *parametr G_GNUC_UNUSED,
              gpointer       data G_GNUC_UNUSED)
@@ -360,7 +323,7 @@ dict_radio_cb (GSimpleAction *action,
   gtk_tree_view_set_model (GTK_TREE_VIEW (self->tree_view),
                            gy_dict_get_tree_model (dict));
   gy_text_buffer_clean_buffer (GY_TEXT_BUFFER (self->buffer));
-  gtk_entry_set_text (GTK_ENTRY (self->entry), "");
+  gy_header_bar_set_text_in_entry (self->header_bar, "");
 
   self->history = GY_HISTORY (g_hash_table_lookup (self->histories_dictionaries,
                                                    value));
@@ -385,7 +348,7 @@ dict_radio_cb (GSimpleAction *action,
     {
       /* Gets the end item in the history. */
       str = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
-      gtk_entry_set_text (GTK_ENTRY (self->entry), str);
+      gy_header_bar_set_text_in_entry (self->header_bar, str);
     }
 
   g_action_change_state (G_ACTION (action), parameter);
@@ -401,32 +364,6 @@ quit_win_cb (GSimpleAction *action G_GNUC_UNUSED,
 }
 
 static void
-copy_cb (GSimpleAction *action G_GNUC_UNUSED,
-         GVariant      *parameter G_GNUC_UNUSED,
-         gpointer       data)
-{
-  GtkClipboard * clip;
-  GyWindow *self = GY_WINDOW (data);
-
-  clip = gtk_clipboard_get (GDK_NONE);
-  gtk_text_buffer_copy_clipboard (self->buffer,clip);
-}
-
-static void
-paste_cb (GSimpleAction *action G_GNUC_UNUSED,
-          GVariant      *parameter G_GNUC_UNUSED,
-          gpointer       data)
-{
-  GtkWidget *focus;
-  GyWindow *self = GY_WINDOW (data);
-
-  focus = gtk_window_get_focus (GTK_WINDOW (self));
-
-  if (GTK_IS_EDITABLE (focus))
-    gtk_editable_paste_clipboard (GTK_EDITABLE (focus));
-}
-
-static void
 go_back_cb (GSimpleAction *action G_GNUC_UNUSED,
             GVariant      *parameter G_GNUC_UNUSED,
             gpointer       data)
@@ -434,10 +371,10 @@ go_back_cb (GSimpleAction *action G_GNUC_UNUSED,
   GyWindow *self = GY_WINDOW (data);
 
   gy_history_iterable_previous_item (GY_HISTORY_ITERABLE (self->history));
-//  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
+  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
 
- // if (text)
-  //  gtk_entry_set_text (GTK_ENTRY (self->entry), text);
+  if (text)
+    gy_header_bar_set_text_in_entry (self->header_bar, text);
 
 }
 
@@ -449,25 +386,10 @@ go_forward_cb (GSimpleAction *action G_GNUC_UNUSED,
   GyWindow * self = GY_WINDOW (data);
 
   gy_history_iterable_next_item (GY_HISTORY_ITERABLE (self->history));
- // const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
+  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
 
-  //if (text)
-  //  gtk_entry_set_text (GTK_ENTRY (self->entry), text);
-}
-
-static void
-paste_sign_cb (GSimpleAction *action G_GNUC_UNUSED,
-               GVariant      *parameter,
-               gpointer       data)
-{
-  gchar *concat = NULL;
-  GyWindow *self = GY_WINDOW (data);
-
-  concat = g_strconcat (gtk_entry_get_text (GTK_ENTRY (self->entry)),
-                        g_variant_get_string (parameter, NULL), NULL);
-  gtk_entry_set_text (GTK_ENTRY (self->entry), concat);
-  gtk_editable_set_position (GTK_EDITABLE (self->entry), -1);
-  g_free (concat);
+  if (text)
+   gy_header_bar_set_text_in_entry (self->header_bar, text);
 }
 
 static gboolean
@@ -513,8 +435,6 @@ tree_selection_cb (GtkTreeSelection *selection,
                          buffer, *row);
 
       gtk_tree_model_get (model, &iter, 0, &value, -1);
-    //  gtk_header_bar_set_title (GTK_HEADER_BAR (self->header_bar),
-    //                            (const gchar *) value);
 
       /* the variable @value is freed in the function source_func */
       self->string_history = value;
@@ -559,8 +479,6 @@ gy_window_init (GyWindow *self)
 
   self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->tree_view));
   gtk_tree_selection_set_mode (self->selection, GTK_SELECTION_BROWSE);
-  //gtk_tree_view_set_search_entry (GTK_TREE_VIEW (self->tree_view),
-  //                                GTK_ENTRY (self->entry));
   gy_header_bar_connect_entry_with_tree_view (self->header_bar, GTK_TREE_VIEW (self->tree_view));
 
   /* Create findbar */
@@ -605,11 +523,9 @@ gy_window_class_init (GyWindowClass *klass)
                                                "/org/gtk/gydict/gy-window.ui");
   gtk_widget_class_bind_template_child (widget_class, GyWindow, child_box);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
-  //gtk_widget_class_bind_template_child (widget_class, GyWindow, entry);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, tree_view);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, text_view);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, text_box);
-  gtk_widget_class_bind_template_child (widget_class, GyWindow, revealer_buttons);
 }
 
 static void
@@ -754,12 +670,6 @@ GyDict *
 gy_window_get_dictionary (GyWindow *self)
 {
   return g_datalist_id_get_data (&self->datalist, self->qvalue);
-}
-
-GtkWidget *
-gy_window_get_entry (GyWindow *self)
-{
-  return self->entry;
 }
 
 GtkWidget *
