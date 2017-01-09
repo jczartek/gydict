@@ -28,13 +28,6 @@ struct _GyLexSearchBox
 
 G_DEFINE_TYPE (GyLexSearchBox, gy_lex_search_box, GTK_TYPE_BOX)
 
-enum {
-  PROP_0,
-  N_PROPS
-};
-
-static GParamSpec *properties [N_PROPS];
-
 GyLexSearchBox *
 gy_lex_search_box_new (void)
 {
@@ -42,52 +35,8 @@ gy_lex_search_box_new (void)
 }
 
 static void
-gy_lex_search_box_finalize (GObject *object)
-{
-  GyLexSearchBox *self = (GyLexSearchBox *)object;
-
-  G_OBJECT_CLASS (gy_lex_search_box_parent_class)->finalize (object);
-}
-
-static void
-gy_lex_search_box_get_property (GObject    *object,
-                                guint       prop_id,
-                                GValue     *value,
-                                GParamSpec *pspec)
-{
-  GyLexSearchBox *self = GY_LEX_SEARCH_BOX (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-gy_lex_search_box_set_property (GObject      *object,
-                                guint         prop_id,
-                                const GValue *value,
-                                GParamSpec   *pspec)
-{
-  GyLexSearchBox *self = GY_LEX_SEARCH_BOX (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
 gy_lex_search_box_class_init (GyLexSearchBoxClass *klass)
 {
-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-  object_class->finalize = gy_lex_search_box_finalize;
-  object_class->get_property = gy_lex_search_box_get_property;
-  object_class->set_property = gy_lex_search_box_set_property;
-
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gtk/gydict/gy-lex-search-box.ui");
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyLexSearchBox, search_entry);
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyLexSearchBox, chars_button);

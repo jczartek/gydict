@@ -37,6 +37,7 @@ libgydict_la_public_headers = \
 	window/gy-header-bar.h \
 	window/gy-lex-search-box.h \
 	window/gy-window.h \
+	window/gy-workspace.h \
 	gydict.h \
 	$(NULL)
 
@@ -72,6 +73,7 @@ libgydict_la_SOURCES = \
 	window/gy-header-bar.c \
 	window/gy-lex-search-box.c \
 	window/gy-window.c \
+	window/gy-workspace.c \
 	$(NULL)
 
 nodist_libgydict_la_SOURCES = \

@@ -83,7 +83,7 @@
                 <property name="expand">true</property>
                 <property name="visible">true</property>
                 <child>
-                  <object class="GtkTreeView">
+                  <object class="GtkTextView">
                     <property name="visible">true</property>
                   </object>
                 </child>
@@ -94,7 +94,7 @@
                 <property name="expand">true</property>
                 <property name="visible">true</property>
                 <child>
-                  <object class="GtkTextView">
+                  <object class="GtkTreeView">
                     <property name="visible">true</property>
                   </object>
                 </child>

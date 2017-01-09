@@ -13,6 +13,7 @@
     <file alias="gy-menus.ui" preprocess="xml-stripblanks">./ui/gy-menus.ui</file>
     <file alias="gy-header-bar.ui" preprocess="xml-stripblanks">./ui/gy-header-bar.ui</file>
     <file alias="gy-lex-search-box.ui" preprocess="xml-stripblanks">./ui/gy-lex-search-box.ui</file>
+    <file alias="gy-workspace.ui" preprocess="xml-stripblanks">./ui/gy-workspace.ui</file>
 
     <file alias="Adwaita.css">./css/Adwaita.css</file>
     <file alias="Adwaita-dark.css">./css/Adwaita-dark.css</file>

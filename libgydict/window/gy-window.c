@@ -22,6 +22,7 @@
 
 #include "gy-window.h"
 #include "gy-header-bar.h"
+#include "gy-workspace.h"
 #include "helpers/gy-utility-func.h"
 #include "dictionaries/gy-dict.h"
 #include "printing/gy-print.h"
@@ -75,6 +76,7 @@ enum
 struct _GyWindow
 {
   GtkApplicationWindow  __parent__;
+  GyWorkspace          *workspace;
   GtkWidget            *main_box;
   GtkWidget            *child_box;
   GtkWidget            *tree_view;
@@ -464,29 +466,29 @@ static void
 gy_window_init (GyWindow *self)
 {
 
-  self->timeout_history = 0;
-  self->string_history = NULL;
-  g_datalist_init (&self->datalist);
+  //self->timeout_history = 0;
+  //self->string_history = NULL;
+  //g_datalist_init (&self->datalist);
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
-  /* Add actions */
+
   g_action_map_add_action_entries (G_ACTION_MAP (self),
                                    win_entries, G_N_ELEMENTS (win_entries),
                                    self);
+  gy_workspace_attach_action (self->workspace,
+                              self);
 
-  self->buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (self->text_view));
+  /*self->buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (self->text_view));
 
   self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->tree_view));
   gtk_tree_selection_set_mode (self->selection, GTK_SELECTION_BROWSE);
   gy_header_bar_connect_entry_with_tree_view (self->header_bar, GTK_TREE_VIEW (self->tree_view));
 
-  /* Create findbar */
   self->findbar = gy_search_bar_new ();
   gtk_box_pack_end (GTK_BOX (self->text_box), self->findbar, FALSE, FALSE, 0);
   gy_search_bar_connect_text_buffer (GY_SEARCH_BAR (self->findbar), self->buffer);
 
-  /* Create history */
   self->histories_dictionaries = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                         g_free, g_object_unref);
   self->next = g_action_map_lookup_action (G_ACTION_MAP (self), "go-forward");
@@ -495,12 +497,11 @@ gy_window_init (GyWindow *self)
   g_simple_action_set_enabled (G_SIMPLE_ACTION (self->prev), FALSE);
   self->bind[GY_BINDING_ACTION_PREV] = self->bind[GY_BINDING_ACTION_NEXT] = NULL;
 
-  /* Set clipboard */
   self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
 
-  /* Connect signals */
   g_signal_connect (G_OBJECT (self->selection), "changed",
-                    G_CALLBACK(tree_selection_cb), self);
+                    G_CALLBACK(tree_selection_cb), self);*/
+
 }
 
 static void
@@ -521,11 +522,12 @@ gy_window_class_init (GyWindowClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class,
                                                "/org/gtk/gydict/gy-window.ui");
-  gtk_widget_class_bind_template_child (widget_class, GyWindow, child_box);
+  //gtk_widget_class_bind_template_child (widget_class, GyWindow, child_box);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
-  gtk_widget_class_bind_template_child (widget_class, GyWindow, tree_view);
-  gtk_widget_class_bind_template_child (widget_class, GyWindow, text_view);
-  gtk_widget_class_bind_template_child (widget_class, GyWindow, text_box);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, workspace);
+  //gtk_widget_class_bind_template_child (widget_class, GyWindow, tree_view);
+  //gtk_widget_class_bind_template_child (widget_class, GyWindow, text_view);
+  //gtk_widget_class_bind_template_child (widget_class, GyWindow, text_box);
 }
 
 static void
