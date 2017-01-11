@@ -18,6 +18,8 @@
 
 #include "gy-workspace.h"
 
+#define DEFAULT_POSITION 200
+
 struct _GyWorkspace
 {
   PnlDockOverlay __parent__;
@@ -47,7 +49,13 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
 static void
 gy_workspace_init (GyWorkspace *self)
 {
+  PnlDockRevealer *edge;
+
   gtk_widget_init_template (GTK_WIDGET (self));
+
+  edge = PNL_DOCK_REVEALER (pnl_dock_bin_get_left_edge (PNL_DOCK_BIN (self->dockbin)));
+  pnl_dock_revealer_set_position (edge, DEFAULT_POSITION);
+  pnl_dock_revealer_set_reveal_child (edge, TRUE);
 }
 
 

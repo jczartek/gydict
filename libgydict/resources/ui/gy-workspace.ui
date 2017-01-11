@@ -12,8 +12,18 @@
             <property name="visible">true</property>
             <property name="expand">true</property>
             <child>
-              <object class="GtkTextView" id="textview">
+              <object class="GyTextView" id="textview">
                 <property name="visible">true</property>
+                <property name="editable">false</property>
+                <property name="margin_top">8</property>
+                <property name="margin_bottom">8</property>
+                <property name="pixels_above_lines">4</property>
+                <property name="pixels_below_lines">4</property>
+                <property name="pixels_inside_wrap">2</property>
+                <property name="left_margin">10</property>
+                <property name="right_margin">10</property>
+                <property name="wrap-mode">word</property>
+                <property name="buffer">buffer</property>
               </object>
             </child>
           </object>
@@ -24,7 +34,7 @@
             <property name="visible">true</property>
             <property name="expand">true</property>
             <child>
-              <object class="GtkTreeView" id="treeview">
+              <object class="GyTreeView" id="treeview">
                 <property name="visible">true</property>
               </object>
             </child>
@@ -35,5 +45,6 @@
     </child>
   </template>
   <object class="PnlDockManager" id="manager"></object>
+  <object class="GyTextBuffer" id="buffer"></object>
 </interface>
 

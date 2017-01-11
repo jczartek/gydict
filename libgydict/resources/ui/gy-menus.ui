@@ -35,7 +35,7 @@
       <attribute name="text-direction">ltr</attribute>
       <item>
         <attribute name="label" translatable="yes">Show left panel</attribute>
-        <!-- <attribute name="action"></attribute> -->
+        <attribute name="action">dockbin.left-visible</attribute>
         <attribute name="verb-icon">panel-left-pane-symbolic</attribute>
       </item>
       <item>
