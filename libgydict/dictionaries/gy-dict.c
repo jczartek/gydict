@@ -33,7 +33,8 @@ typedef struct _GyDictPrivate
   GtkTreeModel   *model;
   GtkTextBuffer  *buffer;
   GyHistory      *history;
-  guint           is_mapped:1;
+  guint           is_mapped: 1;
+  guint           is_used:   1;
 } GyDictPrivate;
 
 enum
@@ -44,6 +45,7 @@ enum
   PROP_IS_MAPPED,
   PROP_BUFFER,
   PROP_HISTORY,
+  PROP_IS_USED,
   LAST_PROP
 };
 
@@ -103,6 +105,9 @@ gy_dict_set_property (GObject      *object,
     case PROP_IS_MAPPED:
       priv->is_mapped = g_value_get_boolean (value);
       break;
+    case PROP_IS_USED:
+      priv->is_used = g_value_get_boolean (value);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -138,6 +143,8 @@ gy_dict_get_property (GObject    *object,
     case PROP_IS_MAPPED:
       g_value_set_boolean (value, priv->is_mapped);
       break;
+    case PROP_IS_USED:
+      g_value_set_boolean (value, priv->is_used);
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -223,6 +230,19 @@ gy_dict_class_init (GyDictClass *klass)
                          GY_TYPE_HISTORY,
                          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+  /**
+   *
+   * GyDict:is-used:
+   *
+   * Is the dict being used at the moment?
+   */
+  gParamSpecs[PROP_IS_USED] =
+    g_param_spec_boolean ("is-used",
+                          "Is-used",
+                          "Is the dict being used at the moment.",
+                          FALSE,
+                          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
   g_object_class_install_properties (object_class, LAST_PROP, gParamSpecs);
 
 }
@@ -252,6 +272,18 @@ gy_dict_is_mapped (GyDict *self)
   priv = gy_dict_get_instance_private (self);
 
   return (gboolean) priv->is_mapped;
+}
+
+gboolean
+gy_dict_is_used (GyDict *self)
+{
+  GyDictPrivate *priv;
+
+  g_return_val_if_fail (GY_IS_DICT (self), FALSE);
+
+  priv = gy_dict_get_instance_private (self);
+
+  return (gboolean) priv->is_used;
 }
 
 GtkTreeModel *
