@@ -18,7 +18,8 @@
 #ifndef __GY_DICT_MANAGER_H__
 #define __GY_DICT_MANAGER_H__
 
-#include <glib-object.h>
+#include <gtk/gtk.h>
+#include "gy-dict.h"
 
 G_BEGIN_DECLS
 
@@ -26,7 +27,10 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (GyDictManager, gy_dict_manager, GY, DICT_MANAGER, GObject)
 
-GyDictManager *gy_dict_manager_new (void);
+GyDictManager *gy_dict_manager_new      (void);
+GyDict        *gy_dict_manager_add_dict (GyDictManager *self,
+                                         const gchar   *name_dict,
+                                         GtkTextBuffer *buffer);
 
 G_END_DECLS
 

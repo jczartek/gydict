@@ -15,65 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include "gy-dict-manager.h"
+#include "gy-dict.h"
 
 struct _GyDictManager
 {
-  GObject __parent__;
+  GObject     __parent__;
+
+  GHashTable *dicts;
 };
 
 G_DEFINE_TYPE (GyDictManager, gy_dict_manager, G_TYPE_OBJECT)
-
-enum {
-  PROP_0,
-  PROP_DICT,
-  N_PROPS
-};
-
-static GParamSpec *properties [N_PROPS];
-
-GyDictManager *
-gy_dict_manager_new (void)
-{
-  return g_object_new (GY_TYPE_DICT_MANAGER, NULL);
-}
 
 static void
 gy_dict_manager_finalize (GObject *object)
 {
   GyDictManager *self = (GyDictManager *)object;
 
+  g_hash_table_destroy (self->dicts);
   G_OBJECT_CLASS (gy_dict_manager_parent_class)->finalize (object);
-}
-
-static void
-gy_dict_manager_get_property (GObject    *object,
-                              guint       prop_id,
-                              GValue     *value,
-                              GParamSpec *pspec)
-{
-  GyDictManager *self = GY_DICT_MANAGER (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-gy_dict_manager_set_property (GObject      *object,
-                              guint         prop_id,
-                              const GValue *value,
-                              GParamSpec   *pspec)
-{
-  GyDictManager *self = GY_DICT_MANAGER (object);
-
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
 }
 
 static void
@@ -82,18 +43,55 @@ gy_dict_manager_class_init (GyDictManagerClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   object_class->finalize = gy_dict_manager_finalize;
-  object_class->get_property = gy_dict_manager_get_property;
-  object_class->set_property = gy_dict_manager_set_property;
-
-  properties[PROP_DICT] =
-    g_param_spec_object ("dict",
-                         "dict",
-                         "",
-                         GY_TYPE_DICT,
-                         G_PARAM_READABLE | G_PARAM_STATIC_STRING);
 }
 
 static void
 gy_dict_manager_init (GyDictManager *self)
 {
+  self->dicts = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                       NULL, g_object_unref);
+}
+
+GyDictManager *
+gy_dict_manager_new (void)
+{
+  return g_object_new (GY_TYPE_DICT_MANAGER, NULL);
+}
+
+GyDict *
+gy_dict_manager_add_dict (GyDictManager *self,
+                          const gchar   *name_dict,
+                          GtkTextBuffer *buffer)
+{
+  GyDict *dict;
+  GError *err = NULL;
+  GHashTableIter iter;
+  gpointer obj;
+
+  g_return_val_if_fail (name_dict != NULL, NULL);
+
+  dict = GY_DICT (gy_dict_new (name_dict, buffer));
+
+  gy_dict_map (dict, &err);
+
+  if (err != NULL)
+    {
+      g_critical ("Unable to create a new dictionary: %s", err->message);
+      g_error_free (err);
+
+      g_object_unref (dict);
+      return NULL;
+    }
+
+  g_object_set (dict, "is-used", TRUE, NULL);
+
+  g_hash_table_iter_init (&iter, self->dicts);
+  while (g_hash_table_iter_next (&iter, NULL, &obj))
+    {
+      g_object_set (obj, "is-used", FALSE, NULL);
+    }
+
+  g_hash_table_insert (self->dicts, (gpointer) name_dict, (gpointer) dict);
+
+  return dict;
 }
