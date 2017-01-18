@@ -69,21 +69,7 @@ gy_dict_manager_add_dict (GyDictManager *self,
   gpointer obj;
 
   g_return_val_if_fail (name_dict != NULL, NULL);
-
-  dict = GY_DICT (gy_dict_new (name_dict, buffer));
-
-  gy_dict_map (dict, &err);
-
-  if (err != NULL)
-    {
-      g_critical ("Unable to create a new dictionary: %s", err->message);
-      g_error_free (err);
-
-      g_object_unref (dict);
-      return NULL;
-    }
-
-  g_object_set (dict, "is-used", TRUE, NULL);
+  g_return_val_if_fail (GY_IS_DICT_MANAGER (self), NULL);
 
   g_hash_table_iter_init (&iter, self->dicts);
   while (g_hash_table_iter_next (&iter, NULL, &obj))
@@ -91,7 +77,45 @@ gy_dict_manager_add_dict (GyDictManager *self,
       g_object_set (obj, "is-used", FALSE, NULL);
     }
 
+  dict = g_hash_table_lookup (self->dicts, name_dict);
+  if (dict)
+    {
+      g_object_set (dict, "is-used", TRUE, NULL);
+      return dict;
+    }
+
+  dict = GY_DICT (gy_dict_new (name_dict, buffer));
+  gy_dict_map (dict, &err);
+  if (err != NULL)
+    {
+      g_critical ("Unable to create a new dictionary: %s", err->message);
+      g_error_free (err);
+      g_object_unref (dict);
+      return NULL;
+    }
+
+  g_object_set (dict, "is-used", TRUE, NULL);
   g_hash_table_insert (self->dicts, (gpointer) name_dict, (gpointer) dict);
+
+  return dict;
+}
+
+GyDict*
+gy_dict_manager_get_used_dict (GyDictManager *self)
+{
+  gpointer dict = NULL;
+  GHashTableIter iter;
+
+  g_return_val_if_fail (GY_IS_DICT_MANAGER (self), NULL);
+
+  g_hash_table_iter_init (&iter, self->dicts);
+  while (g_hash_table_iter_next (&iter, NULL, &dict))
+    {
+      if (gy_dict_is_used (dict))
+        {
+          return dict;
+        }
+    }
 
   return dict;
 }

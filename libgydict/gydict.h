@@ -26,6 +26,14 @@ G_BEGIN_DECLS
 #define GYDICT_INSIDE
 
 #include "app/gy-app.h"
+#include "dictionaries/gy-depl.h"
+#include "dictionaries/gy-dict.h"
+#include "dictionaries/gy-dict-manager.h"
+#include "dictionaries/gy-english-pwn.h"
+#include "dictionaries/gy-german-pwn.h"
+#include "dictionaries/gy-parsable.h"
+#include "dictionaries/gy-pwn-dict.h"
+#include "entryview/gy-text-buffer.c"
 #include "resources/gy-resources.h"
 #include "window/gy-header-bar.h"
 #include "window/gy-lex-search-box.h"

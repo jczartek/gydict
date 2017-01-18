@@ -5,6 +5,7 @@ EXTRA_DIST =
 
 tests_cppflags = \
 	-I$(top_builddir)/libgydict \
+	-I$(top_srcdir)/libgydict \
 	$(NULL)
 
 tests_cflags = \
@@ -38,20 +39,26 @@ test_hello_CFLAGS = $(tests_cflags)
 test_hello_LDADD = $(tests_libs)
 test_hello_LDFLAGS = $(tests_ldflags)
 
-TESTS += test-panel-gtk
-test_panel_gtk_SOURCES = test-panel-gtk.c
-test_panel_gtk_CFLAGS = $(tests_panel_gtk_cflags)
-test_panel_gtk_LDADD = $(tests_panel_gtk_libs)
-test_panel_gtk_LDFLAGS = $(tests_ldflags)
+TESTS += test-dict-manager
+test_dict_manager_SOURCES = test-dict-manager.c
+test_dict_manager_CFLAGS = $(tests_cflags)
+test_dict_manager_LDADD = $(tests_libs)
+test_dict_manager_LDFLAGS = $(tests_ldflags)
+
+#TESTS += test-panel-gtk
+#test_panel_gtk_SOURCES = test-panel-gtk.c
+#test_panel_gtk_CFLAGS = $(tests_panel_gtk_cflags)
+#test_panel_gtk_LDADD = $(tests_panel_gtk_libs)
+#test_panel_gtk_LDFLAGS = $(tests_ldflags)
 EXTRA_DIST += \
 	test-panel-gtk.ui \
 	$(NULL)
 
-TESTS += test-header-bar
-test_header_bar_SOURCES = test-header-bar.c
-test_header_bar_CFLAGS = $(tests_cflags)
-test_header_bar_LDADD = $(tests_libs)
-test_header_bar_LDFLAGS = $(tests_ldflags)
+#TESTS += test-header-bar
+#test_header_bar_SOURCES = test-header-bar.c
+#test_header_bar_CFLAGS = $(tests_cflags)
+#test_header_bar_LDADD = $(tests_libs)
+#test_header_bar_LDFLAGS = $(tests_ldflags)
 
 if ENABLE_TESTS
 noinst_PROGRAMS = $(TESTS)
