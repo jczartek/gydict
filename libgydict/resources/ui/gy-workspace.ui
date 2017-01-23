@@ -3,6 +3,7 @@
   <template class="GyWorkspace" parent="PnlDockOverlay">
     <property name="visible">true</property>
     <property name="manager">manager</property>
+    <property name="manager_dicts">manager_dicts</property>
     <child>
       <object class="PnlDockBin" id="dockbin">
         <property name="visible">true</property>
@@ -36,6 +37,22 @@
             <child>
               <object class="GyTreeView" id="treeview">
                 <property name="visible">true</property>
+                <property name="headers_visible">false</property>
+                <property name="fixed_height_mode">true</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="treev_selection" />
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="treev_column">
+                    <property name="sizing">fixed</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="ct_renderer" />
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -46,5 +63,6 @@
   </template>
   <object class="PnlDockManager" id="manager"></object>
   <object class="GyTextBuffer" id="buffer"></object>
+  <object class="GyDictManager" id="manager_dicts"></object>
 </interface>
 
