@@ -465,6 +465,8 @@ gy_pwn_finalize (GObject *object)
 static void
 gy_window_init (GyWindow *self)
 {
+  GtkTreeView *treeview;
+  GtkEntry    *entry;
 
   //self->timeout_history = 0;
   //self->string_history = NULL;
@@ -478,6 +480,11 @@ gy_window_init (GyWindow *self)
                                    self);
   gy_workspace_attach_action (self->workspace,
                               self);
+
+  g_object_get (self->workspace,
+                "left-widget", &treeview, NULL);
+  entry = gy_header_bar_get_entry (self->header_bar);
+  gtk_tree_view_set_search_entry (treeview, entry);
 
   /*self->buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (self->text_view));
 

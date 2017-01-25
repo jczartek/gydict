@@ -79,8 +79,9 @@ gy_header_bar_connect_entry_with_tree_view (GyHeaderBar *self,
   gtk_tree_view_set_search_entry (tree_view, entry);
 }
 
-void gy_header_bar_set_text_in_entry (GyHeaderBar *self,
-                                      const gchar *text)
+void
+gy_header_bar_set_text_in_entry (GyHeaderBar *self,
+                                 const gchar *text)
 {
   GyLexSearchBox *search_box;
   GtkEntry       *entry;
@@ -93,4 +94,15 @@ void gy_header_bar_set_text_in_entry (GyHeaderBar *self,
 
   entry = GTK_ENTRY (_gy_lex_search_box_get_search_entry (search_box));
   gtk_entry_set_text (entry, text);
+}
+
+GtkEntry *
+gy_header_bar_get_entry (GyHeaderBar *self)
+{
+  GyLexSearchBox *search_box;
+
+  g_return_val_if_fail (GY_IS_HEADER_BAR (self), NULL);
+
+  search_box = GY_LEX_SEARCH_BOX (gtk_header_bar_get_custom_title (GTK_HEADER_BAR (self)));
+  return GTK_ENTRY (_gy_lex_search_box_get_search_entry (search_box));
 }

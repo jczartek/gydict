@@ -59,7 +59,7 @@ gy_dict_manager_new (void)
 }
 
 GyDict *
-gy_dict_manager_add_dict (GyDictManager *self,
+gy_dict_manager_set_dict (GyDictManager *self,
                           const gchar   *name_dict,
                           GtkTextBuffer *buffer)
 {

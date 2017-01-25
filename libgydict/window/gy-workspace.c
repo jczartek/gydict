@@ -17,7 +17,10 @@
  */
 
 #include "gy-workspace.h"
+#include "dictionaries/gy-dict.h"
 #include "dictionaries/gy-dict-manager.h"
+#include "entrylist/gy-tree-view.h"
+#include "entryview/gy-text-view.h"
 
 #define DEFAULT_POSITION 200
 
@@ -25,6 +28,8 @@ struct _GyWorkspace
 {
   PnlDockOverlay      __parent__;
   PnlDockBin         *dockbin;
+  GyTreeView         *treeview;
+  GyTextView         *textview;
   GyDictManager      *manager;
   GSimpleActionGroup *actions;
 };
@@ -33,6 +38,8 @@ enum
 {
   PROP_0,
   PROP_MANAGER,
+  PROP_LEFT_WIDGET,
+  PROP_RIGHT_WIDGET,
   N_PROPS
 };
 static GParamSpec *properties[N_PROPS];
@@ -44,6 +51,19 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
                                 GVariant      *parameter,
                                 gpointer       data)
 {
+  GyWorkspace *self = (GyWorkspace *) data;
+  GyDict      *dict = NULL;
+  const gchar *str;
+
+  str = g_variant_get_string (parameter, NULL);
+
+  dict = gy_dict_manager_set_dict (self->manager, str,
+                                   gtk_text_view_get_buffer (GTK_TEXT_VIEW (self->textview)));
+  if (!dict) return;
+
+  gtk_tree_view_set_model (GTK_TREE_VIEW (self->treeview),
+                           gy_dict_get_tree_model (dict));
+
   g_action_change_state (G_ACTION (action), parameter);
 }
 
@@ -78,16 +98,25 @@ gy_workspace_get_property (GObject    *object,
     case PROP_MANAGER:
       g_value_set_object (value, self->manager);
       break;
+    case PROP_LEFT_WIDGET:
+      g_value_take_object (value, self->treeview);
+      break;
+    case PROP_RIGHT_WIDGET:
+      g_value_take_object (value, self->textview);
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
 }
 
-
 static void
-gy_workspace_finalize (GObject *object)
+gy_workspace_destroy (GtkWidget *widget)
 {
-  G_OBJECT_CLASS (gy_workspace_parent_class)->finalize (object);
+  GyWorkspace *self = GY_WORKSPACE (widget);
+
+  g_clear_object (&self->actions);
+  g_clear_object (&self->manager);
+
+  GTK_WIDGET_CLASS (gy_workspace_parent_class)->destroy (widget);
 }
 
 static void
@@ -96,12 +125,15 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
   GObjectClass   *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  object_class->finalize     = gy_workspace_finalize;
   object_class->set_property = gy_workspace_set_property;
   object_class->get_property = gy_workspace_get_property;
 
+  widget_class->destroy = gy_workspace_destroy;
+
   gtk_widget_class_set_template_from_resource (widget_class , "/org/gtk/gydict/gy-workspace.ui");
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, dockbin);
+  gtk_widget_class_bind_template_child (widget_class, GyWorkspace, treeview);
+  gtk_widget_class_bind_template_child (widget_class, GyWorkspace, textview);
 
   properties[PROP_MANAGER] =
     g_param_spec_object ("manager-dicts",
@@ -109,6 +141,18 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
                          "The manager of dictionaries.",
                          GY_TYPE_DICT_MANAGER,
                          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+  properties[PROP_LEFT_WIDGET] =
+    g_param_spec_object ("left-widget",
+                         "left-widget",
+                         "The left widget of the workspace.",
+                         GY_TYPE_TREE_VIEW,
+                         G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+  properties[PROP_RIGHT_WIDGET] =
+    g_param_spec_object ("right-widget",
+                         "right-widget",
+                         "The right widget of the workspace.",
+                         GY_TYPE_TEXT_VIEW,
+                         G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
@@ -135,6 +179,10 @@ gy_workspace_init (GyWorkspace *self)
   edge = PNL_DOCK_REVEALER (pnl_dock_bin_get_left_edge (PNL_DOCK_BIN (self->dockbin)));
   pnl_dock_revealer_set_position (edge, DEFAULT_POSITION);
   pnl_dock_revealer_set_reveal_child (edge, TRUE);
+
+  g_object_set_data (G_OBJECT (self->textview), "treeview", self->treeview);
+  g_object_set_data (G_OBJECT (self->treeview), "treeview", self->treeview);
+
 }
 
 

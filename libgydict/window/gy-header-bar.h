@@ -32,6 +32,7 @@ void         gy_header_bar_connect_entry_with_tree_view (GyHeaderBar *self,
                                                          GtkTreeView *tree_view);
 void         gy_header_bar_set_text_in_entry            (GyHeaderBar *self,
                                                          const gchar *text);
+GtkEntry    *gy_header_bar_get_entry                    (GyHeaderBar *self);
 
 G_END_DECLS
 
