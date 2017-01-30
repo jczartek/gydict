@@ -380,3 +380,10 @@ gy_text_view_get_background_pattern (GyTextView *self)
 
   return self->background_pattern_grid_set;
 }
+
+void
+gy_text_view_msg_activated_row (GyTextView *self,
+                                gint        row)
+{
+  g_return_if_fail (GY_IS_TEXT_VIEW (self));
+}

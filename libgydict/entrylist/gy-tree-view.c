@@ -18,15 +18,46 @@
 
 #include <string.h>
 #include "gy-tree-view.h"
+#include "entryview/gy-text-view.h"
 #include "helpers/gy-utility-func.h"
 
 
 struct _GyTreeView
 {
-  GtkTreeView parent_instance;
+  GtkTreeView       __parent__;
+  GtkTreeSelection *selection;
 };
 
 G_DEFINE_TYPE (GyTreeView, gy_tree_view, GTK_TYPE_TREE_VIEW)
+
+static void
+gy_tree_view_selection_changed (GtkTreeSelection *selection,
+                                gpointer          data)
+{
+  GtkTreeIter   iter;
+  GtkTreeModel *model;
+  GyTreeView   *self = GY_TREE_VIEW (data);
+
+  if (gtk_tree_selection_get_selected (selection, &model, &iter))
+    {
+      GtkTreePath *path;
+      gint *row;
+
+      path = gtk_tree_model_get_path (model, &iter);
+      row = gtk_tree_path_get_indices (path);
+
+      if (row)
+        {
+          GyTextView *tv;
+
+          tv = g_object_get_data (G_OBJECT (self), "textview");
+          g_assert (GY_IS_TEXT_VIEW (tv));
+
+          gy_text_view_msg_activated_row (tv, *row);
+        }
+      gtk_tree_path_free (path);
+    }
+}
 
 static gboolean
 gy_tree_view_search_equal_func (GtkTreeModel *model,
@@ -112,4 +143,9 @@ gy_tree_view_class_init (GyTreeViewClass *klass)
 static void
 gy_tree_view_init (GyTreeView *self)
 {
+
+  self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
+  g_signal_connect (self->selection, "changed",
+                    G_CALLBACK (gy_tree_view_selection_changed), self);
+
 }

@@ -180,8 +180,7 @@ gy_workspace_init (GyWorkspace *self)
   pnl_dock_revealer_set_position (edge, DEFAULT_POSITION);
   pnl_dock_revealer_set_reveal_child (edge, TRUE);
 
-  g_object_set_data (G_OBJECT (self->textview), "treeview", self->treeview);
-  g_object_set_data (G_OBJECT (self->treeview), "treeview", self->treeview);
+  g_object_set_data (G_OBJECT (self->treeview), "textview", self->textview);
 
 }
 

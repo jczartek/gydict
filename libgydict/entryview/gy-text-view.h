@@ -27,15 +27,16 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (GyTextView, gy_text_view, GY, TEXT_VIEW, GtkTextView);
 
-void gy_text_view_set_font_desc (GyTextView                 *self,
-                                 const PangoFontDescription *font_desc);
-void gy_text_view_set_font_name (GyTextView  *self,
-                                 const gchar  *font_name);
-const PangoFontDescription  *gy_text_view_get_font_desc (GyTextView *self);
-void gy_text_view_set_background_pattern (GyTextView *self,
-                                          gboolean    background_pattern);
-gboolean gy_text_view_get_background_pattern (GyTextView *self);
-
+void                        gy_text_view_set_font_desc (GyTextView                 *self,
+                                                        const PangoFontDescription *font_desc);
+void                        gy_text_view_set_font_name (GyTextView   *self,
+                                                        const gchar  *font_name);
+const PangoFontDescription* gy_text_view_get_font_desc (GyTextView *self);
+void                        gy_text_view_set_background_pattern (GyTextView *self,
+                                                                 gboolean    background_pattern);
+gboolean                    gy_text_view_get_background_pattern (GyTextView *self);
+void                        gy_text_view_msg_activated_row (GyTextView *self,
+                                                            gint       row);
 G_END_DECLS
 
 #endif /* __GY_TEXT_VIEW_H__ */
