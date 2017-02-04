@@ -18,6 +18,8 @@
 
 #include "gy-text-view.h"
 #include "gy-text-buffer.h"
+#include "dictionaries/gy-dict-manager.h"
+#include "dictionaries/gy-parsable.h"
 #include "helpers/gy-utility-func.h"
 
 struct _GyTextView
@@ -385,5 +387,19 @@ void
 gy_text_view_msg_activated_row (GyTextView *self,
                                 gint        row)
 {
+  GtkTextBuffer *bt;
+  GyDictManager *manager;
+  gpointer       dict = NULL;
+
   g_return_if_fail (GY_IS_TEXT_VIEW (self));
+
+  bt = gtk_text_view_get_buffer (GTK_TEXT_VIEW (self));
+  manager = g_object_get_data (G_OBJECT(self), "manager");
+  dict = gy_dict_manager_get_used_dict (manager);
+
+  g_return_if_fail (GY_IS_DICT_MANAGER (manager));
+
+  gy_text_buffer_clean_buffer (GY_TEXT_BUFFER(bt));
+
+  gy_parsable_parse (GY_PARSABLE (dict), bt, row);
 }

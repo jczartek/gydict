@@ -181,6 +181,7 @@ gy_workspace_init (GyWorkspace *self)
   pnl_dock_revealer_set_reveal_child (edge, TRUE);
 
   g_object_set_data (G_OBJECT (self->treeview), "textview", self->textview);
+  g_object_set_data (G_OBJECT (self->textview), "manager", self->manager);
 
 }
 
