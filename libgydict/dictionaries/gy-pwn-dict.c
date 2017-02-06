@@ -19,6 +19,7 @@
 #define G_LOG_DOMAIN "GyPwnDict"
 
 #include <string.h>
+#include <stdlib.h>
 #include <zlib.h>
 
 #include "gy-pwn-dict.h"
@@ -26,6 +27,9 @@
 #include "gy-german-pwn.h"
 #include "gy-english-pwn.h"
 #include "gy-pwntabs.h"
+#include "gy-parsable.h"
+#include "gy-parser-pwn.h"
+#include "entryview/gy-text-buffer.h"
 
 #define SIZE_BUFFER  128
 #define SIZE_ENTRY   64
@@ -39,15 +43,30 @@ static gboolean gy_pwn_dict_check_checksum (GyPwnDict  *self,
                                             GError    **err);
 static void gy_pwn_dict_query (GyPwnDict      *self,
                                GyDictPwnQuery *query);
+static void gy_pwn_dict_parsable_iface_init (GyParsableInterface *iface);
+
+typedef struct _ParserData
+{
+  GtkTextBuffer *buffer;
+  GtkTextIter iter;
+  GHashTable *table_tags;
+  GtkTextTagTable *table_buffer_tags;
+} ParserData;
 
 typedef struct
 {
   GFile      *file;
   guint      *offsets;
   GHashTable *entities;
+
+  GyMarkupParserPwn *parser;
+  ParserData        *pdata;
 } GyPwnDictPrivate;
 
-G_DEFINE_TYPE_WITH_PRIVATE (GyPwnDict, gy_pwn_dict, GY_TYPE_DICT)
+G_DEFINE_TYPE_WITH_CODE (GyPwnDict, gy_pwn_dict, GY_TYPE_DICT,
+                         G_ADD_PRIVATE (GyPwnDict)
+                         G_IMPLEMENT_INTERFACE (GY_TYPE_PARSABLE,
+                                                gy_pwn_dict_parsable_iface_init))
 
 enum {
   PROP_0,
@@ -69,7 +88,6 @@ gy_pwn_dict_map (GyDict  *dict,
                  GError **err)
 {
   guint32 word_count = 0, index_base = 0, word_base = 0;
-  g_autofree gchar *md5 = NULL;
   g_autofree guint32 *offsets = NULL;
   g_autoptr(GFileInputStream) in = NULL;
   g_autoptr(GSettings)  settings = NULL;
@@ -321,8 +339,20 @@ gy_pwn_dict_finalize (GObject *object)
   GyPwnDict *self = (GyPwnDict *)object;
   GyPwnDictPrivate *priv = gy_pwn_dict_get_instance_private (self);
 
-  g_clear_pointer (&priv->entities,
-                   g_hash_table_unref);
+  if (priv->pdata)
+    {
+      g_object_unref (priv->pdata->buffer);
+      g_hash_table_unref (priv->pdata->table_tags);
+      g_clear_pointer (&priv->pdata, g_free);
+    }
+
+  if (priv->parser) g_clear_pointer (&priv->parser, gy_markup_parser_pwn_free);
+
+  if (priv->entities) g_clear_pointer (&priv->entities, g_hash_table_unref);
+
+  if (priv->file) g_clear_object (&priv->file);
+
+  if (priv->offsets) g_clear_pointer (&priv->offsets, g_free);
 
   G_OBJECT_CLASS (gy_pwn_dict_parent_class)->finalize (object);
 }
@@ -403,6 +433,8 @@ gy_pwn_dict_init (GyPwnDict *self)
   GyPwnDictPrivate *priv = gy_pwn_dict_get_instance_private (self);
 
   priv->entities = gy_tabs_get_entity_table ();
+  priv->parser = NULL;
+  priv->pdata = NULL;
 }
 
 /* PUBLIC */
@@ -421,4 +453,162 @@ gy_pwn_dict_get_lexical_unit (GyPwnDict  *self,
   g_return_val_if_fail (klass->get_lexical_unit != NULL, NULL);
 
   return klass->get_lexical_unit (self, index, err);
+}
+
+/* Interface */
+static gchar *format_tags[] = {"B", "BIG", "PH", "SMALL", "I", "SUB", "SUP"};
+static gchar *roman_numbers[] = {"", "I", "II", "III", "IV", "V", "VI", "VII",
+                                 "VIII", "IX", "X", "XI", "XII", "XIII", "XIV",
+                                 "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
+
+static inline gboolean
+is_tag_format (const gchar *tag)
+{
+  for (gint i = 0; i < G_N_ELEMENTS (format_tags); i++)
+    if (strcmp (tag, format_tags[i]) == 0)
+      return TRUE;
+  return FALSE;
+}
+
+
+static void
+gy_pwn_dict_start_tag (const gchar     *tag_name,
+                       const GPtrArray *attribute_name,
+                       const GPtrArray *attribute_value,
+                       gpointer         data)
+{
+  ParserData *pdata = (ParserData *) data;
+
+  if (is_tag_format (tag_name))
+  {
+    GtkTextTag *tag = NULL;
+    gchar *name = g_utf8_strdown (tag_name, -1);
+
+    tag = gtk_text_tag_table_lookup (pdata->table_buffer_tags,
+                                     (const gchar *) name);
+    g_hash_table_insert (pdata->table_tags,
+                         (gpointer) name,
+                         (gpointer) tag);
+    g_assert (GTK_IS_TEXT_TAG (tag));
+    return;
+  }
+
+  if (strcmp (tag_name, "P") == 0)
+  {
+    gtk_text_buffer_insert (pdata->buffer,
+                            &pdata->iter, "\n", -1);
+    return;
+  }
+
+  if (strcmp (tag_name, "IMG") == 0)
+  {
+    g_return_if_fail (attribute_name->len == attribute_value->len);
+    gchar *str = *attribute_value->pdata;
+    if (g_str_has_prefix (str, "rzym") && g_str_has_suffix (str, ".jpg"))
+    {
+#define LENGTH_PREFIX	4
+#define LENGTH_SUFFIX	4
+      gulong end_pos = LENGTH_PREFIX + (strlen (str) - (LENGTH_PREFIX + LENGTH_SUFFIX));
+      gchar *number = g_utf8_substring (str, LENGTH_SUFFIX, end_pos);
+      gint index = atoi ((const gchar *) number);
+      g_free (number);
+      gy_text_buffer_insert_text_with_tags (GY_TEXT_BUFFER (pdata->buffer),
+                                            &pdata->iter,
+                                            roman_numbers[index], -1,
+                                            pdata->table_tags);
+#undef LENGTH_PREFIX
+#undef LENGTH_SUFFIX
+    }
+    else if (g_str_has_prefix (str, "idioms"))
+    {
+      gy_text_buffer_insert_text_with_tags (GY_TEXT_BUFFER (pdata->buffer),
+                                            &pdata->iter,
+                                            "IDIOM", -1,
+                                            pdata->table_tags);
+    }
+    return;
+  }
+}
+
+static void
+gy_pwn_dict_end_tag (const gchar *tag_name,
+                     gpointer     data)
+{
+  ParserData *pdata = (ParserData *) data;
+
+  if (is_tag_format (tag_name))
+    {
+      gchar *name = g_utf8_strdown (tag_name, -1);
+      g_hash_table_remove (pdata->table_tags, name);
+      g_free (name);
+      return;
+
+    }
+}
+
+static void
+gy_pwn_dict_insert_text (const gchar *text,
+                         gsize        len,
+                         gpointer     data)
+{
+  ParserData *pdata = (ParserData *) data;
+
+  gy_text_buffer_insert_text_with_tags (GY_TEXT_BUFFER (pdata->buffer),
+                                        &pdata->iter,
+                                        text, len,
+                                        pdata->table_tags);
+}
+
+static void
+gy_pwn_dict_parse_lexical_unit (GyParsable    *p,
+                                GtkTextBuffer *buffer,
+                                gint           index)
+{
+  GyPwnDict *self = GY_PWN_DICT (p);
+  GyPwnDictPrivate *priv = gy_pwn_dict_get_instance_private (self);
+  GError *err = NULL;
+  g_autofree gchar *lexical_unit = NULL;
+  gboolean is_mapped = FALSE;
+
+  g_return_if_fail (GY_IS_PWN_DICT (self));
+  g_return_if_fail (GTK_IS_TEXT_BUFFER (buffer));
+
+  g_object_get (GY_DICT (self), "is-mapped", &is_mapped, NULL);
+  g_return_if_fail (is_mapped);
+
+  if (priv->parser == NULL && priv->pdata == NULL)
+    {
+      priv->pdata = g_malloc0 (sizeof (ParserData));
+      priv->pdata->buffer = g_object_ref (buffer);
+      priv->pdata->table_tags = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                       g_free, NULL);
+      priv->pdata->table_buffer_tags = gtk_text_buffer_get_tag_table (buffer);
+
+      priv->parser = gy_markup_parser_pwn_new (gy_pwn_dict_start_tag,
+                                               gy_pwn_dict_end_tag,
+                                               gy_pwn_dict_insert_text,
+                                               priv->entities,
+                                               priv->pdata, NULL);
+      g_assert (GTK_IS_TEXT_TAG_TABLE (priv->pdata->table_buffer_tags) &&
+                priv->parser != NULL);
+    }
+
+  lexical_unit = gy_pwn_dict_get_lexical_unit (self, index, &err);
+  if (err)
+    {
+      g_critical ("%s", err->message);
+      g_clear_error (&err);
+      return;
+    }
+
+  gtk_text_buffer_get_iter_at_offset (priv->pdata->buffer,
+                                      &priv->pdata->iter, 0);
+  gy_markup_parser_pwn_parse (priv->parser, (const gchar *) lexical_unit,
+                              -1, GY_ENCODING_ISO88592);
+}
+
+static void
+gy_pwn_dict_parsable_iface_init (GyParsableInterface *iface)
+{
+  iface->parse = gy_pwn_dict_parse_lexical_unit;
 }

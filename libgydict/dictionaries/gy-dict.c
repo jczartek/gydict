@@ -31,7 +31,6 @@ typedef struct _GyDictPrivate
 {
   gchar          *identifier;
   GtkTreeModel   *model;
-  GtkTextBuffer  *buffer;
   GyHistory      *history;
   guint           is_mapped: 1;
   guint           is_used:   1;
@@ -43,7 +42,6 @@ enum
   PROP_IDENTIFIER,
   PROP_MODEL,
   PROP_IS_MAPPED,
-  PROP_BUFFER,
   PROP_HISTORY,
   PROP_IS_USED,
   LAST_PROP
@@ -60,8 +58,6 @@ gy_dict_dispose (GObject *object)
 
   if (priv->model)
     g_clear_object (&priv->model);
-  if (priv->buffer)
-    g_clear_object (&priv->buffer);
 
   G_OBJECT_CLASS (gy_dict_parent_class) -> dispose (object);
 }
@@ -95,9 +91,6 @@ gy_dict_set_property (GObject      *object,
       break;
     case PROP_MODEL:
       priv->model = g_value_dup_object (value);
-      break;
-    case PROP_BUFFER:
-      priv->buffer = g_value_dup_object (value);
       break;
     case PROP_HISTORY:
       priv->history = g_value_dup_object (value);
@@ -133,9 +126,6 @@ gy_dict_get_property (GObject    *object,
       break;
     case PROP_MODEL:
       g_value_set_object (value, priv->model);
-      break;
-    case PROP_BUFFER:
-      g_value_set_object (value, priv->buffer);
       break;
     case PROP_HISTORY:
       g_value_set_object (value, priv->history);
@@ -205,18 +195,6 @@ gy_dict_class_init (GyDictClass *klass)
                           "Is the dict mapped",
                           FALSE,
                           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-  /**
-   * GyDict:buffer:
-   *
-   * The buffer which is displayed.
-   */
-  gParamSpecs[PROP_BUFFER] =
-    g_param_spec_object ("buffer",
-                         "Buffer",
-                         "The buffer which is displayed.",
-                         GTK_TYPE_TEXT_BUFFER,
-                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS | G_PARAM_CONSTRUCT_ONLY);
 
   /**
    *
@@ -297,8 +275,7 @@ gy_dict_get_tree_model (GyDict *dict)
 }
 
 GObject *
-gy_dict_new (const gchar   *identifier,
-             GtkTextBuffer *buffer)
+gy_dict_new (const gchar   *identifier)
 {
   GType gtype;
   GObject *object = NULL;
@@ -307,7 +284,6 @@ gy_dict_new (const gchar   *identifier,
   gsize offset = 0;
 
   g_return_val_if_fail (identifier != NULL, NULL);
-  g_return_val_if_fail (GTK_IS_TEXT_BUFFER (buffer), NULL);
 
   offset = strcspn (identifier, "-");
   type_name = g_strndup (identifier, offset);
@@ -318,10 +294,7 @@ gy_dict_new (const gchar   *identifier,
 
   id = g_utf8_strdown (identifier, -1);
 
-  object = g_object_new (gtype,
-                         "identifier", id,
-                         "buffer",     buffer,
-                         NULL);
+  object = g_object_new (gtype, "identifier", id, NULL);
 
   return object;
 }

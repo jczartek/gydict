@@ -291,7 +291,7 @@ dict_radio_cb (GSimpleAction *action,
     {
       GyHistory *history = NULL;
 
-      dict = GY_DICT(gy_dict_new (value, self->buffer));
+      dict = GY_DICT(gy_dict_new (value));
 
       if (!dict)
         return;

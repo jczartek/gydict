@@ -60,8 +60,7 @@ gy_dict_manager_new (void)
 
 GyDict *
 gy_dict_manager_set_dict (GyDictManager *self,
-                          const gchar   *name_dict,
-                          GtkTextBuffer *buffer)
+                          const gchar   *name_dict)
 {
   GyDict *dict;
   GError *err = NULL;
@@ -84,7 +83,7 @@ gy_dict_manager_set_dict (GyDictManager *self,
       return dict;
     }
 
-  dict = GY_DICT (gy_dict_new (name_dict, buffer));
+  dict = GY_DICT (gy_dict_new (name_dict));
   gy_dict_map (dict, &err);
   if (err != NULL)
     {

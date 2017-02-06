@@ -29,8 +29,7 @@ G_DECLARE_FINAL_TYPE (GyDictManager, gy_dict_manager, GY, DICT_MANAGER, GObject)
 
 GyDictManager *gy_dict_manager_new           (void);
 GyDict        *gy_dict_manager_set_dict      (GyDictManager *self,
-                                              const gchar   *name_dict,
-                                              GtkTextBuffer *buffer);
+                                              const gchar   *name_dict);
 GyDict        *gy_dict_manager_get_used_dict (GyDictManager *self);
 
 G_END_DECLS

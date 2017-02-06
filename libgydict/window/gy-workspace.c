@@ -57,8 +57,7 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
 
   str = g_variant_get_string (parameter, NULL);
 
-  dict = gy_dict_manager_set_dict (self->manager, str,
-                                   gtk_text_view_get_buffer (GTK_TEXT_VIEW (self->textview)));
+  dict = gy_dict_manager_set_dict (self->manager, str);
   if (!dict) return;
 
   gtk_tree_view_set_model (GTK_TREE_VIEW (self->treeview),
