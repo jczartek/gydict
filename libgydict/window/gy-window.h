@@ -20,7 +20,6 @@
 #define __GY_WINDOW_H__
 
 #include "app/gy-app.h"
-#include "dictionaries/gy-dict.h"
 
 G_BEGIN_DECLS
 
@@ -29,7 +28,6 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (GyWindow, gy_window, GY, WINDOW, GtkApplicationWindow)
 
 GtkWidget*     gy_window_new             (GyApp *application);
-GyDict*        gy_window_get_dictionary  (GyWindow *self);
 GtkWidget*     gy_window_get_text_view   (GyWindow *self);
 
 G_END_DECLS

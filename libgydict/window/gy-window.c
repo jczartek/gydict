@@ -44,9 +44,6 @@ static void find_menu_cb (GSimpleAction *action,
 static void dict_menu_cb (GSimpleAction *action,
                           GVariant      *parametr,
                           gpointer       data);
-static void dict_radio_cb (GSimpleAction *action,
-                           GVariant      *parameter,
-                           gpointer       data);
 static void quit_win_cb (GSimpleAction *action,
                          GVariant      *parameter,
                          gpointer       data);
@@ -88,11 +85,6 @@ struct _GyWindow
   GyHeaderBar          *header_bar;
 
   GtkTextBuffer        *buffer;
-  GtkTreeSelection     *selection;
-  GData                *datalist;
-  GQuark                qvalue;
-  guint                 timeout_history;
-  gchar                *string_history;
 
   GyHistory            *history;
   GHashTable           *histories_dictionaries;
@@ -121,7 +113,6 @@ static GActionEntry win_entries[] =
   { "close", quit_win_cb, NULL, NULL, NULL },
   { "go-back", go_back_cb, NULL, NULL, NULL },
   { "go-forward", go_forward_cb, NULL, NULL, NULL },
-  { "dict", dict_radio_cb, "s", "''", NULL },
   { "find", find_menu_cb, NULL, "false", NULL },
   { "dict-menu", dict_menu_cb, NULL, "false", NULL },
   { "gear-menu", gear_menu_cb, NULL, "false", NULL },
@@ -260,7 +251,6 @@ dict_menu_cb(GSimpleAction *action,
   g_variant_unref (state);
 }
 
-
 static void
 gear_menu_cb(GSimpleAction *action,
              GVariant      *parametr G_GNUC_UNUSED,
@@ -272,88 +262,6 @@ gear_menu_cb(GSimpleAction *action,
   g_action_change_state (G_ACTION (action),
                          g_variant_new_boolean (!g_variant_get_boolean (state)));
   g_variant_unref (state);
-}
-
-static void
-dict_radio_cb (GSimpleAction *action,
-               GVariant *parameter,
-               gpointer data)
-{
-  const gchar *value,
-              *str = NULL;
-  GyWindow *self = GY_WINDOW (data);
-  GyDict *dict;
-
-  value = g_variant_get_string (parameter, NULL);
-  self->qvalue = g_quark_from_string (value);
-
-  if (!(dict = g_datalist_id_get_data (&self->datalist, self->qvalue)))
-    {
-      GyHistory *history = NULL;
-
-      dict = GY_DICT(gy_dict_new (value));
-
-      if (!dict)
-        return;
-
-      g_datalist_id_set_data_full (&self->datalist,
-                                   self->qvalue,dict,
-                                   g_object_unref);
-
-      if (self->histories_dictionaries != NULL)
-        {
-          history = gy_history_new ();
-          g_hash_table_insert (self->histories_dictionaries,
-                               (gpointer) g_strdup (value), history);
-
-        }
-    }
-
-  if (!gy_dict_is_mapped (dict))
-    {
-      GError *err = NULL;
-
-      gy_dict_map (dict, &err);
-
-      if (err != NULL)
-        {
-          g_critical ("%s", err->message);
-          return;
-        }
-    }
-
-  gtk_tree_view_set_model (GTK_TREE_VIEW (self->tree_view),
-                           gy_dict_get_tree_model (dict));
-  gy_text_buffer_clean_buffer (GY_TEXT_BUFFER (self->buffer));
-  gy_header_bar_set_text_in_entry (self->header_bar, "");
-
-  self->history = GY_HISTORY (g_hash_table_lookup (self->histories_dictionaries,
-                                                   value));
-
-  if (self->bind[GY_BINDING_ACTION_PREV] != NULL &&
-      self->bind[GY_BINDING_ACTION_NEXT] != NULL)
-    {
-      g_binding_unbind (self->bind[GY_BINDING_ACTION_PREV]);
-      g_binding_unbind (self->bind[GY_BINDING_ACTION_NEXT]);
-    }
-
-  self->bind[GY_BINDING_ACTION_PREV] = g_object_bind_property (G_OBJECT (self->history), "is-enabled-action-prev",
-                                                               G_OBJECT (self->prev),    "enabled",
-                                                               G_BINDING_DEFAULT);
-
-  self->bind[GY_BINDING_ACTION_NEXT] = g_object_bind_property (G_OBJECT (self->history),  "is-enabled-action-next",
-                                                               G_OBJECT (self->next),     "enabled",
-                                                               G_BINDING_DEFAULT);
-  gy_history_update (self->history);
-
-  if (gy_history_length (self->history) != 0)
-    {
-      /* Gets the end item in the history. */
-      str = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
-      gy_header_bar_set_text_in_entry (self->header_bar, str);
-    }
-
-  g_action_change_state (G_ACTION (action), parameter);
 }
 
 static void
@@ -394,71 +302,9 @@ go_forward_cb (GSimpleAction *action G_GNUC_UNUSED,
    gy_header_bar_set_text_in_entry (self->header_bar, text);
 }
 
-static gboolean
-source_func (gpointer data)
-{
-  GyWindow *self = GY_WINDOW (data);
-
-  gy_history_append (self->history, self->string_history );
-
-  g_free (self->string_history);
-  self->string_history = NULL;
-  self->timeout_history = 0;
-  return FALSE;
-}
-
-static void
-tree_selection_cb (GtkTreeSelection *selection,
-                   gpointer          data)
-{
-  GtkTreeIter iter;
-  GtkTreeModel *model;
-  GtkTreePath * path;
-  gint * row;
-  g_autoptr(GtkTextBuffer) buffer;
-  gchar * value;
-  GyWindow *self = GY_WINDOW (data);
-
-  buffer = g_object_ref(self->buffer);
-
-  if (self->timeout_history)
-    {
-      g_source_remove (self->timeout_history);
-      self->timeout_history = 0;
-    }
-
-  if (gtk_tree_selection_get_selected (selection, &model, &iter))
-    {
-      path = gtk_tree_model_get_path (model, &iter);
-      row = gtk_tree_path_get_indices (path);
-
-      gy_text_buffer_clean_buffer (GY_TEXT_BUFFER (buffer));
-      gy_parsable_parse (GY_PARSABLE (gy_window_get_dictionary (self)),
-                         buffer, *row);
-
-      gtk_tree_model_get (model, &iter, 0, &value, -1);
-
-      /* the variable @value is freed in the function source_func */
-      self->string_history = value;
-      self->timeout_history = g_timeout_add (2000, (GSourceFunc) source_func, data);
-      gtk_tree_path_free (path);
-    }
-}
-
 static void
 gy_pwn_finalize (GObject *object)
 {
-  GyWindow *self = GY_WINDOW (object);
-
-  g_datalist_clear (&self->datalist);
-  self->qvalue = 0;
-
-  if (self->histories_dictionaries != NULL)
-  {
-    g_hash_table_destroy (self->histories_dictionaries);
-    self->histories_dictionaries = NULL;
-    self->history = NULL;
-  }
   G_OBJECT_CLASS (gy_window_parent_class)->finalize (object);
 }
 
@@ -468,29 +314,17 @@ gy_window_init (GyWindow *self)
   GtkTreeView *treeview;
   GtkEntry    *entry;
 
-  //self->timeout_history = 0;
-  //self->string_history = NULL;
-  //g_datalist_init (&self->datalist);
-
   gtk_widget_init_template (GTK_WIDGET (self));
 
+  g_action_map_add_action_entries (G_ACTION_MAP (self), win_entries,
+                                   G_N_ELEMENTS (win_entries), self);
+  gy_workspace_attach_action (self->workspace, self);
 
-  g_action_map_add_action_entries (G_ACTION_MAP (self),
-                                   win_entries, G_N_ELEMENTS (win_entries),
-                                   self);
-  gy_workspace_attach_action (self->workspace,
-                              self);
-
-  g_object_get (self->workspace,
-                "left-widget", &treeview, NULL);
+  g_object_get (self->workspace, "left-widget", &treeview, NULL);
   entry = gy_header_bar_get_entry (self->header_bar);
   gtk_tree_view_set_search_entry (treeview, entry);
 
   /*self->buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (self->text_view));
-
-  self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->tree_view));
-  gtk_tree_selection_set_mode (self->selection, GTK_SELECTION_BROWSE);
-  gy_header_bar_connect_entry_with_tree_view (self->header_bar, GTK_TREE_VIEW (self->tree_view));
 
   self->findbar = gy_search_bar_new ();
   gtk_box_pack_end (GTK_BOX (self->text_box), self->findbar, FALSE, FALSE, 0);
@@ -504,10 +338,7 @@ gy_window_init (GyWindow *self)
   g_simple_action_set_enabled (G_SIMPLE_ACTION (self->prev), FALSE);
   self->bind[GY_BINDING_ACTION_PREV] = self->bind[GY_BINDING_ACTION_NEXT] = NULL;
 
-  self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
-
-  g_signal_connect (G_OBJECT (self->selection), "changed",
-                    G_CALLBACK(tree_selection_cb), self);*/
+  self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);*/
 
 }
 
@@ -524,17 +355,10 @@ gy_window_class_init (GyWindowClass *klass)
   widget_class->window_state_event = on_window_state_event;
   widget_class->destroy = on_window_destroy;
 
-  g_type_ensure (GY_TYPE_TREE_VIEW);
-  g_type_ensure (GY_TYPE_TEXT_VIEW);
-
   gtk_widget_class_set_template_from_resource (widget_class,
                                                "/org/gtk/gydict/gy-window.ui");
-  //gtk_widget_class_bind_template_child (widget_class, GyWindow, child_box);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, workspace);
-  //gtk_widget_class_bind_template_child (widget_class, GyWindow, tree_view);
-  //gtk_widget_class_bind_template_child (widget_class, GyWindow, text_view);
-  //gtk_widget_class_bind_template_child (widget_class, GyWindow, text_box);
 }
 
 static void
@@ -673,12 +497,6 @@ gy_window_new (GyApp *application)
                          "application", application, NULL);
 
   return GTK_WIDGET (window);
-}
-
-GyDict *
-gy_window_get_dictionary (GyWindow *self)
-{
-  return g_datalist_id_get_data (&self->datalist, self->qvalue);
 }
 
 GtkWidget *
