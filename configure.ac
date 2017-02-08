@@ -162,6 +162,7 @@ contrib/pnl/Makefile
 contrib/pnl/pnl-version.h
 data/Makefile
 data/gydict.desktop.in
+data/libgydict.pc
 icons/Makefile
 libgydict/Makefile
 po/Makefile.in

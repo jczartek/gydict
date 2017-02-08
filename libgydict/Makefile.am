@@ -6,7 +6,7 @@ EXTRA_DIST =
 pkglibdir = $(libdir)/gydict
 pkglib_LTLIBRARIES = libgydict.la
 
-headersdir = $(includedir)/gydict/gydict
+headersdir = $(includedir)/gydict/libgydict
 libgydict_la_public_headers = \
 	app/gy-app.h \
 	css/gy-css-provider.h \
