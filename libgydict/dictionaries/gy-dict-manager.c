@@ -21,12 +21,27 @@
 
 struct _GyDictManager
 {
-  GObject     __parent__;
+  GObject             __parent__;
 
-  GHashTable *dicts;
+  GHashTable         *dicts;
+  GSimpleActionGroup *hactions;
 };
 
 G_DEFINE_TYPE (GyDictManager, gy_dict_manager, G_TYPE_OBJECT)
+
+static void
+gy_dict_manager_go_back_in_history (GSimpleAction *action,
+                                    GVariant      *parameter,
+                                    gpointer       data)
+{
+}
+
+static void
+gy_dict_manager_go_next_in_history (GSimpleAction *action,
+                                    GVariant      *parameter,
+                                    gpointer       data)
+{
+}
 
 static void
 gy_dict_manager_finalize (GObject *object)
@@ -34,6 +49,8 @@ gy_dict_manager_finalize (GObject *object)
   GyDictManager *self = (GyDictManager *)object;
 
   g_hash_table_destroy (self->dicts);
+  g_clear_object (&self->hactions);
+
   G_OBJECT_CLASS (gy_dict_manager_parent_class)->finalize (object);
 }
 
@@ -48,8 +65,25 @@ gy_dict_manager_class_init (GyDictManagerClass *klass)
 static void
 gy_dict_manager_init (GyDictManager *self)
 {
+  GSimpleAction *action = NULL;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+  static const GActionEntry entries[] = {
+      {"go-back", gy_dict_manager_go_back_in_history, NULL, NULL, NULL},
+      {"go-next", gy_dict_manager_go_next_in_history, NULL, NULL, NULL}
+    };
+#pragma GCC diagnostic pop
+
   self->dicts = g_hash_table_new_full (g_str_hash, g_str_equal,
                                        NULL, g_object_unref);
+  self->hactions = g_simple_action_group_new ();
+  g_action_map_add_action_entries (G_ACTION_MAP (self->hactions),
+                                   entries, G_N_ELEMENTS (entries), self);
+
+  action = (GSimpleAction *) g_action_map_lookup_action (G_ACTION_MAP (self->hactions), "go-back");
+  g_simple_action_set_enabled (action, FALSE);
+  action = (GSimpleAction *) g_action_map_lookup_action (G_ACTION_MAP (self->hactions), "go-next");
+  g_simple_action_set_enabled (action, FALSE);
 }
 
 GyDictManager *
@@ -117,4 +151,12 @@ gy_dict_manager_get_used_dict (GyDictManager *self)
     }
 
   return dict;
+}
+
+GActionGroup *
+gy_dict_manager_get_action_group (GyDictManager *self)
+{
+  g_return_val_if_fail (GY_IS_DICT_MANAGER (self), NULL);
+
+  return G_ACTION_GROUP (self->hactions);
 }

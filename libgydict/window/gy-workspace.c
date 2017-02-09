@@ -199,4 +199,6 @@ gy_workspace_attach_action (GyWorkspace *self,
 
   gtk_widget_insert_action_group (GTK_WIDGET (win), "workspace",
                                   G_ACTION_GROUP (self->actions));
+  group = gy_dict_manager_get_action_group (self->manager);
+  gtk_widget_insert_action_group (GTK_WIDGET (win), "history", group);
 }
