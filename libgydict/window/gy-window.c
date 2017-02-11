@@ -150,41 +150,6 @@ owner_change_cb (GtkClipboard        *clipboard,
 
 }
 
-static gboolean
-press_button_text_view_cb (GtkWidget      *widget G_GNUC_UNUSED,
-                           GdkEventButton *event G_GNUC_UNUSED,
-                           gpointer        data)
-{
-  GyWindow *self = GY_WINDOW (data);
-
-  if (!gy_utility_handlers_is_blocked_by_func (self->clipboard,
-                                               owner_change_cb, self))
-  {
-    g_signal_handlers_block_by_func (self->clipboard,
-                                     owner_change_cb, self);
-  }
-
-  return FALSE;
-}
-
-static gboolean
-release_button_text_view_cb (GtkWidget      *widget G_GNUC_UNUSED,
-                             GdkEventButton *event G_GNUC_UNUSED,
-                             gpointer        data)
-{
-  GyWindow *self = GY_WINDOW (data);
-
-  if (gy_utility_handlers_is_blocked_by_func (self->clipboard,
-                                              owner_change_cb, self))
-  {
-    g_signal_handlers_unblock_by_func (self->clipboard,
-                                       owner_change_cb, self);
-    gtk_text_buffer_copy_clipboard (self->buffer, self->clipboard);
-  }
-
-  return FALSE;
-}
-
 static void
 respond_clipboard_cb (GSimpleAction *action,
                       GVariant      *parameter G_GNUC_UNUSED,
@@ -204,19 +169,11 @@ respond_clipboard_cb (GSimpleAction *action,
   {
     g_signal_connect (self->clipboard, "owner-change",
                       G_CALLBACK (owner_change_cb), self);
-    g_signal_connect (self->text_view, "button-press-event",
-                      G_CALLBACK (press_button_text_view_cb), self);
-    g_signal_connect (self->text_view, "button-release-event",
-                      G_CALLBACK (release_button_text_view_cb), self);
   }
   else
   {
     g_signal_handlers_disconnect_by_func (self->clipboard,
                                           owner_change_cb, self);
-    g_signal_handlers_disconnect_by_func (self->text_view,
-                                          press_button_text_view_cb, self);
-    g_signal_handlers_disconnect_by_func (self->text_view,
-                                          release_button_text_view_cb, self);
   }
 }
 
@@ -336,9 +293,9 @@ gy_window_init (GyWindow *self)
   self->prev = g_action_map_lookup_action (G_ACTION_MAP (self), "go-back");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (self->next), FALSE);
   g_simple_action_set_enabled (G_SIMPLE_ACTION (self->prev), FALSE);
-  self->bind[GY_BINDING_ACTION_PREV] = self->bind[GY_BINDING_ACTION_NEXT] = NULL;
+  self->bind[GY_BINDING_ACTION_PREV] = self->bind[GY_BINDING_ACTION_NEXT] = NULL;*/
 
-  self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);*/
+  self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
 
 }
 

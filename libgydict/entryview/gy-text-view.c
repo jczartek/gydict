@@ -198,6 +198,42 @@ gy_text_view_draw_layer (GtkTextView      *view,
 }
 
 static void
+gy_text_view_realize (GtkWidget *widget)
+{
+  GtkTextBuffer *buffer = NULL;
+
+  GTK_WIDGET_CLASS (gy_text_view_parent_class)->realize (widget);
+
+  buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (widget));
+  if (buffer)
+    {
+      GtkClipboard *cb = NULL;
+      cb = gtk_widget_get_clipboard (widget, GDK_SELECTION_PRIMARY);
+      gtk_text_buffer_remove_selection_clipboard (buffer, cb);
+    }
+}
+
+static void
+gy_text_view_unrealize (GtkWidget *widget)
+{
+  GtkTextBuffer *buffer = NULL;
+  buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (widget));
+
+  /*
+   * The primary clipboard is being added to the buffer in order to
+   * prevent printing a warning through the unrealize function of the parent.
+   */
+  if (buffer)
+    {
+      GtkClipboard *cb = NULL;
+      cb = gtk_widget_get_clipboard (widget, GDK_SELECTION_PRIMARY);
+      gtk_text_buffer_add_selection_clipboard (buffer, cb);
+    }
+
+  GTK_WIDGET_CLASS (gy_text_view_parent_class)->unrealize (widget);
+}
+
+static void
 gy_text_view_finalize (GObject *object)
 {
   G_OBJECT_CLASS (gy_text_view_parent_class)->finalize (object);
@@ -277,12 +313,16 @@ static void
 gy_text_view_class_init (GyTextViewClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
   GtkTextViewClass *textview_class = GTK_TEXT_VIEW_CLASS (klass);
 
   object_class->constructed = gy_text_view_constructed;
   object_class->finalize = gy_text_view_finalize;
   object_class->get_property = gy_text_view_get_property;
   object_class->set_property = gy_text_view_set_property;
+
+  widget_class->realize = gy_text_view_realize;
+  widget_class->unrealize = gy_text_view_unrealize;
 
   textview_class->draw_layer = gy_text_view_draw_layer;
 
