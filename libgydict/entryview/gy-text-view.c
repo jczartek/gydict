@@ -234,9 +234,34 @@ gy_text_view_unrealize (GtkWidget *widget)
 }
 
 static void
-gy_text_view_finalize (GObject *object)
+gy_text_view_event_after_signal (GtkWidget *widget,
+                                 GdkEvent  *event,
+                                 gpointer   data)
 {
-  G_OBJECT_CLASS (gy_text_view_parent_class)->finalize (object);
+  if (event->type == GDK_DOUBLE_BUTTON_PRESS)
+    {
+      GtkTextBuffer *buffer = NULL;
+      GtkTextIter start, end;
+
+      buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (widget));
+
+      g_return_if_fail (GTK_IS_TEXT_BUFFER (buffer));
+
+      if (gtk_text_buffer_get_selection_bounds (buffer, &start, &end))
+        {
+          g_autofree gchar *selected_text = NULL;
+
+          selected_text = gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
+
+          if ((selected_text != NULL) && (g_utf8_strlen (selected_text, -1)))
+            {
+              GtkClipboard *cb = NULL;
+
+              cb = gtk_widget_get_clipboard (widget, GDK_SELECTION_PRIMARY);
+              gtk_clipboard_set_text (cb, selected_text, -1);
+            }
+        }
+    }
 }
 
 static void
@@ -317,7 +342,6 @@ gy_text_view_class_init (GyTextViewClass *klass)
   GtkTextViewClass *textview_class = GTK_TEXT_VIEW_CLASS (klass);
 
   object_class->constructed = gy_text_view_constructed;
-  object_class->finalize = gy_text_view_finalize;
   object_class->get_property = gy_text_view_get_property;
   object_class->set_property = gy_text_view_set_property;
 
@@ -354,6 +378,9 @@ static void
 gy_text_view_init (GyTextView *self)
 {
   self->background_pattern_grid_set = FALSE;
+
+  g_signal_connect_after (self, "event-after",
+                          G_CALLBACK (gy_text_view_event_after_signal), NULL);
 }
 
 void
