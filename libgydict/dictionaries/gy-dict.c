@@ -25,13 +25,14 @@
 #include "gy-pwn-dict.h"
 #include "gy-english-pwn.h"
 #include "gy-german-pwn.h"
+#include "gy-dict-history.h"
 #include "history/gy-history.h"
 
 typedef struct _GyDictPrivate
 {
   gchar          *identifier;
   GtkTreeModel   *model;
-  GyHistory      *history;
+  GyDictHistory  *history;
   guint           is_mapped: 1;
   guint           is_used:   1;
 } GyDictPrivate;
@@ -205,7 +206,7 @@ gy_dict_class_init (GyDictClass *klass)
     g_param_spec_object ("history",
                          "History",
                          "The history of a dictionary.",
-                         GY_TYPE_HISTORY,
+                         GY_TYPE_DICT_HISTORY,
                          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
   /**
