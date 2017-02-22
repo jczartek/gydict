@@ -77,6 +77,7 @@ gy_dict_history_get_property (GObject    *object,
       break;
     case PROP_IS_EMPTY:
       g_value_set_boolean (value, self->is_empty);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -217,6 +218,12 @@ gy_dict_history_next (GyDictHistory *self)
   gconstpointer data = NULL;
   g_return_val_if_fail (GY_IS_DICT_HISTORY (self), NULL);
 
+  /* the empty history or the iter is at the end */
+  if (self->iter->next == NULL)
+    {
+      return NULL;
+    }
+
   if (self->iter->next != &Nil)
     {
       self->iter = self->iter->next;
@@ -237,8 +244,14 @@ gy_dict_history_prev (GyDictHistory *self)
 {
   g_return_val_if_fail (GY_IS_DICT_HISTORY (self), NULL);
 
+  /* the empty history or the iter is at the beginning.*/
+  if (self->iter->prev == NULL)
+    {
+      return NULL;
+    }
+
   /* The iter is not moving to a previous element. */
-  if (Nil.prev->prev->prev == NULL)
+  if (Nil.prev->prev == NULL)
     {
       return self->iter->prev->data;
     }
@@ -248,11 +261,6 @@ gy_dict_history_prev (GyDictHistory *self)
       self->iter = self->iter->prev;
       gy_dict_history_set_state (self);
       return self->iter->data;
-    }
-
-  if (self->iter->prev == NULL)
-    {
-      g_assert_not_reached ();
     }
 
   return NULL;
