@@ -27,12 +27,12 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (GyDictHistory, gy_dict_history, GY, DICT_HISTORY, GObject)
 
-GyDictHistory *gy_dict_history_new       (void);
+GyDictHistory* gy_dict_history_new       (void);
 void           gy_dict_history_append    (GyDictHistory *self,
                                           const gchar   *str);
 void           gy_dict_history_set_state (GyDictHistory *self);
-void           gy_dict_history_next      (GyDictHistory *self);
-void           gy_dict_history_prev      (GyDictHistory *self);
+gconstpointer  gy_dict_history_next      (GyDictHistory *self);
+gconstpointer  gy_dict_history_prev      (GyDictHistory *self);
 
 G_END_DECLS
 

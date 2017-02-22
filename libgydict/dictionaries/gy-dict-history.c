@@ -211,14 +211,49 @@ gy_dict_history_set_state (GyDictHistory *self)
   g_assert_not_reached();
 }
 
-void
-g_dict_history_next (GyDictHistory *self)
+gconstpointer
+gy_dict_history_next (GyDictHistory *self)
 {
-  g_return_if_fail (GY_IS_DICT_HISTORY (self));
+  gconstpointer data = NULL;
+  g_return_val_if_fail (GY_IS_DICT_HISTORY (self), NULL);
+
+  if (self->iter->next != &Nil)
+    {
+      self->iter = self->iter->next;
+      data = self->iter->data;
+
+      if (self->iter->next == &Nil)
+        {
+          self->iter = &Nil;
+        }
+    }
+  gy_dict_history_set_state (self);
+
+  return data;
 }
 
-void
-g_dict_history_prev (GyDictHistory *self)
+gconstpointer
+gy_dict_history_prev (GyDictHistory *self)
 {
-  g_return_if_fail (GY_IS_DICT_HISTORY (self));
+  g_return_val_if_fail (GY_IS_DICT_HISTORY (self), NULL);
+
+  /* The iter is not moving to a previous element. */
+  if (Nil.prev->prev->prev == NULL)
+    {
+      return self->iter->prev->data;
+    }
+
+  if (self->iter->prev != NULL)
+    {
+      self->iter = self->iter->prev;
+      gy_dict_history_set_state (self);
+      return self->iter->data;
+    }
+
+  if (self->iter->prev == NULL)
+    {
+      g_assert_not_reached ();
+    }
+
+  return NULL;
 }
