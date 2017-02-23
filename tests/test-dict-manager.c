@@ -29,32 +29,30 @@ main (gint   argc,
 {
   GyDict *dict[2];
   GyDictManager *manager;
-  GtkTextBuffer  *buffer;
 
   gy_dict_initialize ();
   g_set_prgname ("test-dict-manager");
   gtk_init (NULL, NULL);
 
-  buffer = GTK_TEXT_BUFFER (gy_text_buffer_new ());
   manager = gy_dict_manager_new ();
 
-  dict[0] = gy_dict_manager_set_dict (manager, ENGLISH_PWN, buffer);
+  dict[0] = gy_dict_manager_set_dict (manager, ENGLISH_PWN);
 
   g_return_val_if_fail (gy_dict_is_used (dict[0]), 1);
   g_return_val_if_fail (gy_dict_manager_get_used_dict (manager) == dict[0], 1);
 
-  dict[1] = gy_dict_manager_set_dict (manager, POLISH_PWN, buffer);
+  dict[1] = gy_dict_manager_set_dict (manager, POLISH_PWN);
 
   g_return_val_if_fail (gy_dict_is_used (dict[1]), 1);
   g_return_val_if_fail (gy_dict_manager_get_used_dict (manager) == dict[1], 1);
   g_return_val_if_fail (!gy_dict_is_used (dict[0]), 1);
 
-  g_return_val_if_fail (dict[0] == gy_dict_manager_set_dict (manager, ENGLISH_PWN, buffer), 1);
+  g_return_val_if_fail (dict[0] == gy_dict_manager_set_dict (manager, ENGLISH_PWN), 1);
   g_return_val_if_fail (gy_dict_is_used (dict[0]), 1);
   g_return_val_if_fail (gy_dict_manager_get_used_dict (manager) == dict[0], 1);
   g_return_val_if_fail (!gy_dict_is_used (dict[1]), 1);
 
-  g_return_val_if_fail (dict[1] == gy_dict_manager_set_dict (manager, POLISH_PWN, buffer), 1);
+  g_return_val_if_fail (dict[1] == gy_dict_manager_set_dict (manager, POLISH_PWN), 1);
   g_return_val_if_fail (gy_dict_is_used (dict[1]), 1);
   g_return_val_if_fail (gy_dict_manager_get_used_dict (manager) == dict[1], 1);
   g_return_val_if_fail (!gy_dict_is_used (dict[0]), 1);

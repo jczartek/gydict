@@ -60,6 +60,12 @@ EXTRA_DIST += \
 #test_header_bar_LDADD = $(tests_libs)
 #test_header_bar_LDFLAGS = $(tests_ldflags)
 
+TESTS += test-history
+test_history_SOURCES = test-history.c
+test_history_CFLAGS = $(tests_cflags)
+test_history_LDADD = $(tests_libs)
+test_history_LDFLAGS = $(tests_ldflags)
+
 if ENABLE_TESTS
 noinst_PROGRAMS = $(TESTS)
 endif
