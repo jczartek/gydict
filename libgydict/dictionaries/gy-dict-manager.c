@@ -27,6 +27,13 @@ struct _GyDictManager
   GSimpleActionGroup *hactions;
 };
 
+enum {
+  ALTER_DICT,
+  LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
+
 G_DEFINE_TYPE (GyDictManager, gy_dict_manager, G_TYPE_OBJECT)
 
 static void
@@ -60,12 +67,27 @@ gy_dict_manager_class_init (GyDictManagerClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   object_class->finalize = gy_dict_manager_finalize;
+
+  /**
+   * GyDictManager::alter-dict
+   * @self: the GyDictManager
+   *
+   * This signal is emitted when a dictionary is choose.
+   */
+  signals[ALTER_DICT] =
+    g_signal_new ("alter-dict",
+                  G_TYPE_FROM_CLASS (klass),
+                  G_SIGNAL_RUN_LAST,
+                  0, NULL, NULL,
+                  g_cclosure_marshal_VOID__VOID,
+                  G_TYPE_NONE, 0);
 }
 
 static void
 gy_dict_manager_init (GyDictManager *self)
 {
   GSimpleAction *action = NULL;
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
   static const GActionEntry entries[] = {
@@ -111,11 +133,7 @@ gy_dict_manager_set_dict (GyDictManager *self,
     }
 
   dict = g_hash_table_lookup (self->dicts, name_dict);
-  if (dict)
-    {
-      g_object_set (dict, "is-used", TRUE, NULL);
-      return dict;
-    }
+  if (dict) goto end;
 
   dict = GY_DICT (gy_dict_new (name_dict));
   gy_dict_map (dict, &err);
@@ -127,9 +145,11 @@ gy_dict_manager_set_dict (GyDictManager *self,
       return NULL;
     }
 
-  g_object_set (dict, "is-used", TRUE, NULL);
   g_hash_table_insert (self->dicts, (gpointer) name_dict, (gpointer) dict);
 
+end:
+  g_object_set (dict, "is-used", TRUE, NULL);
+  g_signal_emit (self, signals[ALTER_DICT], 0);
   return dict;
 }
 
