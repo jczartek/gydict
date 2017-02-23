@@ -67,6 +67,13 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
 }
 
 static void
+gy_workspace_signal_alter_dict (GyTextView    *tv,
+                                GyDictManager *manager)
+{
+  gy_text_view_clear_buffer (tv);
+}
+
+static void
 gy_workspace_set_property (GObject      *object,
                            guint         prop_id,
                            const GValue *value,
@@ -112,8 +119,13 @@ gy_workspace_destroy (GtkWidget *widget)
 {
   GyWorkspace *self = GY_WORKSPACE (widget);
 
+  if (self->manager)
+    {
+      g_signal_handlers_disconnect_by_func (self->manager, gy_workspace_signal_alter_dict, NULL);
+      g_clear_object (&self->manager);
+    }
+
   g_clear_object (&self->actions);
-  g_clear_object (&self->manager);
 
   GTK_WIDGET_CLASS (gy_workspace_parent_class)->destroy (widget);
 }
@@ -181,6 +193,9 @@ gy_workspace_init (GyWorkspace *self)
 
   g_object_set_data (G_OBJECT (self->treeview), "textview", self->textview);
   g_object_set_data (G_OBJECT (self->textview), "manager", self->manager);
+
+  g_signal_connect_swapped (self->manager, "alter-dict",
+                            G_CALLBACK (gy_workspace_signal_alter_dict), self->textview);
 
 }
 

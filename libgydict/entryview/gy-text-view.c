@@ -470,3 +470,14 @@ gy_text_view_msg_activated_row (GyTextView *self,
 
   gy_parsable_parse (GY_PARSABLE (dict), bt, row);
 }
+
+void
+gy_text_view_clear_buffer (GyTextView *self)
+{
+  GtkTextBuffer *tb;
+
+  g_return_if_fail (GY_IS_TEXT_VIEW(self));
+
+  tb = gtk_text_view_get_buffer (GTK_TEXT_VIEW (self));
+  gy_text_buffer_clean_buffer (GY_TEXT_BUFFER (tb));
+}

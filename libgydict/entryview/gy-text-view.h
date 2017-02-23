@@ -37,6 +37,7 @@ void                        gy_text_view_set_background_pattern (GyTextView *sel
 gboolean                    gy_text_view_get_background_pattern (GyTextView *self);
 void                        gy_text_view_msg_activated_row (GyTextView *self,
                                                             gint       row);
+void                        gy_text_view_clear_buffer (GyTextView *self);
 G_END_DECLS
 
 #endif /* __GY_TEXT_VIEW_H__ */
