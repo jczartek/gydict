@@ -18,13 +18,13 @@
 
 #include "gy-dict-history.h"
 
-static GList Nil;
 
 struct _GyDictHistory
 {
   GObject  __parent__;
   GList   *h;
   GList   *iter;
+  GList   nil;
 
   guint   is_beginning : 1;
   guint   is_end       : 1;
@@ -50,7 +50,7 @@ gy_dict_history_finalize (GObject *object)
 
   if (!self->is_empty)
     {
-      Nil.prev->next = NULL;
+      self->nil.prev->next = NULL;
       g_list_free_full (self->h, g_free);
     }
   self->h = NULL;
@@ -139,8 +139,8 @@ gy_dict_history_class_init (GyDictHistoryClass *klass)
 static void
 gy_dict_history_init (GyDictHistory *self)
 {
-  self->h = &Nil;
-  self->iter = &Nil;
+  self->h = &self->nil;
+  self->iter = &self->nil;
   self->is_beginning = TRUE;
   self->is_end = TRUE;
   self->is_empty = TRUE;
@@ -166,8 +166,8 @@ gy_dict_history_append (GyDictHistory *self,
 
   if (l) return;
 
-  self->h = g_list_insert_before (self->h, &Nil, g_strdup (str));
-  self->iter = &Nil;
+  self->h = g_list_insert_before (self->h, &self->nil, g_strdup (str));
+  self->iter = &self->nil;
 
   if (self->is_empty)
     g_object_set (self, "is-empty", FALSE, NULL);
@@ -188,15 +188,16 @@ gy_dict_history_set_state (GyDictHistory *self)
       return;
     }
 
-  /* The history has at least one element and its iter is at the end of one. */
-  if (self->iter->prev != NULL && self->iter == &Nil)
+  /* The history has at least one element and its iter is at the end of one, or
+   * the history has a few elements and its iter is before the Nil node. */
+  if (self->iter->prev != NULL && (self->iter == &self->nil || self->iter->next == &self->nil))
     {
       g_object_set (self, "is-beginning", FALSE, "is-end", TRUE, NULL);
       return;
     }
 
   /* The history has some elements and its iter is in the midlle of one. */
-  if (self->iter->prev != NULL && self->iter->next != NULL && self->iter->next != &Nil)
+  if (self->iter->prev != NULL && self->iter->next != NULL && self->iter->next != &self->nil)
     {
       g_object_set (self, "is-beginning", FALSE, "is-end", FALSE, NULL);
       return;
@@ -224,14 +225,14 @@ gy_dict_history_next (GyDictHistory *self)
       return NULL;
     }
 
-  if (self->iter->next != &Nil)
+  if (self->iter->next != &self->nil)
     {
       self->iter = self->iter->next;
       data = self->iter->data;
 
-      if (self->iter->next == &Nil)
+      if (self->iter->next == &self->nil)
         {
-          self->iter = &Nil;
+          self->iter = &self->nil;
         }
     }
   gy_dict_history_set_state (self);
@@ -251,7 +252,7 @@ gy_dict_history_prev (GyDictHistory *self)
     }
 
   /* The iter is not moving to a previous element. */
-  if (Nil.prev->prev == NULL)
+  if (self->nil.prev->prev == NULL)
     {
       return self->iter->prev->data;
     }
@@ -264,4 +265,18 @@ gy_dict_history_prev (GyDictHistory *self)
     }
 
   return NULL;
+}
+
+guint
+gy_dict_history_size (GyDictHistory *self)
+{
+  guint len = 0;
+  GList *l = NULL;
+  g_return_val_if_fail (GY_IS_DICT_HISTORY (self), 0);
+
+  if (self->is_empty) return 0;
+
+  for (l = self->nil.prev; l != NULL; l = l->prev) len += 1;
+
+  return len;
 }

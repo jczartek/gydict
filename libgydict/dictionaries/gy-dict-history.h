@@ -33,7 +33,7 @@ void           gy_dict_history_append    (GyDictHistory *self,
 void           gy_dict_history_set_state (GyDictHistory *self);
 gconstpointer  gy_dict_history_next      (GyDictHistory *self);
 gconstpointer  gy_dict_history_prev      (GyDictHistory *self);
-
+guint          gy_dict_history_size      (GyDictHistory *self);
 G_END_DECLS
 
 #endif /* GY_DICT_HISTORY_H */
