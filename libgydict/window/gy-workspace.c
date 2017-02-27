@@ -109,6 +109,7 @@ gy_workspace_get_property (GObject    *object,
       break;
     case PROP_RIGHT_WIDGET:
       g_value_take_object (value, self->textview);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -198,7 +199,6 @@ gy_workspace_init (GyWorkspace *self)
                             G_CALLBACK (gy_workspace_signal_alter_dict), self->textview);
 
 }
-
 
 void
 gy_workspace_attach_action (GyWorkspace *self,

@@ -47,12 +47,6 @@ static void dict_menu_cb (GSimpleAction *action,
 static void quit_win_cb (GSimpleAction *action,
                          GVariant      *parameter,
                          gpointer       data);
-static void go_back_cb (GSimpleAction *action,
-                        GVariant      *parameter,
-                        gpointer       data);
-static void go_forward_cb (GSimpleAction *action,
-                           GVariant      *parameter,
-                           gpointer       data);
 static void respond_clipboard_cb (GSimpleAction *action,
                                   GVariant      *parameter,
                                   gpointer       data);
@@ -63,35 +57,12 @@ static gboolean on_window_state_event (GtkWidget           *widget,
 static void on_window_destroy (GtkWidget *widget);
 static void on_window_constructed (GObject *object);
 
-enum
-{
-  GY_BINDING_ACTION_PREV,
-  GY_BINDING_ACTION_NEXT,
-  GY_N_BINDINGS
-};
-
 struct _GyWindow
 {
   GtkApplicationWindow  __parent__;
   GyWorkspace          *workspace;
-  GtkWidget            *main_box;
-  GtkWidget            *child_box;
-  GtkWidget            *tree_view;
-  GyTextView           *text_view;
-  GtkWidget            *findbar;
-  GtkWidget            *back;
-  GtkWidget            *forward;
-  GtkWidget            *text_box;
   GyHeaderBar          *header_bar;
-
-  GtkTextBuffer        *buffer;
-
-  GyHistory            *history;
-  GHashTable           *histories_dictionaries;
-  GAction              *next;
-  GAction              *prev;
-  GBinding             *bind[GY_N_BINDINGS];
-
+  GtkWidget            *findbar;
   GtkClipboard         *clipboard; /* Non free! */
 
   /* Window State */
@@ -111,8 +82,6 @@ static GActionEntry win_entries[] =
   { "print", gy_print_do_printing, NULL, NULL, NULL },
   { "clip", respond_clipboard_cb, NULL, "false", NULL },
   { "close", quit_win_cb, NULL, NULL, NULL },
-  { "go-back", go_back_cb, NULL, NULL, NULL },
-  { "go-forward", go_forward_cb, NULL, NULL, NULL },
   { "find", find_menu_cb, NULL, "false", NULL },
   { "dict-menu", dict_menu_cb, NULL, "false", NULL },
   { "gear-menu", gear_menu_cb, NULL, "false", NULL },
@@ -231,35 +200,6 @@ quit_win_cb (GSimpleAction *action G_GNUC_UNUSED,
 }
 
 static void
-go_back_cb (GSimpleAction *action G_GNUC_UNUSED,
-            GVariant      *parameter G_GNUC_UNUSED,
-            gpointer       data)
-{
-  GyWindow *self = GY_WINDOW (data);
-
-  gy_history_iterable_previous_item (GY_HISTORY_ITERABLE (self->history));
-  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
-
-  if (text)
-    gy_header_bar_set_text_in_entry (self->header_bar, text);
-
-}
-
-static void
-go_forward_cb (GSimpleAction *action G_GNUC_UNUSED,
-               GVariant      *parameter G_GNUC_UNUSED,
-               gpointer       data)
-{
-  GyWindow * self = GY_WINDOW (data);
-
-  gy_history_iterable_next_item (GY_HISTORY_ITERABLE (self->history));
-  const gchar *text = gy_history_iterable_get_item (GY_HISTORY_ITERABLE (self->history));
-
-  if (text)
-   gy_header_bar_set_text_in_entry (self->header_bar, text);
-}
-
-static void
 gy_pwn_finalize (GObject *object)
 {
   G_OBJECT_CLASS (gy_window_parent_class)->finalize (object);
@@ -280,20 +220,6 @@ gy_window_init (GyWindow *self)
   g_object_get (self->workspace, "left-widget", &treeview, NULL);
   entry = gy_header_bar_get_entry (self->header_bar);
   gtk_tree_view_set_search_entry (treeview, entry);
-
-  /*self->buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (self->text_view));
-
-  self->findbar = gy_search_bar_new ();
-  gtk_box_pack_end (GTK_BOX (self->text_box), self->findbar, FALSE, FALSE, 0);
-  gy_search_bar_connect_text_buffer (GY_SEARCH_BAR (self->findbar), self->buffer);
-
-  self->histories_dictionaries = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                                        g_free, g_object_unref);
-  self->next = g_action_map_lookup_action (G_ACTION_MAP (self), "go-forward");
-  self->prev = g_action_map_lookup_action (G_ACTION_MAP (self), "go-back");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (self->next), FALSE);
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (self->prev), FALSE);
-  self->bind[GY_BINDING_ACTION_PREV] = self->bind[GY_BINDING_ACTION_NEXT] = NULL;*/
 
   self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
 
@@ -459,6 +385,11 @@ gy_window_new (GyApp *application)
 GtkWidget *
 gy_window_get_text_view (GyWindow *self)
 {
-  return GTK_WIDGET (self->text_view);
+  GtkWidget *tv = NULL;
+
+  g_object_get (self->workspace, "right-widget", &tv, NULL);
+  g_return_val_if_fail (GY_IS_TEXT_VIEW (tv), NULL);
+
+  return tv;
 }
 
