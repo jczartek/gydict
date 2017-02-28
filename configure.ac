@@ -52,7 +52,6 @@ GLIB_GSETTINGS
 dnl ****************************************************************************
 dnl * Ensure C99 is Supported                                                  *
 dnl ****************************************************************************
-m4_include([tools/autotools/ax_check_compile_flag.m4])
 AX_CHECK_COMPILE_FLAG([-std=gnu99],
                       [CFLAGS="$CFLAGS -std=gnu99"],
                       [AC_MSG_ERROR([C compiler cannot compile GNU C99 code])])
@@ -62,7 +61,6 @@ AX_CHECK_COMPILE_FLAG([-std=gnu99],
 dnl ****************************************************************************
 dnl * Additional C Compiler Flags                                              *
 dnl ****************************************************************************
-m4_include([tools/autotools/ax_append_compile_flags.m4])
 AX_APPEND_COMPILE_FLAGS([ \
 	-Wall \
 	-Wcast-align \
