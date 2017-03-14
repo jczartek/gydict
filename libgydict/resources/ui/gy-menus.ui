@@ -45,7 +45,7 @@
       </item>
       <item>
         <attribute name="label" translatable="yes">Find</attribute>
-        <attribute name="action">win.find</attribute>
+        <attribute name="action">dockbin.top-visible</attribute>
         <attribute name="verb-icon">edit-find-symbolic</attribute>
       </item>
     </section>

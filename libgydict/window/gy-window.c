@@ -155,12 +155,12 @@ find_menu_cb (GSimpleAction *action,
 
   GVariant *state;
 
-  state = g_action_get_state (G_ACTION (action));
+/*  state = g_action_get_state (G_ACTION (action));
   g_action_change_state (G_ACTION (action),
                          g_variant_new_boolean (!g_variant_get_boolean (state)));
   gy_search_bar_set_search_mode (GY_SEARCH_BAR (self->findbar),
                                  !g_variant_get_boolean (state));
-  g_variant_unref (state);
+  g_variant_unref (state); */
 
 }
 

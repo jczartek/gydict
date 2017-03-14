@@ -3,7 +3,7 @@
   <gresource prefix="/org/gtk/gydict">
     <file alias="gy-window.ui" preprocess="xml-stripblanks">./ui/gy-window.ui</file>
     <file alias="gy-app-menu.ui" preprocess="xml-stripblanks">./ui/gy-app-menu.ui</file>
-    <file alias="gysearchbar.ui" compressed="true" preprocess="xml-stripblanks">./ui/gysearchbar.ui</file>
+    <file alias="gy-search-bar.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-searchbar.ui</file>
     <file alias="gy-preferences-window.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-preferences-window.ui</file>
     <file alias="gy-preferences-page-general.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-preferences-page-general.ui</file>
     <file alias="gy-preferences-switch.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-preferences-switch.ui</file>

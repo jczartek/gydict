@@ -58,6 +58,12 @@
           </object>
         </child>
 
+        <child type="top">
+          <object class="GySearchBar" id="search_bar">
+            <property name="visible">true</property>
+          </object>
+        </child>
+
       </object>
     </child>
   </template>

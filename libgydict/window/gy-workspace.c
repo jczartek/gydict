@@ -21,6 +21,7 @@
 #include "dictionaries/gy-dict-manager.h"
 #include "entrylist/gy-tree-view.h"
 #include "entryview/gy-text-view.h"
+#include "search/gy-search-bar.h"
 
 #define DEFAULT_POSITION 200
 
@@ -30,6 +31,7 @@ struct _GyWorkspace
   PnlDockBin         *dockbin;
   GyTreeView         *treeview;
   GyTextView         *textview;
+  GySearchBar        *search_bar;
   GyDictManager      *manager;
   GSimpleActionGroup *actions;
 };
@@ -146,6 +148,7 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, dockbin);
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, treeview);
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, textview);
+  gtk_widget_class_bind_template_child (widget_class, GyWorkspace, search_bar);
 
   properties[PROP_MANAGER] =
     g_param_spec_object ("manager-dicts",

@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 2; tab-width: 2 -*-  */
 /*
  * gy-search-bar.c
  * Copyright (C) 2014 Jakub Czartek  <kuba@linux.pl>
@@ -16,7 +15,101 @@
  * You should have received a copy of the GNU General Public License along
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <string.h>
+
+#include "gy-search-bar.h"
+
+struct _GySearchBar
+{
+	GtkBin parent_instance;
+
+  GtkBox *center;
+};
+
+G_DEFINE_TYPE (GySearchBar, gy_search_bar, GTK_TYPE_BIN)
+
+enum {
+	PROP_0,
+	N_PROPS
+};
+
+static GParamSpec *properties [N_PROPS];
+
+static void
+gy_search_bar_finalize (GObject *object)
+{
+	GySearchBar *self = (GySearchBar *)object;
+
+	G_OBJECT_CLASS (gy_search_bar_parent_class)->finalize (object);
+}
+
+static void
+gy_search_bar_get_property (GObject    *object,
+                            guint       prop_id,
+                            GValue     *value,
+                            GParamSpec *pspec)
+{
+	GySearchBar *self = GY_SEARCH_BAR (object);
+
+	switch (prop_id)
+	  {
+	  default:
+	    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+	  }
+}
+
+static void
+gy_search_bar_set_property (GObject      *object,
+                            guint         prop_id,
+                            const GValue *value,
+                            GParamSpec   *pspec)
+{
+	GySearchBar *self = GY_SEARCH_BAR (object);
+
+	switch (prop_id)
+	  {
+	  default:
+	    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+	  }
+}
+
+static void
+gy_search_bar_class_init (GySearchBarClass *klass)
+{
+	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+
+	object_class->finalize = gy_search_bar_finalize;
+	object_class->get_property = gy_search_bar_get_property;
+	object_class->set_property = gy_search_bar_set_property;
+
+  gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-search-bar.ui");
+}
+
+static void
+gy_search_bar_init (GySearchBar *self)
+{
+  gtk_widget_init_template (GTK_WIDGET (self));
+}
+
+GySearchBar *
+gy_search_bar_new (void)
+{
+	return g_object_new (GY_TYPE_SEARCH_BAR, NULL);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*#include <string.h>
 #include "gy-search-bar.h"
 #include "window/gy-window.h"
 
@@ -45,7 +138,6 @@ enum
   PROP_SEARCH_STRING
 };
 
-/*****************************STATIC PROTOTYPE********************************/
 static void gy_search_bar_get_property (GObject     *object,
                                         guint        prop_id,
                                         GValue      *value,
@@ -55,7 +147,7 @@ static void gy_search_bar_set_property (GObject       *object,
                                         const GValue  *value,
                                         GParamSpec    *pspec);
 
-/*****************************STATIC FUNC*************************************/
+
 
 static gboolean
 is_keynav_event (GdkEvent *event,
@@ -251,14 +343,14 @@ reveal_child_cb (GObject    *object G_GNUC_UNUSED,
     clear_tag_buffer (priv->buffer, "search_next");
     clear_tag_buffer (priv->buffer, "search");
 
-    /*if (gtk_widget_is_toplevel (toplevel))
-    {
-      GtkWidget *main_entry;
-      main_entry = gy_window_get_entry (GY_WINDOW (toplevel));
+    //if (gtk_widget_is_toplevel (toplevel))
+    //{
+     // GtkWidget *main_entry;
+     // main_entry = gy_window_get_entry (GY_WINDOW (toplevel));
 
-      if (!gtk_widget_is_focus (main_entry))
-        gtk_widget_grab_focus (main_entry);
-    }*/
+    //  if (!gtk_widget_is_focus (main_entry))
+     //   gtk_widget_grab_focus (main_entry);
+   // }
   }
 }
 
@@ -445,7 +537,6 @@ gy_search_bar_set_property (GObject       *object,
   }
 }
 
-/********************************PUBLIC METHOD****************************************/
 GtkWidget *
 gy_search_bar_new (void)
 {
@@ -479,3 +570,4 @@ gy_search_bar_connect_text_buffer (GySearchBar   *bar,
       g_object_add_weak_pointer (G_OBJECT (priv->buffer), (gpointer *) &priv->buffer);
     }
 }
+ */
