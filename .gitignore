@@ -67,3 +67,5 @@ tests/test-*.log
 tests/test-*.trs
 tests/*.out
 tests/.libs
+
+Makecache
