@@ -22,13 +22,14 @@ struct _GySearchBar
 {
 	GtkBin parent_instance;
 
-  GtkBox *center;
+  GtkTextBuffer *buffer;
 };
 
 G_DEFINE_TYPE (GySearchBar, gy_search_bar, GTK_TYPE_BIN)
 
 enum {
 	PROP_0,
+  PROP_BUFFER,
 	N_PROPS
 };
 
@@ -39,22 +40,9 @@ gy_search_bar_finalize (GObject *object)
 {
 	GySearchBar *self = (GySearchBar *)object;
 
+  g_clear_object (&self->buffer);
+
 	G_OBJECT_CLASS (gy_search_bar_parent_class)->finalize (object);
-}
-
-static void
-gy_search_bar_get_property (GObject    *object,
-                            guint       prop_id,
-                            GValue     *value,
-                            GParamSpec *pspec)
-{
-	GySearchBar *self = GY_SEARCH_BAR (object);
-
-	switch (prop_id)
-	  {
-	  default:
-	    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-	  }
 }
 
 static void
@@ -67,6 +55,9 @@ gy_search_bar_set_property (GObject      *object,
 
 	switch (prop_id)
 	  {
+    case PROP_BUFFER:
+      self->buffer = g_value_dup_object (value);
+      break;
 	  default:
 	    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 	  }
@@ -79,10 +70,25 @@ gy_search_bar_class_init (GySearchBarClass *klass)
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
 	object_class->finalize = gy_search_bar_finalize;
-	object_class->get_property = gy_search_bar_get_property;
 	object_class->set_property = gy_search_bar_set_property;
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-search-bar.ui");
+
+  /**
+   *
+   * GySearchBar:buffer:
+   *
+   * The buffer which is searched.
+   */
+  properties[PROP_BUFFER] =
+    g_param_spec_object ("buffer",
+                         "buffer",
+                         "The buffer which is searched",
+                         GTK_TYPE_TEXT_BUFFER,
+                         G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_properties (object_class, N_PROPS, properties);
+
+  gtk_widget_class_set_css_name (widget_class, "gysearchbar");
 }
 
 static void

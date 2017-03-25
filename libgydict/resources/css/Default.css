@@ -1,3 +1,8 @@
 textview {
   padding-bottom: 50px;
 }
+
+gysearchbar > box {
+  margin: 3px 5px 0px 0px;
+}
+

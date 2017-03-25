@@ -222,7 +222,7 @@ setup_accels (GyApp *self)
       {"win.clip", "<ctrl>m"},
       {"win.close", "<ctrl>w"},
       {"win.gear-menu", "F10"},
-      {"win.find-menu", "<ctrl>f"},
+      {"dockbin.top-visible", "<ctrl>f"},
       {"win.dict(\"GyEnglishPwn-english\")", "<ALT>1"},
       {"win.dict(\"GyEnglishPwn-polish\")", "<ALT>2"},
       {"win.dict(\"GyGermanPwn-german\")", "<ALT>3"},

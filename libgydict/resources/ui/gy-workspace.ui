@@ -16,8 +16,8 @@
               <object class="GyTextView" id="textview">
                 <property name="visible">true</property>
                 <property name="editable">false</property>
-                <property name="margin_top">8</property>
-                <property name="margin_bottom">8</property>
+                <property name="margin_top">2</property>
+                <property name="margin_bottom">3</property>
                 <property name="pixels_above_lines">4</property>
                 <property name="pixels_below_lines">4</property>
                 <property name="pixels_inside_wrap">2</property>
@@ -61,6 +61,7 @@
         <child type="top">
           <object class="GySearchBar" id="search_bar">
             <property name="visible">true</property>
+            <property name="buffer">buffer</property>
           </object>
         </child>
 
