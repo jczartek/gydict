@@ -148,8 +148,14 @@ enum {
   N_STYLE_PROPS
 };
 
+enum {
+  VISIBILITY_NOTIFY,
+  N_SIGNALS
+};
+
 static GParamSpec *child_properties [N_CHILD_PROPS];
 static GParamSpec *style_properties [N_STYLE_PROPS];
+static guint       signals          [N_SIGNALS];
 
 static gboolean
 map_boolean_to_variant (GBinding     *binding,
@@ -847,6 +853,8 @@ pnl_dock_bin_visible_action (GSimpleAction *action,
   child = pnl_dock_bin_get_child_typed (self, type);
 
   pnl_dock_revealer_set_reveal_child (PNL_DOCK_REVEALER (child->widget), reveal_child);
+
+  g_signal_emit (self, signals[VISIBILITY_NOTIFY], 0, reveal_child, type);
 }
 
 static gint
@@ -1625,6 +1633,16 @@ pnl_dock_bin_class_init (PnlDockBinClass *klass)
                       1,
                       (G_PARAM_READABLE | G_PARAM_STATIC_STRINGS));
   gtk_widget_class_install_style_property (widget_class, style_properties [STYLE_PROP_HANDLE_SIZE]);
+
+  signals[VISIBILITY_NOTIFY] =
+    g_signal_new ("visibility-notify",
+                  G_TYPE_FROM_CLASS (klass),
+                  G_SIGNAL_RUN_LAST,
+                  0, NULL, NULL,
+                  NULL, /* c-marshaller */
+                  G_TYPE_NONE,
+                  2,
+                  G_TYPE_BOOLEAN, G_TYPE_UINT, NULL);
 
   gtk_widget_class_set_css_name (widget_class, "dockbin");
 }
