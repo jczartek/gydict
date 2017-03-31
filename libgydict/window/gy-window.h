@@ -29,6 +29,7 @@ G_DECLARE_FINAL_TYPE (GyWindow, gy_window, GY, WINDOW, GtkApplicationWindow)
 
 GtkWidget*     gy_window_new             (GyApp *application);
 GtkWidget*     gy_window_get_text_view   (GyWindow *self);
+void           gy_window_grab_focus      (GyWindow *self);
 
 G_END_DECLS
 

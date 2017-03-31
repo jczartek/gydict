@@ -27,7 +27,9 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (GySearchBar, gy_search_bar, GY, SEARCH_BAR, GtkBin)
 
-GySearchBar *gy_search_bar_new (void);
+GySearchBar *gy_search_bar_new                     (void);
+void         gy_search_bar_set_search_mode_enabled (GySearchBar *self,
+                                                    gboolean     search_mode_enabled);
 
 G_END_DECLS
 

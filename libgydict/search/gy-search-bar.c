@@ -20,9 +20,10 @@
 
 struct _GySearchBar
 {
-	GtkBin parent_instance;
-
-  GtkTextBuffer *buffer;
+	GtkBin          __parent__;
+  GtkSearchEntry *entry;
+  GtkTextBuffer  *buffer;
+  gboolean        search_mode_enabled;
 };
 
 G_DEFINE_TYPE (GySearchBar, gy_search_bar, GTK_TYPE_BIN)
@@ -30,6 +31,7 @@ G_DEFINE_TYPE (GySearchBar, gy_search_bar, GTK_TYPE_BIN)
 enum {
 	PROP_0,
   PROP_BUFFER,
+  PROP_SEARCH_MODE_ENABLED,
 	N_PROPS
 };
 
@@ -58,9 +60,30 @@ gy_search_bar_set_property (GObject      *object,
     case PROP_BUFFER:
       self->buffer = g_value_dup_object (value);
       break;
+    case PROP_SEARCH_MODE_ENABLED:
+      gy_search_bar_set_search_mode_enabled (self, g_value_get_boolean (value));
+      break;
 	  default:
 	    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
 	  }
+}
+
+static void
+gy_search_bar_get_property (GObject    *object,
+                            guint       prop_id,
+                            GValue     *value,
+                            GParamSpec *pspec)
+{
+  GySearchBar *self = GY_SEARCH_BAR (object);
+
+  switch (prop_id)
+    {
+    case PROP_SEARCH_MODE_ENABLED:
+      g_value_set_boolean (value, self->search_mode_enabled);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
 }
 
 static void
@@ -71,8 +94,10 @@ gy_search_bar_class_init (GySearchBarClass *klass)
 
 	object_class->finalize = gy_search_bar_finalize;
 	object_class->set_property = gy_search_bar_set_property;
+  object_class->get_property = gy_search_bar_get_property;
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-search-bar.ui");
+  gtk_widget_class_bind_template_child (widget_class, GySearchBar, entry);
 
   /**
    *
@@ -86,6 +111,13 @@ gy_search_bar_class_init (GySearchBarClass *klass)
                          "The buffer which is searched",
                          GTK_TYPE_TEXT_BUFFER,
                          G_PARAM_WRITABLE | G_PARAM_STATIC_STRINGS);
+
+  properties [PROP_SEARCH_MODE_ENABLED] =
+    g_param_spec_boolean ("search-mode-enabled",
+                          "Search Mode Enabled",
+                          "Search Mode Enabled",
+                          FALSE,
+                          (G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS));
   g_object_class_install_properties (object_class, N_PROPS, properties);
 
   gtk_widget_class_set_css_name (widget_class, "gysearchbar");
@@ -95,6 +127,8 @@ static void
 gy_search_bar_init (GySearchBar *self)
 {
   gtk_widget_init_template (GTK_WIDGET (self));
+
+  self->search_mode_enabled = FALSE;
 }
 
 GySearchBar *
@@ -103,6 +137,25 @@ gy_search_bar_new (void)
 	return g_object_new (GY_TYPE_SEARCH_BAR, NULL);
 }
 
+void
+gy_search_bar_set_search_mode_enabled (GySearchBar *self,
+                                       gboolean      search_mode_enabled)
+{
+
+  g_return_if_fail (GY_IS_SEARCH_BAR (self));
+
+  search_mode_enabled = !!search_mode_enabled;
+
+  if (search_mode_enabled != self->search_mode_enabled)
+    {
+      self->search_mode_enabled = search_mode_enabled;
+      gtk_entry_set_text (GTK_ENTRY (self->entry), "");
+      if (search_mode_enabled)
+        gtk_widget_grab_focus (GTK_WIDGET (self->entry));
+
+      g_object_notify_by_pspec (G_OBJECT (self), properties [PROP_SEARCH_MODE_ENABLED]);
+    }
+}
 
 
 

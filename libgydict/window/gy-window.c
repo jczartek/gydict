@@ -151,9 +151,9 @@ find_menu_cb (GSimpleAction *action,
               GVariant      *parametr G_GNUC_UNUSED,
               gpointer       data)
 {
-  GyWindow *self = GY_WINDOW(data);
+  //GyWindow *self = GY_WINDOW(data);
 
-  GVariant *state;
+  //GVariant *state;
 
 /*  state = g_action_get_state (G_ACTION (action));
   g_action_change_state (G_ACTION (action),
@@ -222,6 +222,8 @@ gy_window_init (GyWindow *self)
   gtk_tree_view_set_search_entry (treeview, entry);
 
   self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
+
+  gy_header_bar_grab_focus_for_entry (self->header_bar);
 
 }
 
@@ -391,5 +393,13 @@ gy_window_get_text_view (GyWindow *self)
   g_return_val_if_fail (GY_IS_TEXT_VIEW (tv), NULL);
 
   return tv;
+}
+
+void
+gy_window_grab_focus (GyWindow *self)
+{
+  g_return_if_fail (GY_IS_WINDOW (self));
+
+  gy_header_bar_grab_focus_for_entry (self->header_bar);
 }
 

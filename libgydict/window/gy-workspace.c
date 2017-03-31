@@ -69,6 +69,30 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
 }
 
 static void
+gy_workspace_visibility_notify_signal (PnlDockBin *bin,
+                                       gboolean    visible,
+                                       guint       type_child,
+                                       gpointer    data)
+{
+  GyWorkspace *self = (GyWorkspace *) data;
+
+  if (visible && type_child == GTK_POS_TOP)
+    {
+      gy_search_bar_set_search_mode_enabled (self->search_bar, TRUE);
+    }
+  else if (type_child == GTK_POS_TOP)
+    {
+      GtkWidget *toplevel = NULL;
+
+      gy_search_bar_set_search_mode_enabled (self->search_bar, FALSE);
+
+      toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+      if (gtk_widget_is_toplevel (toplevel))
+        gy_window_grab_focus (GY_WINDOW (toplevel));
+    }
+}
+
+static void
 gy_workspace_signal_alter_dict (GyTextView    *tv,
                                 GyDictManager *manager)
 {
@@ -200,6 +224,8 @@ gy_workspace_init (GyWorkspace *self)
 
   g_signal_connect_swapped (self->manager, "alter-dict",
                             G_CALLBACK (gy_workspace_signal_alter_dict), self->textview);
+  g_signal_connect (self->dockbin, "visibility-notify",
+                    G_CALLBACK (gy_workspace_visibility_notify_signal), self);
 
 }
 

@@ -24,7 +24,7 @@
             <property name="halign">center</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkSearchEntry">
+              <object class="GtkSearchEntry" id="entry">
                 <property name="visible">true</property>
                 <property name="max-width-chars">30</property>
               </object>

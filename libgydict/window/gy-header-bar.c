@@ -106,3 +106,15 @@ gy_header_bar_get_entry (GyHeaderBar *self)
   search_box = GY_LEX_SEARCH_BOX (gtk_header_bar_get_custom_title (GTK_HEADER_BAR (self)));
   return GTK_ENTRY (_gy_lex_search_box_get_search_entry (search_box));
 }
+
+void
+gy_header_bar_grab_focus_for_entry (GyHeaderBar *self)
+{
+  GtkEntry *entry;
+
+  g_return_if_fail (GY_IS_HEADER_BAR (self));
+
+  entry = gy_header_bar_get_entry (self);
+
+  gtk_widget_grab_focus (GTK_WIDGET (entry));
+}
