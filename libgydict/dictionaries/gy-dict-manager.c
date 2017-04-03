@@ -72,7 +72,7 @@ gy_dict_manager_class_init (GyDictManagerClass *klass)
    * GyDictManager::alter-dict
    * @self: the GyDictManager
    *
-   * This signal is emitted when a dictionary is choose.
+   * This signal is emitted when a dictionary is choosen.
    */
   signals[ALTER_DICT] =
     g_signal_new ("alter-dict",
