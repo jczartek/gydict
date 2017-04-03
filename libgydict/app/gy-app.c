@@ -217,17 +217,14 @@ setup_accels (GyApp *self)
       {"app.quit", "<ctrl>q"},
       {"app.new-window", "<ctrl>n"},
       {"win.print", "<ctrl>p"},
-      {"win.copy", "<ctrl>c"},
-      {"win.paste", "<ctrl>v"},
-      {"win.clip", "<ctrl>m"},
       {"win.close", "<ctrl>w"},
       {"win.gear-menu", "F10"},
       {"dockbin.top-visible", "<ctrl>f"},
-      {"win.dict(\"GyEnglishPwn-english\")", "<ALT>1"},
-      {"win.dict(\"GyEnglishPwn-polish\")", "<ALT>2"},
-      {"win.dict(\"GyGermanPwn-german\")", "<ALT>3"},
-      {"win.dict(\"GyGermanPwn-polish\")", "<ALT>4"},
-      {"win.dict(\"GyDepl-german\")", "<ALT>5"},
+      {"workspace.alter-dict(\"GyEnglishPwn-english\")", "<ALT>1"},
+      {"workspace.alter-dict(\"GyEnglishPwn-polish\")", "<ALT>2"},
+      {"workspace.alter-dict(\"GyGermanPwn-german\")", "<ALT>3"},
+      {"workspace.alter-dict(\"GyGermanPwn-polish\")", "<ALT>4"},
+      {"workspace.alter-dict(\"GyDepl-german\")", "<ALT>5"},
       {NULL, NULL}
   };
 
