@@ -38,9 +38,6 @@
 static void gear_menu_cb (GSimpleAction *action,
                           GVariant      *parametr,
                           gpointer       data);
-static void find_menu_cb (GSimpleAction *action,
-                          GVariant      *parametr,
-                          gpointer       data);
 static void dict_menu_cb (GSimpleAction *action,
                           GVariant      *parametr,
                           gpointer       data);
@@ -82,7 +79,6 @@ static GActionEntry win_entries[] =
   { "print", gy_print_do_printing, NULL, NULL, NULL },
   { "clip", respond_clipboard_cb, NULL, "false", NULL },
   { "close", quit_win_cb, NULL, NULL, NULL },
-  { "find", find_menu_cb, NULL, "false", NULL },
   { "dict-menu", dict_menu_cb, NULL, "false", NULL },
   { "gear-menu", gear_menu_cb, NULL, "false", NULL },
 };
@@ -144,24 +140,6 @@ respond_clipboard_cb (GSimpleAction *action,
     g_signal_handlers_disconnect_by_func (self->clipboard,
                                           owner_change_cb, self);
   }
-}
-
-static void
-find_menu_cb (GSimpleAction *action,
-              GVariant      *parametr G_GNUC_UNUSED,
-              gpointer       data)
-{
-  //GyWindow *self = GY_WINDOW(data);
-
-  //GVariant *state;
-
-/*  state = g_action_get_state (G_ACTION (action));
-  g_action_change_state (G_ACTION (action),
-                         g_variant_new_boolean (!g_variant_get_boolean (state)));
-  gy_search_bar_set_search_mode (GY_SEARCH_BAR (self->findbar),
-                                 !g_variant_get_boolean (state));
-  g_variant_unref (state); */
-
 }
 
 static void
