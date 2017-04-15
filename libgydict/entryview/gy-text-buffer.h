@@ -34,6 +34,9 @@ void          gy_text_buffer_insert_text_with_tags (GyTextBuffer   *self,
                                                     const gchar    *text,
                                                     gint            len,
                                                     GHashTable     *table_tags);
+void          gy_text_buffer_remove_tags_by_name    (GyTextBuffer *self,
+                                                     const gchar  *first_tag_name,
+                                                     ...);
 
 G_END_DECLS
 

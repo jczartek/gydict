@@ -115,3 +115,39 @@ gy_text_buffer_insert_text_with_tags (GyTextBuffer   *self,
 
   g_list_free (list);
 }
+
+/**
+ * gy_text_buffer_remove_tags_by_name:
+ * @self: a GyTextBuffer
+ * @first_tag_name: name of the first tag to remove
+ * @...: NULL-terminated list of names of tags to remove or NULL
+ *
+ * Removes all given tags in the whole buffer.
+ */
+void
+gy_text_buffer_remove_tags_by_name (GyTextBuffer *self,
+                                    const gchar  *first_tag_name,
+                                    ...)
+{
+  GtkTextIter start, end;
+  const gchar *tag_name;
+  va_list args;
+
+  g_return_if_fail (GY_IS_TEXT_BUFFER (self));
+  g_return_if_fail (first_tag_name != NULL);
+
+  gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (self), &start);
+  gtk_text_buffer_get_end_iter (GTK_TEXT_BUFFER (self), &end);
+
+  va_start (args, first_tag_name);
+  tag_name = first_tag_name;
+
+  while (tag_name)
+    {
+      gtk_text_buffer_remove_tag_by_name (GTK_TEXT_BUFFER (self), tag_name,
+                                          &start, &end);
+      tag_name = va_arg (args, const gchar *);
+    }
+
+  va_end (args);
+}
