@@ -70,7 +70,7 @@
             <property name="halign">end</property>
             <property name="hexpand">true</property>
             <child>
-              <object class="GtkButton" id="close">
+              <object class="GtkButton" id="close_button">
                 <property name="visible">true</property>
                 <child>
                   <object class="GtkImage">

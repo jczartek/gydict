@@ -23,6 +23,7 @@ struct _GySearchBar
 	GtkBin          __parent__;
   GtkSearchEntry *entry;
   GtkTextBuffer  *buffer;
+  GtkButton      *close_button;
   gboolean        search_mode_enabled;
 };
 
@@ -36,6 +37,89 @@ enum {
 };
 
 static GParamSpec *properties [N_PROPS];
+
+static gboolean
+gy_search_bar_is_keynav_event (GdkEvent *event,
+                               guint     keyval)
+{
+  GdkModifierType state = 0;
+
+  gdk_event_get_state (event, &state);
+
+  if (keyval == GDK_KEY_Up ||
+      keyval == GDK_KEY_KP_Up ||
+      keyval == GDK_KEY_Down ||
+      keyval == GDK_KEY_KP_Down ||
+      keyval == GDK_KEY_Home ||
+      keyval == GDK_KEY_KP_Home ||
+      keyval == GDK_KEY_End ||
+      keyval == GDK_KEY_KP_End ||
+      keyval == GDK_KEY_Page_Up ||
+      keyval == GDK_KEY_KP_Page_Up ||
+      keyval == GDK_KEY_Page_Down ||
+      keyval == GDK_KEY_KP_Page_Down ||
+      keyval == GDK_KEY_Tab ||
+      keyval == GDK_KEY_KP_Tab ||
+      ((state & (GDK_CONTROL_MASK | GDK_MOD1_MASK)) != 0))
+      return GDK_EVENT_STOP;
+
+  return GDK_EVENT_PROPAGATE;
+}
+
+static gboolean
+gy_search_bar__search_entry_key_press_event (GtkWidget G_GNUC_UNUSED *widget,
+                                             GdkEvent                *event,
+                                             gpointer                 data)
+{
+  GySearchBar *self = GY_SEARCH_BAR (data);
+  guint keyval;
+
+  if (!gdk_event_get_keyval (event, &keyval) ||
+      keyval == GDK_KEY_Escape)
+  {
+    GtkWidget *toplevel;
+
+    toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+
+    if (gtk_widget_is_toplevel (toplevel))
+      {
+        GActionGroup *dockbin_actions;
+
+        dockbin_actions = gtk_widget_get_action_group (toplevel, "dockbin");
+        g_action_group_activate_action (dockbin_actions, "top-visible", NULL);
+      }
+
+    return GDK_EVENT_STOP;
+  }
+
+  if (gy_search_bar_is_keynav_event (event, keyval))
+    return GDK_EVENT_STOP;
+
+  return GDK_EVENT_PROPAGATE;
+}
+
+static void
+gy_search_bar__search_entry_search_changed (GtkSearchEntry *entry,
+                                            gpointer        data)
+{
+}
+
+static void
+gy_search_bar__clicked_close_button (GySearchBar *self,
+                                     GtkButton   *bt)
+{
+  GtkWidget *toplevel;
+
+  toplevel = gtk_widget_get_toplevel (GTK_WIDGET (self));
+
+  if (gtk_widget_is_toplevel (toplevel))
+    {
+      GActionGroup *dockbin_actions;
+
+      dockbin_actions = gtk_widget_get_action_group (toplevel, "dockbin");
+      g_action_group_activate_action (dockbin_actions, "top-visible", NULL);
+    }
+}
 
 static void
 gy_search_bar_finalize (GObject *object)
@@ -98,6 +182,7 @@ gy_search_bar_class_init (GySearchBarClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-search-bar.ui");
   gtk_widget_class_bind_template_child (widget_class, GySearchBar, entry);
+  gtk_widget_class_bind_template_child (widget_class, GySearchBar, close_button);
 
   /**
    *
@@ -129,6 +214,13 @@ gy_search_bar_init (GySearchBar *self)
   gtk_widget_init_template (GTK_WIDGET (self));
 
   self->search_mode_enabled = FALSE;
+
+  g_signal_connect (self->entry, "key-press-event",
+                    G_CALLBACK (gy_search_bar__search_entry_key_press_event), self);
+  g_signal_connect (self->entry, "search-changed",
+                    G_CALLBACK (gy_search_bar__search_entry_search_changed), self);
+  g_signal_connect_swapped (self->close_button, "clicked",
+                            G_CALLBACK(gy_search_bar__clicked_close_button), self);
 }
 
 GySearchBar *
@@ -139,7 +231,7 @@ gy_search_bar_new (void)
 
 void
 gy_search_bar_set_search_mode_enabled (GySearchBar *self,
-                                       gboolean      search_mode_enabled)
+                                       gboolean     search_mode_enabled)
 {
 
   g_return_if_fail (GY_IS_SEARCH_BAR (self));
