@@ -17,6 +17,7 @@
  */
 
 #include "gy-search-bar.h"
+#include "./entryview/gy-text-buffer.h"
 
 struct _GySearchBar
 {
@@ -102,6 +103,45 @@ static void
 gy_search_bar__search_entry_search_changed (GtkSearchEntry *entry,
                                             gpointer        data)
 {
+  const gchar     *searched_string = NULL;
+  GySearchBar     *self = (GySearchBar *) data;
+  GtkStyleContext *context;
+
+  gy_text_buffer_remove_tags_by_name (GY_TEXT_BUFFER (self->buffer),
+                                      "search", "search_next", NULL);
+  context = gtk_widget_get_style_context (GTK_WIDGET (self->entry));
+  gtk_style_context_remove_class (context, "search-missing");
+
+  searched_string = gtk_entry_get_text (GTK_ENTRY (entry));
+
+  if (searched_string[0] != '\0')
+    {
+      gboolean    found = FALSE;
+      GtkTextIter start, end;
+
+      gtk_text_buffer_get_iter_at_offset (self->buffer, &start, 0);
+      gtk_text_buffer_get_iter_at_offset (self->buffer, &end, 0);
+
+      found = gtk_text_iter_forward_search (&start, searched_string,
+                                            (GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY),
+                                            &start, &end, NULL);
+
+      if (found)
+        {
+        }
+      else
+        {
+          gtk_style_context_add_class (context, "search-missing");
+        }
+
+      while (found)
+        {
+          gtk_text_buffer_apply_tag_by_name (self->buffer, "search", &start, &end);
+          found = gtk_text_iter_forward_search (&end, searched_string,
+                                                (GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY),
+                                                &start, &end, NULL);
+        }
+    }
 }
 
 static void
@@ -220,7 +260,7 @@ gy_search_bar_init (GySearchBar *self)
   g_signal_connect (self->entry, "search-changed",
                     G_CALLBACK (gy_search_bar__search_entry_search_changed), self);
   g_signal_connect_swapped (self->close_button, "clicked",
-                            G_CALLBACK(gy_search_bar__clicked_close_button), self);
+                            G_CALLBACK (gy_search_bar__clicked_close_button), self);
 }
 
 GySearchBar *
