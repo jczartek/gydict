@@ -1,4 +1,8 @@
-gsettings_SCHEMAS = org.gtk.gydict.gschema.xml
+gsettings_SCHEMAS = \
+	org.gtk.gydict.gschema.xml \
+	org.gtk.gydict.workspace.gschema.xml \
+	$(NULL)
+
 @GSETTINGS_RULES@
 
 desktopdir = $(datadir)/applications

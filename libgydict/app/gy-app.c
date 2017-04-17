@@ -220,6 +220,7 @@ setup_accels (GyApp *self)
       {"win.close", "<ctrl>w"},
       {"win.gear-menu", "F10"},
       {"dockbin.top-visible", "<ctrl>f"},
+      {"dockbin.left-visible", "F9"},
       {"workspace.alter-dict(\"GyEnglishPwn-english\")", "<ALT>1"},
       {"workspace.alter-dict(\"GyEnglishPwn-polish\")", "<ALT>2"},
       {"workspace.alter-dict(\"GyGermanPwn-german\")", "<ALT>3"},

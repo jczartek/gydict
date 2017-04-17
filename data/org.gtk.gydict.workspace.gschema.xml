@@ -1,0 +1,18 @@
+<schemalist>
+  <schema id="org.gtk.gydict.workspace" path="/org/gtk/gydict/workspace/" gettext-domain="gydict">
+
+    <key name="left-visible" type="b">
+      <default>true</default>
+      <summary>Show Left Panel</summary>
+      <description>Show the left Panel if it's enabled.</description>
+    </key>
+
+    <key name="left-position" type="i">
+      <range min="1" max="1000" />
+      <default>200</default>
+      <summary>Left Panel Position</summary>
+      <description>The width in pixel units of the left panel.</description>
+    </key>
+
+  </schema>
+</schemalist>

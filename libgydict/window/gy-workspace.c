@@ -23,8 +23,6 @@
 #include "entryview/gy-text-view.h"
 #include "search/gy-search-bar.h"
 
-#define DEFAULT_POSITION 200
-
 struct _GyWorkspace
 {
   PnlDockOverlay      __parent__;
@@ -142,6 +140,50 @@ gy_workspace_get_property (GObject    *object,
 }
 
 static void
+gy_workspace_restore_panel_state (GyWorkspace *self)
+{
+  g_autoptr(GSettings) settings = NULL;
+  GtkWidget *pane;
+  gboolean reveal;
+  guint position;
+
+  settings = g_settings_new ("org.gtk.gydict.workspace");
+
+  pane = pnl_dock_bin_get_left_edge (PNL_DOCK_BIN (self->dockbin));
+  reveal = g_settings_get_boolean (settings, "left-visible");
+  position = g_settings_get_int (settings, "left-position");
+  pnl_dock_revealer_set_reveal_child (PNL_DOCK_REVEALER (pane), reveal);
+  pnl_dock_revealer_set_position (PNL_DOCK_REVEALER (pane), position);
+}
+
+static void
+gy_workspace_save_panel_state (GyWorkspace *self)
+{
+  g_autoptr(GSettings) settings = NULL;
+  GtkWidget *pane;
+  gboolean reveal;
+  guint position;
+
+  settings = g_settings_new ("org.gtk.gydict.workspace");
+
+  pane = pnl_dock_bin_get_left_edge (PNL_DOCK_BIN (self->dockbin));
+  position = pnl_dock_revealer_get_position (PNL_DOCK_REVEALER (pane));
+  reveal = pnl_dock_revealer_get_reveal_child (PNL_DOCK_REVEALER (pane));
+  g_settings_set_boolean (settings, "left-visible", reveal);
+  g_settings_set_int (settings, "left-position", position);
+}
+
+static void
+gy_workspace_unrealize (GtkWidget *widget)
+{
+  GyWorkspace *self = (GyWorkspace *) widget;
+
+  gy_workspace_save_panel_state (self);
+
+  GTK_WIDGET_CLASS (gy_workspace_parent_class)->unrealize (widget);
+}
+
+static void
 gy_workspace_destroy (GtkWidget *widget)
 {
   GyWorkspace *self = GY_WORKSPACE (widget);
@@ -158,6 +200,16 @@ gy_workspace_destroy (GtkWidget *widget)
 }
 
 static void
+gy_workspace_constructed (GObject *object)
+{
+  GyWorkspace *self = (GyWorkspace *) object;
+
+  gy_workspace_restore_panel_state (self);
+
+  G_OBJECT_CLASS (gy_workspace_parent_class)->constructed (object);
+}
+
+static void
 gy_workspace_class_init (GyWorkspaceClass *klass)
 {
   GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -165,7 +217,9 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
 
   object_class->set_property = gy_workspace_set_property;
   object_class->get_property = gy_workspace_get_property;
+  object_class->constructed = gy_workspace_constructed;
 
+  widget_class->unrealize = gy_workspace_unrealize;
   widget_class->destroy = gy_workspace_destroy;
 
   gtk_widget_class_set_template_from_resource (widget_class , "/org/gtk/gydict/gy-workspace.ui");
@@ -198,7 +252,6 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
 static void
 gy_workspace_init (GyWorkspace *self)
 {
-  PnlDockRevealer *edge;
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
@@ -214,10 +267,6 @@ gy_workspace_init (GyWorkspace *self)
                                    entries, G_N_ELEMENTS (entries), self);
   gtk_widget_insert_action_group (GTK_WIDGET (self), "workspace",
                                   G_ACTION_GROUP (self->actions));
-
-  edge = PNL_DOCK_REVEALER (pnl_dock_bin_get_left_edge (PNL_DOCK_BIN (self->dockbin)));
-  pnl_dock_revealer_set_position (edge, DEFAULT_POSITION);
-  pnl_dock_revealer_set_reveal_child (edge, TRUE);
 
   g_object_set_data (G_OBJECT (self->treeview), "textview", self->textview);
   g_object_set_data (G_OBJECT (self->textview), "manager", self->manager);
