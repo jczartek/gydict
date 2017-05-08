@@ -42,8 +42,7 @@ gy_text_buffer_constructed (GObject *object)
   gy_text_buffer_set_attrs_tags (GTK_TEXT_BUFFER (object));
 
   gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (object), &iter);
-  gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (object), "last_pos_start", &iter, FALSE);
-  gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (object), "last_pos_end", &iter, FALSE);
+  gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (object), "behind_found_word", &iter, FALSE);
 }
 
 static void
@@ -150,4 +149,29 @@ gy_text_buffer_remove_tags_by_name (GyTextBuffer *self,
     }
 
   va_end (args);
+}
+
+/**
+ * gy_text_buffer_get_tag_by_name:
+ * @self: a GyTextBuffer
+ * @name_tag
+ *
+ * Returns the tag named name_tag in buffer self, or NULL if no tag exist in
+ * the buffer.
+ *
+ * Returns
+ * a GtkTextTag, or NULL
+ */
+GtkTextTag *
+gy_text_buffer_get_tag_by_name (GyTextBuffer  *self,
+                                const gchar   *name_tag)
+{
+  GtkTextTagTable *ttable;
+
+  g_return_val_if_fail (GY_IS_TEXT_BUFFER (self), NULL);
+  g_return_val_if_fail (name_tag != NULL, NULL);
+
+  ttable = gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (self));
+
+  return gtk_text_tag_table_lookup (ttable, name_tag);
 }

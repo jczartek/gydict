@@ -37,6 +37,8 @@ void          gy_text_buffer_insert_text_with_tags (GyTextBuffer   *self,
 void          gy_text_buffer_remove_tags_by_name    (GyTextBuffer *self,
                                                      const gchar  *first_tag_name,
                                                      ...);
+GtkTextTag *gy_text_buffer_get_tag_by_name          (GyTextBuffer *self,
+                                                     const gchar  *name_tag);
 
 G_END_DECLS
 
