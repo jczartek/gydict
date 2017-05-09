@@ -130,6 +130,7 @@ gy_search_bar__search_entry_search_changed (GtkSearchEntry *entry,
         {
           GtkTextMark *bfword = gtk_text_buffer_get_mark (self->buffer, "behind_found_word");
           GtkTextTag *tag = gy_text_buffer_get_tag_by_name (GY_TEXT_BUFFER (self->buffer), "search");
+          GtkTextView *tv = g_object_get_data (G_OBJECT (self->buffer), "textview");
 
           gtk_text_buffer_move_mark (self->buffer, bfword, &end);
           while (found)
@@ -146,6 +147,11 @@ gy_search_bar__search_entry_search_changed (GtkSearchEntry *entry,
             ;
 
           gtk_text_buffer_apply_tag_by_name (self->buffer, "search_next", &start, &end);
+
+          if (GTK_IS_TEXT_VIEW (tv))
+            {
+              gtk_text_view_scroll_mark_onscreen (tv, bfword);
+            }
         }
       else
         {
