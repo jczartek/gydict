@@ -265,21 +265,6 @@ gy_text_view_event_after_signal (GtkWidget *widget,
 }
 
 static void
-gy_text_view__buffer_was_set (GyTextView *self,
-                              GParamSpec *pspec,
-                              gpointer    data)
-{
-  GtkTextBuffer *buffer;
-
-  buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (self));
-
-  if (GY_IS_TEXT_BUFFER (buffer))
-    {
-      g_object_set_data (G_OBJECT (buffer), "textview", self);
-    }
-}
-
-static void
 gy_text_view_get_property (GObject    *object,
                            guint       prop_id,
                            GValue     *value,
@@ -345,9 +330,6 @@ gy_text_view_constructed (GObject *object)
 
   g_signal_connect_swapped (gtk_settings, "notify::gtk-application-prefer-dark-theme",
                             G_CALLBACK (gy_text_view__settings_notify_gtk_application_prefer_dark_theme), self);
-  g_signal_connect (self, "notify::buffer",
-                    G_CALLBACK (gy_text_view__buffer_was_set), NULL);
-
   gy_text_view_update_background_pattern (self);
 }
 

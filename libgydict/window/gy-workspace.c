@@ -21,6 +21,7 @@
 #include "dictionaries/gy-dict-manager.h"
 #include "entrylist/gy-tree-view.h"
 #include "entryview/gy-text-view.h"
+#include "entryview/gy-text-buffer.h"
 #include "search/gy-search-bar.h"
 
 struct _GyWorkspace
@@ -31,6 +32,7 @@ struct _GyWorkspace
   GyTextView         *textview;
   GySearchBar        *search_bar;
   GyDictManager      *manager;
+  GyTextBuffer       *buffer;
   GSimpleActionGroup *actions;
 };
 
@@ -60,6 +62,8 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
   dict = gy_dict_manager_set_dict (self->manager, str);
   if (!dict) return;
 
+  gy_text_buffer_clean_buffer (self->buffer);
+
   gtk_tree_view_set_model (GTK_TREE_VIEW (self->treeview),
                            gy_dict_get_tree_model (dict));
 
@@ -88,13 +92,6 @@ gy_workspace_visibility_notify_signal (PnlDockBin *bin,
       if (gtk_widget_is_toplevel (toplevel))
         gy_window_grab_focus (GY_WINDOW (toplevel));
     }
-}
-
-static void
-gy_workspace_signal_alter_dict (GyTextView    *tv,
-                                GyDictManager *manager)
-{
-  gy_text_view_clear_buffer (tv);
 }
 
 static void
@@ -190,7 +187,6 @@ gy_workspace_destroy (GtkWidget *widget)
 
   if (self->manager)
     {
-      g_signal_handlers_disconnect_by_func (self->manager, gy_workspace_signal_alter_dict, NULL);
       g_clear_object (&self->manager);
     }
 
@@ -227,6 +223,7 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, treeview);
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, textview);
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, search_bar);
+  gtk_widget_class_bind_template_child (widget_class, GyWorkspace, buffer);
 
   properties[PROP_MANAGER] =
     g_param_spec_object ("manager-dicts",
@@ -270,9 +267,8 @@ gy_workspace_init (GyWorkspace *self)
 
   g_object_set_data (G_OBJECT (self->treeview), "textview", self->textview);
   g_object_set_data (G_OBJECT (self->textview), "manager", self->manager);
+  g_object_set_data (G_OBJECT (self->buffer), "textview", self->textview);
 
-  g_signal_connect_swapped (self->manager, "alter-dict",
-                            G_CALLBACK (gy_workspace_signal_alter_dict), self->textview);
   g_signal_connect (self->dockbin, "visibility-notify",
                     G_CALLBACK (gy_workspace_visibility_notify_signal), self);
 
