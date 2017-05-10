@@ -227,6 +227,39 @@ gy_search_bar_get_property (GObject    *object,
 }
 
 static void
+gy_search_bar_actions_next_search_result (GSimpleAction *action,
+                                          GVariant      *state,
+                                          gpointer       data)
+{
+}
+
+static void
+gy_search_bar_actions_previous_search_result (GSimpleAction *action,
+                                              GVariant      *state,
+                                              gpointer       data)
+{
+}
+
+static const GActionEntry GySearchBarActions[] = {
+    {"next-search-result", gy_search_bar_actions_next_search_result},
+    {"previous-search-result", gy_search_bar_actions_previous_search_result}
+};
+
+static void
+gy_search_bar_actions_init (GySearchBar *self)
+{
+  GSimpleActionGroup *group;
+
+  g_assert (GY_IS_SEARCH_BAR (self));
+
+  group = g_simple_action_group_new ();
+  g_action_map_add_action_entries (G_ACTION_MAP (group), GySearchBarActions,
+                                   G_N_ELEMENTS (GySearchBarActions), self);
+  gtk_widget_insert_action_group (GTK_WIDGET (self), "search", G_ACTION_GROUP (group));
+  g_object_unref (group);
+}
+
+static void
 gy_search_bar_class_init (GySearchBarClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -268,6 +301,8 @@ static void
 gy_search_bar_init (GySearchBar *self)
 {
   gtk_widget_init_template (GTK_WIDGET (self));
+
+  gy_search_bar_actions_init (self);
 
   self->search_mode_enabled = FALSE;
 

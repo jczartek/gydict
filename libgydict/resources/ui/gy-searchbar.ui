@@ -37,6 +37,7 @@
                 </style>
                 <child>
                   <object class="GtkButton" id="prev">
+                    <property name="action-name">search.previous-search-result</property>
                     <property name="visible">true</property>
                     <child>
                       <object class="GtkImage">
@@ -49,6 +50,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="next">
+                    <property name="action-name">search.next-search-result</property>
                     <property name="visible">true</property>
                     <child>
                       <object class="GtkImage">
