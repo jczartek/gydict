@@ -128,11 +128,11 @@ gy_search_bar__search_entry_search_changed (GtkSearchEntry *entry,
 
       if (found)
         {
-          GtkTextMark *bfword = gtk_text_buffer_get_mark (self->buffer, "behind_found_word");
+          GtkTextMark *mark = gtk_text_buffer_get_mark (self->buffer, "searched");
           GtkTextTag *tag = gy_text_buffer_get_tag_by_name (GY_TEXT_BUFFER (self->buffer), "search");
           GtkTextView *tv = g_object_get_data (G_OBJECT (self->buffer), "textview");
 
-          gtk_text_buffer_move_mark (self->buffer, bfword, &end);
+          gtk_text_buffer_move_mark (self->buffer, mark, &end);
           while (found)
             {
               gtk_text_buffer_apply_tag (self->buffer, tag, &start, &end);
@@ -140,7 +140,7 @@ gy_search_bar__search_entry_search_changed (GtkSearchEntry *entry,
                                                     (GTK_TEXT_SEARCH_VISIBLE_ONLY | GTK_TEXT_SEARCH_TEXT_ONLY),
                                                     &start, &end, NULL);
             }
-          gtk_text_buffer_get_iter_at_mark (self->buffer, &end, bfword);
+          gtk_text_buffer_get_iter_at_mark (self->buffer, &end, mark);
 
           start = end;
           while (!gtk_text_iter_starts_tag (&start, tag) && gtk_text_iter_backward_char (&start))
@@ -150,7 +150,7 @@ gy_search_bar__search_entry_search_changed (GtkSearchEntry *entry,
 
           if (GTK_IS_TEXT_VIEW (tv))
             {
-              gtk_text_view_scroll_mark_onscreen (tv, bfword);
+              gtk_text_view_scroll_mark_onscreen (tv, mark);
             }
         }
       else
@@ -227,10 +227,70 @@ gy_search_bar_get_property (GObject    *object,
 }
 
 static void
+gy_search_bar_move_search (GySearchBar      *self,
+                           GtkDirectionType  where)
+{
+  GtkTextMark *mark;
+  GtkTextTag  *tag;
+  GtkTextIter  iter,
+               start,
+               end;
+  gboolean     found = FALSE;
+
+  g_return_if_fail (GY_IS_SEARCH_BAR (self));
+
+  gy_text_buffer_remove_tags_by_name (GY_TEXT_BUFFER (self->buffer),
+                                      "search_next", NULL);
+  mark = gtk_text_buffer_get_mark (self->buffer, "searched");
+  tag = gy_text_buffer_get_tag_by_name (GY_TEXT_BUFFER (self->buffer), "search");
+  gtk_text_buffer_get_iter_at_mark (self->buffer, &iter, mark);
+
+  if (!gtk_text_iter_toggles_tag (&iter, tag)) return;
+
+  if (where == GTK_DIR_DOWN)
+    {
+      if ((found = gtk_text_iter_forward_to_tag_toggle (&iter, tag)))
+        {
+          start = iter;
+          while (!gtk_text_iter_ends_tag (&iter, tag) && gtk_text_iter_forward_char (&iter))
+            ;
+          end = iter;
+        }
+    }
+  else /* where == GTK_DIR_UP */
+    {
+      if (gtk_text_iter_ends_tag (&iter, tag))
+        {
+          while (!gtk_text_iter_starts_tag (&iter, tag) && gtk_text_iter_backward_char (&iter))
+            ;
+
+          if ((found = gtk_text_iter_backward_to_tag_toggle (&iter, tag)))
+            {
+              end = iter;
+
+              while (!gtk_text_iter_starts_tag (&iter, tag) && gtk_text_iter_backward_char (&iter))
+                ;
+              start = iter;
+            }
+        }
+    }
+
+  if (found)
+    {
+      GtkTextView *tv = g_object_get_data (G_OBJECT (self->buffer), "textview");
+
+      gtk_text_buffer_move_mark (self->buffer, mark, &end);
+      gtk_text_buffer_apply_tag_by_name (self->buffer, "search_next", &start, &end);
+      gtk_text_view_scroll_mark_onscreen (tv, mark);
+    }
+}
+
+static void
 gy_search_bar_actions_next_search_result (GSimpleAction *action,
                                           GVariant      *state,
                                           gpointer       data)
 {
+  gy_search_bar_move_search (GY_SEARCH_BAR (data), GTK_DIR_DOWN);
 }
 
 static void
@@ -238,6 +298,7 @@ gy_search_bar_actions_previous_search_result (GSimpleAction *action,
                                               GVariant      *state,
                                               gpointer       data)
 {
+  gy_search_bar_move_search (GY_SEARCH_BAR (data), GTK_DIR_UP);
 }
 
 static const GActionEntry GySearchBarActions[] = {

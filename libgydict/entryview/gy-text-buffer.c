@@ -42,7 +42,7 @@ gy_text_buffer_constructed (GObject *object)
   gy_text_buffer_set_attrs_tags (GTK_TEXT_BUFFER (object));
 
   gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (object), &iter);
-  gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (object), "behind_found_word", &iter, FALSE);
+  gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (object), "searched", &iter, FALSE);
 }
 
 static void
