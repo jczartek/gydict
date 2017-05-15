@@ -59,12 +59,28 @@ gy_text_buffer_init (GyTextBuffer *self)
 {
 }
 
+/**
+ * gy_text_buffer_new:
+ *
+ * Creates a new buffer.
+ *
+ * Returns
+ * a GyTextBuffer
+ *
+ */
 GyTextBuffer *
 gy_text_buffer_new (void)
 {
   return g_object_new (GY_TYPE_TEXT_BUFFER, NULL);
 }
 
+/**
+ * gy_text_buffer_clean_buffer
+ * @self: a GyTextBuffer
+ *
+ * Cleans a buffer.
+ *
+ */
 void
 gy_text_buffer_clean_buffer (GyTextBuffer *self)
 {
@@ -78,6 +94,19 @@ gy_text_buffer_clean_buffer (GyTextBuffer *self)
                           &begin, &end);
 }
 
+/**
+ * gy_text_buffer_insert_text_with_tags:
+ * @self: a GyTextBuffer
+ * @iter: an iterator in buffer
+ * @text: UTF-8 text
+ * @len: length of text, or -1
+ * @table_tags: a hash table of tags, or NULL
+ *
+ * Inserts text into buffer at iter, applying the table of tags to the newly-inserted text.
+ * It resembles gtk_text_buffer_insert_with_tags, but allows you to pass a hash table of tags,
+ * in which tags are placed as values of the table, instead a list of tags.
+ *
+ */
 void
 gy_text_buffer_insert_text_with_tags (GyTextBuffer   *self,
                                       GtkTextIter    *iter,
