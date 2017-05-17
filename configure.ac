@@ -101,8 +101,8 @@ AM_GNU_GETTEXT([external])
 dnl ****************************************************************************
 dnl * Check for Required Packages                                              *
 dnl ****************************************************************************
-m4_define([gtk_required_version], [3.20.0])
-m4_define([glib_required_version], [2.38.0])
+m4_define([gtk_required_version], [3.22.0])
+m4_define([glib_required_version], [2.50.0])
 m4_define([zlib_required_version], [1.2.8])
 
 PKG_CHECK_MODULES(GYDICT,    [gtk+-3.0 >= gtk_required_version
