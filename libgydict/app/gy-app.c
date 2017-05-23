@@ -54,10 +54,6 @@ struct _GyApp
 
 G_DEFINE_TYPE (GyApp, gy_app, GTK_TYPE_APPLICATION);
 
-/**STATIC DATA**/
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 static GActionEntry app_entries[] =
 {
   /* general action */
@@ -67,7 +63,6 @@ static GActionEntry app_entries[] =
   { "quit", quit_cb, NULL, NULL, NULL },
   { "shortcuts", shortcuts_cb, NULL, NULL, NULL },
 };
-#pragma GCC diagnostic pop
 
 inline static void
 setup_actions_app (GyApp *application)

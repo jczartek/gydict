@@ -70,10 +70,6 @@ struct _GyWindow
 
 G_DEFINE_TYPE (GyWindow, gy_window, GTK_TYPE_APPLICATION_WINDOW);
 
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
-
 static GActionEntry win_entries[] =
 {
   { "print", gy_print_do_printing, NULL, NULL, NULL },
@@ -82,8 +78,6 @@ static GActionEntry win_entries[] =
   { "dict-menu", dict_menu_cb, NULL, "false", NULL },
   { "gear-menu", gear_menu_cb, NULL, "false", NULL },
 };
-
-#pragma GCC diagnostic pop
 
 /**STATIC FUNCTION**/
 static void

@@ -88,13 +88,10 @@ gy_dict_manager_init (GyDictManager *self)
 {
   GSimpleAction *action = NULL;
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
   static const GActionEntry entries[] = {
       {"go-back", gy_dict_manager_go_back_in_history, NULL, NULL, NULL},
       {"go-next", gy_dict_manager_go_next_in_history, NULL, NULL, NULL}
     };
-#pragma GCC diagnostic pop
 
   self->dicts = g_hash_table_new_full (g_str_hash, g_str_equal,
                                        NULL, g_object_unref);

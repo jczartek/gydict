@@ -250,12 +250,9 @@ static void
 gy_workspace_init (GyWorkspace *self)
 {
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
   static const GActionEntry entries[] = {
       {"alter-dict", gy_workspace_action_alter_dict, "s", "''", NULL}
     };
-#pragma GCC diagnostic pop
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
