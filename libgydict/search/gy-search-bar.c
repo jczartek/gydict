@@ -239,8 +239,6 @@ gy_search_bar_move_search (GySearchBar      *self,
 
   g_return_if_fail (GY_IS_SEARCH_BAR (self));
 
-  gy_text_buffer_remove_tags_by_name (GY_TEXT_BUFFER (self->buffer),
-                                      "search_next", NULL);
   mark = gtk_text_buffer_get_mark (self->buffer, "searched");
   tag = gy_text_buffer_get_tag_by_name (GY_TEXT_BUFFER (self->buffer), "search");
   gtk_text_buffer_get_iter_at_mark (self->buffer, &iter, mark);
@@ -279,6 +277,7 @@ gy_search_bar_move_search (GySearchBar      *self,
     {
       GtkTextView *tv = g_object_get_data (G_OBJECT (self->buffer), "textview");
 
+      gy_text_buffer_remove_tags_by_name (GY_TEXT_BUFFER (self->buffer), "search_next", NULL);
       gtk_text_buffer_move_mark (self->buffer, mark, &end);
       gtk_text_buffer_apply_tag_by_name (self->buffer, "search_next", &start, &end);
       gtk_text_view_scroll_mark_onscreen (tv, mark);
