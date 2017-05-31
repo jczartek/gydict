@@ -9,7 +9,7 @@ libgydict/resources/ui/gy-preferences-page-dicts.ui
 libgydict/resources/ui/gy-preferences-page-general.ui
 libgydict/resources/ui/gy-preferences-switch.ui
 libgydict/resources/ui/gy-preferences-window.ui
-libgydict/resources/ui/gysearchbar.ui
+libgydict/resources/ui/gy-searchbar.ui
 libgydict/resources/ui/gy-window.ui
 libgydict/window/gy-window.c
 src/gy-main.c
