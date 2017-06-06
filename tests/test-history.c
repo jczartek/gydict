@@ -18,112 +18,110 @@
 
 #include <gydict.h>
 
-static
-void test_history_with_one_element (void)
+static void
+test_history_empty (void)
 {
-  GyDictHistory *history = NULL;
+  GyDictHistory *h = NULL;
+  const gchar *data = NULL;
+  gboolean is_beginning,
+           is_end,
+           is_empty;
+  is_beginning = is_end = is_empty = FALSE;
+
+  h = gy_dict_history_new ();
+
+  g_object_get (h, "is-beginning", &is_beginning, "is-end", &is_end, "is-empty", &is_empty, NULL);
+
+  g_assert (is_beginning && is_end && is_empty);
+
+  g_assert_null (gy_dict_history_next (h));
+  g_assert_null (gy_dict_history_prev (h));
+
+  gy_dict_history_set_state (h);
+
+  g_object_get (h, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
+
+  g_assert (is_beginning && is_end);
+
+  g_assert (gy_dict_history_size (h) == 0);
+
+  gy_dict_history_reset_state (h);
+
+  g_object_get (h, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
+
+  g_assert (is_beginning && is_end);
+
+  g_object_unref (h);
+}
+
+static
+void test_history_one_element (void)
+{
+  GyDictHistory *h = NULL;
   gboolean is_beginning = FALSE;
   gboolean is_end = FALSE;
   gboolean is_empty = FALSE;
   gconstpointer data = NULL;
 
-  history = gy_dict_history_new ();
+  h = gy_dict_history_new ();
 
-  data = gy_dict_history_next (history);
-  g_assert_null (data);
+  gy_dict_history_append (h, "A");
+  g_assert (gy_dict_history_size (h) == 1);
 
-  data = gy_dict_history_prev (history);
-  g_assert_null (data);
-
-  g_object_get (history, "is-empty", &is_empty, NULL);
-  g_assert_true (is_empty);
-
-  g_object_get (history, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
-  g_assert (is_beginning && is_end);
-
-  gy_dict_history_append (history, "xxxfff");
-  g_assert (gy_dict_history_size (history) == 1);
-
-  g_object_get (history, "is-empty", &is_empty, NULL);
+  g_object_get (h, "is-empty", &is_empty, NULL);
   g_assert_false (is_empty);
 
-  g_object_get (history, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
+  g_object_get (h, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
   g_assert_false (is_beginning);
   g_assert_true  (is_end);
 
-  data = gy_dict_history_prev (history);
-  g_assert_cmpstr(data, ==, "xxxfff");
-  g_object_get (history, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
-  g_assert_false (is_beginning);
-  g_assert_true  (is_end);
+  data = gy_dict_history_prev (h);
+  g_assert_cmpstr(data, ==, "A");
+  g_object_get (h, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
+  g_assert_true (is_beginning);
+  g_assert_true (is_end);
 
   /* Once again */
-  data = gy_dict_history_prev (history);
-  g_assert_cmpstr(data, ==, "xxxfff");
-  g_object_get (history, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
+  data = gy_dict_history_prev (h);
+  g_assert_null (data);
+  g_object_get (h, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
+  g_assert_true (is_beginning);
+  g_assert_true  (is_end);
+
+  data = gy_dict_history_next (h);
+  g_assert_null (data);
+  g_object_get (h, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
+  g_assert_true (is_beginning);
+  g_assert_true  (is_end);
+
+  /* Reset */
+
+  gy_dict_history_reset_state (h);
+
+  g_object_get (h, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
   g_assert_false (is_beginning);
   g_assert_true  (is_end);
 
-  data = gy_dict_history_next (history);
+  data = gy_dict_history_prev (h);
+  g_assert_cmpstr(data, ==, "A");
+  g_object_get (h, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
+  g_assert_true (is_beginning);
+  g_assert_true (is_end);
 
-  g_object_unref (history);
-}
-
-static gchar *words[] = {
-  "make",
-  "get",
-  "set",
-  "history",
-  "new",
-  "test",
-  "come",
-  "write",
-  "read",
-  "in",
-  "on",
-  "end",
-  "finish",
-  "start",
-  "lose",
-  "the",
-  "same",
-  "some",
-  "any",
-  "most",
-  "more",
-  "devote",
-  NULL
-};
-
-static
-void test_history_with_some_elements (void)
-{
-  GyDictHistory *history = NULL;
-  gboolean is_beginning = FALSE;
-  gboolean is_end = FALSE;
-  const gchar *data = NULL;
-
-  history = gy_dict_history_new ();
-
-  for (gint i = 0; words[i] != NULL; i++)
-    gy_dict_history_append (history, words[i]);
-
-  g_assert (gy_dict_history_size (history) == 22);
-
-  g_object_get (history, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
-  g_assert_false (is_beginning);
+  /* Once again */
+  data = gy_dict_history_prev (h);
+  g_assert_null (data);
+  g_object_get (h, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
+  g_assert_true (is_beginning);
   g_assert_true  (is_end);
 
-  for (gint i = G_N_ELEMENTS (words) - 2; i >= 0; i--)
-    {
-       data = gy_dict_history_prev (history);
-       g_object_get (history, "is-beginning", &is_beginning, NULL);
+  data = gy_dict_history_next (h);
+  g_assert_null (data);
+  g_object_get (h, "is-beginning", &is_beginning, "is-end", &is_end, NULL);
+  g_assert_true (is_beginning);
+  g_assert_true  (is_end);
 
-      if (is_beginning == FALSE) g_assert_cmpstr(words[i], ==, data);
-      else break;
-    }
-  g_assert_null (gy_dict_history_prev (history));
-  g_object_unref (history);
+  g_object_unref (h);
 }
 
 gint
@@ -131,8 +129,8 @@ main (gint   argc,
       gchar *argv[])
 {
   g_test_init (&argc, &argv, NULL);
-  g_test_add_func ("/test/history/with/one/element", test_history_with_one_element);
-  g_test_add_func ("/test/history/with/some/elements", test_history_with_some_elements);
+  g_test_add_func ("/test/history/empty/history", test_history_empty);
+  g_test_add_func ("/test/history/empty/history/one/element", test_history_one_element);
   g_test_run ();
   return 0;
 }
