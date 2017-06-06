@@ -188,7 +188,14 @@ gy_dict_history_set_state (GyDictHistory *self)
       return;
     }
 
-  /* The history has at least one element and its iter is at the end of one, or
+  /* The list has one element and its iter is at the beginning of the one. */
+  if (self->iter->prev == NULL && self->iter->next == &self->nil)
+    {
+      g_object_set (self, "is-beginning", TRUE, "is-end", TRUE, NULL);
+      return;
+    }
+
+  /* The history has at least one element and its iter is at the end of the one, or
    * the history has a few elements and its iter is before the Nil node. */
   if (self->iter->prev != NULL && (self->iter == &self->nil || self->iter->next == &self->nil))
     {
@@ -196,14 +203,14 @@ gy_dict_history_set_state (GyDictHistory *self)
       return;
     }
 
-  /* The history has some elements and its iter is in the midlle of one. */
+  /* The history has some elements and its iter is in the midlle of the one. */
   if (self->iter->prev != NULL && self->iter->next != NULL && self->iter->next != &self->nil)
     {
       g_object_set (self, "is-beginning", FALSE, "is-end", FALSE, NULL);
       return;
     }
 
-  /* The history has some elements and its iter is at the beginning of one. */
+  /* The history has some elements and its iter is at the beginning of the one. */
   if (self->iter->prev == NULL && self->iter->next != NULL)
     {
       g_object_set(self, "is-beginning", TRUE, "is-end", FALSE, NULL);
@@ -220,7 +227,8 @@ gy_dict_history_next (GyDictHistory *self)
   g_return_val_if_fail (GY_IS_DICT_HISTORY (self), NULL);
 
   /* the empty history or the iter is at the end */
-  if (self->iter->next == NULL)
+  if (self->iter->next == NULL ||
+      (self->iter->next == &self->nil && self->iter->prev == NULL))
     {
       return NULL;
     }
@@ -245,18 +253,6 @@ gy_dict_history_prev (GyDictHistory *self)
 {
   g_return_val_if_fail (GY_IS_DICT_HISTORY (self), NULL);
 
-  /* the empty history or the iter is at the beginning.*/
-  if (self->iter->prev == NULL)
-    {
-      return NULL;
-    }
-
-  /* The iter is not moving to a previous element. */
-  if (self->nil.prev->prev == NULL)
-    {
-      return self->iter->prev->data;
-    }
-
   if (self->iter->prev != NULL)
     {
       self->iter = self->iter->prev;
@@ -279,4 +275,13 @@ gy_dict_history_size (GyDictHistory *self)
   for (l = self->nil.prev; l != NULL; l = l->prev) len += 1;
 
   return len;
+}
+
+void
+gy_dict_history_reset_state (GyDictHistory *self)
+{
+  g_return_if_fail (GY_IS_DICT_HISTORY (self));
+
+  self->iter = &self->nil;
+  gy_dict_history_set_state (self);
 }
