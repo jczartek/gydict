@@ -227,8 +227,7 @@ gy_dict_history_next (GyDictHistory *self)
   g_return_val_if_fail (GY_IS_DICT_HISTORY (self), NULL);
 
   /* the empty history or the iter is at the end */
-  if (self->iter->next == NULL ||
-      (self->iter->next == &self->nil && self->iter->prev == NULL))
+  if (self->iter->next == NULL || self->iter->next == &self->nil)
     {
       return NULL;
     }
@@ -237,11 +236,6 @@ gy_dict_history_next (GyDictHistory *self)
     {
       self->iter = self->iter->next;
       data = self->iter->data;
-
-      if (self->iter->next == &self->nil)
-        {
-          self->iter = &self->nil;
-        }
     }
   gy_dict_history_set_state (self);
 
