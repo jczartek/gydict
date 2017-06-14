@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #include "config.h"
 #include <glib/gi18n-lib.h>
 
@@ -53,22 +52,18 @@ GParamSpec *gParamSpecs[LAST_PROP];
 G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GyDict, gy_dict, G_TYPE_OBJECT);
 
 static void
-gy_dict_dispose (GObject *object)
-{
-  GyDictPrivate *priv = gy_dict_get_instance_private (GY_DICT (object));
-
-  if (priv->model)
-    g_clear_object (&priv->model);
-
-  G_OBJECT_CLASS (gy_dict_parent_class) -> dispose (object);
-}
-static void
 gy_dict_finalize (GObject *object)
 {
   GyDictPrivate *priv = gy_dict_get_instance_private (GY_DICT (object));
 
   if (priv->identifier)
     g_clear_pointer (&priv->identifier, g_free);
+
+  if (priv->model)
+    g_clear_object (&priv->model);
+
+  if (priv->history)
+    g_clear_object (&priv->history);
 
   G_OBJECT_CLASS (gy_dict_parent_class)->finalize (object);
 }
@@ -149,6 +144,7 @@ gy_dict_init (GyDict *dict)
 
   priv->model = NULL;
   priv->is_mapped = FALSE;
+  priv->history = gy_dict_history_new ();
 }
 
 static void
@@ -157,7 +153,6 @@ gy_dict_class_init (GyDictClass *klass)
   GObjectClass* object_class = G_OBJECT_CLASS (klass);
 
   object_class->finalize = gy_dict_finalize;
-  object_class->dispose = gy_dict_dispose;
   object_class->set_property = gy_dict_set_property;
   object_class->get_property = gy_dict_get_property;
 
@@ -276,7 +271,7 @@ gy_dict_get_tree_model (GyDict *dict)
 }
 
 GObject *
-gy_dict_new (const gchar   *identifier)
+gy_dict_new (const gchar *identifier)
 {
   GType gtype;
   GObject *object = NULL;
@@ -298,6 +293,25 @@ gy_dict_new (const gchar   *identifier)
   object = g_object_new (gtype, "identifier", id, NULL);
 
   return object;
+}
+
+void
+gy_dict_add_definition_to_history (GyDict      *self,
+                                   const gchar *definition)
+{
+  g_autofree gchar *ndef = NULL;
+  GyDictPrivate *priv;
+
+  g_return_if_fail (GY_IS_DICT (self));
+  g_return_if_fail (definition != NULL);
+  g_return_if_fail (g_utf8_validate (definition, -1, NULL));
+
+  priv = gy_dict_get_instance_private (self);
+
+  ndef = g_utf8_normalize (definition, -1, G_NORMALIZE_ALL);
+
+  gy_dict_history_append (priv->history, ndef);
+
 }
 
 void
