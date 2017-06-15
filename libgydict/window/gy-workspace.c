@@ -49,6 +49,27 @@ static GParamSpec *properties[N_PROPS];
 G_DEFINE_TYPE (GyWorkspace, gy_workspace, PNL_TYPE_DOCK_OVERLAY)
 
 static void
+gy_workspace_go_back (GSimpleAction *action,
+                      GVariant      *parameter,
+                      gpointer       data)
+{
+}
+
+static void
+gy_workspace_go_next (GSimpleAction *action,
+                      GVariant      *parameter,
+                      gpointer       data)
+{
+}
+
+static void
+gy_workspace_add_word (GSimpleAction *action,
+                       GVariant      *parameter,
+                       gpointer       data)
+{
+}
+
+static void
 gy_workspace_action_alter_dict (GSimpleAction *action,
                                 GVariant      *parameter,
                                 gpointer       data)
@@ -246,14 +267,17 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
   g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
+static const GActionEntry entries[] =
+{
+  {"alter-dict", gy_workspace_action_alter_dict, "s", "''", NULL},
+  {"go-back-history", gy_workspace_go_back, NULL, NULL, NULL},
+  {"go-next-history", gy_workspace_go_next, NULL, NULL, NULL},
+  {"add-word-history", gy_workspace_add_word, NULL, NULL, NULL}
+};
+
 static void
 gy_workspace_init (GyWorkspace *self)
 {
-
-  static const GActionEntry entries[] = {
-      {"alter-dict", gy_workspace_action_alter_dict, "s", "''", NULL}
-    };
-
   gtk_widget_init_template (GTK_WIDGET (self));
 
   self->actions = g_simple_action_group_new ();
@@ -285,6 +309,4 @@ gy_workspace_attach_action (GyWorkspace *self,
 
   gtk_widget_insert_action_group (GTK_WIDGET (win), "workspace",
                                   G_ACTION_GROUP (self->actions));
-  group = gy_dict_manager_get_action_group (self->manager);
-  gtk_widget_insert_action_group (GTK_WIDGET (win), "history", group);
 }

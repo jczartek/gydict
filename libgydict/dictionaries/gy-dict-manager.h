@@ -31,7 +31,6 @@ GyDictManager *gy_dict_manager_new              (void);
 GyDict        *gy_dict_manager_set_dict         (GyDictManager *self,
                                                  const gchar   *name_dict);
 GyDict        *gy_dict_manager_get_used_dict    (GyDictManager *self);
-GActionGroup  *gy_dict_manager_get_action_group (GyDictManager *self);
 
 G_END_DECLS
 

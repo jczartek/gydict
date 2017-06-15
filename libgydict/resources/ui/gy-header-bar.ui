@@ -88,7 +88,7 @@
                 <property name="visible">true</property>
                 <property name="valign">start</property>
                 <property name="tooltip_text" translatable="yes">Go Previous</property>
-                <property name="action_name">history.go-back</property>
+                <property name="action_name">workspace.go-back-history</property>
                 <style>
                   <class name="image-button" />
                 </style>
@@ -106,7 +106,7 @@
                 <property name="visible">true</property>
                 <property name="valign">center</property>
                 <property name="tooltip_text" translatable="yes">Go Next</property>
-                <property name="action_name">history.go-next</property>
+                <property name="action_name">workspace.go-next-history</property>
                 <style>
                   <class name="image-button" />
                 </style>
