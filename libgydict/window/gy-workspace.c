@@ -278,6 +278,8 @@ static const GActionEntry entries[] =
 static void
 gy_workspace_init (GyWorkspace *self)
 {
+  GAction *action;
+
   gtk_widget_init_template (GTK_WIDGET (self));
 
   self->actions = g_simple_action_group_new ();
@@ -292,6 +294,11 @@ gy_workspace_init (GyWorkspace *self)
 
   g_signal_connect (self->dockbin, "visibility-notify",
                     G_CALLBACK (gy_workspace_visibility_notify_signal), self);
+
+  action = g_action_map_lookup_action (G_ACTION_MAP (self->actions), "go-back-history");
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
+  action = g_action_map_lookup_action (G_ACTION_MAP (self->actions), "go-next-history");
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
 
 }
 
