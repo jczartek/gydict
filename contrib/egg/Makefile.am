@@ -9,11 +9,13 @@ pkglib_LTLIBRARIES = libegg-private.la
 headersdir = $(includedir)/gydict/egg
 headers_DATA = \
 	egg-menu-manager.h \
+	egg-binding-group.h \
 	$(NULL)
 
 libegg_private_la_SOURCES = \
 	$(headers_DATA) \
 	egg-menu-manager.c \
+	egg-binding-group.c \
 	$(NULL)
 
 libegg_private_la_CFLAGS = \
