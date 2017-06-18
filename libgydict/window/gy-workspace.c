@@ -16,9 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <egg-binding-group.h>
 #include "gy-workspace.h"
 #include "dictionaries/gy-dict.h"
 #include "dictionaries/gy-dict-manager.h"
+#include "dictionaries/gy-dict-history.h"
 #include "entrylist/gy-tree-view.h"
 #include "entryview/gy-text-view.h"
 #include "entryview/gy-text-buffer.h"
@@ -34,6 +36,7 @@ struct _GyWorkspace
   GyDictManager      *manager;
   GyTextBuffer       *buffer;
   GSimpleActionGroup *actions;
+  EggBindingGroup    *binding;
 };
 
 enum
@@ -77,11 +80,16 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
   GyWorkspace *self = (GyWorkspace *) data;
   GyDict      *dict = NULL;
   const gchar *str;
+  g_autoptr(GyDictHistory) h = NULL;
 
   str = g_variant_get_string (parameter, NULL);
 
   dict = gy_dict_manager_set_dict (self->manager, str);
   if (!dict) return;
+
+  g_object_get (dict, "history", &h, NULL);
+  egg_binding_group_set_source (self->binding, h);
+  gy_dict_history_reset_state (h);
 
   gy_text_buffer_clean_buffer (self->buffer);
 
@@ -212,6 +220,7 @@ gy_workspace_destroy (GtkWidget *widget)
     }
 
   g_clear_object (&self->actions);
+  g_clear_object (&self->binding);
 
   GTK_WIDGET_CLASS (gy_workspace_parent_class)->destroy (widget);
 }
@@ -278,7 +287,7 @@ static const GActionEntry entries[] =
 static void
 gy_workspace_init (GyWorkspace *self)
 {
-  GAction *action;
+  GAction *action_back, *action_next;
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -295,10 +304,23 @@ gy_workspace_init (GyWorkspace *self)
   g_signal_connect (self->dockbin, "visibility-notify",
                     G_CALLBACK (gy_workspace_visibility_notify_signal), self);
 
-  action = g_action_map_lookup_action (G_ACTION_MAP (self->actions), "go-back-history");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
-  action = g_action_map_lookup_action (G_ACTION_MAP (self->actions), "go-next-history");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
+  action_back = g_action_map_lookup_action (G_ACTION_MAP (self->actions), "go-back-history");
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action_back), FALSE);
+  action_next = g_action_map_lookup_action (G_ACTION_MAP (self->actions), "go-next-history");
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action_next), FALSE);
+
+  self->binding = egg_binding_group_new ();
+
+  egg_binding_group_bind (self->binding,
+                          "is-beginning",
+                          action_back,
+                          "enabled",
+                          G_BINDING_INVERT_BOOLEAN);
+  egg_binding_group_bind (self->binding,
+                          "is-end",
+                          action_next,
+                          "enabled",
+                          G_BINDING_INVERT_BOOLEAN);
 
 }
 
