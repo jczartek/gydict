@@ -27,6 +27,8 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (GyTreeView, gy_tree_view, GY, TREE_VIEW, GtkTreeView)
 
+gint gy_tree_view_get_selected_row_number (GyTreeView *self);
+
 G_END_DECLS
 
 #endif /* GY_TREE_VIEW_H */
