@@ -22,12 +22,11 @@
 struct _GyDictHistory
 {
   GObject  __parent__;
-  GList   *h;
-  GList   *iter;
-  GList   nil;
+  GArray  *h;
+  gint   iter;
 
-  guint   is_beginning : 1;
-  guint   is_end       : 1;
+  guint   can_go_back  : 1;
+  guint   can_go_next  : 1;
   guint   is_empty     : 1;
 };
 
@@ -35,8 +34,8 @@ G_DEFINE_TYPE (GyDictHistory, gy_dict_history, G_TYPE_OBJECT)
 
 enum {
   PROP_0,
-  PROP_IS_BEGINNING,
-  PROP_IS_END,
+  PROP_CAN_GO_BACK,
+  PROP_CAN_G0_NEXT,
   PROP_IS_EMPTY,
   N_PROPS
 };
@@ -47,14 +46,6 @@ static void
 gy_dict_history_finalize (GObject *object)
 {
   GyDictHistory *self = (GyDictHistory *) object;
-
-  if (!self->is_empty)
-    {
-      self->nil.prev->next = NULL;
-      g_list_free_full (self->h, g_free);
-    }
-  self->h = NULL;
-  self->iter = NULL;
 
   G_OBJECT_CLASS (gy_dict_history_parent_class)->finalize (object);
 }
@@ -69,11 +60,11 @@ gy_dict_history_get_property (GObject    *object,
 
   switch (prop_id)
     {
-    case PROP_IS_BEGINNING:
-      g_value_set_boolean (value, self->is_beginning);
+    case PROP_CAN_GO_BACK:
+      g_value_set_boolean (value, self->can_go_back);
       break;
-    case PROP_IS_END:
-      g_value_set_boolean (value, self->is_end);
+    case PROP_CAN_G0_NEXT:
+      g_value_set_boolean (value, self->can_go_next);
       break;
     case PROP_IS_EMPTY:
       g_value_set_boolean (value, self->is_empty);
@@ -93,11 +84,11 @@ gy_dict_history_set_property (GObject      *object,
 
   switch (prop_id)
     {
-    case PROP_IS_BEGINNING:
-      self->is_beginning = g_value_get_boolean (value);
+    case PROP_CAN_GO_BACK:
+      self->can_go_back = g_value_get_boolean (value);
       break;
-    case PROP_IS_END:
-      self->is_end = g_value_get_boolean (value);
+    case PROP_CAN_G0_NEXT:
+      self->can_go_next = g_value_get_boolean (value);
       break;
     case PROP_IS_EMPTY:
       self->is_empty = g_value_get_boolean (value);
@@ -116,15 +107,15 @@ gy_dict_history_class_init (GyDictHistoryClass *klass)
   object_class->get_property = gy_dict_history_get_property;
   object_class->set_property = gy_dict_history_set_property;
 
-  properties[PROP_IS_BEGINNING] =
-    g_param_spec_boolean ("is-beginning",
-                          "IsBeginning",
+  properties[PROP_CAN_GO_BACK] =
+    g_param_spec_boolean ("can-go-back",
+                          "Can go back",
                           "This property indicates if the iter of the history is at the beginning of the history.",
                           TRUE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-  properties[PROP_IS_END] =
-    g_param_spec_boolean ("is-end",
-                          "IsEnd",
+  properties[PROP_CAN_G0_NEXT] =
+    g_param_spec_boolean ("can-go-next",
+                          "Can go next",
                           "This property indicates if the iter of this history is at the end of the history.",
                           TRUE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -139,10 +130,10 @@ gy_dict_history_class_init (GyDictHistoryClass *klass)
 static void
 gy_dict_history_init (GyDictHistory *self)
 {
-  self->h = &self->nil;
-  self->iter = &self->nil;
-  self->is_beginning = TRUE;
-  self->is_end = TRUE;
+  self->h = g_array_new (FALSE, FALSE, sizeof (gint));
+  self->iter = -1;
+  self->can_go_back = FALSE;
+  self->can_go_next = FALSE;
   self->is_empty = TRUE;
 }
 
@@ -154,20 +145,13 @@ gy_dict_history_new (void)
 
 void
 gy_dict_history_append (GyDictHistory *self,
-                        const gchar   *str)
+                        gint           row_number)
 {
-  GList *l = NULL;
-
   g_return_if_fail (GY_IS_DICT_HISTORY (self));
-  g_return_if_fail (str != NULL && g_utf8_strlen (str, -1));
-  g_return_if_fail (g_utf8_validate (str, -1, NULL));
+  g_return_if_fail (row_number >= 0);
 
-  l = g_list_find_custom (self->h, str, (GCompareFunc) g_strcmp0);
-
-  if (l) return;
-
-  self->h = g_list_insert_before (self->h, &self->nil, g_strdup (str));
-  self->iter = &self->nil;
+  g_array_append_val (self->h, row_number);
+  self->iter = self->h->len - 1;
 
   if (self->is_empty)
     g_object_set (self, "is-empty", FALSE, NULL);
@@ -181,94 +165,34 @@ gy_dict_history_set_state (GyDictHistory *self)
 {
   g_return_if_fail (GY_IS_DICT_HISTORY (self));
 
-  /* The history has not any elements. */
   if (self->is_empty)
-    {
-      g_object_set (self, "is-beginning", TRUE, "is-end", TRUE, NULL);
-      return;
-    }
-
-  /* The list has one element and its iter is at the beginning of the one. */
-  if (self->iter->prev == NULL && self->iter->next == &self->nil)
-    {
-      g_object_set (self, "is-beginning", TRUE, "is-end", TRUE, NULL);
-      return;
-    }
-
-  /* The history has at least one element and its iter is at the end of the one, or
-   * the history has a few elements and its iter is before the Nil node. */
-  if (self->iter->prev != NULL && (self->iter == &self->nil || self->iter->next == &self->nil))
-    {
-      g_object_set (self, "is-beginning", FALSE, "is-end", TRUE, NULL);
-      return;
-    }
-
-  /* The history has some elements and its iter is in the midlle of the one. */
-  if (self->iter->prev != NULL && self->iter->next != NULL && self->iter->next != &self->nil)
-    {
-      g_object_set (self, "is-beginning", FALSE, "is-end", FALSE, NULL);
-      return;
-    }
-
-  /* The history has some elements and its iter is at the beginning of the one. */
-  if (self->iter->prev == NULL && self->iter->next != NULL)
-    {
-      g_object_set(self, "is-beginning", TRUE, "is-end", FALSE, NULL);
-      return;
-    }
-
-  g_assert_not_reached();
+    return;
+  else if (self->iter == -1)
+    g_object_set (self, "can-go-back", FALSE, "can-go-next", TRUE, NULL);
+  else if (self->iter == (self->h->len - 1))
+    g_object_set (self, "can-go-back", TRUE, "can-go-next", FALSE, NULL);
+  else
+    g_object_set (self, "can-go-back", TRUE, "can-go-next", TRUE, NULL);
 }
 
-gconstpointer
-gy_dict_history_next (GyDictHistory *self)
+gint
+gy_dict_history_go_next (GyDictHistory *self)
 {
-  gconstpointer data = NULL;
-  g_return_val_if_fail (GY_IS_DICT_HISTORY (self), NULL);
-
-  /* the empty history or the iter is at the end */
-  if (self->iter->next == NULL || self->iter->next == &self->nil)
-    {
-      return NULL;
-    }
-
-  if (self->iter->next != &self->nil)
-    {
-      self->iter = self->iter->next;
-      data = self->iter->data;
-    }
-  gy_dict_history_set_state (self);
-
-  return data;
+  return -1;
 }
 
-gconstpointer
-gy_dict_history_prev (GyDictHistory *self)
+gint
+gy_dict_history_go_back (GyDictHistory *self)
 {
-  g_return_val_if_fail (GY_IS_DICT_HISTORY (self), NULL);
-
-  if (self->iter->prev != NULL)
-    {
-      self->iter = self->iter->prev;
-      gy_dict_history_set_state (self);
-      return self->iter->data;
-    }
-
-  return NULL;
+  return -1;
 }
 
 guint
 gy_dict_history_size (GyDictHistory *self)
 {
-  guint len = 0;
-  GList *l = NULL;
   g_return_val_if_fail (GY_IS_DICT_HISTORY (self), 0);
 
-  if (self->is_empty) return 0;
-
-  for (l = self->nil.prev; l != NULL; l = l->prev) len += 1;
-
-  return len;
+  return self->h->len;
 }
 
 void
@@ -276,6 +200,8 @@ gy_dict_history_reset_state (GyDictHistory *self)
 {
   g_return_if_fail (GY_IS_DICT_HISTORY (self));
 
-  self->iter = &self->nil;
+  if (!self->is_empty)
+    self->iter = self->h->len - 1;
+
   gy_dict_history_set_state (self);
 }

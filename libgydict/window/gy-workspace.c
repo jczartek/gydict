@@ -66,10 +66,19 @@ gy_workspace_go_next (GSimpleAction *action,
 }
 
 static void
-gy_workspace_add_word (GSimpleAction *action,
-                       GVariant      *parameter,
-                       gpointer       data)
+gy_workspace_add_to_history (GSimpleAction *action,
+                             GVariant      *parameter,
+                             gpointer       data)
 {
+  GyWorkspace *self = (GyWorkspace *) data;
+  gint row = -1;
+
+  row = gy_tree_view_get_selected_row_number (self->treeview);
+
+  if (row != -1)
+    {
+    }
+
 }
 
 static void
@@ -281,7 +290,7 @@ static const GActionEntry entries[] =
   {"alter-dict", gy_workspace_action_alter_dict, "s", "''", NULL},
   {"go-back-history", gy_workspace_go_back, NULL, NULL, NULL},
   {"go-next-history", gy_workspace_go_next, NULL, NULL, NULL},
-  {"add-word-history", gy_workspace_add_word, NULL, NULL, NULL}
+  {"add-to-history", gy_workspace_add_to_history, NULL, NULL, NULL}
 };
 
 static void
@@ -312,15 +321,15 @@ gy_workspace_init (GyWorkspace *self)
   self->binding = egg_binding_group_new ();
 
   egg_binding_group_bind (self->binding,
-                          "is-beginning",
+                          "can-go-back",
                           action_back,
                           "enabled",
-                          G_BINDING_INVERT_BOOLEAN);
+                          G_BINDING_DEFAULT);
   egg_binding_group_bind (self->binding,
-                          "is-end",
+                          "can-go-next",
                           action_next,
                           "enabled",
-                          G_BINDING_INVERT_BOOLEAN);
+                          G_BINDING_DEFAULT);
 
 }
 

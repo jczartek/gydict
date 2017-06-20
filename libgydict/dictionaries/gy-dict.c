@@ -296,21 +296,18 @@ gy_dict_new (const gchar *identifier)
 }
 
 void
-gy_dict_add_definition_to_history (GyDict      *self,
-                                   const gchar *definition)
+gy_dict_add_definition_to_history (GyDict *self,
+                                   gint    row_number)
 {
   g_autofree gchar *ndef = NULL;
   GyDictPrivate *priv;
 
   g_return_if_fail (GY_IS_DICT (self));
-  g_return_if_fail (definition != NULL);
-  g_return_if_fail (g_utf8_validate (definition, -1, NULL));
+  g_return_if_fail (row_number >= 0);
 
   priv = gy_dict_get_instance_private (self);
 
-  ndef = g_utf8_normalize (definition, -1, G_NORMALIZE_ALL);
-
-  gy_dict_history_append (priv->history, ndef);
+  gy_dict_history_append (priv->history, row_number);
 
 }
 

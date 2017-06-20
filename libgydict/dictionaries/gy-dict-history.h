@@ -29,10 +29,10 @@ G_DECLARE_FINAL_TYPE (GyDictHistory, gy_dict_history, GY, DICT_HISTORY, GObject)
 
 GyDictHistory* gy_dict_history_new       (void);
 void           gy_dict_history_append    (GyDictHistory *self,
-                                          const gchar   *str);
+                                          gint           row_number);
 void           gy_dict_history_set_state (GyDictHistory *self);
-gconstpointer  gy_dict_history_next      (GyDictHistory *self);
-gconstpointer  gy_dict_history_prev      (GyDictHistory *self);
+gint           gy_dict_history_go_back   (GyDictHistory *self);
+gint           gy_dict_history_go_next   (GyDictHistory *self);
 guint          gy_dict_history_size      (GyDictHistory *self);
 void           gy_dict_history_reset_state (GyDictHistory *self);
 G_END_DECLS

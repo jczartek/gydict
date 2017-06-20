@@ -42,6 +42,8 @@ gboolean      gy_dict_is_mapped       (GyDict *self);
 gboolean      gy_dict_is_used         (GyDict *self);
 void          gy_dict_initialize      (void);
 GObject*      gy_dict_new             (const gchar   *identifier);
+void          gy_dict_add_definition_to_history (GyDict *self,
+                                                 gint    row_number);
 
 G_END_DECLS
 
