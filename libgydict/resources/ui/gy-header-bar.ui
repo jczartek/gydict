@@ -121,6 +121,26 @@
             </child>
           </object>
         </child>
+
+        <child>
+          <object class="GtkButton">
+            <property name="visible">true</property>
+            <property name="valign">center</property>
+            <property name="tooltip_text" translatable="yes">Add to history</property>
+            <property name="action_name">workspace.add-to-history</property>
+            <style>
+              <class name="image-button" />
+            </style>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">true</property>
+                <property name="icon_size">1</property>
+                <property name="icon_name">go-jump-symbolic</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
       </object>
       <packing>
         <property name="pack-type">start</property>
