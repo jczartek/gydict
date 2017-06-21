@@ -75,8 +75,12 @@ gy_workspace_add_to_history (GSimpleAction *action,
 
   row = gy_tree_view_get_selected_row_number (self->treeview);
 
-  if (row != -1)
+  if (row >= -1)
     {
+      GyDict *dict = gy_dict_manager_get_used_dict (self->manager);
+
+      if (dict)
+        gy_dict_add_definition_to_history (dict, row);
     }
 
 }
