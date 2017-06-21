@@ -23,7 +23,7 @@ struct _GyDictHistory
 {
   GObject  __parent__;
   GArray  *h;
-  gint   iter;
+  gint     iter;
 
   guint   can_go_back  : 1;
   guint   can_go_next  : 1;
@@ -46,6 +46,8 @@ static void
 gy_dict_history_finalize (GObject *object)
 {
   GyDictHistory *self = (GyDictHistory *) object;
+
+  g_array_free (self->h, TRUE);
 
   G_OBJECT_CLASS (gy_dict_history_parent_class)->finalize (object);
 }
@@ -151,7 +153,7 @@ gy_dict_history_append (GyDictHistory *self,
   g_return_if_fail (row_number >= 0);
 
   g_array_append_val (self->h, row_number);
-  self->iter = self->h->len - 1;
+  self->iter = self->h->len;
 
   if (self->is_empty)
     g_object_set (self, "is-empty", FALSE, NULL);
@@ -169,22 +171,50 @@ gy_dict_history_set_state (GyDictHistory *self)
     return;
   else if (self->iter == -1)
     g_object_set (self, "can-go-back", FALSE, "can-go-next", TRUE, NULL);
-  else if (self->iter == (self->h->len - 1))
+  else if (self->iter == (self->h->len))
     g_object_set (self, "can-go-back", TRUE, "can-go-next", FALSE, NULL);
   else
     g_object_set (self, "can-go-back", TRUE, "can-go-next", TRUE, NULL);
 }
 
 gint
-gy_dict_history_go_next (GyDictHistory *self)
+gy_dict_history_go_back (GyDictHistory *self)
 {
-  return -1;
+  gint elem = -1;
+
+  g_return_val_if_fail (GY_IS_DICT_HISTORY (self), -1);
+  g_return_val_if_fail (!self->is_empty, -1);
+
+  if (self->iter != -1)
+    {
+      if (self->iter == self->h->len)
+        self->iter--;
+
+      elem = g_array_index (self->h, gint, self->iter--);
+      gy_dict_history_set_state (self);
+    }
+
+  return elem;
 }
 
 gint
-gy_dict_history_go_back (GyDictHistory *self)
+gy_dict_history_go_next (GyDictHistory *self)
 {
-  return -1;
+  gint elem = -1;
+
+  g_return_val_if_fail (GY_IS_DICT_HISTORY (self), -1);
+  g_return_val_if_fail (!self->is_empty, -1);
+
+  if (self->iter != (self->h->len))
+    {
+      if (self->iter == -1)
+        self->iter++;
+
+      elem = g_array_index (self->h, gint, self->iter++);
+      gy_dict_history_set_state (self);
+    }
+
+  return elem;
 }
 
 guint
@@ -201,7 +231,7 @@ gy_dict_history_reset_state (GyDictHistory *self)
   g_return_if_fail (GY_IS_DICT_HISTORY (self));
 
   if (!self->is_empty)
-    self->iter = self->h->len - 1;
+    self->iter = self->h->len;
 
   gy_dict_history_set_state (self);
 }

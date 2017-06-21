@@ -76,6 +76,131 @@ test_history_empty (void)
   g_object_unref (h);
 }
 
+static void
+test_walk_through_history(void)
+{
+  GyDictHistory *h = NULL;
+  gint data = -1;
+  gboolean can_go_back,
+           can_go_next;
+  can_go_back = can_go_next = FALSE;
+
+  h = gy_dict_history_new ();
+
+  gy_dict_history_append (h, 0);
+  gy_dict_history_append (h, 1);
+  gy_dict_history_append (h, 2);
+  gy_dict_history_append (h, 3);
+  gy_dict_history_append (h, 4);
+
+  g_assert (gy_dict_history_size (h) == 5);
+
+  data = gy_dict_history_go_back (h);
+  g_assert (data == 4);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_true (can_go_back && can_go_next);
+
+  data = gy_dict_history_go_back (h);
+  g_assert (data == 3);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_true (can_go_back && can_go_next);
+
+  data = gy_dict_history_go_back (h);
+  g_assert (data == 2);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_true (can_go_back && can_go_next);
+
+  data = gy_dict_history_go_back (h);
+  g_assert (data == 1);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_true (can_go_back && can_go_next);
+
+  data = gy_dict_history_go_back (h);
+  g_assert (data == 0);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_true (can_go_next);
+  g_assert_false (can_go_back);
+
+  data = gy_dict_history_go_back (h);
+  g_assert (data == -1);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_true (can_go_next);
+  g_assert_false (can_go_back);
+
+  data = gy_dict_history_go_next (h);
+  g_assert (data == 0);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_true (can_go_back && can_go_next);
+
+  data = gy_dict_history_go_next (h);
+  g_assert (data == 1);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_true (can_go_back && can_go_next);
+
+  data = gy_dict_history_go_next (h);
+  g_assert (data == 2);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_true (can_go_back && can_go_next);
+
+  data = gy_dict_history_go_next (h);
+  g_assert (data == 3);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_true (can_go_back && can_go_next);
+
+  data = gy_dict_history_go_next (h);
+  g_assert (data == 4);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_true (can_go_back);
+  g_assert_false (can_go_next);
+
+  g_object_unref (h);
+}
+
+static void
+test_walk_through_history_with_one_element (void)
+{
+  GyDictHistory *h = NULL;
+  gint data = -1;
+  gboolean can_go_back,
+           can_go_next;
+  can_go_back = can_go_next = FALSE;
+
+  h = gy_dict_history_new ();
+
+  gy_dict_history_append (h, 0);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_true (can_go_back);
+  g_assert_false (can_go_next);
+
+  data = gy_dict_history_go_back (h);
+  g_assert (data == 0);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_false (can_go_back);
+  g_assert_true (can_go_next);
+
+  data = gy_dict_history_go_next (h);
+  g_assert (data == 0);
+  g_object_get (h, "can-go-back", &can_go_back,
+                   "can-go-next", &can_go_next, NULL);
+  g_assert_true (can_go_back);
+  g_assert_false (can_go_next);
+
+  g_object_unref (h);
+}
+
 gint
 main (gint   argc,
       gchar *argv[])
@@ -83,6 +208,8 @@ main (gint   argc,
   g_test_init (&argc, &argv, NULL);
   g_test_add_func ("/test/history/append/to/history", test_history_append_to_history);
   g_test_add_func ("/test/history/empty/history", test_history_empty);
+  g_test_add_func ("/test/walk/trough/history", test_walk_through_history);
+  g_test_add_func ("/test/walk/trough/history/with/one/element", test_walk_through_history_with_one_element);
   g_test_run ();
   return 0;
 }
