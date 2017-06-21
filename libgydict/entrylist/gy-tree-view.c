@@ -178,3 +178,22 @@ gy_tree_view_get_selected_row_number (GyTreeView *self)
     }
   return -1;
 }
+
+void
+gy_tree_view_select_row (GyTreeView *self,
+                         gint        row)
+{
+  GtkTreeSelection *selection = NULL;
+  GtkTreePath      *path      = NULL;
+
+  g_return_if_fail (GY_IS_TREE_VIEW (self));
+  g_return_if_fail (row >= 0);
+
+  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
+  path = gtk_tree_path_new_from_indices (row, -1);
+
+  if (gtk_tree_selection_path_is_selected (selection, path))
+    {
+      gtk_tree_selection_select_path (selection, path);
+    }
+}
