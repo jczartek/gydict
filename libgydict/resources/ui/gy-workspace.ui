@@ -65,6 +65,18 @@
           </object>
         </child>
 
+        <child type="right">
+          <object class="GtkScrolledWindow">
+            <property name="visible">true</property>
+            <property name="expand">true</property>
+            <child>
+              <object class="GtkListBox" id="hlistbox">
+                <property name="visible">true</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
       </object>
     </child>
   </template>

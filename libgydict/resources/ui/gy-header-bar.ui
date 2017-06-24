@@ -77,49 +77,20 @@
         <property name="visible">true</property>
         <property name="spacing">6</property>
         <property name="hexpand">true</property>
+
         <child>
-          <object class="GtkBox">
-            <property name="visible">true</property>
-            <style>
-              <class name="linked" />
-            </style>
-            <child>
-              <object class="GtkButton">
-                <property name="visible">true</property>
-                <property name="valign">start</property>
-                <property name="tooltip_text" translatable="yes">Go Previous</property>
-                <property name="action_name">workspace.go-back-history</property>
-                <style>
-                  <class name="image-button" />
-                </style>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">true</property>
-                    <property name="icon_size">1</property>
-                    <property name="icon_name">go-previous-symbolic</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="visible">true</property>
-                <property name="valign">center</property>
-                <property name="tooltip_text" translatable="yes">Go Next</property>
-                <property name="action_name">workspace.go-next-history</property>
-                <style>
-                  <class name="image-button" />
-                </style>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">true</property>
-                    <property name="icon_size">1</property>
-                    <property name="icon_name">go-next-symbolic</property>
-                  </object>
-                </child>
-              </object>
-            </child>
-          </object>
+         <object class="GtkToggleButton">
+           <property name="visible">true</property>
+           <property name="tooltip_text" translatable="yes">Show History Panel</property>
+           <property name="action_name">dockbin.right-visible</property>
+           <child>
+             <object class="GtkImage">
+               <property name="visible">true</property>
+               <property name="icon_size">1</property>
+               <property name="icon_name">panel-right-pane-symbolic</property>
+             </object>
+           </child>
+         </object>
         </child>
 
         <child>

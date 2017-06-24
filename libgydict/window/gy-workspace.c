@@ -35,8 +35,8 @@ struct _GyWorkspace
   GySearchBar        *search_bar;
   GyDictManager      *manager;
   GyTextBuffer       *buffer;
+  GtkListBox         *hlistbox;
   GSimpleActionGroup *actions;
-  EggBindingGroup    *binding;
 };
 
 enum
@@ -52,37 +52,10 @@ static GParamSpec *properties[N_PROPS];
 G_DEFINE_TYPE (GyWorkspace, gy_workspace, PNL_TYPE_DOCK_OVERLAY)
 
 static void
-gy_workspace_go_back (GSimpleAction *action,
-                      GVariant      *parameter,
-                      gpointer       data)
-{
-}
-
-static void
-gy_workspace_go_next (GSimpleAction *action,
-                      GVariant      *parameter,
-                      gpointer       data)
-{
-}
-
-static void
 gy_workspace_add_to_history (GSimpleAction *action,
                              GVariant      *parameter,
                              gpointer       data)
 {
-  GyWorkspace *self = (GyWorkspace *) data;
-  gint row = -1;
-
-  row = gy_tree_view_get_selected_row_number (self->treeview);
-
-  if (row >= -1)
-    {
-      GyDict *dict = gy_dict_manager_get_used_dict (self->manager);
-
-      if (dict)
-        gy_dict_add_definition_to_history (dict, row);
-    }
-
 }
 
 static void
@@ -93,16 +66,11 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
   GyWorkspace *self = (GyWorkspace *) data;
   GyDict      *dict = NULL;
   const gchar *str;
-  g_autoptr(GyDictHistory) h = NULL;
 
   str = g_variant_get_string (parameter, NULL);
 
   dict = gy_dict_manager_set_dict (self->manager, str);
   if (!dict) return;
-
-  g_object_get (dict, "history", &h, NULL);
-  egg_binding_group_set_source (self->binding, h);
-  gy_dict_history_reset_state (h);
 
   gy_text_buffer_clean_buffer (self->buffer);
 
@@ -193,6 +161,12 @@ gy_workspace_restore_panel_state (GyWorkspace *self)
   position = g_settings_get_int (settings, "left-position");
   pnl_dock_revealer_set_reveal_child (PNL_DOCK_REVEALER (pane), reveal);
   pnl_dock_revealer_set_position (PNL_DOCK_REVEALER (pane), position);
+
+  pane = pnl_dock_bin_get_right_edge (PNL_DOCK_BIN (self->dockbin));
+  reveal = g_settings_get_boolean (settings, "right-visible");
+  position = g_settings_get_int (settings, "right-position");
+  pnl_dock_revealer_set_reveal_child (PNL_DOCK_REVEALER (pane), reveal);
+  pnl_dock_revealer_set_position (PNL_DOCK_REVEALER (pane), position);
 }
 
 static void
@@ -210,6 +184,12 @@ gy_workspace_save_panel_state (GyWorkspace *self)
   reveal = pnl_dock_revealer_get_reveal_child (PNL_DOCK_REVEALER (pane));
   g_settings_set_boolean (settings, "left-visible", reveal);
   g_settings_set_int (settings, "left-position", position);
+
+  pane = pnl_dock_bin_get_right_edge (PNL_DOCK_BIN (self->dockbin));
+  position = pnl_dock_revealer_get_position (PNL_DOCK_REVEALER (pane));
+  reveal = pnl_dock_revealer_get_reveal_child (PNL_DOCK_REVEALER (pane));
+  g_settings_set_boolean (settings, "right-visible", reveal);
+  g_settings_set_int (settings, "right-position", position);
 }
 
 static void
@@ -233,7 +213,6 @@ gy_workspace_destroy (GtkWidget *widget)
     }
 
   g_clear_object (&self->actions);
-  g_clear_object (&self->binding);
 
   GTK_WIDGET_CLASS (gy_workspace_parent_class)->destroy (widget);
 }
@@ -267,6 +246,7 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, textview);
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, search_bar);
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, buffer);
+  gtk_widget_class_bind_template_child (widget_class, GyWorkspace, hlistbox);
 
   properties[PROP_MANAGER] =
     g_param_spec_object ("manager-dicts",
@@ -292,15 +272,12 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
 static const GActionEntry entries[] =
 {
   {"alter-dict", gy_workspace_action_alter_dict, "s", "''", NULL},
-  {"go-back-history", gy_workspace_go_back, NULL, NULL, NULL},
-  {"go-next-history", gy_workspace_go_next, NULL, NULL, NULL},
   {"add-to-history", gy_workspace_add_to_history, NULL, NULL, NULL}
 };
 
 static void
 gy_workspace_init (GyWorkspace *self)
 {
-  GAction *action_back, *action_next;
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -316,24 +293,6 @@ gy_workspace_init (GyWorkspace *self)
 
   g_signal_connect (self->dockbin, "visibility-notify",
                     G_CALLBACK (gy_workspace_visibility_notify_signal), self);
-
-  action_back = g_action_map_lookup_action (G_ACTION_MAP (self->actions), "go-back-history");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action_back), FALSE);
-  action_next = g_action_map_lookup_action (G_ACTION_MAP (self->actions), "go-next-history");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action_next), FALSE);
-
-  self->binding = egg_binding_group_new ();
-
-  egg_binding_group_bind (self->binding,
-                          "can-go-back",
-                          action_back,
-                          "enabled",
-                          G_BINDING_DEFAULT);
-  egg_binding_group_bind (self->binding,
-                          "can-go-next",
-                          action_next,
-                          "enabled",
-                          G_BINDING_DEFAULT);
 
 }
 

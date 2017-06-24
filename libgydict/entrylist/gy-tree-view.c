@@ -192,7 +192,7 @@ gy_tree_view_select_row (GyTreeView *self,
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
   path = gtk_tree_path_new_from_indices (row, -1);
 
-  if (gtk_tree_selection_path_is_selected (selection, path))
+  if (!gtk_tree_selection_path_is_selected (selection, path))
     {
       gtk_tree_selection_select_path (selection, path);
     }

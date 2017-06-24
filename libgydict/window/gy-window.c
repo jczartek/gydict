@@ -26,8 +26,6 @@
 #include "helpers/gy-utility-func.h"
 #include "dictionaries/gy-dict.h"
 #include "printing/gy-print.h"
-#include "history/gy-history.h"
-#include "history/gy-history-iterable.h"
 #include "dictionaries/gy-parsable.h"
 #include "search/gy-search-bar.h"
 #include "entryview/gy-text-view.h"

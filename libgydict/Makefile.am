@@ -24,8 +24,6 @@ libgydict_la_public_headers = \
 	entryview/gy-text-buffer.h \
 	entryview/gy-text-view.h \
 	helpers/gy-utility-func.h \
-	history/gy-history.h \
-	history/gy-history-iterable.h \
 	preferences/gy-preferences-file-chooser.h \
 	preferences/gy-preferences-page.h \
 	preferences/gy-preferences-page-dicts.h \
@@ -62,8 +60,6 @@ libgydict_la_SOURCES = \
 	entryview/gy-text-buffer-private.h \
 	entryview/gy-text-view.c \
 	helpers/gy-utility-func.c \
-	history/gy-history.c \
-	history/gy-history-iterable.c \
 	preferences/gy-preferences-file-chooser.c \
 	preferences/gy-preferences-page.c \
 	preferences/gy-preferences-page-dicts.c \
