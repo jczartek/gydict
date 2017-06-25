@@ -12,7 +12,6 @@ libgydict_la_public_headers = \
 	css/gy-css-provider.h \
 	dictionaries/gy-depl.h \
 	dictionaries/gy-dict.h \
-	dictionaries/gy-dict-history.h \
 	dictionaries/gy-dict-manager.h \
 	dictionaries/gy-english-pwn.h \
 	dictionaries/gy-german-pwn.h \
@@ -47,7 +46,6 @@ libgydict_la_SOURCES = \
 	css/gy-css-provider.c \
 	dictionaries/gy-depl.c \
 	dictionaries/gy-dict.c \
-	dictionaries/gy-dict-history.c \
 	dictionaries/gy-dict-manager.c \
 	dictionaries/gy-english-pwn.c \
 	dictionaries/gy-german-pwn.c \

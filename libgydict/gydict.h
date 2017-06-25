@@ -28,7 +28,6 @@ G_BEGIN_DECLS
 #include "app/gy-app.h"
 #include "dictionaries/gy-depl.h"
 #include "dictionaries/gy-dict.h"
-#include "dictionaries/gy-dict-history.h"
 #include "dictionaries/gy-dict-manager.h"
 #include "dictionaries/gy-english-pwn.h"
 #include "dictionaries/gy-german-pwn.h"

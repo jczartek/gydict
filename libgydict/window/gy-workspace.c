@@ -20,7 +20,6 @@
 #include "gy-workspace.h"
 #include "dictionaries/gy-dict.h"
 #include "dictionaries/gy-dict-manager.h"
-#include "dictionaries/gy-dict-history.h"
 #include "entrylist/gy-tree-view.h"
 #include "entryview/gy-text-view.h"
 #include "entryview/gy-text-buffer.h"
