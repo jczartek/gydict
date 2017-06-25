@@ -179,6 +179,33 @@ gy_tree_view_get_selected_row_number (GyTreeView *self)
   return -1;
 }
 
+gchar *
+gy_tree_view_get_value_for_selected_row (GyTreeView *self)
+{
+  GtkTreeSelection *selection;
+  GtkTreeModel     *model;
+  GtkTreeIter       iter;
+
+  g_return_val_if_fail (GY_IS_TREE_VIEW (self), NULL);
+
+  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
+
+  if (gtk_tree_selection_get_selected (selection, &model, &iter))
+    {
+      GValue  value = G_VALUE_INIT;
+      gchar  *s = NULL;
+
+      gtk_tree_model_get_value (model, &iter, 0, &value);
+
+      s = g_value_dup_string (&value);
+      g_value_unset (&value);
+
+      return s;
+    }
+
+  return NULL;
+}
+
 void
 gy_tree_view_select_row (GyTreeView *self,
                          gint        row)
