@@ -30,6 +30,13 @@ gy_utility_handlers_is_blocked_by_func (gpointer instance,
                                 0, 0, NULL, func, data) == 0;
 }
 
+gboolean
+gy_utility_is_handler_connected (gpointer instance,
+                                 gpointer handler)
+{
+  return g_signal_handler_find (instance, G_SIGNAL_MATCH_FUNC, 0, 0, NULL, handler, NULL) != 0;
+}
+
 gint
 gy_utility_strcmp (const gchar *p1,
                    const gchar *p2,

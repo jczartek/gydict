@@ -27,6 +27,8 @@ G_BEGIN_DECLS
 extern gboolean gy_utility_handlers_is_blocked_by_func(gpointer instance,
                                                        gpointer func,
                                                        gpointer data);
+gboolean gy_utility_is_handler_connected (gpointer instance,
+                                          gpointer handler);
 extern gint gy_utility_strcmp (const gchar *p1,
                                const gchar *p2,
                                size_t n);
