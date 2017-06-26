@@ -24,17 +24,22 @@
 #include "gy-pwn-dict.h"
 #include "gy-english-pwn.h"
 #include "gy-german-pwn.h"
-#include "gy-dict-history.h"
-#include "history/gy-history.h"
 
 typedef struct _GyDictPrivate
 {
   gchar          *identifier;
   GtkTreeModel   *model;
-  GyDictHistory  *history;
+  GPtrArray      *h;
   guint           is_mapped: 1;
   guint           is_used:   1;
 } GyDictPrivate;
+
+enum
+{
+  ITEM_ADDED,
+  LAST_SIGNAL
+};
+static guint signals[LAST_SIGNAL];
 
 enum
 {
@@ -42,7 +47,6 @@ enum
   PROP_IDENTIFIER,
   PROP_MODEL,
   PROP_IS_MAPPED,
-  PROP_HISTORY,
   PROP_IS_USED,
   LAST_PROP
 };
@@ -62,8 +66,8 @@ gy_dict_finalize (GObject *object)
   if (priv->model)
     g_clear_object (&priv->model);
 
-  if (priv->history)
-    g_clear_object (&priv->history);
+  if (priv->h)
+    g_clear_pointer (&priv->h, g_ptr_array_unref);
 
   G_OBJECT_CLASS (gy_dict_parent_class)->finalize (object);
 }
@@ -87,9 +91,6 @@ gy_dict_set_property (GObject      *object,
       break;
     case PROP_MODEL:
       priv->model = g_value_dup_object (value);
-      break;
-    case PROP_HISTORY:
-      priv->history = g_value_dup_object (value);
       break;
     case PROP_IS_MAPPED:
       priv->is_mapped = g_value_get_boolean (value);
@@ -123,9 +124,6 @@ gy_dict_get_property (GObject    *object,
     case PROP_MODEL:
       g_value_set_object (value, priv->model);
       break;
-    case PROP_HISTORY:
-      g_value_set_object (value, priv->history);
-      break;
     case PROP_IS_MAPPED:
       g_value_set_boolean (value, priv->is_mapped);
       break;
@@ -144,7 +142,7 @@ gy_dict_init (GyDict *dict)
 
   priv->model = NULL;
   priv->is_mapped = FALSE;
-  priv->history = gy_dict_history_new ();
+  priv->h = g_ptr_array_new_with_free_func ( (GDestroyNotify) g_variant_unref);
 }
 
 static void
@@ -194,18 +192,6 @@ gy_dict_class_init (GyDictClass *klass)
 
   /**
    *
-   * GyDict:history:
-   *
-   */
-  gParamSpecs[PROP_HISTORY] =
-    g_param_spec_object ("history",
-                         "History",
-                         "The history of a dictionary.",
-                         GY_TYPE_DICT_HISTORY,
-                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-  /**
-   *
    * GyDict:is-used:
    *
    * Is the dict being used at the moment?
@@ -218,6 +204,21 @@ gy_dict_class_init (GyDictClass *klass)
                           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (object_class, LAST_PROP, gParamSpecs);
+
+  /**
+   * GyDict::item-added
+   * @self: a GyDict
+   * @item: a GVariant
+   *
+   */
+  signals[ITEM_ADDED] =
+    g_signal_new ("item-added",
+                  G_TYPE_FROM_CLASS (klass),
+                  G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
+                  0, NULL, NULL,
+                  g_cclosure_marshal_VOID__VARIANT,
+                  G_TYPE_NONE,
+                  1, G_TYPE_VARIANT);
 
 }
 
@@ -296,19 +297,41 @@ gy_dict_new (const gchar *identifier)
 }
 
 void
-gy_dict_add_definition_to_history (GyDict *self,
-                                   gint    row_number)
+gy_dict_add_to_history (GyDict      *self,
+                        const gchar *entry,
+                        gint         n_row)
 {
-  g_autofree gchar *ndef = NULL;
   GyDictPrivate *priv;
 
   g_return_if_fail (GY_IS_DICT (self));
-  g_return_if_fail (row_number >= 0);
+  g_return_if_fail (entry != NULL && n_row >= 0);
 
   priv = gy_dict_get_instance_private (self);
 
-  gy_dict_history_append (priv->history, row_number);
+  if (priv->h)
+    {
+      GVariant *variant = g_variant_new ("(si)", entry, n_row);
+      g_ptr_array_add (priv->h, g_variant_ref_sink (variant));
 
+      g_signal_emit (self, signals[ITEM_ADDED], 0, variant);
+    }
+}
+
+void
+gy_dict_foreach_history (GyDict   *self,
+                         GFunc     func,
+                         gpointer  data)
+{
+  GyDictPrivate *priv;
+
+  g_return_if_fail (GY_IS_DICT (self));
+
+  priv = gy_dict_get_instance_private (self);
+
+  if (priv->h)
+    {
+      g_ptr_array_foreach (priv->h, func, data);
+    }
 }
 
 void
