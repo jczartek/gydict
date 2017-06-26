@@ -23,6 +23,7 @@
 #include "entrylist/gy-tree-view.h"
 #include "entryview/gy-text-view.h"
 #include "entryview/gy-text-buffer.h"
+#include "helpers/gy-utility-func.h"
 #include "search/gy-search-bar.h"
 
 struct _GyWorkspace
@@ -55,6 +56,84 @@ gy_workspace_add_to_history (GSimpleAction *action,
                              GVariant      *parameter,
                              gpointer       data)
 {
+  gint              n_row = -1;
+  g_autofree gchar *s     = NULL;
+  GyWorkspace      *self  = GY_WORKSPACE (data);
+  GyDict           *dict  = NULL;
+
+  dict = gy_dict_manager_get_used_dict (self->manager);
+
+  n_row = gy_tree_view_get_selected_row_number (self->treeview);
+  s = gy_tree_view_get_value_for_selected_row (self->treeview);
+
+  if (n_row != -1 && s != NULL)
+    {
+      gy_dict_add_to_history (dict, s, n_row);
+    }
+}
+
+static void
+gy_workspace_item_added_cb (GyDict   *dict,
+                            GVariant *item,
+                            gpointer  data)
+{
+  gint              n_row = -1;
+  g_autofree gchar *s     = NULL;
+  GyWorkspace      *self  = GY_WORKSPACE (data);
+
+  GtkWidget *vbox  = NULL;
+  GtkWidget *label = NULL;
+  GtkWidget *row   = NULL;
+
+  g_return_if_fail (g_variant_is_of_type (item, G_VARIANT_TYPE_TUPLE));
+
+  g_variant_get (item, "(si)", &s, &n_row);
+
+  vbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+  label = gtk_label_new (s);
+  gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
+
+  row = gtk_list_box_row_new ();
+  g_object_set_data (G_OBJECT (row), "n_row", GINT_TO_POINTER (n_row));
+  gtk_container_add (GTK_CONTAINER (row), vbox);
+
+  gtk_widget_show_all (row);
+  gtk_list_box_insert (self->hlistbox, row, -1);
+}
+
+static void
+gy_workspace_fill_hlistbox (gpointer item,
+                            gpointer data)
+{
+  gy_workspace_item_added_cb (NULL, (GVariant *) item, data);
+}
+
+static void
+gy_workspace_alter_dict_cb (GyDictManager *manager,
+                            GyDict        *dict,
+                            gpointer       data)
+{
+  GyWorkspace *self = (GyWorkspace *) data;
+
+  g_assert (dict == gy_dict_manager_get_used_dict (manager));
+
+  gtk_container_forall (GTK_CONTAINER (self->hlistbox), (GtkCallback) gtk_widget_destroy, NULL);
+
+  gy_dict_foreach_history (dict, gy_workspace_fill_hlistbox, self);
+}
+
+static void
+gy_workspace_row_activated_cb (GtkListBox    *box,
+                               GtkListBoxRow *row,
+                               gpointer       data)
+{
+  gint         n_row = -1;
+  GyWorkspace *self  = GY_WORKSPACE (data);
+
+  n_row =  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "n_row"));
+
+  gy_tree_view_select_row (self->treeview, n_row);
+
 }
 
 static void
@@ -70,6 +149,12 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
 
   dict = gy_dict_manager_set_dict (self->manager, str);
   if (!dict) return;
+
+  if (!gy_utility_is_handler_connected (dict, gy_workspace_item_added_cb))
+    {
+      g_signal_connect (dict, "item-added",
+                        G_CALLBACK (gy_workspace_item_added_cb), self);
+    }
 
   gy_text_buffer_clean_buffer (self->buffer);
 
@@ -292,6 +377,10 @@ gy_workspace_init (GyWorkspace *self)
 
   g_signal_connect (self->dockbin, "visibility-notify",
                     G_CALLBACK (gy_workspace_visibility_notify_signal), self);
+  g_signal_connect (self->manager, "alter-dict",
+                    G_CALLBACK (gy_workspace_alter_dict_cb), self);
+  g_signal_connect (self->hlistbox, "row-activated",
+                    G_CALLBACK (gy_workspace_row_activated_cb), self);
 
 }
 

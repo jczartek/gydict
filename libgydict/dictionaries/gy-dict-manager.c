@@ -63,8 +63,8 @@ gy_dict_manager_class_init (GyDictManagerClass *klass)
                   G_TYPE_FROM_CLASS (klass),
                   G_SIGNAL_RUN_LAST,
                   0, NULL, NULL,
-                  g_cclosure_marshal_VOID__VOID,
-                  G_TYPE_NONE, 0);
+                  g_cclosure_marshal_VOID__OBJECT,
+                  G_TYPE_NONE, 1, G_TYPE_OBJECT);
 }
 
 static void
@@ -115,7 +115,7 @@ gy_dict_manager_set_dict (GyDictManager *self,
 
 end:
   g_object_set (dict, "is-used", TRUE, NULL);
-  g_signal_emit (self, signals[ALTER_DICT], 0);
+  g_signal_emit (self, signals[ALTER_DICT], 0, dict);
   return dict;
 }
 

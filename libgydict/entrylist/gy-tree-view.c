@@ -222,5 +222,10 @@ gy_tree_view_select_row (GyTreeView *self,
   if (!gtk_tree_selection_path_is_selected (selection, path))
     {
       gtk_tree_selection_select_path (selection, path);
+      gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (self),
+                                    path, NULL, TRUE,
+                                    0.5, 0.0);
     }
+
+  gtk_tree_path_free (path);
 }

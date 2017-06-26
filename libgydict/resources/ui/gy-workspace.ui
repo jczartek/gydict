@@ -72,6 +72,7 @@
             <child>
               <object class="GtkListBox" id="hlistbox">
                 <property name="visible">true</property>
+                <property name="selection-mode">none</property>
               </object>
             </child>
           </object>
