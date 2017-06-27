@@ -25,6 +25,8 @@
 #include "gy-english-pwn.h"
 #include "gy-german-pwn.h"
 
+static GRWLock lock;
+
 typedef struct _GyDictPrivate
 {
   gchar          *identifier;
@@ -308,6 +310,8 @@ gy_dict_add_to_history (GyDict      *self,
 
   priv = gy_dict_get_instance_private (self);
 
+  g_rw_lock_writer_lock (&lock);
+
   if (priv->h)
     {
       GVariant *variant = g_variant_new ("(si)", entry, n_row);
@@ -315,6 +319,8 @@ gy_dict_add_to_history (GyDict      *self,
 
       g_signal_emit (self, signals[ITEM_ADDED], 0, variant);
     }
+
+  g_rw_lock_writer_unlock (&lock);
 }
 
 void
@@ -328,10 +334,14 @@ gy_dict_foreach_history (GyDict   *self,
 
   priv = gy_dict_get_instance_private (self);
 
+  g_rw_lock_reader_lock (&lock);
+
   if (priv->h)
     {
       g_ptr_array_foreach (priv->h, func, data);
     }
+
+  g_rw_lock_reader_unlock (&lock);
 }
 
 void
