@@ -23,7 +23,6 @@ struct _GyLexSearchBox
   GtkBox          __parent__;
 
   GtkSearchEntry *search_entry;
-  GtkMenuButton  *chars_button;
 };
 
 G_DEFINE_TYPE (GyLexSearchBox, gy_lex_search_box, GTK_TYPE_BOX)
@@ -39,7 +38,6 @@ gy_lex_search_box_class_init (GyLexSearchBoxClass *klass)
 {
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gtk/gydict/gy-lex-search-box.ui");
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyLexSearchBox, search_entry);
-  gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyLexSearchBox, chars_button);
 }
 
 static void
