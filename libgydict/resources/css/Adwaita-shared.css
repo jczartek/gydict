@@ -7,3 +7,17 @@
 #left_header_bar {
   border-top-left-radius: 0px;
 }
+
+entry.search-missing {
+  background: #ed1818;
+  color: white;
+  font-weight: bold;
+}
+
+entry.search-missing image.left {
+  color: white;
+}
+
+entry.search-missing image.right {
+  color: white;
+}

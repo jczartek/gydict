@@ -1,6 +1,2 @@
 @import url("resource:///org/gtk/gydict/Adwaita-shared.css");
 
-entry.search-missing {
-  background: #B20904;
-  border-color: #B20904;
-}
