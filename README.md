@@ -6,7 +6,7 @@
 **Gydict** jest programem do obsługi różnych słowników multimedialnych (darmowych i komercyjnych) dostępnych pod Windows. Program działa pod systemem Linux.
 
 ### Wymagania
-Aby skompilować program, będzie potrzebna wersja deweloperska biblioteki **gtk+** w wersji 3.18. Do wygenerowanie pliku **configure** będzie potrzebna paczka **gnome-common**, w której znajduje się skrypt **gnome-autogen.sh**.
+Aby skompilować program, będzie potrzebna wersja deweloperska biblioteki **gtk+** w wersji 3.22. Do wygenerowanie pliku **configure** będzie potrzebna paczka **gnome-common**, w której znajduje się skrypt **gnome-autogen.sh**.
 
 ### Jak skompilować?
 Należy wykonać następujące polecenia:
