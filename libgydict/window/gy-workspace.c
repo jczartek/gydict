@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <egg-binding-group.h>
 #include "gy-workspace.h"
 #include "dictionaries/gy-dict.h"
 #include "dictionaries/gy-dict-manager.h"
@@ -63,7 +62,7 @@ gy_workspace_add_to_history (GSimpleAction *action,
 
   dict = gy_dict_manager_get_used_dict (self->manager);
 
-  n_row = gy_tree_view_get_selected_row_number (self->treeview);
+  n_row = gy_tree_view_get_selected_n_row (self->treeview);
   s = gy_tree_view_get_value_for_selected_row (self->treeview);
 
   if (n_row != -1 && s != NULL)

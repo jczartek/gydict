@@ -151,7 +151,7 @@ gy_tree_view_init (GyTreeView *self)
 }
 
 gint
-gy_tree_view_get_selected_row_number (GyTreeView *self)
+gy_tree_view_get_selected_n_row (GyTreeView *self)
 {
   GtkTreeSelection *selection;
   GtkTreeModel     *model;
