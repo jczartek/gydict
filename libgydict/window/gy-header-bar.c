@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "gy-header-bar.h"
-#include "gy-lex-search-box.h"
 #include "app/gy-app.h"
 
 struct _GyHeaderBar
@@ -24,15 +23,10 @@ struct _GyHeaderBar
   GtkHeaderBar    __parent__;
   GtkMenuButton  *menu_button;
   GtkMenuButton  *dicts_button;
+  GtkSearchEntry *search_entry;
 };
 
 G_DEFINE_TYPE (GyHeaderBar, gy_header_bar, GTK_TYPE_HEADER_BAR)
-
-GyHeaderBar *
-gy_header_bar_new (void)
-{
-  return g_object_new (GY_TYPE_HEADER_BAR, NULL);
-}
 
 static void
 gy_header_bar_class_init (GyHeaderBarClass *klass)
@@ -40,6 +34,7 @@ gy_header_bar_class_init (GyHeaderBarClass *klass)
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gtk/gydict/gy-header-bar.ui");
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, dicts_button);
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, menu_button);
+  gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, search_entry);
 }
 
 static void
@@ -65,56 +60,33 @@ void
 gy_header_bar_connect_entry_with_tree_view (GyHeaderBar *self,
                                             GtkTreeView *tree_view)
 {
-  GyLexSearchBox *search_box;
-  GtkEntry       *entry;
-
   g_return_if_fail (GY_IS_HEADER_BAR (self));
   g_return_if_fail (GTK_IS_TREE_VIEW (tree_view));
 
-  search_box = GY_LEX_SEARCH_BOX (gtk_header_bar_get_custom_title (GTK_HEADER_BAR (self)));
-
-  g_assert (GY_IS_LEX_SEARCH_BOX (search_box));
-
-  entry = GTK_ENTRY (_gy_lex_search_box_get_search_entry (search_box));
-  gtk_tree_view_set_search_entry (tree_view, entry);
+  gtk_tree_view_set_search_entry (tree_view, GTK_ENTRY (self->search_entry));
 }
 
 void
 gy_header_bar_set_text_in_entry (GyHeaderBar *self,
                                  const gchar *text)
 {
-  GyLexSearchBox *search_box;
-  GtkEntry       *entry;
-
   g_return_if_fail (GY_IS_HEADER_BAR (self));
 
-  search_box = GY_LEX_SEARCH_BOX (gtk_header_bar_get_custom_title (GTK_HEADER_BAR (self)));
-
-  g_assert (GY_IS_LEX_SEARCH_BOX (search_box));
-
-  entry = GTK_ENTRY (_gy_lex_search_box_get_search_entry (search_box));
-  gtk_entry_set_text (entry, text);
+  gtk_entry_set_text (GTK_ENTRY (self->search_entry), text);
 }
 
 GtkEntry *
 gy_header_bar_get_entry (GyHeaderBar *self)
 {
-  GyLexSearchBox *search_box;
-
   g_return_val_if_fail (GY_IS_HEADER_BAR (self), NULL);
 
-  search_box = GY_LEX_SEARCH_BOX (gtk_header_bar_get_custom_title (GTK_HEADER_BAR (self)));
-  return GTK_ENTRY (_gy_lex_search_box_get_search_entry (search_box));
+  return GTK_ENTRY (self->search_entry);
 }
 
 void
 gy_header_bar_grab_focus_for_entry (GyHeaderBar *self)
 {
-  GtkEntry *entry;
-
   g_return_if_fail (GY_IS_HEADER_BAR (self));
 
-  entry = gy_header_bar_get_entry (self);
-
-  gtk_widget_grab_focus (GTK_WIDGET (entry));
+  gtk_widget_grab_focus (GTK_WIDGET (self->search_entry));
 }

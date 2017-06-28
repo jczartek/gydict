@@ -67,8 +67,9 @@
     </child>
 
     <child type="title">
-      <object class="GyLexSearchBox">
+      <object class="GtkSearchEntry" id="search_entry">
         <property name="visible">true</property>
+        <property name="max-width-chars">30</property>
       </object>
     </child>
 
