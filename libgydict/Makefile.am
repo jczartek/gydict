@@ -34,6 +34,7 @@ libgydict_la_public_headers = \
 	search/gy-search-bar.h \
 	shortcuts/gy-shortcuts-window.h \
 	window/gy-header-bar.h \
+	window/gy-window-settings.h \
 	window/gy-window.h \
 	window/gy-workspace.h \
 	gydict.h \
@@ -68,6 +69,7 @@ libgydict_la_SOURCES = \
 	search/gy-search-bar.c \
 	shortcuts/gy-shortcuts-window.c \
 	window/gy-header-bar.c \
+	window/gy-window-settings.c \
 	window/gy-window.c \
 	window/gy-workspace.c \
 	$(NULL)

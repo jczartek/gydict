@@ -21,15 +21,12 @@
 #include <gtk/gtk.h>
 
 #include "gy-window.h"
+#include "gy-window-settings.h"
 #include "gy-header-bar.h"
 #include "gy-workspace.h"
 #include "helpers/gy-utility-func.h"
-#include "dictionaries/gy-dict.h"
 #include "printing/gy-print.h"
-#include "dictionaries/gy-parsable.h"
-#include "search/gy-search-bar.h"
 #include "entryview/gy-text-view.h"
-#include "entryview/gy-text-buffer.h"
 #include "entrylist/gy-tree-view.h"
 
 
@@ -45,12 +42,6 @@ static void quit_win_cb (GSimpleAction *action,
 static void respond_clipboard_cb (GSimpleAction *action,
                                   GVariant      *parameter,
                                   gpointer       data);
-static void on_window_size_allocate (GtkWidget     *widget,
-                                     GtkAllocation *allocation);
-static gboolean on_window_state_event (GtkWidget           *widget,
-                                       GdkEventWindowState *event);
-static void on_window_destroy (GtkWidget *widget);
-static void on_window_constructed (GObject *object);
 
 struct _GyWindow
 {
@@ -59,11 +50,6 @@ struct _GyWindow
   GyHeaderBar          *header_bar;
   GtkWidget            *findbar;
   GtkClipboard         *clipboard; /* Non free! */
-
-  /* Window State */
-  gint                  current_width;
-  gint                  current_height;
-  gboolean              is_maximized;
 };
 
 G_DEFINE_TYPE (GyWindow, gy_window, GTK_TYPE_APPLICATION_WINDOW);
@@ -170,12 +156,6 @@ quit_win_cb (GSimpleAction *action G_GNUC_UNUSED,
 }
 
 static void
-gy_pwn_finalize (GObject *object)
-{
-  G_OBJECT_CLASS (gy_window_parent_class)->finalize (object);
-}
-
-static void
 gy_window_init (GyWindow *self)
 {
   GtkTreeView *treeview;
@@ -186,6 +166,8 @@ gy_window_init (GyWindow *self)
   g_action_map_add_action_entries (G_ACTION_MAP (self), win_entries,
                                    G_N_ELEMENTS (win_entries), self);
   gy_workspace_attach_action (self->workspace, self);
+
+  gy_window_settings_register (GTK_WINDOW (self));
 
   g_object_get (self->workspace, "left-widget", &treeview, NULL);
   entry = gy_header_bar_get_entry (self->header_bar);
@@ -200,146 +182,12 @@ gy_window_init (GyWindow *self)
 static void
 gy_window_class_init (GyWindowClass *klass)
 {
-  GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
-
-  object_class->constructed = on_window_constructed;
-  object_class->finalize = gy_pwn_finalize;
-
-  widget_class->size_allocate = on_window_size_allocate;
-  widget_class->window_state_event = on_window_state_event;
-  widget_class->destroy = on_window_destroy;
 
   gtk_widget_class_set_template_from_resource (widget_class,
                                                "/org/gtk/gydict/gy-window.ui");
   gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, workspace);
-}
-
-static void
-window_store_state (GyWindow *self)
-{
-  GKeyFile *keyfile = g_key_file_new ();
-
-  g_key_file_set_integer (keyfile, "WindowState", "width", self->current_width);
-  g_key_file_set_integer (keyfile, "WindowState", "height", self->current_height);
-  g_key_file_set_boolean (keyfile, "WindowState", "IsMaximized", self->is_maximized);
-
-  const gchar *id_app = g_application_get_application_id (g_application_get_default());
-  gchar *path = g_build_filename (g_get_user_cache_dir (), id_app, NULL);
-
-  if (g_mkdir_with_parents (path, 0700) < 0)
-  {
-    goto out;
-  }
-  gchar *file = g_build_filename (path, "state.ini", NULL);
-  g_key_file_save_to_file (keyfile, file, NULL);
-
-  g_free (file);
-out:
-  g_key_file_unref (keyfile);
-  g_free (path);
-}
-
-static void
-window_load_state (GyWindow *self)
-{
-  const gchar *id_app = g_application_get_application_id (g_application_get_default ());
-  gchar *file = g_build_filename (g_get_user_cache_dir (), id_app, "state.ini", NULL);
-  GKeyFile *keyfile = g_key_file_new ();
-
-  if (!g_key_file_load_from_file (keyfile, file, G_KEY_FILE_NONE, NULL))
-  {
-    goto out;
-  }
-
-  GError *error = NULL;
-  self->current_width = g_key_file_get_integer (keyfile, "WindowState", "width", &error);
-  if (error != NULL)
-  {
-    g_clear_error (&error);
-    self->current_width = -1;
-  }
-
-  self->current_height = g_key_file_get_integer (keyfile, "WindowState", "height", &error);
-  if (error != NULL)
-  {
-    g_clear_error (&error);
-    self->current_height = -1;
-  }
-
-  self->is_maximized = g_key_file_get_boolean (keyfile, "WindowState", "IsMaximized", &error);
-  if (error != NULL)
-  {
-    g_clear_error (&error);
-    self->is_maximized = FALSE;
-  }
-out:
-  g_key_file_unref (keyfile);
-  g_free (file);
-}
-
-static void
-on_window_constructed (GObject *object)
-{
-  GyWindow *self = GY_WINDOW (object);
-
-  self->current_width = -1;
-  self->current_height = -1;
-  self->is_maximized = FALSE;
-
-  window_load_state (self);
-
-  gtk_window_set_default_size (GTK_WINDOW (self),
-                               self->current_width,
-                               self->current_height);
-
-  if (self->is_maximized)
-    gtk_window_maximize (GTK_WINDOW (self));
-
-  G_OBJECT_CLASS (gy_window_parent_class)->constructed (object);
-}
-
-
-static void
-on_window_size_allocate (GtkWidget *widget,
-                         GtkAllocation *allocation)
-{
-  GyWindow *self = GY_WINDOW (widget);
-
-  GTK_WIDGET_CLASS (gy_window_parent_class)->size_allocate (widget,
-                                                            allocation);
-  if (!(self->is_maximized))
-  {
-    gtk_window_get_size (GTK_WINDOW (widget),
-                         &self->current_width,
-                         &self->current_height);;
-  }
-}
-
-static gboolean
-on_window_state_event (GtkWidget *widget,
-                       GdkEventWindowState *event)
-{
-  GyWindow *self = GY_WINDOW (widget);
-  gboolean res = GDK_EVENT_PROPAGATE;
-
-  if (GTK_WIDGET_CLASS (gy_window_parent_class)->window_state_event != NULL)
-  {
-    res = GTK_WIDGET_CLASS (gy_window_parent_class)->window_state_event (widget, event);
-  }
-
-  self->is_maximized = (event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED) != 0;
-
-  return res;
-}
-
-static void
-on_window_destroy (GtkWidget *widget)
-{
-  GyWindow *self = GY_WINDOW (widget);
-  window_store_state (self);
-  GTK_WIDGET_CLASS (gy_window_parent_class)->destroy (widget);
 }
 
 /**PUBLIC METHOD**/
