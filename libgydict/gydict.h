@@ -26,6 +26,7 @@ G_BEGIN_DECLS
 #define GYDICT_INSIDE
 
 #include "app/gy-app.h"
+#include "css/gy-css-provider.h"
 #include "dictionaries/gy-depl.h"
 #include "dictionaries/gy-dict.h"
 #include "dictionaries/gy-dict-manager.h"
@@ -33,9 +34,25 @@ G_BEGIN_DECLS
 #include "dictionaries/gy-german-pwn.h"
 #include "dictionaries/gy-parsable.h"
 #include "dictionaries/gy-pwn-dict.h"
-#include "entryview/gy-text-buffer.c"
+#include "dictionaries/gy-pwntabs.h"
+#include "entryview/gy-text-buffer.h"
+#include "entryview/gy-text-view.h"
+#include "entrylist/gy-tree-view.h"
 #include "resources/gy-resources.h"
+#include "helpers/gy-utility-func.h"
+#include "preferences/gy-preferences-file-chooser.h"
+#include "preferences/gy-preferences-page.h"
+#include "preferences/gy-preferences-page-dicts.h"
+#include "preferences/gy-preferences-page-general.h"
+#include "preferences/gy-preferences-switch.h"
+#include "preferences/gy-preferences-window.h"
+#include "printing/gy-print.h"
+#include "printing/gy-print-compositor.h"
+#include "search/gy-search-bar.h"
+#include "shortcuts/gy-shortcuts-window.h"
 #include "window/gy-header-bar.h"
+#include "window/gy-window.h"
+#include "window/gy-workspace.h"
 
 #undef GYDICT_INSIDE
 

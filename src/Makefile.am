@@ -6,6 +6,10 @@ EXTRA_DIST =
 gydict_common_cppflags =                                               \
 	-I$(srcdir)                                                    \
 	-I$(top_srcdir)/libgydict                                      \
+	-I$(top_builddir)/contrib/pnl                                  \
+	-I$(top_srcdir)/contrib/pnl                                    \
+	-I$(top_builddir)/contrib/egg                                  \
+	-I$(top_srcdir)/contrib/egg                                    \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\"                            \
 	-DPACKAGE_LOCAL_DIR=\""$(datadir)/locale"\"                    \
         $(CPPFLAGS)                                                    \
