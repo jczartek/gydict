@@ -177,9 +177,7 @@ about_cb (GSimpleAction *action G_GNUC_UNUSED,
   gtk_show_about_dialog (parent,
                          "name", "Gydict",
                          "version", PACKAGE_VERSION,
-                         "comments", _("This program supports the various dictionaries. "
-                                       "Currently, the program provides support to the dictionaries: "
-                                       "PWN (2006, 2007) and DEPL (www.depl.pl)"),
+                         "comments", _("Look up words in different (commercial and free) multimedia dictionaries"),
                          "license-type", GTK_LICENSE_GPL_2_0,
                          "authors", authors,
                          "documenters", documenters,
