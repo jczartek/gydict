@@ -23,6 +23,8 @@ pkgconfig_DATA = \
 EXTRA_DIST = 			\
 	$(gsettings_SCHEMAS)    \
 	$(desktop_in_in_files)  \
+	pref01.png		\
+	pref02.png		\
 	$(NULL)
 
 DISTCLEANFILES =		\
