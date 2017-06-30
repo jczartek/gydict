@@ -1,15 +1,15 @@
 # Polish translations for gydict package
 # Polskie tłumaczenia dla pakietu gydict.
-# Copyright (C) 2016 Free Software Foundation, Inc.
+# Copyright (C) 2017 Free Software Foundation, Inc.
 # This file is distributed under the same license as the gydict package.
-# kuba <kuba@linux.pl>, 2016.
+# kuba <kuba@linux.pl>, 2017.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gydict 0.3.0\n"
+"Project-Id-Version: gydict 0.4.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-22 19:28+0100\n"
-"PO-Revision-Date: 2016-08-27 18:17+0100\n"
+"POT-Creation-Date: 2017-06-30 13:11+0100\n"
+"PO-Revision-Date: 2017-06-30 13:15+0100\n"
 "Last-Translator: kuba <kuba@linux.pl>\n"
 "Language-Team: Polish\n"
 "Language: pl\n"
@@ -39,214 +39,198 @@ msgstr ""
 msgid "gydict"
 msgstr ""
 
-#: src/contrib/shortcuts/shortcuts-window.ui:7
-msgid "Gydict Shortcuts"
-msgstr "Skróty Klawiszowe"
-
-#: src/contrib/shortcuts/shortcuts-window.ui:11
-msgid "General"
-msgstr "Ogólne"
-
-#: src/contrib/shortcuts/shortcuts-window.ui:13
-msgid "New Window"
-msgstr "Nowe okno"
-
-#: src/contrib/shortcuts/shortcuts-window.ui:17
-msgid "Print"
-msgstr "Wydrukuj"
-
-#: src/contrib/shortcuts/shortcuts-window.ui:21
-msgid "React to Clipboard"
-msgstr "Reaguj na Schowek"
-
-#: src/contrib/shortcuts/shortcuts-window.ui:25
-msgid "Find"
-msgstr "Znajdź"
-
-#: src/contrib/shortcuts/shortcuts-window.ui:29
-msgid "Close Window"
-msgstr "Zamknij okno"
-
-#: src/contrib/shortcuts/shortcuts-window.ui:33
-msgid "Close Application"
-msgstr "Zamknij Aplikacje"
-
-#: src/contrib/shortcuts/shortcuts-window.ui:40
-msgid "PWN Dictionaries"
-msgstr "Słowniki PWN"
-
-#: src/contrib/shortcuts/shortcuts-window.ui:42
-#: src/resources/ui/gy-preferences-page-dicts.ui:31
-msgid "English-Polish"
-msgstr "Angielsko-Polski"
-
-#: src/contrib/shortcuts/shortcuts-window.ui:46
-#: src/resources/ui/gy-preferences-page-dicts.ui:41
-msgid "Polish-English"
-msgstr "Polsko-Angielski"
-
-#: src/contrib/shortcuts/shortcuts-window.ui:50
-#: src/resources/ui/gy-preferences-page-dicts.ui:51
-msgid "German-Polish"
-msgstr "Niemiecko-Polski"
-
-#: src/contrib/shortcuts/shortcuts-window.ui:54
-#: src/contrib/shortcuts/shortcuts-window.ui:61
-#: src/resources/ui/gy-preferences-page-dicts.ui:61
-msgid "Polish-German"
-msgstr "Polso-Angielski"
-
-#: src/contrib/shortcuts/shortcuts-window.ui:59
-msgid "DePl Dictionary"
-msgstr "Słownik DePl"
-
-#: src/resources/ui/gy-app-menu.ui:6
-msgid "New window"
-msgstr "Nowe okno"
-
-#: src/resources/ui/gy-app-menu.ui:12
-#: src/resources/ui/gy-preferences-window.ui:4
-#: src/resources/ui/gy-preferences-window.ui:17
-msgid "Preferences"
-msgstr "Preferencje"
-
-#: src/resources/ui/gy-app-menu.ui:18
-msgid "Keyboard shortcuts"
-msgstr "Skróty Klawiszowe"
-
-#: src/resources/ui/gy-app-menu.ui:24
-msgid "About Gydict"
-msgstr "O Gydict"
-
-#: src/resources/ui/gy-app-menu.ui:28
-msgid "Quit"
-msgstr "Wyjdź"
-
-#: src/resources/ui/gy-preferences-page-dicts.ui:4
-#: src/resources/ui/gy-preferences-window.ui:92
-msgid "Dictionaries"
-msgstr "Słowniki"
-
-#: src/resources/ui/gy-preferences-page-dicts.ui:18
-msgid "The Paths to the files for the PWN dictionaries"
-msgstr "Ścieżki do  plików dla Słowników PWN"
-
-#: src/resources/ui/gy-preferences-page-dicts.ui:32
-msgid "Select the dictionary file angpol.win."
-msgstr "Zaznacz plik słownika angpol.win."
-
-#: src/resources/ui/gy-preferences-page-dicts.ui:42
-msgid "Select the dictionary file polang.win."
-msgstr "Zaznacz plik słownika polang.win."
-
-#: src/resources/ui/gy-preferences-page-dicts.ui:52
-msgid "Select the dictionary file niempol.win."
-msgstr "Zaznacz plik słownika niempol.win."
-
-#: src/resources/ui/gy-preferences-page-dicts.ui:62
-msgid "Select the dictionary file polniem.win."
-msgstr "Zaznacz plik słownika polniem.win."
-
-#: src/resources/ui/gy-preferences-page-dicts.ui:72
-msgid "The Paths to the files for the depl dictionary"
-msgstr "Ścieżki do plików dla słownika depl"
-
-#: src/resources/ui/gy-preferences-page-dicts.ui:86
-msgid "German"
-msgstr "Niemiecki"
-
-#: src/resources/ui/gy-preferences-page-dicts.ui:87
-msgid "Select the dictionary file a.dat"
-msgstr "Zaznacz plik słownika a.dat."
-
-#: src/resources/ui/gy-preferences-page-general.ui:4
-#: src/resources/ui/gy-preferences-window.ui:34
-#: src/resources/ui/gy-preferences-window.ui:83
-msgid "General Preferences"
-msgstr "Ogólne Preferencje"
-
-#: src/resources/ui/gy-preferences-page-general.ui:18
-msgid "Font"
-msgstr "Czcionka"
-
-#: src/resources/ui/gy-preferences-page-general.ui:38
-msgid "Theme"
-msgstr "Temat"
-
-#: src/resources/ui/gy-preferences-page-general.ui:52
-msgid "Night Mode"
-msgstr "Tryb nocny"
-
-#: src/resources/ui/gy-preferences-page-general.ui:53
-msgid "Use dark colors for the application."
-msgstr "Użyj ciemnych kolorów dla aplikacji."
-
-#: src/resources/ui/gy-preferences-page-general.ui:62
-msgid "Display Grid Pattern"
-msgstr "Wyświetl wzór siatki."
-
-#: src/resources/ui/gy-preferences-page-general.ui:63
-msgid "Display a grid pattern under the text."
-msgstr "Wyśpietlaj wzór siatki pod tekstem."
-
-#: src/resources/ui/gy-window.ui:6
-msgid "_Print"
-msgstr "Drukuj"
-
-#: src/resources/ui/gy-window.ui:10
-msgid "_Copy"
-msgstr "Kopiuj"
-
-#: src/resources/ui/gy-window.ui:14
-msgid "Pa_ste"
-msgstr "Wlej"
-
-#: src/resources/ui/gy-window.ui:18
-msgid "React to clipboard"
-msgstr "Reaguj na schowek"
-
-#: src/resources/ui/gy-window.ui:22
-msgid "Diacritic"
-msgstr "Znaki diakrytyczne"
-
-#: src/resources/ui/gy-window.ui:28
-msgid "Cl_ose"
-msgstr "Zamknij"
-
-#: src/resources/ui/gy-window.ui:38
-msgid "English-Polish Dictionary"
-msgstr "Słownik Angielsko-Polski"
-
-#: src/resources/ui/gy-window.ui:43
-msgid "Polish-English Dictionary"
-msgstr "Słownik Polsko-Angielski"
-
-#: src/resources/ui/gy-window.ui:50 src/resources/ui/gy-window.ui:63
-msgid "German-Polish Dictionary"
-msgstr "Słownik Niemiecko-Polski"
-
-#: src/resources/ui/gy-window.ui:55
-msgid "Polish-German Dictionary"
-msgstr "Słownik Polsko-Niemiecki"
-
-#: src/resources/ui/gy-window.ui:97
-msgid "Back"
-msgstr "Z tył"
-
-#: src/resources/ui/gy-window.ui:120
-msgid "Forward"
-msgstr "Do przodu"
-
-#: src/gy-app.c:171
+#: libgydict/app/gy-app.c:162
 msgid "translator_credits"
 msgstr ""
 
-#: src/gy-app.c:189
-msgid ""
-"This program supports the various dictionaries. Currently, the program "
-"provides support to the dictionaries: PWN (2006, 2007) and DEPL (www.depl.pl)"
+#: libgydict/app/gy-app.c:180
+msgid "Look up words in different (commercial and free) multimedia dictionaries"
+msgstr "Szukaj słów w różnych multimedialnych (komercyjnych i darmowych) słownikach"
+
+#: libgydict/resources/ui/gy-header-bar.ui:85
+msgid "Show History Panel"
+msgstr "Pokaż panel historii"
+
+#: libgydict/resources/ui/gy-header-bar.ui:101
+msgid "Add to history"
+msgstr "Dodaj do historii"
+
+#: libgydict/resources/ui/gy-menus.ui:6
+msgid "New window"
+msgstr "Nowe okno"
+
+#: libgydict/resources/ui/gy-menus.ui:12
+#: libgydict/resources/ui/gy-preferences-window.ui:4
+#: libgydict/resources/ui/gy-preferences-window.ui:17
+msgid "Preferences"
+msgstr "Ustawienia"
+
+#: libgydict/resources/ui/gy-menus.ui:18
+msgid "Keyboard shortcuts"
+msgstr "Skróty klawiszowe"
+
+#: libgydict/resources/ui/gy-menus.ui:22
+msgid "About Gydict"
+msgstr "O Gydict"
+
+#: libgydict/resources/ui/gy-menus.ui:26
+msgid "Quit"
+msgstr "Zamknij"
+
+#: libgydict/resources/ui/gy-menus.ui:37
+msgid "Show left panel"
+msgstr "Pokaż lewy panel"
+
+#: libgydict/resources/ui/gy-menus.ui:42
+#: libgydict/resources/ui/gy-shortcuts-window.ui:25
+msgid "Print"
+msgstr "Wydrukuj"
+
+#: libgydict/resources/ui/gy-menus.ui:47
+#: libgydict/resources/ui/gy-shortcuts-window.ui:39
+msgid "Find"
+msgstr "Znajdź"
+
+#: libgydict/resources/ui/gy-menus.ui:54
+msgid "Clipboard"
+msgstr "Reaguj na schowek"
+
+#: libgydict/resources/ui/gy-menus.ui:58
+msgid "Close"
+msgstr "Zamknij"
+
+#: libgydict/resources/ui/gy-menus.ui:67
+msgid "English-Polish Dictionary"
+msgstr "Słownik Angielsko-Polski"
+
+#: libgydict/resources/ui/gy-menus.ui:72
+msgid "Polish-English Dictionary"
+msgstr "Słownik Polsko-Angielski"
+
+#: libgydict/resources/ui/gy-menus.ui:77 libgydict/resources/ui/gy-menus.ui:90
+msgid "German-Polish Dictionary"
+msgstr "Słownik Niemiecko-Polski"
+
+#: libgydict/resources/ui/gy-menus.ui:82
+msgid "Polish-German Dictionary"
+msgstr "Słownik Polsko-Niemiecki"
+
+#: libgydict/resources/ui/gy-preferences-page-dicts.ui:4
+#: libgydict/resources/ui/gy-preferences-window.ui:92
+msgid "Dictionaries"
+msgstr "Słowniki"
+
+#: libgydict/resources/ui/gy-preferences-page-dicts.ui:18
+msgid "The Paths to the files for the PWN dictionaries"
+msgstr "Ścieżki do plików słownikowych dla słowników PWN"
+
+#: libgydict/resources/ui/gy-preferences-page-dicts.ui:31
+#: libgydict/resources/ui/gy-shortcuts-window.ui:66
+msgid "English-Polish"
+msgstr "Angielsko-Polski"
+
+#: libgydict/resources/ui/gy-preferences-page-dicts.ui:32
+msgid "Select the dictionary file angpol.win."
+msgstr "Zaznacz plik słownika angpol.win"
+
+#: libgydict/resources/ui/gy-preferences-page-dicts.ui:41
+#: libgydict/resources/ui/gy-shortcuts-window.ui:73
+msgid "Polish-English"
+msgstr "Polsko-Angielski"
+
+#: libgydict/resources/ui/gy-preferences-page-dicts.ui:42
+msgid "Select the dictionary file polang.win."
+msgstr "Zaznacz plik słownika polang.win"
+
+#: libgydict/resources/ui/gy-preferences-page-dicts.ui:51
+#: libgydict/resources/ui/gy-shortcuts-window.ui:80
+#: libgydict/resources/ui/gy-shortcuts-window.ui:100
+msgid "German-Polish"
+msgstr "Niemiecko-Polski"
+
+#: libgydict/resources/ui/gy-preferences-page-dicts.ui:52
+msgid "Select the dictionary file niempol.win."
+msgstr "Zaznacz plik słownika niempol.win"
+
+#: libgydict/resources/ui/gy-preferences-page-dicts.ui:61
+#: libgydict/resources/ui/gy-shortcuts-window.ui:87
+msgid "Polish-German"
 msgstr ""
 
-#: src/gy-main.c:35
+#: libgydict/resources/ui/gy-preferences-page-dicts.ui:62
+msgid "Select the dictionary file polniem.win."
+msgstr "Zaznacz plik słownika polniem.win"
+
+#: libgydict/resources/ui/gy-preferences-page-dicts.ui:72
+msgid "The Paths to the files for the depl dictionary"
+msgstr "Ścieżki do plików słownikowych dla depl"
+
+#: libgydict/resources/ui/gy-preferences-page-dicts.ui:86
+msgid "German"
+msgstr "Niemiecki"
+
+#: libgydict/resources/ui/gy-preferences-page-dicts.ui:87
+msgid "Select the dictionary file a.dat"
+msgstr "Zaznacz plik słownika a.dat"
+
+#: libgydict/resources/ui/gy-preferences-page-general.ui:4
+#: libgydict/resources/ui/gy-preferences-window.ui:34
+#: libgydict/resources/ui/gy-preferences-window.ui:83
+msgid "General Preferences"
+msgstr "Ogólne Preferencje"
+
+#: libgydict/resources/ui/gy-preferences-page-general.ui:18
+msgid "Font"
+msgstr "Czcionka"
+
+#: libgydict/resources/ui/gy-preferences-page-general.ui:38
+msgid "Theme"
+msgstr "Temat"
+
+#: libgydict/resources/ui/gy-preferences-page-general.ui:52
+msgid "Night Mode"
+msgstr "Tryb nocny"
+
+#: libgydict/resources/ui/gy-preferences-page-general.ui:53
+msgid "Use dark colors for the application."
+msgstr "Użyj ciemnych kolorów dla aplikacji."
+
+#: libgydict/resources/ui/gy-preferences-page-general.ui:62
+msgid "Display Grid Pattern"
+msgstr "Wyświetl wzór siatki"
+
+#: libgydict/resources/ui/gy-preferences-page-general.ui:63
+msgid "Display a grid pattern under the text."
+msgstr "Wyświetlaj wzór siatki pod tekstem."
+
+#: libgydict/resources/ui/gy-shortcuts-window.ui:13
+msgid "General"
+msgstr "Ogólne"
+
+#: libgydict/resources/ui/gy-shortcuts-window.ui:18
+msgid "New Window"
+msgstr "Now okno"
+
+#: libgydict/resources/ui/gy-shortcuts-window.ui:32
+msgid "React to Clipboard"
+msgstr "Reaguj na schowek"
+
+#: libgydict/resources/ui/gy-shortcuts-window.ui:46
+msgid "Close Window"
+msgstr "Zamknij okno"
+
+#: libgydict/resources/ui/gy-shortcuts-window.ui:53
+msgid "Close Application"
+msgstr "Zamknij program"
+
+#: libgydict/resources/ui/gy-shortcuts-window.ui:61
+msgid "PWN Dictionaries"
+msgstr "Słowniki PWN"
+
+#: libgydict/resources/ui/gy-shortcuts-window.ui:95
+msgid "DePl Dictionary"
+msgstr "Słownik DePl"
+
+#: src/gy-main.c:33
 msgid "Display the version program and exit"
-msgstr "Wyświetl wersje programu i wyjdź"
+msgstr "Wyświetl versje programu i wyjdź"

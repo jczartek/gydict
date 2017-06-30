@@ -2,14 +2,15 @@
 # Please keep this file sorted alphabetically.
 data/gydict.desktop.in.in
 libgydict/app/gy-app.c
-libgydict/resources/ui/gy-shortcuts-window.ui
-libgydict/resources/ui/gy-app-menu.ui
+libgydict/resources/ui/gy-header-bar.ui
+libgydict/resources/ui/gy-menus.ui
 libgydict/resources/ui/gy-preferences-file-chooser.ui
 libgydict/resources/ui/gy-preferences-page-dicts.ui
 libgydict/resources/ui/gy-preferences-page-general.ui
 libgydict/resources/ui/gy-preferences-switch.ui
 libgydict/resources/ui/gy-preferences-window.ui
 libgydict/resources/ui/gy-searchbar.ui
+libgydict/resources/ui/gy-shortcuts-window.ui
 libgydict/resources/ui/gy-window.ui
 libgydict/window/gy-window.c
 src/gy-main.c
