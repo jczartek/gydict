@@ -3,10 +3,10 @@
 ![](gydict.png "Gydict")
 
 ## Program Gydict
-**Gydict** jest programem do obsługi różnych słowników multimedialnych (darmowych i komercyjnych) dostępnych pod Windows. Program działa pod systemem Linux.
+**Gydict** jest aplikacją słownikową, która pracuje z różnymi słownikami multimedialnymi (darmowymi i komercyjnymi) dostępnymi tylko pod systemem Windows. Aplikacja pozwala korzystać z tych słowników pod systemem Linux.
 
 ### Wymagania
-Aby skompilować program, będzie potrzebna wersja deweloperska biblioteki **gtk+** w wersji 3.22. Do wygenerowanie pliku **configure** będzie potrzebna paczka **gnome-common**, w której znajduje się skrypt **gnome-autogen.sh**.
+Aby skompilować program, będzie potrzebna wersja deweloperska biblioteki **gtk+** w wersji 3.22.
 
 ### Jak skompilować?
 Należy wykonać następujące polecenia:
@@ -16,11 +16,11 @@ Należy wykonać następujące polecenia:
  make
  make install
  ```
-### Cechy programu Gydict:
+### Co Gydict oferuje?
 *  reaguje na schowek;
 *  umożliwia  ustawienia własnych ścieżek do słowników oraz własnych fontów;
-*  program posiada historię używanych słów;
-*  możliwość wydrukowania aktualnie wyświetlanej definicji słowa.
+*  program posiada historię używanych słów (każdy słownik swoją własną);
+*  możliwość wydrukowania szukanego słowa.
 
 ## Jakie słowniki obsługuje Gydict?
 
@@ -36,11 +36,18 @@ Z archiwum **wyrazy.zip** bierzemy plik **a.dat**.
 
 ## Konfiguracja programu Gydict
 
-### Konfiguracja ścieżek do słowników.
-Przy pierwszym uruchomieniu należy ustawić ścieżki do słowników. Należy otworzyć okno preferencji i przejść do zakładki **Słowniki** i tam odpowiednio skorzystać z odpowiedniego przycisku.
+### Konfiguracja ścieżek do słowników
+Przy pierwszym uruchomieniu należy ustawić ścieżki do słowników. Należy otworzyć okno preferencji (wybiera się je z menu aplikacji) i przejść do zakładki **Słowniki**, i tam odpowiednio skorzystać z odpowiedniego przycisku.
 
-### Konfiguracja czcionki.
-Aby zmienić domyślną czcionkę, należy uruchomić program **Gydict**, potem wejść w menu aplikacji i wybrać **Preferencje**, i następnie przejść do zakładki **Ustawienia domyślne** i następnie wybrać odpowiednią czcionkę.
+![](./data/pref02.png "Preferencje")
+
+### Konfiguracja czcionki
+Aby zmienić domyślną czcionkę, należy uruchomić program **Gydict**, potem wejść w menu aplikacji i wybrać **Preferencje**, i następnie przejść do zakładki **Ustawienia domyślne**, i następnie wybrać odpowiednią czcionkę.
+
+### Pozostała konfiguracja
+Ponadto można wybrać styl (ciemny lub jasny) oraz włączyć wyświetlenia siatki w kontrolce tekstowej.
+
+![](./data/pref01.png "Preferencje")
 
 ## Kontakt
 |             |                          |
