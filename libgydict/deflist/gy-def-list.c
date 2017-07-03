@@ -1,4 +1,4 @@
-/* gy-tree-view.c
+/* gy-def-list.c
  *
  * Copyright (C) 2016 Jakub Czartek <kuba@linux.pl>
  *
@@ -17,26 +17,26 @@
  */
 
 #include <string.h>
-#include "gy-tree-view.h"
+#include "gy-def-list.h"
 #include "entryview/gy-text-view.h"
 #include "helpers/gy-utility-func.h"
 
 
-struct _GyTreeView
+struct _GyDefList
 {
   GtkTreeView       __parent__;
   GtkTreeSelection *selection;
 };
 
-G_DEFINE_TYPE (GyTreeView, gy_tree_view, GTK_TYPE_TREE_VIEW)
+G_DEFINE_TYPE (GyDefList, gy_def_list, GTK_TYPE_TREE_VIEW)
 
 static void
-gy_tree_view_selection_changed (GtkTreeSelection *selection,
-                                gpointer          data)
+gy_def_list_selection_changed (GtkTreeSelection *selection,
+                               gpointer          data)
 {
   GtkTreeIter   iter;
   GtkTreeModel *model;
-  GyTreeView   *self = GY_TREE_VIEW (data);
+  GyDefList   *self = GY_DEF_LIST (data);
 
   if (gtk_tree_selection_get_selected (selection, &model, &iter))
     {
@@ -60,11 +60,11 @@ gy_tree_view_selection_changed (GtkTreeSelection *selection,
 }
 
 static gboolean
-gy_tree_view_search_equal_func (GtkTreeModel *model,
-                                gint          column,
-                                const gchar  *key,
-                                GtkTreeIter  *iter,
-                                gpointer      search_data G_GNUC_UNUSED)
+gy_def_list_search_equal_func (GtkTreeModel *model,
+                               gint          column,
+                               const gchar  *key,
+                               GtkTreeIter  *iter,
+                               gpointer      search_data)
 {
   gboolean retval = TRUE;
   const gchar *str;
@@ -116,48 +116,41 @@ gy_tree_view_search_equal_func (GtkTreeModel *model,
 }
 
 static void
-gy_tree_view_finalize (GObject *object)
+gy_def_list_constructed (GObject *object)
 {
-  G_OBJECT_CLASS (gy_tree_view_parent_class)->finalize (object);
-}
-
-static void
-gy_tree_view_constructed (GObject *object)
-{
-  G_OBJECT_CLASS (gy_tree_view_parent_class)->constructed (object);
+  G_OBJECT_CLASS (gy_def_list_parent_class)->constructed (object);
 
   gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (object),
-                                       gy_tree_view_search_equal_func,
+                                       gy_def_list_search_equal_func,
                                        NULL, NULL);
 }
 
 static void
-gy_tree_view_class_init (GyTreeViewClass *klass)
+gy_def_list_class_init (GyDefListClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-  object_class->constructed = gy_tree_view_constructed;
-  object_class->finalize = gy_tree_view_finalize;
+  object_class->constructed = gy_def_list_constructed;
 }
 
 static void
-gy_tree_view_init (GyTreeView *self)
+gy_def_list_init (GyDefList *self)
 {
 
   self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
   g_signal_connect (self->selection, "changed",
-                    G_CALLBACK (gy_tree_view_selection_changed), self);
+                    G_CALLBACK (gy_def_list_selection_changed), self);
 
 }
 
 gint
-gy_tree_view_get_selected_n_row (GyTreeView *self)
+gy_def_list_get_selected_n_row (GyDefList *self)
 {
   GtkTreeSelection *selection;
   GtkTreeModel     *model;
   GtkTreeIter       iter;
 
-  g_return_val_if_fail (GY_IS_TREE_VIEW (self), -1);
+  g_return_val_if_fail (GY_IS_DEF_LIST (self), -1);
 
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
 
@@ -180,13 +173,13 @@ gy_tree_view_get_selected_n_row (GyTreeView *self)
 }
 
 gchar *
-gy_tree_view_get_value_for_selected_row (GyTreeView *self)
+gy_def_list_get_value_for_selected_row (GyDefList *self)
 {
   GtkTreeSelection *selection;
   GtkTreeModel     *model;
   GtkTreeIter       iter;
 
-  g_return_val_if_fail (GY_IS_TREE_VIEW (self), NULL);
+  g_return_val_if_fail (GY_IS_DEF_LIST (self), NULL);
 
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
 
@@ -207,13 +200,13 @@ gy_tree_view_get_value_for_selected_row (GyTreeView *self)
 }
 
 void
-gy_tree_view_select_row (GyTreeView *self,
-                         gint        row)
+gy_def_list_select_row (GyDefList *self,
+                        gint       row)
 {
   GtkTreeSelection *selection = NULL;
   GtkTreePath      *path      = NULL;
 
-  g_return_if_fail (GY_IS_TREE_VIEW (self));
+  g_return_if_fail (GY_IS_DEF_LIST (self));
   g_return_if_fail (row >= 0);
 
   selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));

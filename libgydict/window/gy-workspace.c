@@ -19,7 +19,7 @@
 #include "gy-workspace.h"
 #include "dictionaries/gy-dict.h"
 #include "dictionaries/gy-dict-manager.h"
-#include "entrylist/gy-tree-view.h"
+#include "deflist/gy-def-list.h"
 #include "entryview/gy-text-view.h"
 #include "entryview/gy-text-buffer.h"
 #include "helpers/gy-utility-func.h"
@@ -29,7 +29,7 @@ struct _GyWorkspace
 {
   PnlDockOverlay      __parent__;
   PnlDockBin         *dockbin;
-  GyTreeView         *treeview;
+  GyDefList          *deflist;
   GyTextView         *textview;
   GySearchBar        *search_bar;
   GyDictManager      *manager;
@@ -62,8 +62,8 @@ gy_workspace_add_to_history (GSimpleAction *action,
 
   dict = gy_dict_manager_get_used_dict (self->manager);
 
-  n_row = gy_tree_view_get_selected_n_row (self->treeview);
-  s = gy_tree_view_get_value_for_selected_row (self->treeview);
+  n_row = gy_def_list_get_selected_n_row (self->deflist);
+  s = gy_def_list_get_value_for_selected_row (self->deflist);
 
   if (n_row != -1 && s != NULL)
     {
@@ -131,7 +131,7 @@ gy_workspace_row_activated_cb (GtkListBox    *box,
 
   n_row =  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "n_row"));
 
-  gy_tree_view_select_row (self->treeview, n_row);
+  gy_def_list_select_row (self->deflist, n_row);
 
 }
 
@@ -157,7 +157,7 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
 
   gy_text_buffer_clean_buffer (self->buffer);
 
-  gtk_tree_view_set_model (GTK_TREE_VIEW (self->treeview),
+  gtk_tree_view_set_model (GTK_TREE_VIEW (self->deflist),
                            gy_dict_get_tree_model (dict));
 
   g_action_change_state (G_ACTION (action), parameter);
@@ -219,7 +219,7 @@ gy_workspace_get_property (GObject    *object,
       g_value_set_object (value, self->manager);
       break;
     case PROP_LEFT_WIDGET:
-      g_value_take_object (value, self->treeview);
+      g_value_take_object (value, self->deflist);
       break;
     case PROP_RIGHT_WIDGET:
       g_value_take_object (value, self->textview);
@@ -325,7 +325,7 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class , "/org/gtk/gydict/gy-workspace.ui");
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, dockbin);
-  gtk_widget_class_bind_template_child (widget_class, GyWorkspace, treeview);
+  gtk_widget_class_bind_template_child (widget_class, GyWorkspace, deflist);
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, textview);
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, search_bar);
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, buffer);
@@ -341,7 +341,7 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
     g_param_spec_object ("left-widget",
                          "left-widget",
                          "The left widget of the workspace.",
-                         GY_TYPE_TREE_VIEW,
+                         GY_TYPE_DEF_LIST,
                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
   properties[PROP_RIGHT_WIDGET] =
     g_param_spec_object ("right-widget",
@@ -370,7 +370,7 @@ gy_workspace_init (GyWorkspace *self)
   gtk_widget_insert_action_group (GTK_WIDGET (self), "workspace",
                                   G_ACTION_GROUP (self->actions));
 
-  g_object_set_data (G_OBJECT (self->treeview), "textview", self->textview);
+  g_object_set_data (G_OBJECT (self->deflist), "textview", self->textview);
   g_object_set_data (G_OBJECT (self->textview), "manager", self->manager);
   g_object_set_data (G_OBJECT (self->buffer), "textview", self->textview);
 

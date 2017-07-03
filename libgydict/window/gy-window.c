@@ -27,7 +27,7 @@
 #include "helpers/gy-utility-func.h"
 #include "printing/gy-print.h"
 #include "entryview/gy-text-view.h"
-#include "entrylist/gy-tree-view.h"
+#include "deflist/gy-def-list.h"
 
 
 static void gear_menu_cb (GSimpleAction *action,

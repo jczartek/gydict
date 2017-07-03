@@ -16,23 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GY_TREE_VIEW_H
-#define GY_TREE_VIEW_H
+#ifndef GY_DEF_LIST_H
+#define GY_DEF_LIST_H
 
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-#define GY_TYPE_TREE_VIEW (gy_tree_view_get_type())
+#define GY_TYPE_DEF_LIST (gy_def_list_get_type())
 
-G_DECLARE_FINAL_TYPE (GyTreeView, gy_tree_view, GY, TREE_VIEW, GtkTreeView)
+G_DECLARE_FINAL_TYPE (GyDefList, gy_def_list, GY, DEF_LIST, GtkTreeView)
 
-gint gy_tree_view_get_selected_n_row (GyTreeView *self);
-void gy_tree_view_select_row              (GyTreeView *self,
-                                           gint        row);
-gchar *gy_tree_view_get_value_for_selected_row (GyTreeView *self);
+gint   gy_def_list_get_selected_n_row         (GyDefList *self);
+void   gy_def_list_select_row                 (GyDefList *self,
+                                               gint        row);
+gchar* gy_def_list_get_value_for_selected_row (GyDefList *self);
 
 G_END_DECLS
 
-#endif /* GY_TREE_VIEW_H */
+#endif /* GY_DEF_LIST_H */
 

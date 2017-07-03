@@ -10,6 +10,7 @@ headersdir = $(includedir)/gydict/libgydict
 libgydict_la_public_headers = \
 	app/gy-app.h \
 	css/gy-css-provider.h \
+	deflist/gy-def-list.h \
 	dictionaries/gy-depl.h \
 	dictionaries/gy-dict.h \
 	dictionaries/gy-dict-manager.h \
@@ -19,7 +20,6 @@ libgydict_la_public_headers = \
 	dictionaries/gy-parser-pwn.h \
 	dictionaries/gy-pwn-dict.h \
 	dictionaries/gy-pwntabs.h \
-	entrylist/gy-tree-view.h \
 	entryview/gy-text-buffer.h \
 	entryview/gy-text-view.h \
 	helpers/gy-utility-func.h \
@@ -44,6 +44,7 @@ libgydict_la_SOURCES = \
 	$(libgydict_la_public_headers) \
 	app/gy-app.c \
 	css/gy-css-provider.c \
+	deflist/gy-def-list.c \
 	dictionaries/gy-depl.c \
 	dictionaries/gy-dict.c \
 	dictionaries/gy-dict-manager.c \
@@ -53,7 +54,6 @@ libgydict_la_SOURCES = \
 	dictionaries/gy-parser-pwn.c \
 	dictionaries/gy-pwn-dict.c \
 	dictionaries/gy-pwntabs.c \
-	entrylist/gy-tree-view.c \
 	entryview/gy-text-buffer.c \
 	entryview/gy-text-buffer-private.h \
 	entryview/gy-text-view.c \

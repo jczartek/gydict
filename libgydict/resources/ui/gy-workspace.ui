@@ -35,7 +35,7 @@
             <property name="visible">true</property>
             <property name="expand">true</property>
             <child>
-              <object class="GyTreeView" id="treeview">
+              <object class="GyDefList" id="deflist">
                 <property name="visible">true</property>
                 <property name="headers_visible">false</property>
                 <property name="fixed_height_mode">true</property>
