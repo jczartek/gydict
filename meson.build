@@ -6,9 +6,9 @@ project('gydict', 'c',
 
 gydict_prefix     = get_option('prefix')
 gydict_bindir     = join_paths(gydict_prefix, get_option('bindir'))
-gydict_libdir     = join_paths(gydict_prefix, get_option('libdir'))
-gydict_datadir    = join_paths(gydict_prefix, get_option('datadir'))
-gydict_includedir = join_paths(gydict_prefix, get_option('includedir'))
+gydict_libdir     = join_paths(gydict_prefix, get_option('libdir'), 'gydict')
+gydict_datadir    = join_paths(gydict_prefix, get_option('datadir'), 'gydict')
+gydict_includedir = join_paths(gydict_prefix, get_option('includedir'), 'gydict')
 gydict_schemadir  = join_paths(gydict_datadir, 'glib-2.0', 'schemas')
 
 
@@ -16,7 +16,7 @@ conf = configuration_data()
 conf.set_quoted('PACKAGE_NAME', meson.project_name())
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('PACKAGE_STRING', '@0@-@1@'.format(meson.project_name(), meson.project_version()))
-conf.set_quoted('PACKAGE_DATADIR' gydict_datadir)
+conf.set_quoted('PACKAGE_DATADIR', gydict_datadir)
 conf.set_quoted('PACKAGE_LIBDIR', gydict_libdir)
 conf.set_quoted('PACKAGE_LOCALE_DIR', join_paths(gydict_datadir, 'locale'))
 
@@ -69,9 +69,25 @@ po_dir   = join_paths(meson.current_source_dir(), 'po')
 configure_file(output: 'config.h', configuration: conf)
 
 gio_dep = dependency('gio-2.0', version: '>= 2.50.0')
-gtk_dep = dependency('gtk+3.0', version: '>= 3.22.0')
+gtk_dep = dependency('gtk+-3.0', version: '>= 3.22.0')
 
 gnome = import('gnome')
 i18n  = import('i18n')
 
+subdir('contrib/egg')
+
 meson.add_install_script ('build-aux/post-install.sh')
+
+status = [
+  '', '',
+  'gydict @0@'.format(meson.project_version()),
+  '', '',
+  'Version .............. : @0@'.format(meson.project_version()),
+  '',
+  'Prefix ............... : @0@'.format(gydict_prefix),
+  'Includedir ........... : @0@'.format(gydict_includedir),
+  'Libdir ............... : @0@'.format(gydict_libdir),
+  '', ''
+]
+
+message('\n'.join(status))
