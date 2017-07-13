@@ -75,8 +75,9 @@ gnome = import('gnome')
 i18n  = import('i18n')
 
 subdir('contrib/egg')
-subdir('data')
 subdir('contrib/pnl')
+subdir('data')
+subdir('icons')
 
 meson.add_install_script ('build-aux/post-install.sh')
 
