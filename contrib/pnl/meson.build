@@ -30,7 +30,6 @@ pnl_headers = [
   'pnl-dock-window.h',
   'pnl-frame-source.h',
   'pnl-multi-paned.h',
-  'pnl-resources.h',
   'pnl-tab.h',
   'pnl-tab-strip.h',
   'pnl.h'
@@ -47,7 +46,7 @@ pnl_headers_private = [
   'pnl-util-private.h'
 ]
 
-pnl_source = pnl_headers + pnl_headers_private + pnl_generated_files +[
+pnl_sources = pnl_headers + pnl_headers_private + pnl_generated_files +[
   'pnl-animation.c',
   'pnl-dock-bin.c',
   'pnl-dock-bin-edge.c',
@@ -65,7 +64,6 @@ pnl_source = pnl_headers + pnl_headers_private + pnl_generated_files +[
   'pnl-dock-window.c',
   'pnl-frame-source.c',
   'pnl-multi-paned.c',
-  'pnl-resources.c',
   'pnl-tab.c',
   'pnl-tab-strip.c',
   'pnl-util.c'
@@ -77,8 +75,8 @@ pnl_args = [
 
 pnl_inc = include_directories('.')
 
-pnl_lib = static_library('pnl',
-                        sources: pnl_source,
+pnl_lib = shared_module('pnl',
+                        sources: pnl_sources,
                    dependencies: [gio_dep, gtk_dep],
                          c_args: pnl_args,
             include_directories: pnl_inc)

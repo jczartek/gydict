@@ -78,6 +78,7 @@ subdir('contrib/egg')
 subdir('contrib/pnl')
 subdir('data')
 subdir('icons')
+subdir('tests')
 
 meson.add_install_script ('build-aux/post-install.sh')
 

@@ -19,7 +19,7 @@
 #include <gtk/gtk.h>
 #include <pnl.h>
 
-#define UI_FILE "test-panel-gtk.ui"
+#define UI_FILE  "test-panel-gtk.ui"
 
 #define TEST_TYPE_APP (test_app_get_type())
 G_DECLARE_FINAL_TYPE (TestApp, test_app, TEST, APP, GtkApplication)
@@ -48,8 +48,9 @@ test_read_all_bytes (void)
   g_autoptr(GFileInfo) finfo = NULL;
   gsize size = 0;
 
-  g_assert (g_file_test (UI_FILE, G_FILE_TEST_EXISTS));
-  file = g_file_new_for_path (UI_FILE);
+  g_message ("%s", TEST_DATA_DIR UI_FILE);
+  g_assert (g_file_test (TEST_DATA_DIR UI_FILE, G_FILE_TEST_EXISTS));
+  file = g_file_new_for_path (TEST_DATA_DIR UI_FILE);
 
   in = g_file_read (file, NULL, NULL);
   finfo = g_file_input_stream_query_info (in, "standard::*", NULL, NULL);
@@ -109,9 +110,6 @@ static void
 test_app_class_init (TestAppClass *klass)
 {
   G_APPLICATION_CLASS (klass)->activate = test_app_activate;
-  g_type_ensure (PNL_TYPE_DOCK_OVERLAY);
-  g_type_ensure (PNL_TYPE_DOCK_BIN);
-  g_type_ensure (PNL_TYPE_DOCK_MANAGER);
 }
 
 static void
