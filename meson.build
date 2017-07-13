@@ -7,7 +7,7 @@ project('gydict', 'c',
 gydict_prefix     = get_option('prefix')
 gydict_bindir     = join_paths(gydict_prefix, get_option('bindir'))
 gydict_libdir     = join_paths(gydict_prefix, get_option('libdir'), 'gydict')
-gydict_datadir    = join_paths(gydict_prefix, get_option('datadir'), 'gydict')
+gydict_datadir    = join_paths(gydict_prefix, get_option('datadir'))
 gydict_includedir = join_paths(gydict_prefix, get_option('includedir'), 'gydict')
 gydict_schemadir  = join_paths(gydict_datadir, 'glib-2.0', 'schemas')
 
@@ -75,6 +75,7 @@ gnome = import('gnome')
 i18n  = import('i18n')
 
 subdir('contrib/egg')
+subdir('data')
 subdir('contrib/pnl')
 
 meson.add_install_script ('build-aux/post-install.sh')
