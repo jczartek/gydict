@@ -38,7 +38,6 @@ G_BEGIN_DECLS
 #include "dictionaries/gy-pwntabs.h"
 #include "entryview/gy-text-buffer.h"
 #include "entryview/gy-text-view.h"
-#include "resources/gy-resources.h"
 #include "helpers/gy-utility-func.h"
 #include "preferences/gy-preferences-file-chooser.h"
 #include "preferences/gy-preferences-page.h"
