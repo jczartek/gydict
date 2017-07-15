@@ -183,7 +183,7 @@ about_cb (GSimpleAction *action G_GNUC_UNUSED,
                          "documenters", documenters,
                          "translator-credits",
                          (strcmp (translator_credits, "translator_credits") != 0 ? translator_credits : NULL),
-                         "logo-icon-name", PACKAGE_TARNAME,
+                         "logo-icon-name", PACKAGE_NAME,
                          NULL);
 }
 
