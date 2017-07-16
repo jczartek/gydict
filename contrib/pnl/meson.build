@@ -1,8 +1,8 @@
 version_data = configuration_data()
 version_data.set('MAJOR_VERSION', 0)
-version_data.set('MINOR_VERSION', 1)
+version_data.set('MINOR_VERSION', 4)
 version_data.set('MICRO_VERSION', 0)
-version_data.set('VERSION', '0.1.0')
+version_data.set('VERSION', meson.project_version())
 
 version_h = configure_file(input: 'pnl-version.h.in',
                           output: 'pnl-version.h',
@@ -69,17 +69,24 @@ pnl_sources = pnl_headers + pnl_headers_private + pnl_generated_files +[
   'pnl-util.c'
 ]
 
+install_headers(pnl_headers, subdir: 'gydict/pnl')
+
 pnl_args = [
   '-DPNL_COMPILATION'
 ]
 
 pnl_inc = include_directories('.')
 
-pnl_lib = shared_module('pnl',
+pnl_lib = shared_library('panel-gtk',
                         sources: pnl_sources,
                    dependencies: [gio_dep, gtk_dep],
                          c_args: pnl_args,
-            include_directories: pnl_inc)
+            include_directories: pnl_inc,
+                        install: true,
+                        version: '0.0.0',
+                    install_dir: gydict_libdir)
 
-pnl_dep = declare_dependency(link_with: pnl_lib,
-                   include_directories: pnl_inc)
+pnl_dep = declare_dependency(
+              sources: version_h,
+            link_with: pnl_lib,
+  include_directories: pnl_inc)
