@@ -38,11 +38,23 @@ libgydict_deps = [
 libgydict = shared_library('gydict-' + apiversion, libgydct_sources,
          dependencies: libgydict_deps,
               install: true,
-          install_dir: gydict_libdir,
-  include_directories: [root_dir])
+          install_dir: gydict_libdir)
 
 libgydict_dep = declare_dependency(
             dependencies: libgydict_deps,
                link_with: libgydict,
      include_directories: include_directories('.'),
+)
+
+pkgg = import('pkgconfig')
+
+pkgg.generate(
+    libraries: [libgydict],
+      subdirs: ['gydict-@0@/libgydict'.format(meson.project_version()) ],
+      version: meson.project_version(),
+         name: 'Libgydict',
+     filebase: 'libgydict-1.0',
+  description: 'Libgydict contains the components used to build the application Gydict.',
+     requires: ['gtk+-3.0'],
+  install_dir: join_paths(gydict_libdir, 'pkgconfig'),
 )

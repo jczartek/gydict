@@ -11,6 +11,8 @@ gydict_datadir    = join_paths(gydict_prefix, get_option('datadir'))
 gydict_includedir = join_paths(gydict_prefix, get_option('includedir'), 'gydict')
 gydict_schemadir  = join_paths(gydict_datadir, 'glib-2.0', 'schemas')
 
+gydict_pkglibdir_abs = join_paths(get_option('prefix'), get_option('libdir'), 'gydict')
+
 
 conf = configuration_data()
 conf.set_quoted('PACKAGE_NAME', meson.project_name())
@@ -30,14 +32,17 @@ conf.set10('ENABLE_NLS', true)
 cc          = meson.get_compiler('c')
 host_system = host_machine.system()
 
+add_global_arguments([
+  '-DHAVE_CONFIG_H',
+  '-I' + meson.build_root(), #config.h
+], language: 'c')
 
 test_cflags = []
 if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
   test_cflags += [
     '-Wall',
     '-Wcast-align',
-    '-Werror=format-security',
-    '-Werror=format=2',
+    ['-Werror=format-security', '-Werror=format=2'],
     '-Wextra',
     '-Wformat-nonliteral',
     '-Wformat-security',
@@ -58,10 +63,15 @@ endif
 
 common_clfags = []
 foreach cflag: test_cflags
-  if cc.has_argument(cflag)
+  if cc.has_multi_arguments(cflag)
     common_clfags += [ cflag ]
   endif
 endforeach
+
+add_project_arguments(
+  common_clfags,
+  language: 'c'
+)
 
 root_dir = include_directories('.')
 po_dir   = join_paths(meson.current_source_dir(), 'po')
