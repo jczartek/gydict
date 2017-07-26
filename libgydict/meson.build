@@ -38,6 +38,7 @@ libgydict_deps = [
 libgydict = shared_library('gydict-' + apiversion, libgydct_sources,
          dependencies: libgydict_deps,
               install: true,
+        install_rpath: gydict_pkglibdir_abs,
           install_dir: gydict_libdir)
 
 libgydict_dep = declare_dependency(
