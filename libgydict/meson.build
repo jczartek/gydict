@@ -5,7 +5,7 @@ install_headers('gydict.h', install_dir: libgydict_header_dir)
 
 libgydict_public_headers =  []
 libgydict_public_sources =  []
-libgydict_private_sources = []
+libgydict_private_sources = ['gy-dict-debug.h']
 
 subdir('app')
 subdir('css')
@@ -38,6 +38,7 @@ libgydict_deps = [
 libgydict = shared_library('gydict-' + apiversion, libgydct_sources,
          dependencies: libgydict_deps,
               install: true,
+               c_args: debug_cflags,
         install_rpath: gydict_pkglibdir_abs,
           install_dir: gydict_libdir)
 

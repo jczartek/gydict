@@ -68,6 +68,13 @@ foreach cflag: test_cflags
   endif
 endforeach
 
+debug_cflags = []
+buildtype = get_option('buildtype')
+if buildtype == 'debug'
+  debug_cflags += ['-DGYDICT_ENABLE_DEBUG']
+endif
+
+
 add_project_arguments(
   common_clfags,
   language: 'c'
