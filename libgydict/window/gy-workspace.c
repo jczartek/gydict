@@ -350,6 +350,8 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
                          GY_TYPE_TEXT_VIEW,
                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
   g_object_class_install_properties (object_class, N_PROPS, properties);
+
+  gtk_widget_class_set_css_name (widget_class, "workspace");
 }
 
 static const GActionEntry entries[] =
