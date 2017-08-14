@@ -140,8 +140,9 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
                                 GVariant      *parameter,
                                 gpointer       data)
 {
-  GyWorkspace *self = (GyWorkspace *) data;
-  GyDict      *dict = NULL;
+  GyWorkspace *self   = (GyWorkspace *) data;
+  GyDict      *dict   = NULL;
+  GtkWidget   *window = NULL;
   const gchar *str;
 
   str = g_variant_get_string (parameter, NULL);
@@ -159,6 +160,14 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
 
   gtk_tree_view_set_model (GTK_TREE_VIEW (self->deflist),
                            gy_dict_get_tree_model (dict));
+
+  window = gtk_widget_get_toplevel (GTK_WIDGET (self));
+
+  if (gtk_widget_is_toplevel (window))
+    {
+      gy_window_clear_search_entry (GY_WINDOW (window));
+      gy_window_grab_focus (GY_WINDOW (window));
+    }
 
   g_action_change_state (G_ACTION (action), parameter);
 }

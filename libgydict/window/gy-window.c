@@ -221,3 +221,10 @@ gy_window_grab_focus (GyWindow *self)
   gy_header_bar_grab_focus_for_entry (self->header_bar);
 }
 
+void
+gy_window_clear_search_entry (GyWindow *self)
+{
+  g_return_if_fail (GY_IS_WINDOW (self));
+
+  gy_header_bar_set_text_in_entry (self->header_bar, "");
+}
