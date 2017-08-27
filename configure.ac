@@ -157,6 +157,7 @@ AC_OUTPUT([
 Makefile
 contrib/Makefile
 contrib/egg/Makefile
+contrib/pattern/Makefile
 contrib/pnl/Makefile
 contrib/pnl/pnl-version.h
 data/Makefile
