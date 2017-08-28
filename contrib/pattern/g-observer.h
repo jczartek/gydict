@@ -20,21 +20,24 @@
 #define G_OBSERVER_H
 
 #include <glib-object.h>
-#include "g-pattern-types.h"
 
 G_BEGIN_DECLS
+
+#define G_TYPE_OBSERVER (g_observer_get_type ())
+
+G_DECLARE_INTERFACE (GObserver, g_observer, G, OBSERVER, GObject)
 
 struct _GObserverInterface
 {
   GTypeInterface parent;
 
   void (*update) (GObserver    *observer,
-                  GObservable  *observable,
+                  GObject      *observable,
                   const GValue *arg);
 };
 
 void g_observer_update (GObserver    *observer,
-                        GObservable  *observable,
+                        GObject      *observable,
                         const GValue *arg);
 
 G_END_DECLS

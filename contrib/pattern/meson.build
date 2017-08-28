@@ -4,10 +4,6 @@ sources_h = [
   'g-pattern.h'
 ]
 
-sources_private = [
-  'g-pattern-types.h'
-]
-
 sources_c = [
   'g-observable.c',
   'g-observer.c'
@@ -21,7 +17,7 @@ libpattern_deps = [
 ]
 
 libpattern_lib = shared_library('pattern-private',
-              sources: sources_private + sources_h + sources_c,
+              sources: sources_h + sources_c,
          dependencies: libpattern_deps,
   include_directories: libpattern_inc,
               install: true,

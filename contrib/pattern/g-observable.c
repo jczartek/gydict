@@ -16,86 +16,120 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "g-observable.h"
 #include "g-observer.h"
+#include "g-observable.h"
 
-G_DEFINE_INTERFACE (GObservable, g_observable, G_TYPE_OBJECT)
+struct _GObservable
+{
+  GObject parent_instance;
+
+  GPtrArray *observers;
+};
+
+G_DEFINE_TYPE (GObservable, g_observable, G_TYPE_OBJECT)
+
+enum {
+  PROP_0,
+  N_PROPS
+};
+
+static GParamSpec *properties [N_PROPS];
 
 static void
-g_observable_default_init (GObservableInterface *iface)
+g_observable_finalize (GObject *object)
 {
+  GObservable *self = (GObservable *)object;
+
+  G_OBJECT_CLASS (g_observable_parent_class)->finalize (object);
+}
+
+static void
+g_observable_get_property (GObject    *object,
+                           guint       prop_id,
+                           GValue     *value,
+                           GParamSpec *pspec)
+{
+  GObservable *self = G_OBSERVABLE (object);
+
+  switch (prop_id)
+    {
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
+}
+
+static void
+g_observable_set_property (GObject      *object,
+                           guint         prop_id,
+                           const GValue *value,
+                           GParamSpec   *pspec)
+{
+  GObservable *self = G_OBSERVABLE (object);
+
+  switch (prop_id)
+    {
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
+}
+
+static void
+g_observable_class_init (GObservableClass *klass)
+{
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+  object_class->finalize = g_observable_finalize;
+  object_class->get_property = g_observable_get_property;
+  object_class->set_property = g_observable_set_property;
+}
+
+static void
+g_observable_init (GObservable *self)
+{
+  self->observers = g_ptr_array_new_with_free_func (g_object_unref);
+}
+
+GObservable *
+g_observable_new (void)
+{
+  return g_object_new (G_TYPE_OBSERVABLE, NULL);
 }
 
 void
-g_observable_add_observer (GObservable *observable,
+g_observable_add_observer (GObservable *self,
                            GObserver   *observer)
 {
-  GObservableInterface *iface;
-
-  g_return_if_fail (G_IS_OBSERVABLE (observable));
+  g_return_if_fail (G_IS_OBSERVABLE (self));
   g_return_if_fail (G_IS_OBSERVER (observer));
 
-  iface = G_OBSERVABLE_GET_IFACE (observable);
-
-  g_return_if_fail (iface->add_observer != NULL);
-
-  iface->add_observer (observable, observer);
+  g_ptr_array_add (self->observers, (gpointer) g_object_ref (G_OBJECT (observer)));
 }
 
 void
-g_observable_delete_observer (GObservable *observable,
+g_observable_delete_observer (GObservable *self,
                               GObserver   *observer)
 {
-  GObservableInterface *iface;
-
-  g_return_if_fail (G_IS_OBSERVABLE (observable));
+  g_return_if_fail (G_IS_OBSERVABLE (self));
   g_return_if_fail (G_IS_OBSERVER (observer));
 
-  iface = G_OBSERVABLE_GET_IFACE (observable);
-
-  g_return_if_fail (iface->delete_observer != NULL);
-
-  iface->delete_observer (observable, observer);
+  g_ptr_array_remove (self->observers, (gpointer) observer);
 }
 
 void
-g_observable_delete_all_observers (GObservable *observable)
+g_observable_delete_all_observers (GObservable *self)
 {
-  GObservableInterface *iface;
+  g_return_if_fail (G_IS_OBSERVABLE (self));
 
-  g_return_if_fail (G_IS_OBSERVABLE (observable));
-
-  iface = G_OBSERVABLE_GET_IFACE (observable);
-
-  g_return_if_fail (iface->delete_all_observers != NULL);
-
-  iface->delete_all_observers (observable);
+  g_ptr_array_remove_range (self->observers, 0, self->observers->len - 1);
 }
 
 void
-g_observable_notify_observers (GObservable *observable)
+g_observable_notify_observers (GObservable *self)
 {
-  GObservableInterface *iface;
-
-  g_return_if_fail (G_IS_OBSERVABLE (observable));
-
-  iface = G_OBSERVABLE_GET_IFACE (observable);
-
-  g_return_if_fail (iface->notify_observers != NULL);
-
-  iface->notify_observers (observable);
 }
 
 gint
-g_observable_count_observers (GObservable *observable)
+g_observable_count_observers (GObservable *self)
 {
-  GObservableInterface *iface;
-
-  g_return_val_if_fail (G_IS_OBSERVABLE (observable), 0);
-
-  iface = G_OBSERVABLE_GET_IFACE (observable);
-
-  g_return_val_if_fail (iface->count_observers != NULL, 0);
-
-  return iface->count_observers (observable);
+  return self->observers->len;
 }

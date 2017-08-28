@@ -10,7 +10,6 @@ headersdir = $(includedir)/gydict/pattern
 headers_DATA = \
 	g-observable.h \
 	g-observer.h \
-	g-pattern-types.h \
 	g-pattern.h \
 	$(NULL)
 

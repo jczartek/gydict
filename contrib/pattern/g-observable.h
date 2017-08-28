@@ -20,35 +20,21 @@
 #define G_OBSERVABLE_H
 
 #include <glib-object.h>
-#include "g-pattern-types.h"
 
 G_BEGIN_DECLS
 
-struct _GObservableInterface
-{
-  GTypeInterface parent;
+#define G_TYPE_OBSERVABLE (g_observable_get_type())
 
-  void (*add_observer)         (GObservable *observable,
-                                GObserver   *observer);
+G_DECLARE_FINAL_TYPE (GObservable, g_observable, G, OBSERVABLE, GObject)
 
-  void (*delete_observer)      (GObservable *observable,
-                                GObserver   *observer);
-
-  void (*delete_all_observers) (GObservable *observable);
-
-  void (*notify_observers)     (GObservable *observable);
-
-  gint (*count_observers)      (GObservable *observable);
-
-};
-
-void g_observable_add_observer         (GObservable *observable,
+GObservable *g_observable_new (void);
+void g_observable_add_observer         (GObservable *self,
                                         GObserver   *observer);
-void g_observable_delete_observer      (GObservable *observable,
+void g_observable_delete_observer      (GObservable *self,
                                         GObserver   *observer);
-void g_observable_delete_all_observers (GObservable *observable);
-void g_observable_notify_observers     (GObservable *observable);
-gint g_observable_count_observers      (GObservable *observable);
+void g_observable_delete_all_observers (GObservable *self);
+void g_observable_notify_observers     (GObservable *self);
+gint g_observable_count_observers      (GObservable *self);
 
 G_END_DECLS
 

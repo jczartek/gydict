@@ -17,7 +17,6 @@
  */
 
 #include "g-observer.h"
-#include "g-observable.h"
 
 G_DEFINE_INTERFACE (GObserver, g_observer, G_TYPE_OBJECT)
 
@@ -28,13 +27,12 @@ g_observer_default_init (GObserverInterface *iface)
 
 void
 g_observer_update (GObserver    *observer,
-                   GObservable  *observable,
+                   GObject      *observable,
                    const GValue *arg)
 {
   GObserverInterface *iface;
 
   g_return_if_fail (G_IS_OBSERVER (observer));
-  g_return_if_fail (G_IS_OBSERVABLE (observable));
 
   iface = G_OBSERVER_GET_IFACE (observer);
 
