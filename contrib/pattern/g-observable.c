@@ -23,6 +23,7 @@ struct _GObservable
 {
   GObject parent_instance;
 
+  gpointer   owner;
   GPtrArray *observers;
 };
 
@@ -30,6 +31,15 @@ G_DEFINE_TYPE (GObservable, g_observable, G_TYPE_OBJECT)
 
 enum {
   PROP_0,
+  PROP_ARG_BOOLEAN,
+  PROP_ARG_CHAR,
+  PROP_ARG_INT,
+  PROP_ARG_LONG,
+  PROP_ARG_FLOAT,
+  PROP_ARG_DOUBLE,
+  PROP_ARG_STRING,
+  PROP_ARG_POINTER,
+  PROP_ARG_OBJECT,
   N_PROPS
 };
 
@@ -38,24 +48,21 @@ static GParamSpec *properties [N_PROPS];
 static void
 g_observable_finalize (GObject *object)
 {
-  GObservable *self = (GObservable *)object;
-
-  G_OBJECT_CLASS (g_observable_parent_class)->finalize (object);
-}
-
-static void
-g_observable_get_property (GObject    *object,
-                           guint       prop_id,
-                           GValue     *value,
-                           GParamSpec *pspec)
-{
   GObservable *self = G_OBSERVABLE (object);
 
-  switch (prop_id)
+  if (self->owner)
     {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      g_object_remove_weak_pointer (self->owner, &self->owner);
+      self->owner = NULL;
     }
+
+  if (self->observers)
+    {
+      g_ptr_array_free (self->observers, TRUE);
+      self->observers = NULL;
+    }
+
+  G_OBJECT_CLASS (g_observable_parent_class)->finalize (object);
 }
 
 static void
@@ -66,11 +73,11 @@ g_observable_set_property (GObject      *object,
 {
   GObservable *self = G_OBSERVABLE (object);
 
-  switch (prop_id)
-    {
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
+  if (prop_id >= PROP_ARG_BOOLEAN && prop_id <= PROP_ARG_OBJECT)
+    g_observable_notify_observers (self, value);
+  else
+    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+
 }
 
 static void
@@ -79,20 +86,74 @@ g_observable_class_init (GObservableClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   object_class->finalize = g_observable_finalize;
-  object_class->get_property = g_observable_get_property;
   object_class->set_property = g_observable_set_property;
+
+  properties[PROP_ARG_BOOLEAN] =
+    g_param_spec_boolean ("arg-boolean", "ArgBoolean",
+                          "This parameter will be passed as argument to a GObserver's update function.",
+                          FALSE, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
+
+  properties[PROP_ARG_CHAR] =
+    g_param_spec_char ("arg-char", "ArgChar",
+                       "This parameter will be passed as argument to a GObserver's update function.",
+                       -128, 127, 0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
+
+  properties[PROP_ARG_INT] =
+    g_param_spec_int ("arg-int", "ArgInt",
+                      "This parameter will be passed as argument to a GObserver's update function.",
+                      G_MININT, G_MAXINT, 0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
+
+  properties[PROP_ARG_LONG] =
+    g_param_spec_long ("arg-long", "ArgLong",
+                       "This parameter will be passed as argument to a GObserver's update function.",
+                       G_MINLONG, G_MAXLONG, 0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
+
+  properties[PROP_ARG_FLOAT] =
+    g_param_spec_float ("arg-float", "ArgFloat",
+                        "This parameter will be passed as argument to a GObserver's update function.",
+                        G_MINFLOAT, G_MAXFLOAT, 0.0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
+
+  properties[PROP_ARG_DOUBLE] =
+    g_param_spec_double ("arg-double", "ArgDouble",
+                         "This parameter will be passed as argument to a GObserver's update function.",
+                         G_MINDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
+
+  properties[PROP_ARG_STRING] =
+    g_param_spec_string ("arg-string", "ArgString",
+                         "This parameter will be passed as argument to a GObserver's update function.",
+                         NULL, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
+
+  properties[PROP_ARG_POINTER] =
+    g_param_spec_pointer ("arg-pointer", "ArgPointer",
+                          "This parameter will be passed as argument to a GObserver's update function.",
+                          G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
+
+  properties[PROP_ARG_OBJECT] =
+    g_param_spec_object ("arg-object", "ArgObject",
+                         "This parameter will be passed as argument to a GObserver's update function.",
+                         G_TYPE_OBJECT, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
+
+  g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 static void
 g_observable_init (GObservable *self)
 {
   self->observers = g_ptr_array_new_with_free_func (g_object_unref);
+  self->owner = NULL;
 }
 
 GObservable *
-g_observable_new (void)
+g_observable_new (GObject *owner)
 {
-  return g_object_new (G_TYPE_OBSERVABLE, NULL);
+  GObservable *self;
+
+  self = g_object_new (G_TYPE_OBSERVABLE, NULL);
+
+  if (self && G_IS_OBJECT (owner))
+    g_object_add_weak_pointer (owner, &self->owner);
+
+  return self;
 }
 
 void
@@ -123,9 +184,22 @@ g_observable_delete_all_observers (GObservable *self)
   g_ptr_array_remove_range (self->observers, 0, self->observers->len - 1);
 }
 
+
 void
-g_observable_notify_observers (GObservable *self)
+g_observable_notify_observers (GObservable  *self,
+                               const GValue *arg)
 {
+  g_return_if_fail (G_IS_OBSERVABLE (self));
+  g_return_if_fail (self->observers->len > 0);
+
+  GObject *real_observable = self->owner != NULL ? G_OBJECT (self->owner) : NULL;
+
+  for (int i = 0; i < self->observers->len; i++)
+    {
+      GObserver *o = g_ptr_array_index (self->observers, i);
+      g_observer_update (o, real_observable, arg);
+    }
+
 }
 
 gint

@@ -27,13 +27,15 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (GObservable, g_observable, G, OBSERVABLE, GObject)
 
-GObservable *g_observable_new (void);
+GObservable *g_observable_new (GObject *owner);
+
 void g_observable_add_observer         (GObservable *self,
                                         GObserver   *observer);
 void g_observable_delete_observer      (GObservable *self,
                                         GObserver   *observer);
 void g_observable_delete_all_observers (GObservable *self);
-void g_observable_notify_observers     (GObservable *self);
+void g_observable_notify_observers     (GObservable  *self,
+                                        const GValue *arg);
 gint g_observable_count_observers      (GObservable *self);
 
 G_END_DECLS
