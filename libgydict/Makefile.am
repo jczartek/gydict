@@ -38,6 +38,7 @@ libgydict_la_public_headers = \
 	window/gy-window.h \
 	window/gy-workspace.h \
 	gydict.h \
+	gy-dict-debug.h \
 	$(NULL)
 
 libgydict_la_SOURCES = \
@@ -83,6 +84,8 @@ libgydict_la_CPPFLAGS = \
 	-I$(srcdir) \
 	-I$(top_builddir)/contrib/pnl \
 	-I$(top_srcdir)/contrib/pnl \
+	-I$(top_builddir)/contrib/pattern \
+	-I$(top_srcdir)/contrib/pattern \
 	-I$(top_builddir)/contrib/egg \
 	-I$(top_srcdir)/contrib/egg \
 	$(CPPFLAGS) \
@@ -97,6 +100,7 @@ libgydict_la_LIBADD = \
 	$(LIBM) \
 	$(GYDICT_LIBS) \
 	$(top_builddir)/contrib/egg/libegg-private.la \
+	$(top_builddir)/contrib/pattern/libpattern-private.la \
 	$(top_builddir)/contrib/pnl/libpanel-gtk.la \
 	$(NULL)
 
