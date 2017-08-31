@@ -92,6 +92,7 @@ gnome = import('gnome')
 i18n  = import('i18n')
 
 subdir('contrib/egg')
+subdir('contrib/pattern')
 subdir('contrib/pnl')
 subdir('data')
 subdir('icons')
