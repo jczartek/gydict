@@ -167,7 +167,6 @@ icons/Makefile
 libgydict/Makefile
 po/Makefile.in
 src/Makefile
-tests/Makefile
 tools/Makefile
 tools/autotools/Makefile
 ])
