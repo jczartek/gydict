@@ -29,6 +29,8 @@ struct _GObservable
 
 G_DEFINE_TYPE (GObservable, g_observable, G_TYPE_OBJECT)
 
+G_LOCK_DEFINE_STATIC (lock);
+
 enum {
   PROP_0,
   PROP_ARG_BOOLEAN,
@@ -95,42 +97,42 @@ g_observable_class_init (GObservableClass *klass)
 
   properties[PROP_ARG_CHAR] =
     g_param_spec_char ("arg-char", "ArgChar",
-                       "This parameter will be passed as argument to a GObserver's update function.",
+                       "This parameter will be passed as an argument to a GObserver's update function.",
                        -128, 127, 0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
 
   properties[PROP_ARG_INT] =
     g_param_spec_int ("arg-int", "ArgInt",
-                      "This parameter will be passed as argument to a GObserver's update function.",
+                      "This parameter will be passed as an argument to a GObserver's update function.",
                       G_MININT, G_MAXINT, 0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
 
   properties[PROP_ARG_LONG] =
     g_param_spec_long ("arg-long", "ArgLong",
-                       "This parameter will be passed as argument to a GObserver's update function.",
+                       "This parameter will be passed as an argument to a GObserver's update function.",
                        G_MINLONG, G_MAXLONG, 0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
 
   properties[PROP_ARG_FLOAT] =
     g_param_spec_float ("arg-float", "ArgFloat",
-                        "This parameter will be passed as argument to a GObserver's update function.",
+                        "This parameter will be passed as an argument to a GObserver's update function.",
                         G_MINFLOAT, G_MAXFLOAT, 0.0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
 
   properties[PROP_ARG_DOUBLE] =
     g_param_spec_double ("arg-double", "ArgDouble",
-                         "This parameter will be passed as argument to a GObserver's update function.",
+                         "This parameter will be passed as an argument to a GObserver's update function.",
                          G_MINDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
 
   properties[PROP_ARG_STRING] =
     g_param_spec_string ("arg-string", "ArgString",
-                         "This parameter will be passed as argument to a GObserver's update function.",
+                         "This parameter will be passed as an argument to a GObserver's update function.",
                          NULL, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
 
   properties[PROP_ARG_POINTER] =
     g_param_spec_pointer ("arg-pointer", "ArgPointer",
-                          "This parameter will be passed as argument to a GObserver's update function.",
+                          "This parameter will be passed as an argument to a GObserver's update function.",
                           G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
 
   properties[PROP_ARG_OBJECT] =
     g_param_spec_object ("arg-object", "ArgObject",
-                         "This parameter will be passed as argument to a GObserver's update function.",
+                         "This parameter will be passed as an argument to a GObserver's update function.",
                          G_TYPE_OBJECT, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
@@ -163,7 +165,9 @@ g_observable_add_observer (GObservable *self,
   g_return_if_fail (G_IS_OBSERVABLE (self));
   g_return_if_fail (G_IS_OBSERVER (observer));
 
+  G_LOCK (lock);
   g_ptr_array_add (self->observers, (gpointer) g_object_ref (G_OBJECT (observer)));
+  G_UNLOCK (lock);
 }
 
 void
@@ -173,7 +177,9 @@ g_observable_delete_observer (GObservable *self,
   g_return_if_fail (G_IS_OBSERVABLE (self));
   g_return_if_fail (G_IS_OBSERVER (observer));
 
+  G_LOCK (lock);
   g_ptr_array_remove (self->observers, (gpointer) observer);
+  G_UNLOCK (lock);
 }
 
 void
@@ -181,7 +187,9 @@ g_observable_delete_all_observers (GObservable *self)
 {
   g_return_if_fail (G_IS_OBSERVABLE (self));
 
+  G_LOCK (lock);
   g_ptr_array_remove_range (self->observers, 0, self->observers->len - 1);
+  G_UNLOCK (lock);
 }
 
 
@@ -194,16 +202,101 @@ g_observable_notify_observers (GObservable  *self,
 
   GObject *real_observable = self->owner != NULL ? G_OBJECT (self->owner) : NULL;
 
+  G_LOCK (lock);
   for (int i = 0; i < self->observers->len; i++)
     {
       GObserver *o = g_ptr_array_index (self->observers, i);
       g_observer_update (o, real_observable, arg);
     }
+  G_UNLOCK (lock);
 
 }
 
 gint
 g_observable_count_observers (GObservable *self)
 {
+  G_LOCK (lock);
   return self->observers->len;
+  G_UNLOCK (lock);
+}
+
+void
+g_observable_dispatch_boolean (GObservable *self,
+                               gboolean     arg)
+{
+  g_return_if_fail (G_IS_OBSERVABLE (self));
+
+  g_object_set (G_OBJECT (self), "arg-boolean", arg, NULL);
+}
+
+void
+g_observable_dispatch_char (GObservable *self,
+                            gchar        arg)
+{
+  g_return_if_fail (G_IS_OBSERVABLE (self));
+
+  g_object_set (G_OBJECT (self), "arg-char", arg, NULL);
+}
+
+void
+g_observable_dispatch_int (GObservable *self,
+                           gint         arg)
+{
+  g_return_if_fail (G_IS_OBSERVABLE (self));
+
+  g_object_set (G_OBJECT (self), "arg-int", arg, NULL);
+}
+
+void
+g_observable_dispatch_long (GObservable *self,
+                            long         arg)
+{
+  g_return_if_fail (G_IS_OBSERVABLE (self));
+
+  g_object_set (G_OBJECT (self), "arg-long", arg, NULL);
+}
+
+void
+g_observable_dispatch_float (GObservable *self,
+                             float        arg)
+{
+  g_return_if_fail (G_IS_OBSERVABLE (self));
+
+  g_object_set (G_OBJECT (self), "arg-float", arg, NULL);
+}
+
+void
+g_observable_dispatch_double (GObservable *self,
+                              double       arg)
+{
+  g_return_if_fail (G_IS_OBSERVABLE (self));
+
+  g_object_set (G_OBJECT (self), "arg-double", arg, NULL);
+}
+
+void
+g_observable_dispatch_string (GObservable *self,
+                              const gchar *arg)
+{
+  g_return_if_fail (G_IS_OBSERVABLE (self));
+
+  g_object_set (G_OBJECT (self), "arg-string", arg, NULL);
+}
+
+void
+g_observable_dispatch_pointer (GObservable *self,
+                               gpointer     arg)
+{
+  g_return_if_fail (G_IS_OBSERVABLE (self));
+
+  g_object_set (G_OBJECT (self), "arg-pointer", arg, NULL);
+}
+
+void
+g_observable_dispatch_object (GObservable *self,
+                              GObject     *arg)
+{
+  g_return_if_fail (G_IS_OBSERVABLE (self));
+
+  g_object_set (G_OBJECT (self), "arg-object", arg, NULL);
 }
