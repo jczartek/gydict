@@ -2,7 +2,7 @@ project('gydict', 'c',
         version: '0.4.0',
         default_options: ['c_std=gnu11', 'warning_level=2'],
         license: 'GPLv2+',
-        messon_version: '>= 0.39.1')
+        meson_version: '>= 0.39.1')
 
 gydict_prefix     = get_option('prefix')
 gydict_bindir     = join_paths(gydict_prefix, get_option('bindir'))
