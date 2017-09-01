@@ -23,8 +23,8 @@
 
 G_BEGIN_DECLS
 
-#include "g-observable.h"
 #include "g-observer.h"
+#include "g-observable.h"
 
 G_END_DECLS
 

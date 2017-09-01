@@ -113,12 +113,12 @@ g_observable_class_init (GObservableClass *klass)
   properties[PROP_ARG_FLOAT] =
     g_param_spec_float ("arg-float", "ArgFloat",
                         "This parameter will be passed as an argument to a GObserver's update function.",
-                        G_MINFLOAT, G_MAXFLOAT, 0.0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
+                        -G_MINFLOAT, G_MAXFLOAT, 0.0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
 
   properties[PROP_ARG_DOUBLE] =
     g_param_spec_double ("arg-double", "ArgDouble",
                          "This parameter will be passed as an argument to a GObserver's update function.",
-                         G_MINDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
+                         -G_MINDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_WRITABLE | G_PARAM_EXPLICIT_NOTIFY);
 
   properties[PROP_ARG_STRING] =
     g_param_spec_string ("arg-string", "ArgString",
@@ -166,6 +166,12 @@ g_observable_add_observer (GObservable *self,
   g_return_if_fail (G_IS_OBSERVER (observer));
 
   G_LOCK (lock);
+  for (int i = 0; i < self->observers->len; i++)
+    {
+      GObserver *o = g_ptr_array_index (self->observers, i);
+      if (o == observer)
+        return;
+    }
   g_ptr_array_add (self->observers, (gpointer) g_object_ref (G_OBJECT (observer)));
   G_UNLOCK (lock);
 }
