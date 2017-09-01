@@ -69,3 +69,4 @@ tests/*.out
 tests/.libs
 
 Makecache
+builddir/
