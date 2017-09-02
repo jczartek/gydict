@@ -162,17 +162,25 @@ void
 g_observable_add_observer (GObservable *self,
                            GObserver   *observer)
 {
+  gboolean existed = FALSE;
   g_return_if_fail (G_IS_OBSERVABLE (self));
   g_return_if_fail (G_IS_OBSERVER (observer));
 
   G_LOCK (lock);
+
   for (int i = 0; i < self->observers->len; i++)
     {
       GObserver *o = g_ptr_array_index (self->observers, i);
       if (o == observer)
-        return;
+        {
+          existed = TRUE;
+          break;
+        }
     }
-  g_ptr_array_add (self->observers, (gpointer) g_object_ref (G_OBJECT (observer)));
+
+  if (!existed)
+    g_ptr_array_add (self->observers, (gpointer) g_object_ref (G_OBJECT (observer)));
+
   G_UNLOCK (lock);
 }
 
@@ -194,7 +202,7 @@ g_observable_delete_all_observers (GObservable *self)
   g_return_if_fail (G_IS_OBSERVABLE (self));
 
   G_LOCK (lock);
-  g_ptr_array_remove_range (self->observers, 0, self->observers->len - 1);
+  g_ptr_array_remove_range (self->observers, 0, self->observers->len);
   G_UNLOCK (lock);
 }
 
@@ -221,9 +229,13 @@ g_observable_notify_observers (GObservable  *self,
 gint
 g_observable_count_observers (GObservable *self)
 {
+  gint count = 0;
+
   G_LOCK (lock);
-  return self->observers->len;
+  count = self->observers->len;
   G_UNLOCK (lock);
+
+  return count;
 }
 
 void
