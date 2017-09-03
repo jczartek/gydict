@@ -381,9 +381,10 @@ gy_workspace_init (GyWorkspace *self)
   gtk_widget_insert_action_group (GTK_WIDGET (self), "workspace",
                                   G_ACTION_GROUP (self->actions));
 
-  g_object_set_data (G_OBJECT (self->deflist), "textview", self->textview);
   g_object_set_data (G_OBJECT (self->textview), "manager", self->manager);
   g_object_set_data (G_OBJECT (self->buffer), "textview", self->textview);
+
+  gy_def_list_register_observer (self->deflist, G_OBSERVER (self->textview));
 
   g_signal_connect (self->dockbin, "visibility-notify",
                     G_CALLBACK (gy_workspace_visibility_notify_signal), self);

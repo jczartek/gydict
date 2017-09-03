@@ -18,9 +18,12 @@
 
 #include "gy-text-view.h"
 #include "gy-text-buffer.h"
+#include "deflist/gy-def-list.h"
 #include "dictionaries/gy-dict-manager.h"
 #include "dictionaries/gy-parsable.h"
 #include "helpers/gy-utility-func.h"
+
+static void gy_text_view_interface_init (GObserverInterface *iface);
 
 struct _GyTextView
 {
@@ -33,7 +36,9 @@ struct _GyTextView
   guint background_pattern_grid_set:  1;
 };
 
-G_DEFINE_TYPE (GyTextView, gy_text_view, GTK_TYPE_TEXT_VIEW)
+G_DEFINE_TYPE_WITH_CODE (GyTextView, gy_text_view, GTK_TYPE_TEXT_VIEW,
+                         G_IMPLEMENT_INTERFACE (G_TYPE_OBSERVER,
+                                                gy_text_view_interface_init))
 
 enum {
   PROP_0,
@@ -382,6 +387,39 @@ gy_text_view_init (GyTextView *self)
                           G_CALLBACK (gy_text_view_event_after_signal), NULL);
 }
 
+static void
+gy_text_view_update (GObserver    *observer,
+                     GObject      *observable,
+                     const GValue *arg)
+{
+  GyTextView *self = GY_TEXT_VIEW (observer);
+
+  g_return_if_fail (GY_IS_TEXT_VIEW (self));
+
+  if (G_VALUE_TYPE (arg) == G_TYPE_INT && GY_IS_DEF_LIST (GY_DEF_LIST (observable)))
+    {
+      GtkTextBuffer *bt;
+      GyDictManager *manager;
+      gpointer       dict = NULL;
+
+      bt = gtk_text_view_get_buffer (GTK_TEXT_VIEW (self));
+      manager = g_object_get_data (G_OBJECT(self), "manager");
+
+      g_return_if_fail (GY_IS_DICT_MANAGER (manager));
+      dict = gy_dict_manager_get_used_dict (manager);
+
+      gy_text_buffer_clean_buffer (GY_TEXT_BUFFER (bt));
+
+      gy_parsable_parse (GY_PARSABLE (dict), bt, g_value_get_int (arg));
+    }
+}
+
+static void
+gy_text_view_interface_init (GObserverInterface *iface)
+{
+  iface->update = gy_text_view_update;
+}
+
 void
 gy_text_view_set_font_desc (GyTextView                 *self,
                             const PangoFontDescription *font_desc)
@@ -447,27 +485,6 @@ gy_text_view_get_background_pattern (GyTextView *self)
   g_return_val_if_fail (GY_IS_TEXT_VIEW (self), FALSE);
 
   return self->background_pattern_grid_set;
-}
-
-void
-gy_text_view_msg_activated_row (GyTextView *self,
-                                gint        row)
-{
-  GtkTextBuffer *bt;
-  GyDictManager *manager;
-  gpointer       dict = NULL;
-
-  g_return_if_fail (GY_IS_TEXT_VIEW (self));
-
-  bt = gtk_text_view_get_buffer (GTK_TEXT_VIEW (self));
-  manager = g_object_get_data (G_OBJECT(self), "manager");
-  dict = gy_dict_manager_get_used_dict (manager);
-
-  g_return_if_fail (GY_IS_DICT_MANAGER (manager));
-
-  gy_text_buffer_clean_buffer (GY_TEXT_BUFFER(bt));
-
-  gy_parsable_parse (GY_PARSABLE (dict), bt, row);
 }
 
 void
