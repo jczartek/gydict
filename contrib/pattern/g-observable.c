@@ -153,7 +153,10 @@ g_observable_new (GObject *owner)
   self = g_object_new (G_TYPE_OBSERVABLE, NULL);
 
   if (self && G_IS_OBJECT (owner))
-    g_object_add_weak_pointer (owner, &self->owner);
+    {
+      self->owner = owner;
+      g_object_add_weak_pointer (self->owner, &self->owner);
+    }
 
   return self;
 }
