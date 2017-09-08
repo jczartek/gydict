@@ -16,6 +16,12 @@ Należy wykonać następujące polecenia:
  make
  make install
  ```
+ lub
+ ```
+ meson builddir
+ ninja -C builddir
+ sudo ninja -C builddir install
+ ```
 ### Co Gydict oferuje?
 *  reaguje na schowek;
 *  umożliwia  ustawienia własnych ścieżek do słowników oraz własnych fontów;
