@@ -8,6 +8,8 @@ gydict_common_cppflags =                                               \
 	-I$(top_srcdir)/libgydict                                      \
 	-I$(top_builddir)/contrib/pnl                                  \
 	-I$(top_srcdir)/contrib/pnl                                    \
+	-I$(top_builddir)/contrib/pattern                              \
+	-I$(top_srcdir)/contrib/pattern                                \
 	-I$(top_builddir)/contrib/egg                                  \
 	-I$(top_srcdir)/contrib/egg                                    \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\"                            \
