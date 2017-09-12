@@ -3,59 +3,62 @@
 ![](gydict.png "Gydict")
 
 ## Program Gydict
-**Gydict** jest aplikacją słownikową, która pracuje z różnymi słownikami multimedialnymi (darmowymi i komercyjnymi) dostępnymi tylko pod systemem Windows. Aplikacja pozwala korzystać z tych słowników pod systemem Linux.
+**Gydict** is a dictionary application that works with various multimedia version of dictionaries (free and commercial) which are only available under Window. The program allows you to use those dictionaries under Linux.
 
-### Wymagania
-Aby skompilować program, będzie potrzebna wersja deweloperska biblioteki **gtk+** w wersji 3.22.
+### Requirements
+To compile the program, you need to have the library Gtk+ in version 3.22.
 
-### Jak skompilować?
-Należy wykonać następujące polecenia:
+### How to compile
+Gydict is built using meson
 
 ```
  ./autogen
  make
  make install
  ```
- lub
+ or using autotools
  ```
  meson builddir
  ninja -C builddir
  sudo ninja -C builddir install
  ```
-### Co Gydict oferuje?
-*  reaguje na schowek;
-*  umożliwia  ustawienia własnych ścieżek do słowników oraz własnych fontów;
-*  program posiada historię używanych słów (każdy słownik swoją własną);
-*  możliwość wydrukowania szukanego słowa.
+### What does Gydict offer?
+*  reacts on the system clipboard;
+*  allows you to set own paths to dictionaries and own fonts;
+*  allows you to add a word to the history of dictionary
+*  prints the definition of the current displayed word.
 
-## Jakie słowniki obsługuje Gydict?
+## What dictionaries can use with Gydict?
 
-### PWN Oxford 2006/2007
-Moduł obsługuje słowniki angielsko-polski oraz polsko-angielski. Niezbędne jest posiadania dwóch plików z już zainstalowanej aplikacji pod Windows. Są to pliki '**angpol.win**' oraz '**polang.win**'.
+### PWN Oxford 2006/07
+The program serves English-Polish and Polish-English PWN Oxford dictionaries. It's neccesary to possess two files which are already installed in Window application. These files are: '**angpol.win**' and '**polang.win**'.
 
-### Wielki mutlimedialny słownik Niemiecko-Polski i Polsko-Niemiecki
-Od wersji 0.3.0 Gydict obsługuje kolejny słownik PWN. Niezbędne jest posiadania dwóch plików z już zainstalowanej aplikacji pod Windows. Są to pliki '**niempol.win**' oraz '**polniem.win.**'.
+### Great multimedia German-Polish and Polish-German
+Since version 0.3.0 Gydict has served another PWN dictionary. As it was written above you need two files also: '**niempol.win**' and '**polniem.win**'.
 
-### Słownik DEPL
-Jest to darmowy słownik niemiecko-polski. Aby słownik działał należy wejść na stronę www.depl.pl i pobrać aktualną bazę wyrazów lub w konsoli wpisać polecenie: wget http://www.depl.pl/wyrazy.zip
-Z archiwum **wyrazy.zip** bierzemy plik **a.dat**.
+### DEPL Dictionary
+Depl is free German-Polish dictionary. To get it, you need to go to www.depl.pl and download current dictionary words base or you put following command in your shell:
+```
+wget http://www.depl.pl/wyrazy.zip
+```
+Next you need to extract the '**a.dat**' file from '**wyrazy.zip**' archive.
 
-## Konfiguracja programu Gydict
+## Configuration of Gydict
 
-### Konfiguracja ścieżek do słowników
-Przy pierwszym uruchomieniu należy ustawić ścieżki do słowników. Należy otworzyć okno preferencji (wybiera się je z menu aplikacji) i przejść do zakładki **Słowniki**, i tam odpowiednio skorzystać z odpowiedniego przycisku.
+### Configuration of paths
+To set paths to dictionaries, you need to open the preference window and look up the dictionaries tab and use appropriate buttons.
 
 ![](./data/pref02.png "Preferencje")
 
-### Konfiguracja czcionki
-Aby zmienić domyślną czcionkę, należy uruchomić program **Gydict**, potem wejść w menu aplikacji i wybrać **Preferencje**, i następnie przejść do zakładki **Ustawienia domyślne**, i następnie wybrać odpowiednią czcionkę.
+### Configuration of fonts
+To set fonts, you need to open the preference window and look up the tab named 'General Preference' and use the first button.
 
-### Pozostała konfiguracja
-Ponadto można wybrać styl (ciemny lub jasny) oraz włączyć wyświetlenia siatki w kontrolce tekstowej.
+### Other configuration
+Moreover you can change the style of application and display the grid pattern.
 
 ![](./data/pref01.png "Preferencje")
 
-## Kontakt
+## Contakt
 |             |                          |
 | :----:      | :----:                   |
 | Author      | Jakub Czartek            |
