@@ -10,13 +10,6 @@ Aby skompilować program, będzie potrzebna wersja deweloperska biblioteki **gtk
 
 ### Jak skompilować?
 Należy wykonać następujące polecenia:
-
-```
- ./autogen
- make
- make install
- ```
- lub
  ```
  meson builddir
  ninja -C builddir

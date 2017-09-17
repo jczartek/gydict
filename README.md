@@ -10,13 +10,6 @@ To compile the program, you need to have the library Gtk+ in version 3.22.
 
 ### How to compile
 Gydict is built using meson
-
-```
- ./autogen
- make
- make install
- ```
- or using autotools
  ```
  meson builddir
  ninja -C builddir
