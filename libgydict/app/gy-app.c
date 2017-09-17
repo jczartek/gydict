@@ -211,6 +211,7 @@ setup_accels (GyApp *self)
       {"app.new-window", "<ctrl>n"},
       {"win.print", "<ctrl>p"},
       {"win.close", "<ctrl>w"},
+      {"win.clip", "<ctrl>m"},
       {"win.gear-menu", "F10"},
       {"dockbin.top-visible", "<ctrl>f"},
       {"dockbin.left-visible", "F9"},
