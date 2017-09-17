@@ -18,7 +18,6 @@ test('test-dict-manager', test_dict_manager)
 test_observable_source = [
   'test-observer.h',
   'test-observer.c',
-  'test-observable.h',
   'test-observable.c'
 ]
 

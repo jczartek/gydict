@@ -1,1 +1,0 @@
-SUBDIRS = egg pattern pnl
