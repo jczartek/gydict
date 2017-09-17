@@ -1,6 +1,6 @@
 # Project: Gydict
 
-![](gydict.png "Gydict")
+![](./data/images/gydict.png "Gydict")
 
 ## Program Gydict
 **Gydict** jest aplikacją słownikową, która pracuje z różnymi słownikami multimedialnymi (darmowymi i komercyjnymi) dostępnymi tylko pod systemem Windows. Aplikacja pozwala korzystać z tych słowników pod systemem Linux.
@@ -45,7 +45,7 @@ Z archiwum **wyrazy.zip** bierzemy plik **a.dat**.
 ### Konfiguracja ścieżek do słowników
 Przy pierwszym uruchomieniu należy ustawić ścieżki do słowników. Należy otworzyć okno preferencji (wybiera się je z menu aplikacji) i przejść do zakładki **Słowniki**, i tam odpowiednio skorzystać z odpowiedniego przycisku.
 
-![](./data/pref02.png "Preferencje")
+![](./data/images/pref02.png "Preferencje")
 
 ### Konfiguracja czcionki
 Aby zmienić domyślną czcionkę, należy uruchomić program **Gydict**, potem wejść w menu aplikacji i wybrać **Preferencje**, i następnie przejść do zakładki **Ustawienia domyślne**, i następnie wybrać odpowiednią czcionkę.
@@ -53,7 +53,7 @@ Aby zmienić domyślną czcionkę, należy uruchomić program **Gydict**, potem 
 ### Pozostała konfiguracja
 Ponadto można wybrać styl (ciemny lub jasny) oraz włączyć wyświetlenia siatki w kontrolce tekstowej.
 
-![](./data/pref01.png "Preferencje")
+![](./data/images/pref01.png "Preferencje")
 
 ## Kontakt
 |             |                          |

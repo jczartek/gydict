@@ -1,6 +1,6 @@
 # Project: Gydict
 
-![](gydict.png "Gydict")
+![](./data/images/gydict.png "Gydict")
 
 ## Program Gydict
 **Gydict** is a dictionary application that works with various multimedia version of dictionaries (free and commercial) which are only available under Window. The program allows you to use those dictionaries under Linux.
@@ -48,7 +48,7 @@ Next you need to extract the '**a.dat**' file from '**wyrazy.zip**' archive.
 ### Configuration of paths
 To set paths to dictionaries, you need to open the preference window and look up the dictionaries tab and use appropriate buttons.
 
-![](./data/pref02.png "Preferencje")
+![](./data/images/pref02.png "Preferencje")
 
 ### Configuration of fonts
 To set fonts, you need to open the preference window and look up the tab named 'General Preference' and use the first button.
@@ -56,7 +56,7 @@ To set fonts, you need to open the preference window and look up the tab named '
 ### Other configuration
 Moreover you can change the style of application and display the grid pattern.
 
-![](./data/pref01.png "Preferencje")
+![](./data/images/pref01.png "Preferencje")
 
 ## Contakt
 |             |                          |
