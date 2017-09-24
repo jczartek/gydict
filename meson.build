@@ -95,13 +95,12 @@ subdir('contrib/egg')
 subdir('contrib/pattern')
 subdir('contrib/pnl')
 subdir('data')
-subdir('icons')
 subdir('libgydict')
 subdir('po')
 subdir('src')
 subdir('tests')
 
-meson.add_install_script ('build-aux/post-install.sh')
+meson.add_install_script ('data/scripts/post-install.sh')
 
 status = [
   '', '',
