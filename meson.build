@@ -61,6 +61,10 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
     ]
 endif
 
+if get_option('enable_profiling')
+  test_cflags += '-pg'
+endif
+
 common_clfags = []
 foreach cflag: test_cflags
   if cc.has_multi_arguments(cflag)
