@@ -70,7 +70,7 @@
             <property name="visible">true</property>
             <property name="expand">true</property>
             <child>
-              <object class="GtkListBox" id="hlistbox">
+              <object class="GyStoreEntry" id="store_entry">
                 <property name="visible">true</property>
                 <property name="selection-mode">none</property>
               </object>

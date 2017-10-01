@@ -18,12 +18,14 @@
 
 #include "gy-workspace.h"
 #include "dictionaries/gy-dict.h"
+#include "dictionaries/gy-entry-collector.h"
 #include "dictionaries/gy-dict-manager.h"
 #include "deflist/gy-def-list.h"
 #include "entryview/gy-text-view.h"
 #include "entryview/gy-text-buffer.h"
 #include "helpers/gy-utility-func.h"
 #include "search/gy-search-bar.h"
+#include "gy-store-entry.h"
 
 struct _GyWorkspace
 {
@@ -34,7 +36,7 @@ struct _GyWorkspace
   GySearchBar        *search_bar;
   GyDictManager      *manager;
   GyTextBuffer       *buffer;
-  GtkListBox         *hlistbox;
+  GyStoreEntry       *store_entry;
   GSimpleActionGroup *actions;
 };
 
@@ -67,58 +69,42 @@ gy_workspace_add_to_history (GSimpleAction *action,
 
   if (n_row != -1 && s != NULL)
     {
-      gy_dict_add_to_history (dict, s, n_row);
+      if (gy_entry_collector_add (GY_ENTRY_COLLECTOR (dict), s, (guint) n_row))
+        gy_store_entry_add_row (self->store_entry, s, (guint) n_row);
     }
 }
 
 static void
-gy_workspace_item_added_cb (GyDict   *dict,
-                            GVariant *item,
-                            gpointer  data)
+gy_workspace_remove_cb (GtkContainer *list_store,
+                        GtkWidget    *row,
+                        gpointer      data)
 {
-  gint              n_row = -1;
-  g_autofree gchar *s     = NULL;
-  GyWorkspace      *self  = GY_WORKSPACE (data);
+  GyWorkspace *self = GY_WORKSPACE (data);
 
-  GtkWidget *vbox  = NULL;
-  GtkWidget *label = NULL;
-  GtkWidget *row   = NULL;
 
-  g_return_if_fail (g_variant_is_of_type (item, G_VARIANT_TYPE_TUPLE));
+  if (GTK_IS_LIST_BOX_ROW (row))
+    {
+      GyDict *dict = gy_dict_manager_get_used_dict (self->manager);
+      gpointer idx = g_object_get_data (G_OBJECT (row), "idx");
 
-  g_variant_get (item, "(si)", &s, &n_row);
-
-  vbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-  label = gtk_label_new (s);
-  gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 0);
-
-  row = gtk_list_box_row_new ();
-  g_object_set_data (G_OBJECT (row), "n_row", GINT_TO_POINTER (n_row));
-  gtk_container_add (GTK_CONTAINER (row), vbox);
-
-  gtk_widget_show_all (row);
-  gtk_list_box_insert (self->hlistbox, row, -1);
+      if (dict)
+        gy_entry_collector_remove (GY_ENTRY_COLLECTOR (dict), GPOINTER_TO_UINT (idx));
+    }
 }
 
-static void
-gy_workspace_fill_hlistbox (gpointer item,
-                            gpointer data)
+static gboolean
+gy_workspace_fill_store_entry (gpointer key,
+                               gpointer value,
+                               gpointer data)
 {
-  gy_workspace_item_added_cb (NULL, (GVariant *) item, data);
-}
+  GyWorkspace *self = GY_WORKSPACE (data);
+  guint idx = GPOINTER_TO_UINT (key);
+  const gchar *entry = (const gchar *) value;
 
-static void
-gy_workspace_alter_dict_cb (GyDictManager *manager,
-                            GyDict        *dict,
-                            gpointer       data)
-{
-  GyWorkspace *self = (GyWorkspace *) data;
 
-  g_assert (dict == gy_dict_manager_get_used_dict (manager));
+  gy_store_entry_add_row (self->store_entry, entry, idx);
 
-  gtk_container_forall (GTK_CONTAINER (self->hlistbox), (GtkCallback) gtk_widget_destroy, NULL);
-
-  gy_dict_foreach_history (dict, gy_workspace_fill_hlistbox, self);
+  return FALSE;
 }
 
 static void
@@ -129,7 +115,7 @@ gy_workspace_row_activated_cb (GtkListBox    *box,
   gint         n_row = -1;
   GyWorkspace *self  = GY_WORKSPACE (data);
 
-  n_row =  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "n_row"));
+  n_row =  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "idx"));
 
   gy_def_list_select_row (self->deflist, n_row);
 
@@ -150,12 +136,6 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
   dict = gy_dict_manager_set_dict (self->manager, str);
   if (!dict) return;
 
-  if (!gy_utility_is_handler_connected (dict, gy_workspace_item_added_cb))
-    {
-      g_signal_connect (dict, "item-added",
-                        G_CALLBACK (gy_workspace_item_added_cb), self);
-    }
-
   gy_text_buffer_clean_buffer (self->buffer);
 
   gtk_tree_view_set_model (GTK_TREE_VIEW (self->deflist),
@@ -168,6 +148,10 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
       gy_window_clear_search_entry (GY_WINDOW (window));
       gy_window_grab_focus (GY_WINDOW (window));
     }
+
+  gy_store_entry_remove_all (self->store_entry);
+  gy_entry_collector_foreach (GY_ENTRY_COLLECTOR (dict),
+                              gy_workspace_fill_store_entry, self);
 
   g_action_change_state (G_ACTION (action), parameter);
 }
@@ -338,7 +322,7 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, textview);
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, search_bar);
   gtk_widget_class_bind_template_child (widget_class, GyWorkspace, buffer);
-  gtk_widget_class_bind_template_child (widget_class, GyWorkspace, hlistbox);
+  gtk_widget_class_bind_template_child (widget_class, GyWorkspace, store_entry);
 
   properties[PROP_MANAGER] =
     g_param_spec_object ("manager-dicts",
@@ -388,10 +372,10 @@ gy_workspace_init (GyWorkspace *self)
 
   g_signal_connect (self->dockbin, "visibility-notify",
                     G_CALLBACK (gy_workspace_visibility_notify_signal), self);
-  g_signal_connect (self->manager, "alter-dict",
-                    G_CALLBACK (gy_workspace_alter_dict_cb), self);
-  g_signal_connect (self->hlistbox, "row-activated",
+  g_signal_connect (self->store_entry, "row-activated",
                     G_CALLBACK (gy_workspace_row_activated_cb), self);
+  g_signal_connect (self->store_entry, "remove",
+                    G_CALLBACK(gy_workspace_remove_cb), self);
 
 }
 

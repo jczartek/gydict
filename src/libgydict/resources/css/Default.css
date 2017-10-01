@@ -7,6 +7,24 @@ gysearchbar > box {
 }
 
 workspace list row {
-padding-left: 5px;
+  padding-left: 5px;
 }
 
+list row > box button:last-child {
+  background: none;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0 6px;
+  color: alpha(currentColor, 0.55)
+}
+
+list row > box button:last-child:hover {
+  color: alpha(currentColor, 1)
+}
+
+list row > box button:last-child image {
+  min-height: 16px;
+  min-width: 16px;
+}

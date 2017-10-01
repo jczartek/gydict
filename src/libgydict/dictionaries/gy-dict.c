@@ -24,24 +24,24 @@
 #include "gy-pwn-dict.h"
 #include "gy-english-pwn.h"
 #include "gy-german-pwn.h"
+#include "gy-entry-collector.h"
+#include "../gy-dict-debug.h"
 
-static GRWLock lock;
+static void gy_dict_entry_collector_interface_init (GyEntryCollectorInterface *iface);
 
 typedef struct _GyDictPrivate
 {
   gchar          *identifier;
   GtkTreeModel   *model;
-  GPtrArray      *h;
+  GTree          *entry_collector;
   guint           is_mapped: 1;
   guint           is_used:   1;
 } GyDictPrivate;
 
-enum
-{
-  ITEM_ADDED,
-  LAST_SIGNAL
-};
-static guint signals[LAST_SIGNAL];
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GyDict, gy_dict, G_TYPE_OBJECT,
+                                  G_ADD_PRIVATE (GyDict)
+                                  G_IMPLEMENT_INTERFACE (GY_TYPE_ENTRY_COLLECTOR,
+                                                         gy_dict_entry_collector_interface_init))
 
 enum
 {
@@ -52,10 +52,7 @@ enum
   PROP_IS_USED,
   LAST_PROP
 };
-
 GParamSpec *gParamSpecs[LAST_PROP];
-
-G_DEFINE_ABSTRACT_TYPE_WITH_PRIVATE (GyDict, gy_dict, G_TYPE_OBJECT);
 
 static void
 gy_dict_finalize (GObject *object)
@@ -68,8 +65,8 @@ gy_dict_finalize (GObject *object)
   if (priv->model)
     g_clear_object (&priv->model);
 
-  if (priv->h)
-    g_clear_pointer (&priv->h, g_ptr_array_unref);
+  if (priv->entry_collector)
+    g_clear_pointer (&priv->entry_collector, g_tree_unref);
 
   G_OBJECT_CLASS (gy_dict_parent_class)->finalize (object);
 }
@@ -138,6 +135,17 @@ gy_dict_get_property (GObject    *object,
       }
 }
 
+static gint
+compare_func (gconstpointer a,
+              gconstpointer b,
+              gpointer      data)
+{
+  gint p = GPOINTER_TO_UINT (a);
+  gint q = GPOINTER_TO_UINT (b);
+
+  return p - q;
+}
+
 static void
 gy_dict_init (GyDict *dict)
 {
@@ -145,7 +153,9 @@ gy_dict_init (GyDict *dict)
 
   priv->model = NULL;
   priv->is_mapped = FALSE;
-  priv->h = g_ptr_array_new_with_free_func ( (GDestroyNotify) g_variant_unref);
+
+  priv->entry_collector = g_tree_new_full (compare_func, NULL,
+                                           NULL, g_free);
 }
 
 static void
@@ -208,22 +218,62 @@ gy_dict_class_init (GyDictClass *klass)
 
   g_object_class_install_properties (object_class, LAST_PROP, gParamSpecs);
 
-  /**
-   * GyDict::item-added
-   * @self: a GyDict
-   * @item: a GVariant
-   *
-   */
-  signals[ITEM_ADDED] =
-    g_signal_new ("item-added",
-                  G_TYPE_FROM_CLASS (klass),
-                  G_SIGNAL_RUN_LAST | G_SIGNAL_NO_RECURSE | G_SIGNAL_NO_HOOKS,
-                  0, NULL, NULL,
-                  g_cclosure_marshal_VOID__VARIANT,
-                  G_TYPE_NONE,
-                  1, G_TYPE_VARIANT);
-
 }
+
+/* INTERFACE */
+
+static gboolean
+gy_dict_entry_collector_add (GyEntryCollector *self,
+                             const gchar      *entry,
+                             guint             idx)
+{
+  gpointer key = NULL;
+  GyDictPrivate *priv = gy_dict_get_instance_private (GY_DICT (self));
+
+  key = GUINT_TO_POINTER (idx);
+
+  if (!g_tree_lookup (priv->entry_collector, (gconstpointer) key))
+    {
+      g_tree_insert (priv->entry_collector, key, (gpointer) g_strdup (entry));
+
+      GYDICT_NOTE ("The number of elements in EntryCollector is %d", g_tree_nnodes (priv->entry_collector));
+
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
+static void
+gy_dict_entry_collector_remove (GyEntryCollector *self,
+                                guint             idx)
+{
+  gpointer key = NULL;
+  GyDictPrivate *priv = gy_dict_get_instance_private (GY_DICT (self));
+
+  key = GUINT_TO_POINTER (idx);
+
+  if (g_tree_remove (priv->entry_collector, (gconstpointer) key))
+    GYDICT_NOTE ("The number of elements in EntryCollector is %d", g_tree_nnodes (priv->entry_collector));
+}
+
+static void
+gy_dict_entry_collector_foreach (GyEntryCollector *self,
+                                 GTraverseFunc     func,
+                                 gpointer          data)
+{
+  GyDictPrivate *priv = gy_dict_get_instance_private (GY_DICT (self));
+  g_tree_foreach (priv->entry_collector, func, data);
+}
+
+static void
+gy_dict_entry_collector_interface_init (GyEntryCollectorInterface *iface)
+{
+  iface->add = gy_dict_entry_collector_add;
+  iface->remove = gy_dict_entry_collector_remove;
+  iface->foreach = gy_dict_entry_collector_foreach;
+}
+
 
 /***************************FUBLIC METHOD***************************/
 void
@@ -297,52 +347,6 @@ gy_dict_new (const gchar *identifier)
   object = g_object_new (gtype, "identifier", id, NULL);
 
   return object;
-}
-
-void
-gy_dict_add_to_history (GyDict      *self,
-                        const gchar *entry,
-                        gint         n_row)
-{
-  GyDictPrivate *priv;
-
-  g_return_if_fail (GY_IS_DICT (self));
-  g_return_if_fail (entry != NULL && n_row >= 0);
-
-  priv = gy_dict_get_instance_private (self);
-
-  g_rw_lock_writer_lock (&lock);
-
-  if (priv->h)
-    {
-      GVariant *variant = g_variant_new ("(si)", entry, n_row);
-      g_ptr_array_add (priv->h, g_variant_ref_sink (variant));
-
-      g_signal_emit (self, signals[ITEM_ADDED], 0, variant);
-    }
-
-  g_rw_lock_writer_unlock (&lock);
-}
-
-void
-gy_dict_foreach_history (GyDict   *self,
-                         GFunc     func,
-                         gpointer  data)
-{
-  GyDictPrivate *priv;
-
-  g_return_if_fail (GY_IS_DICT (self));
-
-  priv = gy_dict_get_instance_private (self);
-
-  g_rw_lock_reader_lock (&lock);
-
-  if (priv->h)
-    {
-      g_ptr_array_foreach (priv->h, func, data);
-    }
-
-  g_rw_lock_reader_unlock (&lock);
 }
 
 void
