@@ -53,9 +53,9 @@ static GParamSpec *properties[N_PROPS];
 G_DEFINE_TYPE (GyWorkspace, gy_workspace, PNL_TYPE_DOCK_OVERLAY)
 
 static void
-gy_workspace_add_to_history (GSimpleAction *action,
-                             GVariant      *parameter,
-                             gpointer       data)
+gy_workspace_collect (GSimpleAction *action,
+                      GVariant      *parameter,
+                      gpointer       data)
 {
   gint              n_row = -1;
   g_autofree gchar *s     = NULL;
@@ -350,7 +350,7 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
 static const GActionEntry entries[] =
 {
   {"alter-dict", gy_workspace_action_alter_dict, "s", "''", NULL},
-  {"add-to-history", gy_workspace_add_to_history, NULL, NULL, NULL}
+  {"collect", gy_workspace_collect, NULL, NULL, NULL}
 };
 
 static void

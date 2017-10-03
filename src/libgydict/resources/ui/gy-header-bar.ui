@@ -98,8 +98,8 @@
           <object class="GtkButton">
             <property name="visible">true</property>
             <property name="valign">center</property>
-            <property name="tooltip_text" translatable="yes">Add to history</property>
-            <property name="action_name">workspace.add-to-history</property>
+            <property name="tooltip_text" translatable="yes">Collect word</property>
+            <property name="action_name">workspace.collect</property>
             <style>
               <class name="image-button" />
             </style>
