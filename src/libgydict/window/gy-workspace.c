@@ -129,7 +129,12 @@ gy_workspace_action_alter_dict (GSimpleAction *action,
   GyWorkspace *self   = (GyWorkspace *) data;
   GyDict      *dict   = NULL;
   GtkWidget   *window = NULL;
+  g_autoptr(GVariant) state = NULL;
   const gchar *str;
+
+  state = g_action_get_state (G_ACTION (action));
+
+  if (g_variant_compare (parameter, state) == 0) return;
 
   str = g_variant_get_string (parameter, NULL);
 
