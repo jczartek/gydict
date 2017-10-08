@@ -288,12 +288,7 @@ gy_workspace_destroy (GtkWidget *widget)
 {
   GyWorkspace *self = GY_WORKSPACE (widget);
 
-  if (self->manager)
-    {
-      g_clear_object (&self->manager);
-    }
-
-  g_clear_object (&self->actions);
+  if (self->actions) g_clear_object (&self->actions);
 
   GTK_WIDGET_CLASS (gy_workspace_parent_class)->destroy (widget);
 }
@@ -309,6 +304,16 @@ gy_workspace_constructed (GObject *object)
 }
 
 static void
+gy_workspace_finalize (GObject *object)
+{
+  GyWorkspace *self = (GyWorkspace *) object;
+
+  g_clear_object (&self->manager);
+
+  G_OBJECT_CLASS (gy_workspace_parent_class)->finalize (object);
+}
+
+static void
 gy_workspace_class_init (GyWorkspaceClass *klass)
 {
   GObjectClass   *object_class = G_OBJECT_CLASS (klass);
@@ -317,6 +322,7 @@ gy_workspace_class_init (GyWorkspaceClass *klass)
   object_class->set_property = gy_workspace_set_property;
   object_class->get_property = gy_workspace_get_property;
   object_class->constructed = gy_workspace_constructed;
+  object_class->finalize = gy_workspace_finalize;
 
   widget_class->unrealize = gy_workspace_unrealize;
   widget_class->destroy = gy_workspace_destroy;
