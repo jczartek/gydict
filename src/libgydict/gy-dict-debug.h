@@ -25,11 +25,11 @@ G_BEGIN_DECLS
 
 #ifdef GYDICT_ENABLE_DEBUG
 
-#define GYDICT_NOTE(str, ...) g_message ("[" G_STRLOC "]: " str, __VA_ARGS__);
+#define GYDICT_DEBUG(str, ...) g_debug ("[" G_STRLOC "]: " str, __VA_ARGS__);
 
 #else
 
-#define GYDICT_NOTE(str, ...)
+#define GYDICT_DEBUG(str, ...)
 
 #endif
 

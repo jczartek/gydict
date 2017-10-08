@@ -236,7 +236,9 @@ gy_dict_entry_collector_add (GyEntryCollector *self,
     {
       g_tree_insert (priv->entry_collector, key, (gpointer) g_strdup (entry));
 
-      GYDICT_NOTE ("The number of elements in EntryCollector is %d", g_tree_nnodes (priv->entry_collector));
+      GYDICT_DEBUG ("%s: the number of elements in EntryCollector is %d",
+                    G_OBJECT_TYPE_NAME (self),
+                    g_tree_nnodes (priv->entry_collector));
 
       return TRUE;
     }
@@ -254,7 +256,9 @@ gy_dict_entry_collector_remove (GyEntryCollector *self,
   key = GUINT_TO_POINTER (idx);
 
   if (g_tree_remove (priv->entry_collector, (gconstpointer) key))
-    GYDICT_NOTE ("The number of elements in EntryCollector is %d", g_tree_nnodes (priv->entry_collector));
+    GYDICT_DEBUG ("%s: the number of elements in EntryCollector is %d",
+                  G_OBJECT_TYPE_NAME (self),
+                  g_tree_nnodes (priv->entry_collector));
 }
 
 static void
