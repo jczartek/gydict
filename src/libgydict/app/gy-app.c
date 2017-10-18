@@ -316,7 +316,7 @@ gy_app_new(void)
   GyApp * application;
 
   application = g_object_new (GY_TYPE_APP,
-                              "application-id",   "org.gtk.Gydict",
+                              "application-id",   "org.gnome.Gydict",
                               "flags",            G_APPLICATION_FLAGS_NONE,
                               "register-session", TRUE, NULL);
 
