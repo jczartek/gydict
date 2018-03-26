@@ -29,6 +29,8 @@
 #include "entryview/gy-text-view.h"
 #include "deflist/gy-def-list.h"
 
+#define MOUSE_UP_BUTTON   8
+#define MOUSE_DOWN_BUTTON 9
 
 static void gear_menu_cb (GSimpleAction *action,
                           GVariant      *parametr,
@@ -155,6 +157,25 @@ quit_win_cb (GSimpleAction *action G_GNUC_UNUSED,
   gtk_widget_destroy (GTK_WIDGET (self));
 }
 
+static gboolean
+gy_window_button_press_event (GtkWidget      *w,
+                              GdkEventButton *e,
+                              gpointer        d)
+{
+  GyDefList *dl = GY_DEF_LIST (d);
+
+  if (e->type == GDK_DOUBLE_BUTTON_PRESS && e->button == MOUSE_UP_BUTTON)
+    {
+      gy_def_list_select_previous_item (dl);
+    }
+  else if (e->type == GDK_DOUBLE_BUTTON_PRESS && e->button == MOUSE_DOWN_BUTTON)
+    {
+      gy_def_list_select_next_item (dl);
+    }
+
+  return FALSE;
+}
+
 static void
 gy_window_init (GyWindow *self)
 {
@@ -176,6 +197,9 @@ gy_window_init (GyWindow *self)
   self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
 
   gy_header_bar_grab_focus_for_entry (self->header_bar);
+
+  g_signal_connect (self, "button-press-event",
+                    G_CALLBACK (gy_window_button_press_event), treeview);
 
 }
 

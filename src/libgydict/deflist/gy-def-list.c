@@ -258,3 +258,40 @@ gy_def_list_unregister_observer (GyDefList *self,
   if (self->observable)
     g_observable_delete_observer (self->observable, observer);
 }
+
+static void
+select_item (GyDefList        *self,
+             GtkDirectionType  direction)
+{
+  GtkTreeSelection *selection;
+  GtkTreeModel     *model;
+  GtkTreeIter       iter;
+
+  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
+
+  if (gtk_tree_selection_get_selected (selection, &model, &iter))
+    {
+      if (direction == GTK_DIR_UP && gtk_tree_model_iter_previous (model, &iter))
+      {
+        gtk_tree_selection_select_iter (selection, &iter);
+      }
+      else if (direction == GTK_DIR_DOWN && gtk_tree_model_iter_next (model, &iter))
+      {
+        gtk_tree_selection_select_iter (selection, &iter);
+      }
+    }
+}
+
+void
+gy_def_list_select_previous_item (GyDefList *self)
+{
+  g_return_if_fail (GY_IS_DEF_LIST (self));
+  select_item (self, GTK_DIR_UP);
+}
+
+void
+gy_def_list_select_next_item (GyDefList *self)
+{
+  g_return_if_fail (GY_IS_DEF_LIST (self));
+  select_item (self, GTK_DIR_DOWN);
+}

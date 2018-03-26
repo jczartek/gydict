@@ -36,6 +36,8 @@ void   gy_def_list_register_observer          (GyDefList *self,
                                                GObserver *observer);
 void   gy_def_list_unregister_observer        (GyDefList *self,
                                                GObserver *observer);
+void   gy_def_list_select_previous_item       (GyDefList *self);
+void   gy_def_list_select_next_item           (GyDefList *self);
 
 G_END_DECLS
 
