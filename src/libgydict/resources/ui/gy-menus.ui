@@ -1,33 +1,5 @@
 <?xml version="1.0"?>
 <interface>
-  <menu id="app-menu">
-    <section id="app-menu-new-section">
-      <item>
-        <attribute name="label" translatable="yes">New window</attribute>
-        <attribute name="action">app.new-window</attribute>
-      </item>
-     </section>
-     <section id="app-menu-preferences-section">
-      <item>
-        <attribute name="label" translatable="yes">Preferences</attribute>
-        <attribute name="action">app.preferences</attribute>
-      </item>
-     </section>
-     <section id="app-menu-help-section">
-      <item>
-        <attribute name="label" translatable="yes">Keyboard shortcuts</attribute>
-        <attribute name="action">app.shortcuts</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">About Gydict</attribute>
-        <attribute name="action">app.about</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Quit</attribute>
-        <attribute name="action">app.quit</attribute>
-      </item>
-    </section>
-  </menu>
   <menu id="gear-menu">
     <section id="gear-menu-general-section">
       <attribute name="id">general-section</attribute>
@@ -50,14 +22,39 @@
       </item>
     </section>
     <section id="gear-menu-help-section">
+      <item>
+        <attribute name="label" translatable="yes">New window</attribute>
+        <attribute name="action">app.new-window</attribute>
+      </item>
 			<item>
 				<attribute name="label" translatable="yes">Clipboard</attribute>
 				<attribute name="action">win.clip</attribute>
 			</item>
 			<item>
-				<attribute name="label" translatable="yes">Close</attribute>
+				<attribute name="label" translatable="yes">Close window</attribute>
 				<attribute name="action">win.close</attribute>
 			</item>
+
+      <item>
+        <attribute name="label" translatable="yes">Preferences</attribute>
+        <attribute name="action">app.prefs</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Keyboard shortcuts</attribute>
+        <attribute name="action">app.shortcuts</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">About</attribute>
+        <attribute name="action">app.about</attribute>
+      </item>
+
+      <item>
+        <attribute name="label" translatable="yes">Quit application</attribute>
+        <attribute name="action">app.quit</attribute>
+      </item>
+
 		</section>
 	</menu>
   <menu id="dict-menu">
@@ -98,3 +95,4 @@
     </section>
   </menu>
 </interface>
+

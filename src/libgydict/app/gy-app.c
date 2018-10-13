@@ -58,7 +58,7 @@ static GActionEntry app_entries[] =
 {
   /* general action */
   { "new-window", new_window_cb, NULL, NULL, NULL},
-  { "preferences", preferences_cb, NULL, NULL, NULL },
+  { "prefs", preferences_cb, NULL, NULL, NULL },
   { "about", about_cb, NULL, NULL, NULL},
   { "quit", quit_cb, NULL, NULL, NULL },
   { "shortcuts", shortcuts_cb, NULL, NULL, NULL },
@@ -262,9 +262,6 @@ gy_app_register_menus (GyApp *self)
 
   self->menu_manager = egg_menu_manager_new ();
   egg_menu_manager_add_resource (self->menu_manager, "/org/gtk/gydict/gy-menus.ui", NULL);
-
-  app_menu = egg_menu_manager_get_menu_by_id (self->menu_manager, "app-menu");
-  gtk_application_set_app_menu (GTK_APPLICATION (self), G_MENU_MODEL (app_menu));
 }
 
 static void
