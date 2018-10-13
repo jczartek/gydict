@@ -190,15 +190,15 @@ static struct GyAttributeTag attrs_tags[] = {
       .underline = 0
     },
     {
-      .name = "link",
-      .foreground = NULL,
+      .name = "a",
+      .foreground = "#0988ff",
       .weight = 0,
       .family = NULL,
       .style = 0,
       .scale = 0.0,
       .rise = 0,
       .background = NULL,
-      .underline = PANGO_UNDERLINE_SINGLE
+      .underline = 0
     }
 };
 

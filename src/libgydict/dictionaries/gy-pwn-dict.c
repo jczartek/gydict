@@ -456,7 +456,7 @@ gy_pwn_dict_get_lexical_unit (GyPwnDict  *self,
 }
 
 /* Interface */
-static gchar *format_tags[] = {"B", "BIG", "PH", "SMALL", "I", "SUB", "SUP"};
+static gchar *format_tags[] = {"A","B", "BIG", "PH", "SMALL", "I", "SUB", "SUP"};
 static gchar *roman_numbers[] = {"", "I", "II", "III", "IV", "V", "VI", "VII",
                                  "VIII", "IX", "X", "XI", "XII", "XIII", "XIV",
                                  "XV", "XVI", "XVII", "XVIII", "XIX", "XX"};
@@ -541,8 +541,6 @@ gy_pwn_dict_end_tag (const gchar *tag_name,
       gchar *name = g_utf8_strdown (tag_name, -1);
       g_hash_table_remove (pdata->table_tags, name);
       g_free (name);
-      return;
-
     }
 }
 
