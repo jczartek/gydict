@@ -28,7 +28,6 @@
 #include "resources/gy-resources.h"
 
 
-/**STATIC PROTOTYPES FUNCTIONS**/
 static void new_window_cb (GSimpleAction *action,
                            GVariant      *parametr,
                            gpointer       data);
@@ -306,7 +305,6 @@ gy_app_class_init (GyAppClass *klass)
   app_class->startup = startup;
 }
 
-/**PUBLIC METHOD**/
 GyApp *
 gy_app_new(void)
 {

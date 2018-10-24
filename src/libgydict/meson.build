@@ -29,6 +29,8 @@ libgydct_sources = [
 libgydict_deps = [
   gtk_dep,
   gio_dep,
+  peas_dep,
+  dazzle_dep,
   libegg_dep,
   libpattern_dep,
   pnl_dep,
@@ -61,3 +63,14 @@ pkgg.generate(
      requires: ['gtk+-3.0'],
   install_dir: join_paths(gydict_libdir, 'pkgconfig'),
 )
+
+libgydict_gir = gnome.generate_gir(libgydict,
+              sources: libgydict_public_headers + libgydict_public_sources,
+            nsversion: apiversion,
+            namespace: 'Gydict',
+        symbol_prefix: 'gy',
+    identifier_prefix: 'Gy',
+             includes: [ 'Gio-2.0', 'Gtk-3.0'],
+              install: true,
+  install_dir_typelib: gydict_typelibdir,
+      install_dir_gir: gydict_girdir)

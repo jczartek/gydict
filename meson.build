@@ -10,6 +10,8 @@ gydict_libdir     = join_paths(gydict_prefix, get_option('libdir'), 'gydict')
 gydict_datadir    = join_paths(gydict_prefix, get_option('datadir'))
 gydict_includedir = join_paths(gydict_prefix, get_option('includedir'), 'gydict')
 gydict_schemadir  = join_paths(gydict_datadir, 'glib-2.0', 'schemas')
+gydict_girdir     = join_paths(gydict_datadir, 'gydict', 'gir-1.0')
+gydict_typelibdir = join_paths(gydict_libdir, 'girepository-1.0')
 
 gydict_pkglibdir_abs = join_paths(get_option('prefix'), get_option('libdir'), 'gydict')
 
@@ -89,8 +91,10 @@ po_dir   = join_paths(meson.current_source_dir(), 'po')
 
 configure_file(output: 'config.h', configuration: conf)
 
-gio_dep = dependency('gio-2.0', version: '>= 2.50.0')
-gtk_dep = dependency('gtk+-3.0', version: '>= 3.22.0')
+gio_dep    = dependency('gio-2.0', version: '>= 2.50.0')
+gtk_dep    = dependency('gtk+-3.0', version: '>= 3.22.0')
+peas_dep   = dependency('libpeas-1.0', version: '>= 1.22.0')
+dazzle_dep = dependency('libdazzle-1.0', version: '>= 3.26.0')
 
 gnome = import('gnome')
 i18n  = import('i18n')
@@ -115,6 +119,8 @@ status = [
   'Prefix ............... : @0@'.format(gydict_prefix),
   'Includedir ........... : @0@'.format(gydict_includedir),
   'Libdir ............... : @0@'.format(gydict_libdir),
+  'GirDir ............... : @0@'.format(gydict_girdir),
+  'TypeLibDir ........... : @0@'.format(gydict_typelibdir),
   '', ''
 ]
 
