@@ -18,7 +18,6 @@
 
 #include "config.h"
 #include <glib/gi18n-lib.h>
-#include <egg-menu-manager.h>
 #include "gy-app.h"
 #include "window/gy-window.h"
 #include "css/gy-css-provider.h"
@@ -48,10 +47,9 @@ struct _GyApp
 {
   GtkApplication       __parent__;
   GyPreferencesWindow   *preferences_window;
-  EggMenuManager        *menu_manager;
 };
 
-G_DEFINE_TYPE (GyApp, gy_app, GTK_TYPE_APPLICATION);
+G_DEFINE_TYPE (GyApp, gy_app, DZL_TYPE_APPLICATION);
 
 static GActionEntry app_entries[] =
 {
@@ -253,33 +251,18 @@ gy_app_register_theme_overrides (GyApp *self)
 }
 
 static void
-gy_app_register_menus (GyApp *self)
-{
-  GMenu *app_menu;
-
-  g_assert (GY_IS_APP (self));
-
-  self->menu_manager = egg_menu_manager_new ();
-  egg_menu_manager_add_resource (self->menu_manager, "/org/gtk/gydict/gy-menus.ui", NULL);
-}
-
-static void
 startup (GApplication *application)
 {
   GyApp *app = GY_APP (application);
 
-  /* Chain up parent's class */
-  G_APPLICATION_CLASS (gy_app_parent_class)->startup (application);
-
-  /* Register resources */
   g_resources_register (gy_get_resource ());
   g_application_set_resource_base_path (application, "/org/gtk/gydict");
 
+  /* Chain up parent's class */
+  G_APPLICATION_CLASS (gy_app_parent_class)->startup (application);
+
   /* Setup actions */
   setup_actions_app (app);
-
-  /* Setup menu application */
-  gy_app_register_menus (app);
 
   /* Setup accelerators */
   setup_accels (app);
@@ -325,29 +308,4 @@ gy_app_new_window (GyApp *self)
 
   g_action_group_activate_action (G_ACTION_GROUP (self),
                                   "new-window",NULL);
-}
-
-/**
- * gy_app_get_menu_by_id:
- * @self: An #GyApp.
- * @id: The id of the menu to lookup.
- *
- * Similar to gtk_application_get_menu_by_id() but takes into account merging
- * the menus provided by, and extended by, plugins.
- *
- * Returns: (transfer none): A #GMenu.
- */
-GMenu *
-gy_app_get_menu_by_id (GyApp          *self,
-                       const gchar    *id)
-{
-  g_return_val_if_fail (GY_IS_APP (self), NULL);
-  g_return_val_if_fail (id != NULL, NULL);
-
-  if (self->menu_manager != NULL)
-    return egg_menu_manager_get_menu_by_id (self->menu_manager, id);
-
-  g_critical ("%s() called by non-UI process", G_STRFUNC);
-
-  return NULL;
 }

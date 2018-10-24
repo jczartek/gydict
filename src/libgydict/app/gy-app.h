@@ -20,18 +20,17 @@
 #define __GY_APP_H__
 
 #include <gtk/gtk.h>
+#include <dazzle.h>
 
 G_BEGIN_DECLS
 
 #define GY_TYPE_APP    (gy_app_get_type ())
 #define GY_APP_DEFAULT (GY_APP (g_application_get_default ()))
 
-G_DECLARE_FINAL_TYPE (GyApp, gy_app, GY, APP, GtkApplication)
+G_DECLARE_FINAL_TYPE (GyApp, gy_app, GY, APP, DzlApplication)
 
 GyApp *gy_app_new            (void);
 void   gy_app_new_window     (GyApp *self);
-GMenu *gy_app_get_menu_by_id (GyApp       *self,
-                              const gchar *id);
 G_END_DECLS
 
 #endif /* end of include guard: __GY_APP_H__ */

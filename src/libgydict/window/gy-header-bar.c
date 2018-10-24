@@ -45,12 +45,12 @@ gy_header_bar_init (GyHeaderBar *self)
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
-  model = gy_app_get_menu_by_id (GY_APP_DEFAULT, "dict-menu");
+  model = dzl_application_get_menu_by_id (DZL_APPLICATION(GY_APP_DEFAULT), "dict-menu");
   popover = gtk_popover_new_from_model (NULL, G_MENU_MODEL (model));
   gtk_widget_set_size_request (popover, 250, -1);
   gtk_menu_button_set_popover (self->dicts_button, popover);
 
-  model = gy_app_get_menu_by_id (GY_APP_DEFAULT, "gear-menu");
+  model = dzl_application_get_menu_by_id (DZL_APPLICATION(GY_APP_DEFAULT), "gear-menu");
   popover = gtk_popover_new_from_model (NULL, G_MENU_MODEL (model));
   gtk_widget_set_size_request (popover, 225, -1);
   gtk_menu_button_set_popover (self->menu_button, popover);

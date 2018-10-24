@@ -1,13 +1,11 @@
 sources_h = [
-  'egg-binding-group.h',
-  'egg-menu-manager.h'
+  'egg-binding-group.h'
 ]
 
 install_headers(sources_h, subdir: 'gydict/egg')
 
 sources_c = [
   'egg-binding-group.c',
-  'egg-menu-manager.c'
 ]
 
 libegg_inc = include_directories('.')
