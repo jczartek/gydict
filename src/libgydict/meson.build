@@ -31,10 +31,9 @@ libgydict_deps = [
   gio_dep,
   peas_dep,
   dazzle_dep,
-  libegg_dep,
   libpattern_dep,
   pnl_dep,
-  cc.find_library('m',    required: true),
+  cc.find_library('m', required: true),
   cc.find_library('z', required: true)
 ]
 

@@ -101,7 +101,6 @@ i18n  = import('i18n')
 
 subdir('data')
 subdir('po')
-subdir('src/contrib/egg')
 subdir('src/contrib/pattern')
 subdir('src/contrib/pnl')
 subdir('src/libgydict')
