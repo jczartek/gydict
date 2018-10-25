@@ -1,4 +1,4 @@
-@import url("resource:///org/gtk/gydict/Default.css");
+@import url("resource:///org/gtk/gydict/themes/shared.css");
 
 #left_header_bar {
   border-top-right-radius: 0px;

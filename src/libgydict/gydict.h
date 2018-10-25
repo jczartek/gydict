@@ -26,7 +26,6 @@ G_BEGIN_DECLS
 #define GYDICT_INSIDE
 
 #include "app/gy-app.h"
-#include "css/gy-css-provider.h"
 #include "deflist/gy-def-list.h"
 #include "dictionaries/gy-depl.h"
 #include "dictionaries/gy-dict.h"

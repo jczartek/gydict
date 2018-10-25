@@ -8,7 +8,6 @@ libgydict_public_sources =  []
 libgydict_private_sources = ['gy-dict-debug.h']
 
 subdir('app')
-subdir('css')
 subdir('deflist')
 subdir('dictionaries')
 subdir('entryview')

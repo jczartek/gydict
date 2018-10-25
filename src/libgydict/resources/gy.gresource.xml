@@ -11,16 +11,18 @@
     <file alias="gy-shortcuts-window.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-shortcuts-window.ui</file>
     <file alias="gy-header-bar.ui" preprocess="xml-stripblanks">./ui/gy-header-bar.ui</file>
     <file alias="gy-workspace.ui" preprocess="xml-stripblanks">./ui/gy-workspace.ui</file>
+  </gresource>
 
-    <file alias="Adwaita.css">./css/Adwaita.css</file>
-    <file alias="Adwaita-dark.css">./css/Adwaita-dark.css</file>
-    <file alias="Adwaita-shared.css">./css/Adwaita-shared.css</file>
-    <file alias="Default.css">./css/Default.css</file>
+  <gresource prefix="/org/gtk/gydict/themes">
+    <file compressed="true" alias="Adwaita.css">./css/Adwaita.css</file>
+    <file compressed="true" alias="Adwaita-dark.css">./css/Adwaita-dark.css</file>
+    <file compressed="true" alias="Adwaita-shared.css">./css/Adwaita-shared.css</file>
+    <file compressed="true" alias="shared.css">./css/shared.css</file>
   </gresource>
 
 
   <gresource prefix="/org/gtk/gydict/gtk">
-    <file alias="menus.ui">gtk/menus.ui</file>
+    <file preprocess="xml-stripblanks" alias="menus.ui">gtk/menus.ui</file>
   </gresource>
 
 </gresources>

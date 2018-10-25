@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <dazzle.h>
 #include "gy-text-view.h"
 #include "gy-text-buffer.h"
 #include "deflist/gy-def-list.h"
@@ -70,7 +71,7 @@ gy_text_view_rebuild_css (GyTextView *self)
       g_autofree gchar *str = NULL;
       g_autofree gchar *css = NULL;
 
-      str = gy_utility_pango_font_description_to_css (self->font_desc);
+      str = dzl_pango_font_description_to_css (self->font_desc);
 
 #if (GTK_MAJOR_VERSION >= 3) && (GTK_MINOR_VERSION >= 20)
       css = g_strdup_printf ("textview { %s }", str ?: "");

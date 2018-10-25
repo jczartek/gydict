@@ -20,7 +20,6 @@
 #include <glib/gi18n-lib.h>
 #include "gy-app.h"
 #include "window/gy-window.h"
-#include "css/gy-css-provider.h"
 #include "preferences/gy-preferences-window.h"
 #include "dictionaries/gy-dict.h"
 #include "shortcuts/gy-shortcuts-window.h"
@@ -237,7 +236,7 @@ gy_app_register_theme_overrides (GyApp *self)
   GtkSettings          *gtk_settings;
   GdkScreen            *screen;
 
-  provider = gy_css_provider_new ();
+  provider = dzl_css_provider_new ("/org/gtk/gydict/themes");
   screen = gdk_screen_get_default ();
 
   gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (provider),

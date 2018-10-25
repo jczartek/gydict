@@ -32,8 +32,6 @@ gboolean gy_utility_is_handler_connected (gpointer instance,
 extern gint gy_utility_strcmp (const gchar *p1,
                                const gchar *p2,
                                size_t n);
-extern gchar *gy_utility_pango_font_description_to_css (const PangoFontDescription *font_desc);
-
 extern gchar *gy_utility_compute_md5_for_file (GFile  *file,
                                                GError **err);
 
