@@ -16,7 +16,6 @@ subdir('preferences')
 subdir('printing')
 subdir('resources')
 subdir('search')
-subdir('shortcuts')
 subdir('window')
 
 libgydct_sources = [

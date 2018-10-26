@@ -8,7 +8,6 @@
     <file alias="gy-preferences-switch.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-preferences-switch.ui</file>
     <file alias="gy-preferences-page-dicts.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-preferences-page-dicts.ui</file>
     <file alias="gy-preferences-file-chooser.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-preferences-file-chooser.ui</file>
-    <file alias="gy-shortcuts-window.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-shortcuts-window.ui</file>
     <file alias="gy-header-bar.ui" preprocess="xml-stripblanks">./ui/gy-header-bar.ui</file>
     <file alias="gy-workspace.ui" preprocess="xml-stripblanks">./ui/gy-workspace.ui</file>
   </gresource>
@@ -23,6 +22,7 @@
 
   <gresource prefix="/org/gtk/gydict/gtk">
     <file preprocess="xml-stripblanks" alias="menus.ui">gtk/menus.ui</file>
+    <file preprocess="xml-stripblanks" alias="help-overlay.ui">gtk/help-overlay.ui</file>
   </gresource>
 
 </gresources>

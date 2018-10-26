@@ -42,7 +42,7 @@
 
       <item>
         <attribute name="label" translatable="yes">Keyboard shortcuts</attribute>
-        <attribute name="action">app.shortcuts</attribute>
+        <attribute name="action">win.show-help-overlay</attribute>
       </item>
 
       <item>

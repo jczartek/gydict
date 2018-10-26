@@ -47,7 +47,6 @@ G_BEGIN_DECLS
 #include "printing/gy-print.h"
 #include "printing/gy-print-compositor.h"
 #include "search/gy-search-bar.h"
-#include "shortcuts/gy-shortcuts-window.h"
 #include "window/gy-header-bar.h"
 #include "window/gy-window.h"
 #include "window/gy-workspace.h"

@@ -22,7 +22,6 @@
 #include "window/gy-window.h"
 #include "preferences/gy-preferences-window.h"
 #include "dictionaries/gy-dict.h"
-#include "shortcuts/gy-shortcuts-window.h"
 #include "resources/gy-resources.h"
 
 
@@ -38,9 +37,6 @@ static void preferences_cb (GSimpleAction *action,
 static void about_cb (GSimpleAction *action,
                       GVariant      *parameter,
                       gpointer       user_data);
-static void shortcuts_cb (GSimpleAction *action,
-                          GVariant      *variant,
-                          gpointer       data);
 
 struct _GyApp
 {
@@ -57,7 +53,6 @@ static GActionEntry app_entries[] =
   { "prefs", preferences_cb, NULL, NULL, NULL },
   { "about", about_cb, NULL, NULL, NULL},
   { "quit", quit_cb, NULL, NULL, NULL },
-  { "shortcuts", shortcuts_cb, NULL, NULL, NULL },
 };
 
 inline static void
@@ -80,41 +75,6 @@ new_window_cb (GSimpleAction *action G_GNUC_UNUSED,
   window = gy_window_new (app);
   gtk_application_add_window (GTK_APPLICATION (app), GTK_WINDOW (window));
   gtk_widget_show_all (window);
-}
-
-static void
-shortcuts_cb (GSimpleAction *action,
-              GVariant      *variant,
-              gpointer       data)
-{
-  GyApp *self = GY_APP (data);
-  GtkWindow *window, *parent = NULL;
-  GList *list;
-
-  g_assert (GY_IS_APP (self));
-
-  list = gtk_application_get_windows (GTK_APPLICATION (self));
-
-  for (; list; list = list->next)
-    {
-      window = list->data;
-
-      if (GY_IS_SHORTCUTS_WINDOW (window))
-        {
-          gtk_window_present (window);
-          return;
-        }
-
-      if (GY_IS_WINDOW (window))
-        parent = window;
-    }
-
-  window = g_object_new (GY_TYPE_SHORTCUTS_WINDOW,
-                         "application", self,
-                         "window-position", GTK_WIN_POS_CENTER,
-                         "transient-for", parent, NULL);
-
-  gtk_window_present (GTK_WINDOW (window));
 }
 
 static void
