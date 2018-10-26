@@ -25,7 +25,7 @@ G_BEGIN_DECLS
 
 #define GY_TYPE_WINDOW (gy_window_get_type ())
 
-G_DECLARE_FINAL_TYPE (GyWindow, gy_window, GY, WINDOW, GtkApplicationWindow)
+G_DECLARE_FINAL_TYPE (GyWindow, gy_window, GY, WINDOW, DzlApplicationWindow)
 
 GtkWidget*     gy_window_new             (GyApp *application);
 GtkWidget*     gy_window_get_text_view   (GyWindow *self);

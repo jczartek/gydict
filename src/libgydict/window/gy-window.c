@@ -47,14 +47,14 @@ static void respond_clipboard_cb (GSimpleAction *action,
 
 struct _GyWindow
 {
-  GtkApplicationWindow  __parent__;
+  DzlApplicationWindow  __parent__;
   GyWorkspace          *workspace;
   GyHeaderBar          *header_bar;
   GtkWidget            *findbar;
   GtkClipboard         *clipboard; /* Non free! */
 };
 
-G_DEFINE_TYPE (GyWindow, gy_window, GTK_TYPE_APPLICATION_WINDOW);
+G_DEFINE_TYPE (GyWindow, gy_window, DZL_TYPE_APPLICATION_WINDOW);
 
 static GActionEntry win_entries[] =
 {

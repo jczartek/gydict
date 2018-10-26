@@ -40,7 +40,7 @@ static void about_cb (GSimpleAction *action,
 
 struct _GyApp
 {
-  GtkApplication       __parent__;
+  DzlApplication        __parent__;
   GyPreferencesWindow   *preferences_window;
 };
 

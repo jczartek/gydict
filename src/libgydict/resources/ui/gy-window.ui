@@ -4,7 +4,7 @@
 	<object class="GyTextBuffer" id="text_buffer">
 	</object>
 
-	<template class="GyWindow" parent="GtkApplicationWindow">
+	<template class="GyWindow" parent="DzlApplicationWindow">
 		<property name="can_focus">False</property>
 		<property name="has_focus">False</property>
 		<property name="is_focus">False</property>
