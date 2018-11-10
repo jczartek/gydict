@@ -20,7 +20,7 @@
 #include <glib/gi18n-lib.h>
 #include "gy-app.h"
 #include "window/gy-window.h"
-#include "preferences/gy-preferences-window.h"
+#include "preferences/gy-prefs-window.h"
 #include "dictionaries/gy-dict.h"
 #include "resources/gy-resources.h"
 
@@ -41,7 +41,6 @@ static void about_cb (GSimpleAction *action,
 struct _GyApp
 {
   DzlApplication        __parent__;
-  GyPreferencesWindow   *preferences_window;
 };
 
 G_DEFINE_TYPE (GyApp, gy_app, DZL_TYPE_APPLICATION);
@@ -82,22 +81,31 @@ preferences_cb (GSimpleAction *action G_GNUC_UNUSED,
                 GVariant      *parametr G_GNUC_UNUSED,
                 gpointer       data)
 {
-  GyApp *self = GY_APP (data);
+  GyApp *self         = GY_APP (data);
+  GtkWindow *toplevel = NULL;
+  GtkWindow *window   = NULL;
+  GList *windows      = NULL;
 
-  if (self->preferences_window == NULL)
+
+  windows = gtk_application_get_windows (GTK_APPLICATION (self));
+  for (; windows != NULL; windows = windows->next)
     {
-      GyPreferencesWindow *prefs_window;
+      GtkWindow *win = windows->data;
 
-      prefs_window = g_object_new (GY_TYPE_PREFERENCES_WINDOW,
-                                   "type-hint", GDK_WINDOW_TYPE_HINT_DIALOG,
-                                   "window-position", GTK_WIN_POS_CENTER, NULL);
+      if (GY_IS_PREFS_WINDOW (win))
+        {
+          gtk_window_present (win);
+          return;
+        }
 
-      self->preferences_window = prefs_window;
-      g_object_add_weak_pointer (G_OBJECT (prefs_window),
-                                 (gpointer *)&self->preferences_window);
+      if (toplevel == NULL && GY_IS_WINDOW (win))
+        toplevel = win;
     }
 
-  gtk_window_present (GTK_WINDOW (self->preferences_window));
+
+  window = g_object_new (GY_TYPE_PREFS_WINDOW, "transient-for", toplevel, NULL);
+  gtk_application_add_window (GTK_APPLICATION (self), window);
+  gtk_window_present (window);
 }
 
 static void

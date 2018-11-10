@@ -1,19 +1,11 @@
 preferences_headers = [
-  'gy-preferences-file-chooser.h',
-  'gy-preferences-page.h',
-  'gy-preferences-page-dicts.h',
-  'gy-preferences-page-general.h',
-  'gy-preferences-switch.h',
-  'gy-preferences-window.h'
+  'gy-prefs-view.h',
+  'gy-prefs-window.h'
 ]
 
 preferences_sources = [
-  'gy-preferences-file-chooser.c',
-  'gy-preferences-page.c',
-  'gy-preferences-page-dicts.c',
-  'gy-preferences-page-general.c',
-  'gy-preferences-switch.c',
-  'gy-preferences-window.c'
+  'gy-prefs-view.c',
+  'gy-prefs-window.c'
 ]
 
 libgydict_public_headers += files(preferences_headers)

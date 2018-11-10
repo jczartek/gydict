@@ -1,6 +1,6 @@
-/* gy-preferences-window.h
+/* gy-prefs-window.h
  *
- * Copyright (C) 2015 Jakub Czartek <kuba@linux.pl>
+ * Copyright 2018 Jakub Czartek <kuba@linux.pl>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,19 +14,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#ifndef __GY_PREFERENCES_WINDOW_H__
-#define __GY_PREFERENCES_WINDOW_H__
+#pragma once
 
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-#define GY_TYPE_PREFERENCES_WINDOW (gy_preferences_window_get_type())
+#define GY_TYPE_PREFS_WINDOW (gy_prefs_window_get_type())
 
-G_DECLARE_FINAL_TYPE (GyPreferencesWindow, gy_preferences_window, GY, PREFERENCES_WINDOW, GtkWindow)
+G_DECLARE_FINAL_TYPE (GyPrefsWindow, gy_prefs_window, GY, PREFS_WINDOW, GtkWindow)
+
+GyPrefsWindow *gy_prefs_window_new (void);
 
 G_END_DECLS
-
-#endif /* __GY_PREFERENCES_WINDOW_H__ */

@@ -1,6 +1,6 @@
-/* gy-preferences-page-dicts.h
+/* gy-prefs-view.h
  *
- * Copyright (C) 2015 Jakub Czartek <kuba@linux.pl>
+ * Copyright 2018 Jakub Czartek <kuba@linux.pl>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,20 +14,20 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
-#ifndef __GY_PREFERENCES_PAGE_DICTS_H__
-#define __GY_PREFERENCES_PAGE_DICTS_H__
 
-#include "gy-preferences-page.h"
+#pragma once
+
+#include <dazzle.h>
 
 G_BEGIN_DECLS
 
-#define GY_TYPE_PREFERENCES_PAGE_DICTS (gy_preferences_page_dicts_get_type ())
+#define GY_TYPE_PREFS_VIEW (gy_prefs_view_get_type())
 
-G_DECLARE_FINAL_TYPE (GyPreferencesPageDicts, gy_preferences_page_dicts,
-                      GY, PREFERENCES_PAGE_DICTS, GyPreferencesPage);
+G_DECLARE_FINAL_TYPE (GyPrefsView, gy_prefs_view, GY, PREFS_VIEW, DzlPreferencesView)
 
-
+GtkSizeGroup * gy_prefs_view_get_size_group (GyPrefsView *self,
+                                             const gchar *name_group);
 G_END_DECLS
-
-#endif /* __GY_PREFERENCES_PAGE_DICTS_H__ */

@@ -1,6 +1,6 @@
-/* gy-preferences-page-dicts.c
+/* gy-prefs-window.c
  *
- * Copyright (C) 2015 Jakub Czartek <kuba@linux.pl>
+ * Copyright 2018 Jakub Czartek <kuba@linux.pl>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,30 +14,35 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "gy-preferences-page-dicts.h"
-#include "gy-preferences-file-chooser.h"
+#include "gy-prefs-window.h"
 
-struct _GyPreferencesPageDicts
+struct _GyPrefsWindow
 {
-  GyPreferencesPage  parent;
+  GtkWindow parent_instance;
 };
 
-G_DEFINE_TYPE (GyPreferencesPageDicts, gy_preferences_page_dicts, GY_TYPE_PREFERENCES_PAGE)
+G_DEFINE_TYPE (GyPrefsWindow, gy_prefs_window, GTK_TYPE_WINDOW)
 
-static void
-gy_preferences_page_dicts_class_init (GyPreferencesPageDictsClass *klass)
+GyPrefsWindow *
+gy_prefs_window_new (void)
 {
-  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
-
-  gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-preferences-page-dicts.ui");
-
-  g_type_ensure (GY_TYPE_PREFERENCES_FILE_CHOOSER);
+  return g_object_new (GY_TYPE_PREFS_WINDOW, NULL);
 }
 
 static void
-gy_preferences_page_dicts_init (GyPreferencesPageDicts *self)
+gy_prefs_window_class_init (GyPrefsWindowClass *klass)
+{
+  GtkWidgetClass *wclass = GTK_WIDGET_CLASS (klass);
+
+  gtk_widget_class_set_template_from_resource (wclass, "/org/gtk/gydict/gy-prefs-window.ui");
+}
+
+static void
+gy_prefs_window_init (GyPrefsWindow *self)
 {
   gtk_widget_init_template (GTK_WIDGET (self));
 }
