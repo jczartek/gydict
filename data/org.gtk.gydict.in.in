@@ -4,6 +4,7 @@ Comment=Dictionary PWN
 GenericName=Dictionary
 Keywords=office;dictionary;
 Exec=gydict
+DBusActivatable=true
 Terminal=false
 Type=Application
 Icon=gydict

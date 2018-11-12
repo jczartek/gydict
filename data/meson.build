@@ -8,8 +8,8 @@ install_subdir('icons/48x48', install_dir: icondir)
 install_subdir('icons/256x256', install_dir: icondir)
 
 desktop_file = i18n.merge_file(
-  input: 'gydict.desktop.in.in',
-  output: 'gydict.desktop',
+  input: 'org.gtk.gydict.in.in',
+  output: 'org.gtk.gydict.desktop',
   type: 'desktop',
   po_dir: po_dir,
   install: true,
@@ -26,3 +26,13 @@ install_data([
   'org.gtk.gydict.workspace.gschema.xml'
 ], install_dir: gydict_schemadir)
 
+# D-Bus service file.
+dbusconf = configuration_data()
+dbusconf.set('bindir', join_paths(get_option('prefix'), get_option('bindir')))
+configure_file(
+	input: 'org.gtk.gydict.service.in',
+	output: 'org.gtk.gydict.service',
+	configuration: dbusconf,
+	install: true,
+	install_dir: join_paths(get_option('datadir'), 'dbus-1', 'services'),
+)
