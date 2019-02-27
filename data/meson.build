@@ -23,7 +23,7 @@ endif
 
 install_data([
   'org.gtk.gydict.gschema.xml',
-  'org.gtk.gydict.workspace.gschema.xml'
+  'org.gtk.gydict.dockbin.gschema.xml'
 ], install_dir: gydict_schemadir)
 
 # D-Bus service file.

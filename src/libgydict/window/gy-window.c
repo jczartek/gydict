@@ -48,6 +48,7 @@ static void respond_clipboard_cb (GSimpleAction *action,
 struct _GyWindow
 {
   DzlApplicationWindow  __parent__;
+  DzlDockBin           *dockbin;
   GyWorkspace          *workspace;
   GyHeaderBar          *header_bar;
   GtkWidget            *findbar;
@@ -181,14 +182,18 @@ gy_window_init (GyWindow *self)
 {
   GtkTreeView *treeview;
   GtkEntry    *entry;
+  GActionGroup *dockbin_actions;
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
-  g_action_map_add_action_entries (G_ACTION_MAP (self), win_entries,
-                                   G_N_ELEMENTS (win_entries), self);
-  gy_workspace_attach_action (self->workspace, self);
+  dockbin_actions = gtk_widget_get_action_group (GTK_WIDGET(self->dockbin), "dockbin");
+  gtk_widget_insert_action_group (GTK_WIDGET (self), "dockbin", dockbin_actions);
 
   gy_window_settings_register (GTK_WINDOW (self));
+
+  /*g_action_map_add_action_entries (G_ACTION_MAP (self), win_entries,
+                                   G_N_ELEMENTS (win_entries), self);
+  gy_workspace_attach_action (self->workspace, self);
 
   g_object_get (self->workspace, "left-widget", &treeview, NULL);
   entry = gy_header_bar_get_entry (self->header_bar);
@@ -199,7 +204,7 @@ gy_window_init (GyWindow *self)
   gy_header_bar_grab_focus_for_entry (self->header_bar);
 
   g_signal_connect (self, "button-press-event",
-                    G_CALLBACK (gy_window_button_press_event), treeview);
+                    G_CALLBACK (gy_window_button_press_event), treeview);*/
 
 }
 
@@ -208,10 +213,10 @@ gy_window_class_init (GyWindowClass *klass)
 {
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  gtk_widget_class_set_template_from_resource (widget_class,
-                                               "/org/gtk/gydict/gy-window.ui");
-  gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
-  gtk_widget_class_bind_template_child (widget_class, GyWindow, workspace);
+  gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-window.ui");
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, dockbin);
+  /*gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, workspace);*/
 }
 
 /**PUBLIC METHOD**/
@@ -251,4 +256,12 @@ gy_window_clear_search_entry (GyWindow *self)
   g_return_if_fail (GY_IS_WINDOW (self));
 
   gy_header_bar_set_text_in_entry (self->header_bar, "");
+}
+
+DzlDockBin *
+gy_window_get_dockbin (GyWindow *self)
+{
+  g_return_val_if_fail (GY_IS_WINDOW (self), NULL);
+
+  return self->dockbin;
 }

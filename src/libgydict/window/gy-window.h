@@ -31,6 +31,7 @@ GtkWidget*     gy_window_new             (GyApp *application);
 GtkWidget*     gy_window_get_text_view   (GyWindow *self);
 void           gy_window_grab_focus      (GyWindow *self);
 void           gy_window_clear_search_entry (GyWindow *self);
+DzlDockBin*    gy_window_get_dockbin (GyWindow *self);
 
 G_END_DECLS
 

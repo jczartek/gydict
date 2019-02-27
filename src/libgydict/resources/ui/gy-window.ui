@@ -5,14 +5,75 @@
 	</object>
 
 	<template class="GyWindow" parent="DzlApplicationWindow">
-		<property name="can_focus">False</property>
-		<property name="has_focus">False</property>
-		<property name="is_focus">False</property>
+		<property name="can_focus">false</property>
+		<property name="has_focus">false</property>
+		<property name="is_focus">false</property>
 	  <child type="titlebar">
 	    <object class="GyHeaderBar" id="header_bar"></object>
 	  </child>
-	  <child>
+	  <!--<child>
 	    <object class="GyWorkspace" id="workspace"></object>
+	  </child>-->
+
+	  <child>
+	    <object class="DzlDockBin" id="dockbin">
+	      <property name="visible">true</property>
+
+	      <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">true</property>
+            <property name="expand">true</property>
+            <child>
+              <object class="GyTextView" id="textview">
+                <property name="visible">true</property>
+                <property name="editable">false</property>
+                <property name="margin_top">2</property>
+                <property name="margin_bottom">3</property>
+                <property name="pixels_above_lines">4</property>
+                <property name="pixels_below_lines">4</property>
+                <property name="pixels_inside_wrap">2</property>
+                <property name="left_margin">10</property>
+                <property name="right_margin">10</property>
+                <property name="wrap-mode">word</property>
+                <property name="buffer">buffer</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+	      <child type="left">
+          <object class="GtkScrolledWindow">
+            <property name="visible">true</property>
+            <property name="expand">true</property>
+            <child>
+              <object class="GyDefList" id="deflist">
+                <property name="visible">true</property>
+                <property name="headers_visible">false</property>
+                <property name="fixed_height_mode">true</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection" id="treev_selection" />
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="treev_column">
+                    <property name="sizing">fixed</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="ct_renderer" />
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+
+	    </object>
 	  </child>
-  </template>
+
+
+	</template>
+  <object class="GyTextBuffer" id="buffer"></object>
 </interface>

@@ -21,6 +21,8 @@
  * Please see: https://github.com/chergert/gnome-builder/blob/master/libide/util/ide-window-settings.c
  */
 
+#include <dazzle.h>
+#include "gy-window.h"
 #include "gy-window-settings.h"
 
 #define SAVE_TIMEOUT_SECS    1
@@ -92,6 +94,14 @@ gy_window_settings__window_realize (GtkWindow *window)
 
   if (maximized)
     gtk_window_maximize (window);
+
+  DzlDockBin* dockbin = gy_window_get_dockbin (GY_WINDOW (window));
+  GtkWidget * edge = dzl_dock_bin_get_left_edge (dockbin);
+
+  g_settings_bind (settings, "left-panel-visible", edge, "reveal-child", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (settings, "left-panel-position", edge, "position", G_SETTINGS_BIND_DEFAULT);
+
+
 }
 
 static void

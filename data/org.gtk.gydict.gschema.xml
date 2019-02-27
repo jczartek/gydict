@@ -2,6 +2,32 @@
 
   <schema id="org.gtk.gydict" path="/org/gtk/gydict/">
 
+     <key name="left-panel-visible" type="b">
+      <default>true</default>
+      <summary>Show Left Panel</summary>
+      <description>Show the left Panel if it's enabled.</description>
+    </key>
+
+    <key name="left-panel-position" type="i">
+      <range min="1" max="1000" />
+      <default>200</default>
+      <summary>Left Panel Position</summary>
+      <description>The width in pixel units of the left panel.</description>
+    </key>
+
+    <key name="right-panel-visible" type="b">
+      <default>true</default>
+      <summary>Show Rright Panel</summary>
+      <description>Show the right Panel if it's enabled.</description>
+    </key>
+
+    <key name="right-panel-position" type="i">
+      <range min="1" max="1000" />
+      <default>200</default>
+      <summary>Right Panel Position</summary>
+      <description>The width in pixel units of the right panel.</description>
+    </key>
+
     <key name="window-size" type="(ii)">
       <default>(-1, -1)</default>
       <summary>Window size</summary>
