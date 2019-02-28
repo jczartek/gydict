@@ -24,6 +24,11 @@
 #include "gy-window-settings.h"
 #include "gy-header-bar.h"
 #include "gy-workspace.h"
+#include "dictionaries/gy-dict.h"
+#include "dictionaries/gy-dict-manager.h"
+#include "deflist/gy-def-list.h"
+#include "entryview/gy-text-view.h"
+#include "entryview/gy-text-buffer.h"
 #include "helpers/gy-utility-func.h"
 #include "printing/gy-print.h"
 #include "entryview/gy-text-view.h"
@@ -32,23 +37,14 @@
 #define MOUSE_UP_BUTTON   8
 #define MOUSE_DOWN_BUTTON 9
 
-static void gear_menu_cb (GSimpleAction *action,
-                          GVariant      *parametr,
-                          gpointer       data);
-static void dict_menu_cb (GSimpleAction *action,
-                          GVariant      *parametr,
-                          gpointer       data);
-static void quit_win_cb (GSimpleAction *action,
-                         GVariant      *parameter,
-                         gpointer       data);
-static void respond_clipboard_cb (GSimpleAction *action,
-                                  GVariant      *parameter,
-                                  gpointer       data);
-
 struct _GyWindow
 {
   DzlApplicationWindow  __parent__;
   DzlDockBin           *dockbin;
+  GyDefList            *deflist;
+  GyTextView           *textview;
+  GyTextBuffer         *buffer;
+  GyDictManager        *manager_dicts;
   GyWorkspace          *workspace;
   GyHeaderBar          *header_bar;
   GtkWidget            *findbar;
@@ -57,16 +53,15 @@ struct _GyWindow
 
 G_DEFINE_TYPE (GyWindow, gy_window, DZL_TYPE_APPLICATION_WINDOW);
 
-static GActionEntry win_entries[] =
+enum
 {
-  { "print", gy_print_do_printing, NULL, NULL, NULL },
-  { "clip", respond_clipboard_cb, NULL, "false", NULL },
-  { "close", quit_win_cb, NULL, NULL, NULL },
-  { "dict-menu", dict_menu_cb, NULL, "false", NULL },
-  { "gear-menu", gear_menu_cb, NULL, "false", NULL },
+  PROP_0,
+  PROP_MANAGER_DICTS,
+  N_PROPS
 };
 
-/**STATIC FUNCTION**/
+static GParamSpec *properties[N_PROPS];
+
 static void
 owner_change_cb (GtkClipboard        *clipboard,
                  GdkEventOwnerChange *event G_GNUC_UNUSED,
@@ -97,9 +92,9 @@ owner_change_cb (GtkClipboard        *clipboard,
 }
 
 static void
-respond_clipboard_cb (GSimpleAction *action,
-                      GVariant      *parameter G_GNUC_UNUSED,
-                      gpointer       data)
+gy_window_action_respond_clipboard (GSimpleAction *action,
+                                    GVariant      *parameter  G_GNUC_UNUSED,
+                                    gpointer       data)
 {
   gboolean respond;
   GVariant *state;
@@ -124,38 +119,90 @@ respond_clipboard_cb (GSimpleAction *action,
 }
 
 static void
-dict_menu_cb(GSimpleAction *action,
-             GVariant      *parametr G_GNUC_UNUSED,
-             gpointer       data G_GNUC_UNUSED)
-{
-  GVariant *state;
-
-  state = g_action_get_state (G_ACTION (action));
-  g_action_change_state (G_ACTION (action),
-                         g_variant_new_boolean (!g_variant_get_boolean (state)));
-  g_variant_unref (state);
-}
-
-static void
-gear_menu_cb(GSimpleAction *action,
-             GVariant      *parametr G_GNUC_UNUSED,
-             gpointer       data G_GNUC_UNUSED)
-{
-  GVariant *state;
-
-  state = g_action_get_state (G_ACTION (action));
-  g_action_change_state (G_ACTION (action),
-                         g_variant_new_boolean (!g_variant_get_boolean (state)));
-  g_variant_unref (state);
-}
-
-static void
-quit_win_cb (GSimpleAction *action G_GNUC_UNUSED,
-             GVariant      *parameter G_GNUC_UNUSED,
-             gpointer       data)
+gy_window_action_quit_win_cb (GSimpleAction *action    G_GNUC_UNUSED,
+                              GVariant      *parameter G_GNUC_UNUSED,
+                              gpointer       data)
 {
   GyWindow *self = GY_WINDOW (data);
   gtk_widget_destroy (GTK_WIDGET (self));
+}
+
+static void
+gy_window_action_switch_dict (GSimpleAction *action,
+                              GVariant      *parameter,
+                              gpointer       data)
+{
+  GyWindow    *self   = (GyWindow *) data;
+  GyDict      *dict   = NULL;
+  g_autoptr(GVariant) state = NULL;
+  const gchar *str;
+
+  state = g_action_get_state (G_ACTION (action));
+
+  if (g_variant_compare (parameter, state) == 0) return;
+
+  str = g_variant_get_string (parameter, NULL);
+
+  dict = gy_dict_manager_set_dict (self->manager_dicts, str);
+  if (!dict) return;
+
+  gy_text_buffer_clean_buffer (self->buffer);
+
+  gtk_tree_view_set_model (GTK_TREE_VIEW (self->deflist),
+                           gy_dict_get_tree_model (dict));
+
+  gy_window_clear_search_entry (self);
+  gy_window_grab_focus (GY_WINDOW (self));
+
+  //gy_store_entry_remove_all (self->store_entry);
+  //gy_entry_collector_foreach (GY_ENTRY_COLLECTOR (dict), gy_workspace_fill_store_entry, self);
+
+  g_action_change_state (G_ACTION (action), parameter);
+}
+
+static GActionEntry win_entries[] =
+{
+  { "print", gy_print_do_printing, NULL, NULL, NULL },
+  { "clip", gy_window_action_respond_clipboard, NULL, "false", NULL },
+  { "close", gy_window_action_quit_win_cb, NULL, NULL, NULL },
+  { "switch-dict", gy_window_action_switch_dict, "s", "''", NULL},
+};
+
+
+static void
+gy_window_set_property (GObject      *object,
+                        guint         prop_id,
+                        const GValue *value,
+                        GParamSpec   *pspec)
+{
+  GyWindow *self = GY_WINDOW (object);
+
+  switch (prop_id)
+    {
+    case PROP_MANAGER_DICTS:
+      self->manager_dicts = g_value_dup_object (value);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
+}
+
+static void
+gy_window_get_property (GObject    *object,
+                        guint       prop_id,
+                        GValue     *value,
+                        GParamSpec *pspec)
+{
+  GyWindow *self = GY_WINDOW (object);
+
+  switch (prop_id)
+    {
+    case PROP_MANAGER_DICTS:
+      g_value_set_object (value, self->manager_dicts);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
 }
 
 static gboolean
@@ -180,43 +227,52 @@ gy_window_button_press_event (GtkWidget      *w,
 static void
 gy_window_init (GyWindow *self)
 {
-  GtkTreeView *treeview;
   GtkEntry    *entry;
   GActionGroup *dockbin_actions;
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
+  g_action_map_add_action_entries (G_ACTION_MAP (self), win_entries,
+                                   G_N_ELEMENTS (win_entries), self);
   dockbin_actions = gtk_widget_get_action_group (GTK_WIDGET(self->dockbin), "dockbin");
   gtk_widget_insert_action_group (GTK_WIDGET (self), "dockbin", dockbin_actions);
 
   gy_window_settings_register (GTK_WINDOW (self));
 
-  /*g_action_map_add_action_entries (G_ACTION_MAP (self), win_entries,
-                                   G_N_ELEMENTS (win_entries), self);
-  gy_workspace_attach_action (self->workspace, self);
-
-  g_object_get (self->workspace, "left-widget", &treeview, NULL);
-  entry = gy_header_bar_get_entry (self->header_bar);
-  gtk_tree_view_set_search_entry (treeview, entry);
-
   self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
-
   gy_header_bar_grab_focus_for_entry (self->header_bar);
 
+  entry = gy_header_bar_get_entry (self->header_bar);
+  gtk_tree_view_set_search_entry (GTK_TREE_VIEW(self->deflist), entry);
+
   g_signal_connect (self, "button-press-event",
-                    G_CALLBACK (gy_window_button_press_event), treeview);*/
+                    G_CALLBACK (gy_window_button_press_event), self->deflist);
 
 }
 
 static void
 gy_window_class_init (GyWindowClass *klass)
 {
+  GObjectClass   *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+
+  object_class->set_property = gy_window_set_property;
+  object_class->get_property = gy_window_get_property;
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-window.ui");
   gtk_widget_class_bind_template_child (widget_class, GyWindow, dockbin);
-  /*gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
-  gtk_widget_class_bind_template_child (widget_class, GyWindow, workspace);*/
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, deflist);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, textview);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, buffer);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
+
+  properties[PROP_MANAGER_DICTS] =
+    g_param_spec_object ("manager-dicts",
+                         "manager-dicts",
+                         "The manager of dictionaries.",
+                         GY_TYPE_DICT_MANAGER,
+                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
 /**PUBLIC METHOD**/
@@ -234,12 +290,10 @@ gy_window_new (GyApp *application)
 GtkWidget *
 gy_window_get_text_view (GyWindow *self)
 {
-  GtkWidget *tv = NULL;
+  g_return_val_if_fail (GY_IS_WINDOW (self), NULL);
 
-  g_object_get (self->workspace, "right-widget", &tv, NULL);
-  g_return_val_if_fail (GY_IS_TEXT_VIEW (tv), NULL);
 
-  return tv;
+  return GTK_WIDGET (self->textview);
 }
 
 void
