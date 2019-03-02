@@ -9,9 +9,6 @@
 	  <child type="titlebar">
 	    <object class="GyHeaderBar" id="header_bar"></object>
 	  </child>
-	  <!--<child>
-	    <object class="GyWorkspace" id="workspace"></object>
-	  </child>-->
 
 	  <child>
 	    <object class="DzlDockBin" id="dockbin">
@@ -71,6 +68,20 @@
           <object class="GySearchBar" id="search_bar">
             <property name="visible">true</property>
             <property name="buffer">buffer</property>
+          </object>
+        </child>
+
+
+	      <child type="right">
+          <object class="GtkScrolledWindow">
+            <property name="visible">true</property>
+            <property name="expand">true</property>
+            <child>
+              <object class="GyHistoryBox" id="history_box">
+                <property name="visible">true</property>
+                <property name="selection-mode">none</property>
+              </object>
+            </child>
           </object>
         </child>
 

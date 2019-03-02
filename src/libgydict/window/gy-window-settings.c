@@ -101,6 +101,11 @@ gy_window_settings__window_realize (GtkWindow *window)
   g_settings_bind (settings, "left-panel-visible", edge, "reveal-child", G_SETTINGS_BIND_DEFAULT);
   g_settings_bind (settings, "left-panel-position", edge, "position", G_SETTINGS_BIND_DEFAULT);
 
+  edge = dzl_dock_bin_get_right_edge (dockbin);
+
+  g_settings_bind (settings, "right-panel-visible", edge, "reveal-child", G_SETTINGS_BIND_DEFAULT);
+  g_settings_bind (settings, "right-panel-position", edge, "position", G_SETTINGS_BIND_DEFAULT);
+
 
 }
 

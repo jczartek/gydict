@@ -99,7 +99,7 @@
             <property name="visible">true</property>
             <property name="valign">center</property>
             <property name="tooltip_text" translatable="yes">Collect word</property>
-            <property name="action_name">workspace.collect</property>
+            <property name="action_name">win.add-to-history</property>
             <style>
               <class name="image-button" />
             </style>
@@ -107,7 +107,7 @@
               <object class="GtkImage">
                 <property name="visible">true</property>
                 <property name="icon_size">1</property>
-                <property name="icon_name">go-jump-symbolic</property>
+                <property name="icon_name">list-add-symbolic</property>
               </object>
             </child>
           </object>

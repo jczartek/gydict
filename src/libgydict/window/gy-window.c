@@ -23,6 +23,7 @@
 #include "gy-window.h"
 #include "gy-window-settings.h"
 #include "gy-header-bar.h"
+#include "gy-history-box.h"
 #include "gy-workspace.h"
 #include "dictionaries/gy-dict.h"
 #include "dictionaries/gy-dict-manager.h"
@@ -44,7 +45,7 @@ struct _GyWindow
   GyTextView           *textview;
   GyTextBuffer         *buffer;
   GyDictManager        *manager_dicts;
-  GyWorkspace          *workspace;
+  GyHistoryBox         *history_box;
   GyHeaderBar          *header_bar;
   GySearchBar          *search_bar;
   GtkClipboard         *clipboard; /* Non free! */
@@ -60,6 +61,22 @@ enum
 };
 
 static GParamSpec *properties[N_PROPS];
+
+static void
+gy_window_action_add_to_history (GSimpleAction *action,
+                                 GVariant      *parameter,
+                                 gpointer      data)
+{
+  gint n_row = -1;
+  g_autofree gchar *s = NULL;
+  GyWindow *self = GY_WINDOW (data);
+
+  n_row = gy_def_list_get_selected_n_row (self->deflist);
+  s = gy_def_list_get_value_for_selected_row (self->deflist);
+
+  if (n_row != -1 && s != NULL)
+    gy_history_box_add (self->history_box, s, (guint) n_row);
+}
 
 static void
 owner_change_cb (GtkClipboard        *clipboard,
@@ -153,8 +170,7 @@ gy_window_action_switch_dict (GSimpleAction *action,
   gy_window_clear_search_entry (self);
   gy_window_grab_focus (GY_WINDOW (self));
 
-  //gy_store_entry_remove_all (self->store_entry);
-  //gy_entry_collector_foreach (GY_ENTRY_COLLECTOR (dict), gy_workspace_fill_store_entry, self);
+  g_object_set (self->history_box, "filter-key", str, NULL);
 
   g_action_change_state (G_ACTION (action), parameter);
 }
@@ -165,6 +181,7 @@ static GActionEntry win_entries[] =
   { "clip", gy_window_action_respond_clipboard, NULL, "false", NULL },
   { "close", gy_window_action_quit_win_cb, NULL, NULL, NULL },
   { "switch-dict", gy_window_action_switch_dict, "s", "''", NULL},
+  { "add-to-history", gy_window_action_add_to_history, NULL, NULL, NULL}
 };
 
 
@@ -290,6 +307,7 @@ gy_window_class_init (GyWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, GyWindow, buffer);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, search_bar);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, history_box);
 
   properties[PROP_MANAGER_DICTS] =
     g_param_spec_object ("manager-dicts",

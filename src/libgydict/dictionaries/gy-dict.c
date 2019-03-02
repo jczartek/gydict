@@ -204,7 +204,6 @@ gy_dict_class_init (GyDictClass *klass)
                           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
   /**
-   *
    * GyDict:is-used:
    *
    * Is the dict being used at the moment?
