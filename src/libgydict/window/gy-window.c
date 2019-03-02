@@ -24,7 +24,6 @@
 #include "gy-window-settings.h"
 #include "gy-header-bar.h"
 #include "gy-history-box.h"
-#include "gy-workspace.h"
 #include "dictionaries/gy-dict.h"
 #include "dictionaries/gy-dict-manager.h"
 #include "deflist/gy-def-list.h"

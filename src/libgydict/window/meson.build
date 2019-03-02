@@ -1,17 +1,13 @@
 window_headers = [
   'gy-header-bar.h',
   'gy-history-box.h',
-  'gy-store-entry.h',
   'gy-window.h',
-  'gy-workspace.h'
 ]
 
 window_sources = [
   'gy-header-bar.c',
   'gy-history-box.c',
-  'gy-store-entry.c',
   'gy-window.c',
-  'gy-workspace.c'
 ]
 
 window_private = [

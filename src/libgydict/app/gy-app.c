@@ -179,11 +179,11 @@ setup_accels (GyApp *self)
       {"win.gear-menu", "F10"},
       {"dockbin.top-visible", "<ctrl>f"},
       {"dockbin.left-visible", "F9"},
-      {"workspace.alter-dict(\"GyEnglishPwn-english\")", "<ALT>1"},
-      {"workspace.alter-dict(\"GyEnglishPwn-polish\")", "<ALT>2"},
-      {"workspace.alter-dict(\"GyGermanPwn-german\")", "<ALT>3"},
-      {"workspace.alter-dict(\"GyGermanPwn-polish\")", "<ALT>4"},
-      {"workspace.alter-dict(\"GyDepl-german\")", "<ALT>5"},
+      {"win.switch-dict(\"GyEnglishPwn-english\")", "<ALT>1"},
+      {"win.switch-dict(\"GyEnglishPwn-polish\")", "<ALT>2"},
+      {"win.switch-dict(\"GyGermanPwn-german\")", "<ALT>3"},
+      {"win.switch-dict(\"GyGermanPwn-polish\")", "<ALT>4"},
+      {"win.switch-dict(\"GyDepl-german\")", "<ALT>5"},
       {NULL, NULL}
   };
 

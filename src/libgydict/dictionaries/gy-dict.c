@@ -24,24 +24,18 @@
 #include "gy-pwn-dict.h"
 #include "gy-english-pwn.h"
 #include "gy-german-pwn.h"
-#include "gy-entry-collector.h"
 #include "../gy-dict-debug.h"
 
-static void gy_dict_entry_collector_interface_init (GyEntryCollectorInterface *iface);
 
 typedef struct _GyDictPrivate
 {
   gchar          *identifier;
   GtkTreeModel   *model;
-  GTree          *entry_collector;
   guint           is_mapped: 1;
   guint           is_used:   1;
 } GyDictPrivate;
 
-G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GyDict, gy_dict, G_TYPE_OBJECT,
-                                  G_ADD_PRIVATE (GyDict)
-                                  G_IMPLEMENT_INTERFACE (GY_TYPE_ENTRY_COLLECTOR,
-                                                         gy_dict_entry_collector_interface_init))
+G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GyDict, gy_dict, G_TYPE_OBJECT, G_ADD_PRIVATE (GyDict))
 
 enum
 {
@@ -64,9 +58,6 @@ gy_dict_finalize (GObject *object)
 
   if (priv->model)
     g_clear_object (&priv->model);
-
-  if (priv->entry_collector)
-    g_clear_pointer (&priv->entry_collector, g_tree_unref);
 
   G_OBJECT_CLASS (gy_dict_parent_class)->finalize (object);
 }
@@ -135,17 +126,6 @@ gy_dict_get_property (GObject    *object,
       }
 }
 
-static gint
-compare_func (gconstpointer a,
-              gconstpointer b,
-              gpointer      data)
-{
-  gint p = GPOINTER_TO_UINT (a);
-  gint q = GPOINTER_TO_UINT (b);
-
-  return p - q;
-}
-
 static void
 gy_dict_init (GyDict *dict)
 {
@@ -153,9 +133,6 @@ gy_dict_init (GyDict *dict)
 
   priv->model = NULL;
   priv->is_mapped = FALSE;
-
-  priv->entry_collector = g_tree_new_full (compare_func, NULL,
-                                           NULL, g_free);
 }
 
 static void
@@ -218,65 +195,6 @@ gy_dict_class_init (GyDictClass *klass)
   g_object_class_install_properties (object_class, LAST_PROP, gParamSpecs);
 
 }
-
-/* INTERFACE */
-
-static gboolean
-gy_dict_entry_collector_add (GyEntryCollector *self,
-                             const gchar      *entry,
-                             guint             idx)
-{
-  gpointer key = NULL;
-  GyDictPrivate *priv = gy_dict_get_instance_private (GY_DICT (self));
-
-  key = GUINT_TO_POINTER (idx);
-
-  if (!g_tree_lookup (priv->entry_collector, (gconstpointer) key))
-    {
-      g_tree_insert (priv->entry_collector, key, (gpointer) g_strdup (entry));
-
-      GYDICT_DEBUG ("%s: the number of elements in EntryCollector is %d",
-                    G_OBJECT_TYPE_NAME (self),
-                    g_tree_nnodes (priv->entry_collector));
-
-      return TRUE;
-    }
-
-  return FALSE;
-}
-
-static void
-gy_dict_entry_collector_remove (GyEntryCollector *self,
-                                guint             idx)
-{
-  gpointer key = NULL;
-  GyDictPrivate *priv = gy_dict_get_instance_private (GY_DICT (self));
-
-  key = GUINT_TO_POINTER (idx);
-
-  if (g_tree_remove (priv->entry_collector, (gconstpointer) key))
-    GYDICT_DEBUG ("%s: the number of elements in EntryCollector is %d",
-                  G_OBJECT_TYPE_NAME (self),
-                  g_tree_nnodes (priv->entry_collector));
-}
-
-static void
-gy_dict_entry_collector_foreach (GyEntryCollector *self,
-                                 GTraverseFunc     func,
-                                 gpointer          data)
-{
-  GyDictPrivate *priv = gy_dict_get_instance_private (GY_DICT (self));
-  g_tree_foreach (priv->entry_collector, func, data);
-}
-
-static void
-gy_dict_entry_collector_interface_init (GyEntryCollectorInterface *iface)
-{
-  iface->add = gy_dict_entry_collector_add;
-  iface->remove = gy_dict_entry_collector_remove;
-  iface->foreach = gy_dict_entry_collector_foreach;
-}
-
 
 /***************************FUBLIC METHOD***************************/
 void

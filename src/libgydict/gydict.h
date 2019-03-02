@@ -45,7 +45,6 @@ G_BEGIN_DECLS
 #include "search/gy-search-bar.h"
 #include "window/gy-header-bar.h"
 #include "window/gy-window.h"
-#include "window/gy-workspace.h"
 
 #undef GYDICT_INSIDE
 

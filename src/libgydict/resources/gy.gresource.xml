@@ -4,7 +4,6 @@
     <file alias="gy-window.ui" preprocess="xml-stripblanks">./ui/gy-window.ui</file>
     <file alias="gy-search-bar.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-searchbar.ui</file>
     <file alias="gy-header-bar.ui" preprocess="xml-stripblanks">./ui/gy-header-bar.ui</file>
-    <file alias="gy-workspace.ui" preprocess="xml-stripblanks">./ui/gy-workspace.ui</file>
     <file alias="gy-prefs-window.ui" preprocess="xml-stripblanks">./ui/gy-prefs-window.ui</file>
   </gresource>
 
