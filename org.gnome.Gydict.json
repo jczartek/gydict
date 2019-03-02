@@ -59,7 +59,7 @@
                 {
                     "type"   : "archive",
                     "url"    : "https://gitlab.gnome.org/GNOME/libdazzle/-/archive/libdazzle-3-30/libdazzle-libdazzle-3-30.tar.bz2",
-                    "sha256" : "b8b6daa2b00927be2764aa75ec19891d627397db75d825f97413183cd43aaece"
+                    "sha256" : "0f2b1efb72e5918ef1f1e74baf481e4f33e595c0b1e69003c541c90829481d65"
                 }
             ]
         },
