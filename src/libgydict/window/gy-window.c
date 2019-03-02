@@ -31,8 +31,7 @@
 #include "entryview/gy-text-buffer.h"
 #include "helpers/gy-utility-func.h"
 #include "printing/gy-print.h"
-#include "entryview/gy-text-view.h"
-#include "deflist/gy-def-list.h"
+#include "search/gy-search-bar.h"
 
 #define MOUSE_UP_BUTTON   8
 #define MOUSE_DOWN_BUTTON 9
@@ -47,7 +46,7 @@ struct _GyWindow
   GyDictManager        *manager_dicts;
   GyWorkspace          *workspace;
   GyHeaderBar          *header_bar;
-  GtkWidget            *findbar;
+  GySearchBar          *search_bar;
   GtkClipboard         *clipboard; /* Non free! */
 };
 
@@ -225,6 +224,25 @@ gy_window_button_press_event (GtkWidget      *w,
 }
 
 static void
+gy_window_notify_top_visible (GObject    *obj,
+                              GParamSpec *pspec,
+                              gpointer    data)
+{
+  GyWindow *self = GY_WINDOW (data);
+  gboolean  is_visible;
+
+  g_object_get (obj, "top-visible", &is_visible, NULL);
+
+  if (is_visible)
+    gy_search_bar_set_search_mode_enabled (self->search_bar, is_visible);
+  else
+    {
+      gy_search_bar_set_search_mode_enabled (self->search_bar, is_visible);
+      gy_window_grab_focus (self);
+    }
+}
+
+static void
 gy_window_init (GyWindow *self)
 {
   GtkEntry    *entry;
@@ -240,13 +258,19 @@ gy_window_init (GyWindow *self)
   gy_window_settings_register (GTK_WINDOW (self));
 
   self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
-  gy_header_bar_grab_focus_for_entry (self->header_bar);
 
+  gy_header_bar_grab_focus_for_entry (self->header_bar);
   entry = gy_header_bar_get_entry (self->header_bar);
   gtk_tree_view_set_search_entry (GTK_TREE_VIEW(self->deflist), entry);
 
+  g_object_set_data (G_OBJECT (self->textview), "manager", self->manager_dicts);
+  g_object_set_data (G_OBJECT (self->buffer), "textview", self->textview);
+  gy_def_list_register_observer (self->deflist, G_OBSERVER (self->textview));
+
   g_signal_connect (self, "button-press-event",
                     G_CALLBACK (gy_window_button_press_event), self->deflist);
+  g_signal_connect (self->dockbin, "notify::top-visible",
+                    G_CALLBACK (gy_window_notify_top_visible), self);
 
 }
 
@@ -265,6 +289,7 @@ gy_window_class_init (GyWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, GyWindow, textview);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, buffer);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, search_bar);
 
   properties[PROP_MANAGER_DICTS] =
     g_param_spec_object ("manager-dicts",

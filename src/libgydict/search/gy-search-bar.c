@@ -76,7 +76,7 @@ gy_search_bar__search_entry_key_press_event (GtkWidget G_GNUC_UNUSED *widget,
   guint keyval;
 
   if (!gdk_event_get_keyval (event, &keyval) ||
-      keyval == GDK_KEY_Escape)
+      keyval == GDK_KEY_Escape || keyval == (GDK_CONTROL_MASK | GDK_KEY_f))
   {
     GtkWidget *toplevel;
 
