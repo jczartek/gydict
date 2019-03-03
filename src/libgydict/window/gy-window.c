@@ -259,6 +259,20 @@ gy_window_notify_top_visible (GObject    *obj,
 }
 
 static void
+gy_window_row_activated (GtkListBox    *box,
+                         GtkListBoxRow *row,
+                         gpointer       data)
+{
+  gint      n_row = -1;
+  GyWindow *self  = GY_WINDOW (data);
+
+  n_row =  GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "idx"));
+
+  gy_def_list_select_row (self->deflist, n_row);
+
+}
+
+static void
 gy_window_init (GyWindow *self)
 {
   GtkEntry    *entry;
@@ -287,6 +301,8 @@ gy_window_init (GyWindow *self)
                     G_CALLBACK (gy_window_button_press_event), self->deflist);
   g_signal_connect (self->dockbin, "notify::top-visible",
                     G_CALLBACK (gy_window_notify_top_visible), self);
+  g_signal_connect (self->history_box, "row-activated",
+                    G_CALLBACK (gy_window_row_activated), self);
 
 }
 
