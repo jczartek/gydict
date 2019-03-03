@@ -21,17 +21,9 @@
 
 struct _GyDictManager
 {
-  GObject             __parent__;
-
-  GHashTable         *dicts;
+  GObject     __parent__;
+  GHashTable  *dicts;
 };
-
-enum {
-  ALTER_DICT,
-  LAST_SIGNAL
-};
-
-static guint signals[LAST_SIGNAL];
 
 G_DEFINE_TYPE (GyDictManager, gy_dict_manager, G_TYPE_OBJECT)
 
@@ -51,20 +43,6 @@ gy_dict_manager_class_init (GyDictManagerClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   object_class->finalize = gy_dict_manager_finalize;
-
-  /**
-   * GyDictManager::alter-dict
-   * @self: the GyDictManager
-   *
-   * This signal is emitted when a dictionary is choosen.
-   */
-  signals[ALTER_DICT] =
-    g_signal_new ("alter-dict",
-                  G_TYPE_FROM_CLASS (klass),
-                  G_SIGNAL_RUN_LAST,
-                  0, NULL, NULL,
-                  g_cclosure_marshal_VOID__OBJECT,
-                  G_TYPE_NONE, 1, G_TYPE_OBJECT);
 }
 
 static void
@@ -115,7 +93,6 @@ gy_dict_manager_set_dict (GyDictManager *self,
 
 end:
   g_object_set (dict, "is-used", TRUE, NULL);
-  g_signal_emit (self, signals[ALTER_DICT], 0, dict);
   return dict;
 }
 
