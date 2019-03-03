@@ -333,7 +333,6 @@ gy_window_class_init (GyWindowClass *klass)
   g_object_class_install_properties (object_class, N_PROPS, properties);
 }
 
-/**PUBLIC METHOD**/
 GtkWidget *
 gy_window_new (GyApp *application)
 {

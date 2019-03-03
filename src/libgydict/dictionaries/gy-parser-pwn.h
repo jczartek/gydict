@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <glib.h>
+#include "gy-pwntabs.h"
 
 typedef void (*GyMarkupParserPwnTagStartCallback) (const gchar     *tag_name,
                                                    const GPtrArray *attribute_name,

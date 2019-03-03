@@ -45,13 +45,11 @@ struct _GyPrintCompositorClass
 };
 
 GType gy_print_compositor_get_type (void) G_GNUC_CONST;
-/**::GETTERS::**/
 gchar *gy_print_compositor_get_body_font_name    (GyPrintCompositor *compositor);
 gchar *gy_print_compositor_get_header_font_name  (GyPrintCompositor *compositor);
 gchar *gy_print_compositor_get_footer_font_name  (GyPrintCompositor *compositor);
 gint gy_print_compositor_get_n_pages             (GyPrintCompositor *compositor);
 GtkWrapMode gy_print_compositor_get_wrap_mode    (GyPrintCompositor *compositor);
-/**::SETTERS::**/
 void gy_print_compositor_set_wrap_mode         (GyPrintCompositor *compositor,
                                                 GtkWrapMode        wrap_mode);
 void gy_print_compositor_set_body_font_name    (GyPrintCompositor *compositor,
@@ -60,9 +58,7 @@ void gy_print_compositor_set_header_font_name  (GyPrintCompositor *compositor,
                                                 const gchar       *font_name);
 void gy_print_compositor_set_footer_font_name (GyPrintCompositor  *compositor,
                                                const gchar        *font_name);
-/**::CREATE::**/
 GyPrintCompositor * gy_print_compositor_new_from_view (GtkTextView *view);
-/**::PUBLIC METHOD::**/
 gboolean gy_print_compositor_paginate (GyPrintCompositor  *compositor,
                                        GtkPrintContext    *context);
 void gy_print_compositor_draw_page    (GyPrintCompositor  *compositor,

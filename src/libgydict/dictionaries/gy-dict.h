@@ -45,9 +45,6 @@ GObject*      gy_dict_new             (const gchar   *identifier);
 gpointer      gy_dict_add_to_history  (GyDict      *self,
                                        const gchar *entry,
                                        gint         n_row);
-void          gy_dict_foreach_history (GyDict   *self,
-                                       GFunc     func,
-                                       gpointer  data);
 
 G_END_DECLS
 

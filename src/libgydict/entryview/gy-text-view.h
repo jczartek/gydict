@@ -25,7 +25,7 @@ G_BEGIN_DECLS
 
 #define GY_TYPE_TEXT_VIEW  (gy_text_view_get_type ())
 
-G_DECLARE_FINAL_TYPE (GyTextView, gy_text_view, GY, TEXT_VIEW, GtkTextView);
+G_DECLARE_FINAL_TYPE (GyTextView, gy_text_view, GY, TEXT_VIEW, GtkTextView)
 
 void                        gy_text_view_set_font_desc (GyTextView                 *self,
                                                         const PangoFontDescription *font_desc);

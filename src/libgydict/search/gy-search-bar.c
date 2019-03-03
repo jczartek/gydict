@@ -334,7 +334,6 @@ gy_search_bar_class_init (GySearchBarClass *klass)
   gtk_widget_class_bind_template_child (widget_class, GySearchBar, close_button);
 
   /**
-   *
    * GySearchBar:buffer:
    *
    * The buffer which is searched.

@@ -66,7 +66,7 @@ libgydict_gir = gnome.generate_gir(libgydict,
             namespace: 'Gydict',
         symbol_prefix: 'gy',
     identifier_prefix: 'Gy',
-             includes: [ 'Gio-2.0', 'Gtk-3.0'],
+             includes: [ 'Gio-2.0', 'Gtk-3.0', 'Dazzle-1.0' ],
               install: true,
   install_dir_typelib: gydict_typelibdir,
       install_dir_gir: gydict_girdir)

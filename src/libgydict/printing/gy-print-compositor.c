@@ -962,8 +962,6 @@ print_header (GyPrintCompositor *compositor,
   g_free (page_string);
 }
 
-/********* PUBLIC METHOD ********/
-/**::GETTERS::**/
 gchar *
 gy_print_compositor_get_body_font_name (GyPrintCompositor *compositor)
 {
@@ -1012,7 +1010,6 @@ gy_print_compositor_get_wrap_mode (GyPrintCompositor *compositor)
   return priv->wrap_mode;
 }
 
-/**::SETTERS::**/
 void
 gy_print_compositor_set_wrap_mode (GyPrintCompositor *compositor,
                                    GtkWrapMode        wrap_mode)
@@ -1125,7 +1122,7 @@ gy_print_compositor_paginate (GyPrintCompositor *compositor,
   if (priv->state == DONE)
     return TRUE;
 
-  if (priv->state == INIT) /**1**/
+  if (priv->state == INIT)
   {
     g_return_val_if_fail (priv->pages == NULL, TRUE);
 
@@ -1145,7 +1142,7 @@ gy_print_compositor_paginate (GyPrintCompositor *compositor,
   g_return_val_if_fail (priv->state == PAGINATING, FALSE);
   g_return_val_if_fail (priv->layout != NULL, FALSE);
 
-  if (priv->pagination_mark == NULL) /**2**/
+  if (priv->pagination_mark == NULL)
   {
     gtk_text_buffer_get_start_iter (priv->buffer, &start);
     priv->pagination_mark = gtk_text_buffer_create_mark (priv->buffer, NULL,
@@ -1159,9 +1156,7 @@ gy_print_compositor_paginate (GyPrintCompositor *compositor,
                                       priv->pagination_mark);
   }
 
-  DEBUG ({
-      g_debug ("Start paginating at %d", gtk_text_iter_get_offset (&start));
-      });
+  DEBUG ({ g_debug ("Start paginating at %d", gtk_text_iter_get_offset (&start)); });
 
   gtk_text_buffer_get_end_iter (priv->buffer, &end);
   cur_height = 0;
