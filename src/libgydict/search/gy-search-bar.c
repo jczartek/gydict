@@ -69,14 +69,17 @@ gy_search_bar_is_keynav_event (GdkEvent *event,
 
 static gboolean
 gy_search_bar__search_entry_key_press_event (GtkWidget G_GNUC_UNUSED *widget,
-                                             GdkEvent                *event,
+                                             GdkEventKey             *event,
                                              gpointer                 data)
 {
   GySearchBar *self = GY_SEARCH_BAR (data);
   guint keyval;
+  GdkModifierType modifiers;
 
-  if (!gdk_event_get_keyval (event, &keyval) ||
-      keyval == GDK_KEY_Escape || keyval == (GDK_CONTROL_MASK | GDK_KEY_f))
+  modifiers = gtk_accelerator_get_default_mod_mask ();
+
+  if (event->keyval == GDK_KEY_Escape ||
+      ((event->state & modifiers) == GDK_CONTROL_MASK && event->keyval == GDK_KEY_f))
   {
     GtkWidget *toplevel;
 
@@ -93,7 +96,8 @@ gy_search_bar__search_entry_key_press_event (GtkWidget G_GNUC_UNUSED *widget,
     return GDK_EVENT_STOP;
   }
 
-  if (gy_search_bar_is_keynav_event (event, keyval))
+  gdk_event_get_keyval ((GdkEvent *)event, &keyval);
+  if (gy_search_bar_is_keynav_event ((GdkEvent *)event, keyval))
     return GDK_EVENT_STOP;
 
   return GDK_EVENT_PROPAGATE;
