@@ -237,8 +237,6 @@ startup (GApplication *application)
   /* Setup theme */
   gy_app_register_theme_overrides (app);
 
-  /* Register types */
-  gy_dict_initialize ();
 }
 
 static void

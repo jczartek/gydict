@@ -30,7 +30,6 @@ main (gint   argc,
   GyDict *dict[2];
   GyDictManager *manager;
 
-  gy_dict_initialize ();
   g_set_prgname ("test-dict-manager");
   gtk_init (NULL, NULL);
 

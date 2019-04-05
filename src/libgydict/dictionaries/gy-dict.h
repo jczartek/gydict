@@ -40,11 +40,7 @@ void          gy_dict_map             (GyDict  *self,
                                        GError **err);
 gboolean      gy_dict_is_mapped       (GyDict *self);
 gboolean      gy_dict_is_used         (GyDict *self);
-void          gy_dict_initialize      (void);
 GObject*      gy_dict_new             (const gchar   *identifier);
-gpointer      gy_dict_add_to_history  (GyDict      *self,
-                                       const gchar *entry,
-                                       gint         n_row);
 
 G_END_DECLS
 

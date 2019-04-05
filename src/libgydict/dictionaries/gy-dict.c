@@ -270,12 +270,3 @@ gy_dict_new (const gchar *identifier)
   return object;
 }
 
-void
-gy_dict_initialize (void)
-{
-  g_type_ensure (GY_TYPE_DICT);
-  g_type_ensure (GY_TYPE_DEPL);
-  g_type_ensure (GY_TYPE_PWN_DICT);
-  g_type_ensure (GY_TYPE_ENGLISH_PWN);
-  g_type_ensure (GY_TYPE_GERMAN_PWN);
-}
