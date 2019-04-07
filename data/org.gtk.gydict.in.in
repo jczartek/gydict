@@ -9,3 +9,4 @@ Terminal=false
 Type=Application
 Icon=gydict
 Categories=GTK;Office;Other;
+[Desktop Action new-window]

@@ -196,7 +196,6 @@ gy_dict_class_init (GyDictClass *klass)
 
 }
 
-/***************************FUBLIC METHOD***************************/
 void
 gy_dict_map (GyDict  *self,
              GError **err)
@@ -209,6 +208,46 @@ gy_dict_map (GyDict  *self,
   g_return_if_fail (klass->map != NULL);
 
   klass->map (self, err);
+}
+
+gboolean
+gy_dict_parse (GyDict         *self,
+               const gchar    *raw_text,
+               gint            length,
+               PangoAttrList **attr_list,
+               gchar         **text,
+               GError        **err)
+{
+  GyDictClass *klass;
+
+  g_return_val_if_fail (GY_IS_DICT (self), FALSE);
+  g_return_val_if_fail (g_utf8_validate (raw_text, -1, NULL), FALSE);
+
+  klass = GY_DICT_GET_CLASS (self);
+
+  g_return_val_if_fail (klass->parse != NULL, FALSE);
+
+  if (length == -1)
+    length = g_utf8_strlen (raw_text, -1);
+
+  return klass->parse (self, raw_text, length, attr_list, text, err);
+}
+
+
+gchar *
+gy_dict_get_lexical_unit (GyDict  *self,
+                          guint    idx,
+                          GError **err)
+{
+  GyDictClass *klass;
+
+  g_return_val_if_fail (GY_IS_DICT (self), NULL);
+
+  klass = GY_DICT_GET_CLASS (self);
+
+  g_return_val_if_fail (klass->get_lexical_unit != NULL, NULL);
+
+  return klass->get_lexical_unit (self, idx, err);
 }
 
 gboolean
@@ -245,6 +284,7 @@ gy_dict_get_tree_model (GyDict *dict)
   return priv->model;
 }
 
+
 GObject *
 gy_dict_new (const gchar *identifier)
 {
@@ -270,3 +310,12 @@ gy_dict_new (const gchar *identifier)
   return object;
 }
 
+void
+gy_dict_initialize (void)
+{
+  g_type_ensure (GY_TYPE_DICT);
+  g_type_ensure (GY_TYPE_DEPL);
+  g_type_ensure (GY_TYPE_PWN_DICT);
+  g_type_ensure (GY_TYPE_ENGLISH_PWN);
+  g_type_ensure (GY_TYPE_GERMAN_PWN);
+}

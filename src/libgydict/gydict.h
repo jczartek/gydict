@@ -26,6 +26,7 @@ G_BEGIN_DECLS
 #define GYDICT_INSIDE
 
 #include "app/gy-app.h"
+#include "app/gy-app-addin.h"
 #include "deflist/gy-def-list.h"
 #include "dictionaries/gy-depl.h"
 #include "dictionaries/gy-dict.h"
@@ -45,6 +46,7 @@ G_BEGIN_DECLS
 #include "search/gy-search-bar.h"
 #include "window/gy-header-bar.h"
 #include "window/gy-window.h"
+#include "window/gy-window-addin.h"
 
 #undef GYDICT_INSIDE
 

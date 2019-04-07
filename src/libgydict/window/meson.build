@@ -1,12 +1,14 @@
 window_headers = [
   'gy-header-bar.h',
   'gy-history-box.h',
+  'gy-window-addin.h',
   'gy-window.h',
 ]
 
 window_sources = [
   'gy-header-bar.c',
   'gy-history-box.c',
+  'gy-window-addin.c',
   'gy-window.c',
 ]
 

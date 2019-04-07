@@ -1,9 +1,11 @@
 app_headers = [
-  'gy-app.h'
+  'gy-app.h',
+  'gy-app-addin.h'
 ]
 
 app_sources = [
-  'gy-app.c'
+  'gy-app.c',
+  'gy-app-addin.c'
 ]
 
 libgydict_public_headers += files(app_headers)

@@ -19,8 +19,10 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
+#include <libpeas/peas.h>
 
 #include "gy-window.h"
+#include "gy-window-addin.h"
 #include "gy-window-settings.h"
 #include "gy-header-bar.h"
 #include "gy-history-box.h"
@@ -47,6 +49,7 @@ struct _GyWindow
   GyHistoryBox         *history_box;
   GyHeaderBar          *header_bar;
   GySearchBar          *search_bar;
+  PeasExtensionSet     *extens;
   GtkClipboard         *clipboard; /* Non free! */
 };
 
@@ -273,6 +276,42 @@ gy_window_row_activated (GtkListBox    *box,
 }
 
 static void
+gy_window_addin_added (PeasExtensionSet *set,
+                       PeasPluginInfo   *plugin_info,
+                       PeasExtension    *exten,
+                       gpointer          user_data)
+{
+  GyWindow *self = GY_WINDOW (user_data);
+  GyWindowAddin *addin = GY_WINDOW_ADDIN (exten);
+
+  gy_window_addin_load (addin, self);
+}
+
+
+static void
+gy_window_addin_removed (PeasExtensionSet *set,
+                         PeasPluginInfo   *plugin_info,
+                         PeasExtension    *exten,
+                         gpointer          user_data)
+{
+  GyWindow *self = GY_WINDOW (user_data);
+  GyWindowAddin *addin = GY_WINDOW_ADDIN (exten);
+
+  gy_window_addin_unload (addin, self);
+}
+
+static void
+gy_window_dispose (GObject *obj)
+{
+  GyWindow *self = GY_WINDOW (obj);
+
+  if (self->extens != NULL)
+    g_clear_object (&self->extens);
+
+  G_OBJECT_CLASS (gy_window_parent_class)->dispose (obj);
+}
+
+static void
 gy_window_init (GyWindow *self)
 {
   GtkEntry    *entry;
@@ -304,6 +343,17 @@ gy_window_init (GyWindow *self)
   g_signal_connect (self->history_box, "row-activated",
                     G_CALLBACK (gy_window_row_activated), self);
 
+  PeasEngine *engine = peas_engine_get_default ();
+  self->extens = peas_extension_set_new (engine, GY_TYPE_WINDOW_ADDIN, NULL);
+
+  g_signal_connect (self->extens, "extension-added",
+                    G_CALLBACK (gy_window_addin_added), self);
+
+  g_signal_connect (self->extens, "extension-removed",
+                    G_CALLBACK (gy_window_addin_removed), self);
+
+  peas_extension_set_foreach (self->extens, gy_window_addin_added, self);
+
 }
 
 static void
@@ -314,6 +364,7 @@ gy_window_class_init (GyWindowClass *klass)
 
   object_class->set_property = gy_window_set_property;
   object_class->get_property = gy_window_get_property;
+  object_class->dispose = gy_window_dispose;
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-window.ui");
   gtk_widget_class_bind_template_child (widget_class, GyWindow, dockbin);

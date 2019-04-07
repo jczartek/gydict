@@ -36,14 +36,6 @@ static GOptionEntry options[] =
   { NULL, }
 };
 
-static void
-activate_cb (GApplication *application,
-             gpointer 	  *data G_GNUC_UNUSED)
-{
-  /* Create first instance */
-  gy_app_new_window (GY_APP (application));
-}
-
 int
 main (int argc, char **argv)
 {
@@ -71,7 +63,6 @@ main (int argc, char **argv)
 
   /* Create new GyApp */
   application = gy_app_new ();
-  g_signal_connect (application, "activate", G_CALLBACK (activate_cb), NULL);
 
   /* Set it as the default application */
   g_application_set_default (G_APPLICATION (application));
