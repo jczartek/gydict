@@ -85,4 +85,12 @@
     </key>
   </schema>
 
+  <schema id="org.gtk.gydict.plugin" gettext-domain="gydict">
+    <key name="enabled" type="b">
+      <default>true</default>
+      <summary>Plugin enabled</summary>
+      <description>If the plugin should be enabled</description>
+    </key>
+  </schema>
+
 </schemalist>

@@ -308,6 +308,9 @@ gy_window_dispose (GObject *obj)
   if (self->extens != NULL)
     g_clear_object (&self->extens);
 
+  if (self->manager_dicts != NULL)
+    g_clear_object (&self->manager_dicts);
+
   G_OBJECT_CLASS (gy_window_parent_class)->dispose (obj);
 }
 

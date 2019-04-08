@@ -19,6 +19,7 @@
  */
 
 #include <glib/gi18n.h>
+#include <libpeas/peas.h>
 #include "gy-prefs-view.h"
 
 struct _GyPrefsView
@@ -28,6 +29,22 @@ struct _GyPrefsView
 };
 
 G_DEFINE_TYPE (GyPrefsView, gy_prefs_view, DZL_TYPE_PREFERENCES_VIEW)
+
+
+static gint
+sort_plugin_info (gconstpointer a,
+                  gconstpointer b)
+{
+  PeasPluginInfo *plugin_info_a = (PeasPluginInfo *)a;
+  PeasPluginInfo *plugin_info_b = (PeasPluginInfo *)b;
+  const gchar *name_a = peas_plugin_info_get_name (plugin_info_a);
+  const gchar *name_b = peas_plugin_info_get_name (plugin_info_b);
+
+  if (name_a == NULL || name_b == NULL)
+    return g_strcmp0 (name_a, name_b);
+
+  return g_utf8_collate (name_a, name_b);
+}
 
 static void
 gy_prefs_view_register_builtin_prefs (DzlPreferences *prefs)
@@ -89,6 +106,40 @@ gy_prefs_view_register_builtin_prefs (DzlPreferences *prefs)
                                                   GTK_FILE_CHOOSER_ACTION_OPEN, NULL, 50);
     widget    = dzl_gtk_widget_find_child_typed (dzl_preferences_get_widget (prefs, widget_id), GTK_TYPE_FILE_CHOOSER_BUTTON);
     if (widget) gtk_size_group_add_widget (path_group, widget);
+  }
+
+  {
+    PeasEngine *engine = peas_engine_get_default ();
+    const GList *list = peas_engine_get_plugin_list (engine);
+    GList *copy;
+    guint i = 0;
+
+    dzl_preferences_add_page (prefs, "plugins", _("Extensions"), 700);
+    dzl_preferences_add_list_group (prefs, "plugins", "plugins", _("Extensions"), GTK_SELECTION_NONE, 100);
+
+    copy = g_list_sort (g_list_copy ((GList *)list), sort_plugin_info);
+
+    for (const GList *iter = copy; iter; iter = iter->next, i++)
+      {
+        PeasPluginInfo *plugin_info = iter->data;
+        g_autofree gchar *path = NULL;
+        g_autofree gchar *keywords = NULL;
+        const gchar *desc;
+        const gchar *name;
+
+        if (peas_plugin_info_is_hidden (plugin_info))
+          continue;
+
+        name = peas_plugin_info_get_name (plugin_info);
+        desc = peas_plugin_info_get_description (plugin_info);
+        keywords = g_strdup_printf ("%s %s", name, desc);
+        path = g_strdup_printf ("/org/gtk/gydict/plugins/%s/",
+                                peas_plugin_info_get_module_name (plugin_info));
+
+        dzl_preferences_add_switch (prefs, "plugins", "plugins", "org.gtk.gydict.plugin", "enabled", path, NULL, name, desc, keywords, i);
+      }
+
+    g_list_free (copy);
   }
 }
 

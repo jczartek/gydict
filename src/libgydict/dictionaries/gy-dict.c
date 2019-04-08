@@ -210,6 +210,17 @@ gy_dict_map (GyDict  *self,
   klass->map (self, err);
 }
 
+/**
+ * gy_dict_parse:
+ * @self: a gydict object
+ * @raw_text: raw text to parse
+ * @length: length of @raw_text, or -1 if nul terminated
+ * @attr_list: (out): addres of return location for text with for a #PangoAttrList, or %NULL
+ * @text: (out): addres of loaction for text with tags stripped, or %NULL
+ * @err: addres of return location for errors, or %NULL
+ *
+ * Return value: %FALSE if @err is set, otherwise %TRUE
+ */
 gboolean
 gy_dict_parse (GyDict         *self,
                const gchar    *raw_text,

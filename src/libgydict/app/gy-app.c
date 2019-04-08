@@ -44,7 +44,8 @@ struct _GyApp
 {
   DzlApplication        __parent__;
 
-  PeasExtensionSet *extens;
+  PeasExtensionSet      *extens;
+  GHashTable            *plugs_setting;
 };
 
 G_DEFINE_TYPE (GyApp, gy_app, DZL_TYPE_APPLICATION);
@@ -222,6 +223,25 @@ gy_app_register_theme_overrides (GyApp *self)
 }
 
 static void
+gy_app_settings_changed (GSettings *settings,
+                         gchar     *key,
+                         gpointer   user_data)
+{
+  PeasPluginInfo *pinfo = PEAS_PLUGIN_INFO (user_data);
+  PeasEngine *engine = peas_engine_get_default ();
+  gboolean enabled = g_settings_get_boolean (settings, key);
+
+  if (enabled && !peas_plugin_info_is_loaded (pinfo))
+    {
+      peas_engine_load_plugin (engine, pinfo);
+    }
+  else if (peas_plugin_info_is_loaded (pinfo))
+    {
+      peas_engine_unload_plugin (engine, pinfo);
+    }
+}
+
+static void
 gy_app_initailize_plugins (GyApp *app)
 {
   PeasEngine *engine = peas_engine_get_default ();
@@ -252,7 +272,20 @@ gy_app_initailize_plugins (GyApp *app)
 
   for (const GList *iter = plugs; iter; iter = iter->next)
     {
-      if (!peas_plugin_info_is_loaded (iter->data))
+      const gchar *name;
+      g_autofree gchar *path = NULL;
+
+      name = peas_plugin_info_get_module_name (iter->data);
+      path = g_strdup_printf ("/org/gtk/gydict/plugins/%s/", name);
+
+      GSettings *settings = g_settings_new_with_path ("org.gtk.gydict.plugin", path);
+      g_hash_table_insert (app->plugs_setting, g_strdup (name), settings);
+
+      g_signal_connect (settings, "changed",
+                        G_CALLBACK (gy_app_settings_changed), iter->data);
+
+      gboolean enabled = g_settings_get_boolean (settings, "enabled");
+      if (!peas_plugin_info_is_loaded (iter->data) && enabled)
         peas_engine_load_plugin (engine, iter->data);
     }
 }
@@ -333,15 +366,19 @@ gy_app_shutdown (GApplication *app)
 {
   GyApp *self = GY_APP (app);
 
+  g_clear_pointer (&self->plugs_setting, g_hash_table_destroy);
   g_clear_object (&self->extens);
 
   G_APPLICATION_CLASS (gy_app_parent_class)->shutdown (app);
 }
 
 static void
-gy_app_init (GyApp *application G_GNUC_UNUSED)
+gy_app_init (GyApp *self)
 {
   g_set_application_name ("Gydict");
+
+  self->plugs_setting = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                               g_free, g_object_unref);
 }
 
 static void

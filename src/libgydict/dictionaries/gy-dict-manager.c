@@ -16,16 +16,45 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <libpeas/peas.h>
 #include "gy-dict-manager.h"
+#include "gy-dict-manager-addin.h"
 #include "gy-dict.h"
 
 struct _GyDictManager
 {
   GObject     __parent__;
   GHashTable  *dicts;
+  PeasExtensionSet *extens;
 };
 
 G_DEFINE_TYPE (GyDictManager, gy_dict_manager, G_TYPE_OBJECT)
+
+
+static void
+gy_dict_manager_addin_added (PeasExtensionSet *set,
+                             PeasPluginInfo   *plugin_info,
+                             PeasExtension    *exten,
+                             gpointer          user_data)
+{
+  GyDictManagerAddin *self = GY_DICT_MANAGER_ADDIN (exten);
+  GyDictManager *manager = GY_DICT_MANAGER (user_data);
+
+  gy_dict_manager_addin_load (self, manager);
+}
+
+
+static void
+gy_dict_manager_addin_removed (PeasExtensionSet *set,
+                               PeasPluginInfo   *plugin_info,
+                               PeasExtension    *exten,
+                               gpointer          user_data)
+{
+  GyDictManagerAddin *self = GY_DICT_MANAGER_ADDIN (exten);
+  GyDictManager *manager = GY_DICT_MANAGER (user_data);
+
+  gy_dict_manager_addin_unload (self, manager);
+}
 
 static void
 gy_dict_manager_finalize (GObject *object)
@@ -38,10 +67,44 @@ gy_dict_manager_finalize (GObject *object)
 }
 
 static void
+gy_dict_manager_constructed (GObject *obj)
+{
+  GyDictManager *self = GY_DICT_MANAGER (obj);
+  PeasEngine *engine;
+
+  G_OBJECT_CLASS (gy_dict_manager_parent_class)->constructed (obj);
+
+  engine = peas_engine_get_default ();
+
+  self->extens = peas_extension_set_new (engine, GY_TYPE_DICT_MANAGER_ADDIN, NULL);
+
+  g_signal_connect (self->extens, "extension-added",
+                    G_CALLBACK (gy_dict_manager_addin_added), self);
+
+  g_signal_connect (self->extens, "extension-removed",
+                    G_CALLBACK (gy_dict_manager_addin_removed), self);
+
+  peas_extension_set_foreach (self->extens, gy_dict_manager_addin_added, self);
+}
+
+static void
+gy_dict_manager_dispose (GObject *obj)
+{
+  GyDictManager *self = GY_DICT_MANAGER (obj);
+
+  if (self->extens != NULL)
+    g_clear_object (&self->extens);
+
+  G_OBJECT_CLASS (gy_dict_manager_parent_class)->dispose (obj);
+}
+
+static void
 gy_dict_manager_class_init (GyDictManagerClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+  object_class->constructed = gy_dict_manager_constructed;
+  object_class->dispose = gy_dict_manager_dispose;
   object_class->finalize = gy_dict_manager_finalize;
 }
 
