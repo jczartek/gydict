@@ -28,6 +28,7 @@
 #include "gy-history-box.h"
 #include "dictionaries/gy-dict.h"
 #include "dictionaries/gy-dict-manager.h"
+#include "dictionaries/gy-dict-provider.h"
 #include "deflist/gy-def-list.h"
 #include "entryview/gy-text-view.h"
 #include "entryview/gy-text-buffer.h"
@@ -45,7 +46,9 @@ struct _GyWindow
   GyDefList            *deflist;
   GyTextView           *textview;
   GyTextBuffer         *buffer;
+  GtkSearchEntry       *dict_entry;
   GyDictManager        *manager_dicts;
+  GyDictProvider       *dicts_provider;
   GyHistoryBox         *history_box;
   GyHeaderBar          *header_bar;
   GySearchBar          *search_bar;
@@ -98,8 +101,7 @@ owner_change_cb (GtkClipboard        *clipboard,
     g_regex_match (regex, text, 0, &match_info);
     word = g_match_info_fetch (match_info, 0);
 
-    if (word)
-      gy_header_bar_set_text_in_entry (self->header_bar, (const gchar *) word);
+    if (word) gtk_entry_set_text (GTK_ENTRY (self->dict_entry), (const gchar *) word);
 
     g_match_info_free (match_info);
     g_regex_unref (regex);
@@ -150,16 +152,16 @@ gy_window_action_switch_dict (GSimpleAction *action,
                               GVariant      *parameter,
                               gpointer       data)
 {
-  GyWindow    *self   = (GyWindow *) data;
-  GyDict      *dict   = NULL;
+  /*GyWindow    *self   = (GyWindow *) data;
+  GyDict      *dict   = NULL; */
   g_autoptr(GVariant) state = NULL;
-  const gchar *str;
+  // const gchar *str;
 
   state = g_action_get_state (G_ACTION (action));
 
   if (g_variant_compare (parameter, state) == 0) return;
 
-  str = g_variant_get_string (parameter, NULL);
+  /*str = g_variant_get_string (parameter, NULL);
 
   dict = gy_dict_manager_set_dict (self->manager_dicts, str);
   if (!dict) return;
@@ -172,7 +174,7 @@ gy_window_action_switch_dict (GSimpleAction *action,
   gy_window_clear_search_entry (self);
   gy_window_grab_focus (GY_WINDOW (self));
 
-  g_object_set (self->history_box, "filter-key", str, NULL);
+  g_object_set (self->history_box, "filter-key", str, NULL); */
 
   g_action_change_state (G_ACTION (action), parameter);
 }
@@ -311,13 +313,15 @@ gy_window_dispose (GObject *obj)
   if (self->manager_dicts != NULL)
     g_clear_object (&self->manager_dicts);
 
+  if (self->dicts_provider != NULL)
+    g_clear_object (&self->dicts_provider);
+
   G_OBJECT_CLASS (gy_window_parent_class)->dispose (obj);
 }
 
 static void
 gy_window_init (GyWindow *self)
 {
-  GtkEntry    *entry;
   GActionGroup *dockbin_actions;
 
   gtk_widget_init_template (GTK_WIDGET (self));
@@ -331,9 +335,15 @@ gy_window_init (GyWindow *self)
 
   self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
 
-  gy_header_bar_grab_focus_for_entry (self->header_bar);
-  entry = gy_header_bar_get_entry (self->header_bar);
-  gtk_tree_view_set_search_entry (GTK_TREE_VIEW(self->deflist), entry);
+  self->dict_entry = (GtkSearchEntry *) gtk_widget_new (GTK_TYPE_SEARCH_ENTRY,
+                                                        "width-chars", 25, NULL);
+  gtk_header_bar_set_custom_title (GTK_HEADER_BAR (self->header_bar),
+                                   GTK_WIDGET (self->dict_entry));
+
+  gtk_tree_view_set_search_entry (GTK_TREE_VIEW (self->deflist),
+                                  GTK_ENTRY (self->dict_entry));
+
+  self->dicts_provider = gy_dict_provider_new ();
 
   g_object_set_data (G_OBJECT (self->textview), "manager", self->manager_dicts);
   g_object_set_data (G_OBJECT (self->buffer), "textview", self->textview);
@@ -412,7 +422,7 @@ gy_window_grab_focus (GyWindow *self)
 {
   g_return_if_fail (GY_IS_WINDOW (self));
 
-  gy_header_bar_grab_focus_for_entry (self->header_bar);
+  gtk_window_set_focus (GTK_WINDOW (self), GTK_WIDGET (self->dict_entry));
 }
 
 void
@@ -420,7 +430,7 @@ gy_window_clear_search_entry (GyWindow *self)
 {
   g_return_if_fail (GY_IS_WINDOW (self));
 
-  gy_header_bar_set_text_in_entry (self->header_bar, "");
+  gtk_entry_set_text (GTK_ENTRY (self->dict_entry), "");
 }
 
 DzlDockBin *

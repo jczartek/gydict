@@ -103,6 +103,7 @@ subdir('data')
 subdir('po')
 subdir('src/contrib/pattern')
 subdir('src/libgydict')
+subdir('src/plugins')
 subdir('src/tests')
 subdir('src')
 

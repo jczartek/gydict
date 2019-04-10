@@ -28,12 +28,15 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (GyHeaderBar, gy_header_bar, GY, HEADER_BAR, GtkHeaderBar)
 
 GyHeaderBar *gy_header_bar_new                          (void);
-void         gy_header_bar_connect_entry_with_tree_view (GyHeaderBar *self,
-                                                         GtkTreeView *tree_view);
-void         gy_header_bar_set_text_in_entry            (GyHeaderBar *self,
-                                                         const gchar *text);
-GtkEntry    *gy_header_bar_get_entry                    (GyHeaderBar *self);
-void         gy_header_bar_grab_focus_for_entry         (GyHeaderBar *self);
+
+void         gy_header_bar_add_primary (GyHeaderBar *self,
+                                        GtkWidget   *widget);
+
+void         gy_header_bar_add_center_left (GyHeaderBar *self,
+                                            GtkWidget   *child);
+
+void         gy_header_bar_add_secondary (GyHeaderBar *self,
+                                          GtkWidget   *widget);
 
 G_END_DECLS
 

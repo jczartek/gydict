@@ -15,15 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <dazzle.h>
 #include "gy-header-bar.h"
-#include "app/gy-app.h"
 
 struct _GyHeaderBar
 {
   GtkHeaderBar    __parent__;
   GtkMenuButton  *menu_button;
   GtkMenuButton  *dicts_button;
-  GtkSearchEntry *search_entry;
+
+  GtkBox *primary;
+  GtkBox *secondary;
 };
 
 G_DEFINE_TYPE (GyHeaderBar, gy_header_bar, GTK_TYPE_HEADER_BAR)
@@ -34,7 +37,8 @@ gy_header_bar_class_init (GyHeaderBarClass *klass)
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gtk/gydict/gy-header-bar.ui");
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, dicts_button);
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, menu_button);
-  gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, search_entry);
+  gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, primary);
+  gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, secondary);
 }
 
 static void
@@ -45,48 +49,65 @@ gy_header_bar_init (GyHeaderBar *self)
 
   gtk_widget_init_template (GTK_WIDGET (self));
 
-  model = dzl_application_get_menu_by_id (DZL_APPLICATION(GY_APP_DEFAULT), "dict-menu");
+  model = dzl_application_get_menu_by_id (DZL_APPLICATION (g_application_get_default ()), "dict-menu");
   popover = gtk_popover_new_from_model (NULL, G_MENU_MODEL (model));
   gtk_widget_set_size_request (popover, 250, -1);
   gtk_menu_button_set_popover (self->dicts_button, popover);
 
-  model = dzl_application_get_menu_by_id (DZL_APPLICATION(GY_APP_DEFAULT), "gear-menu");
+  model = dzl_application_get_menu_by_id (DZL_APPLICATION (g_application_get_default ()), "gear-menu");
   popover = gtk_popover_new_from_model (NULL, G_MENU_MODEL (model));
   gtk_widget_set_size_request (popover, 225, -1);
   gtk_menu_button_set_popover (self->menu_button, popover);
 }
 
+/**
+ * gy_header_bar_add_primary:
+ * @self: a #GyHeaderBar
+ *
+ * Adds a widget to the primary button section of the workspace header.
+ * This is the left, for LTR languages.
+ *
+ * Since: 0.6
+ */
 void
-gy_header_bar_connect_entry_with_tree_view (GyHeaderBar *self,
-                                            GtkTreeView *tree_view)
+gy_header_bar_add_primary (GyHeaderBar *self,
+                           GtkWidget   *widget)
 {
   g_return_if_fail (GY_IS_HEADER_BAR (self));
-  g_return_if_fail (GTK_IS_TREE_VIEW (tree_view));
+  g_return_if_fail (GTK_IS_WIDGET (widget));
 
-  gtk_tree_view_set_search_entry (tree_view, GTK_ENTRY (self->search_entry));
+  gtk_container_add (GTK_CONTAINER (self->primary), widget);
 }
 
 void
-gy_header_bar_set_text_in_entry (GyHeaderBar *self,
-                                 const gchar *text)
+gy_header_bar_add_center_left (GyHeaderBar *self,
+                               GtkWidget   *child)
 {
+
   g_return_if_fail (GY_IS_HEADER_BAR (self));
+  g_return_if_fail (GTK_IS_WIDGET (child));
 
-  gtk_entry_set_text (GTK_ENTRY (self->search_entry), text);
+  gtk_container_add_with_properties (GTK_CONTAINER (self->primary), child,
+                                     "pack-type", GTK_PACK_END,
+                                     NULL);
 }
 
-GtkEntry *
-gy_header_bar_get_entry (GyHeaderBar *self)
-{
-  g_return_val_if_fail (GY_IS_HEADER_BAR (self), NULL);
-
-  return GTK_ENTRY (self->search_entry);
-}
-
+/**
+ * gy_header_bar_add_secondary:
+ * @self: a #GyHeaderBar
+ *
+ * Adds a widget to the secondary button section of the workspace header.
+ * This is the right, for LTR languages.
+ *
+ * Since: 0.6
+ */
 void
-gy_header_bar_grab_focus_for_entry (GyHeaderBar *self)
+gy_header_bar_add_secondary (GyHeaderBar *self,
+                             GtkWidget   *widget)
 {
-  g_return_if_fail (GY_IS_HEADER_BAR (self));
 
-  gtk_widget_grab_focus (GTK_WIDGET (self->search_entry));
+  g_return_if_fail (GY_IS_HEADER_BAR (self));
+  g_return_if_fail (GTK_IS_WIDGET (widget));
+
+  gtk_container_add (GTK_CONTAINER (self->secondary), widget);
 }
