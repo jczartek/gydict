@@ -45,7 +45,8 @@ struct _GyApp
   DzlApplication        __parent__;
 
   PeasExtensionSet      *extens;
-  GHashTable            *plugs_setting;
+  GHashTable            *plugin_settings;
+  GHashTable            *plugin_gresources;
 };
 
 G_DEFINE_TYPE (GyApp, gy_app, DZL_TYPE_APPLICATION);
@@ -223,6 +224,48 @@ gy_app_register_theme_overrides (GyApp *self)
 }
 
 static void
+gy_app_load_plugin_resources (GyApp          *self,
+                              PeasEngine     *engine,
+                              PeasPluginInfo *plugin_info)
+{
+  g_autofree gchar *gresources_path = NULL;
+  g_autofree gchar *gresources_basename = NULL;
+
+  const gchar *module_dir;
+  const gchar *module_name;
+
+  g_assert (GY_IS_APP (self));
+  g_assert (plugin_info != NULL);
+  g_assert (PEAS_IS_ENGINE (engine));
+
+  module_dir = peas_plugin_info_get_module_dir (plugin_info);
+  module_name = peas_plugin_info_get_module_name (plugin_info);
+  gresources_basename = g_strdup_printf ("%s.gresource", module_name);
+  gresources_path = g_build_filename (module_dir, gresources_basename, NULL);
+
+  if (g_file_test (gresources_path, G_FILE_TEST_IS_REGULAR))
+    {
+      g_autofree gchar *resource_path = NULL;
+      g_autoptr (GError) error = NULL;
+      GResource *resource;
+
+      resource = g_resource_load (gresources_path, &error);
+
+      if (resource == NULL)
+        {
+          g_warning ("Failed to load gresources: %s", error->message);
+          return;
+        }
+
+      g_hash_table_insert (self->plugin_gresources, g_strdup (module_name), resource);
+      g_resources_register (resource);
+
+      resource_path = g_strdup_printf ("resource:///plugins/%s", module_name);
+      dzl_application_add_resources (DZL_APPLICATION (self), resource_path);
+    }
+}
+
+static void
 gy_app_settings_changed (GSettings *settings,
                          gchar     *key,
                          gpointer   user_data)
@@ -269,7 +312,6 @@ gy_app_initailize_plugins (GyApp *app)
 
   const GList *plugs = peas_engine_get_plugin_list (engine);
 
-
   for (const GList *iter = plugs; iter; iter = iter->next)
     {
       const gchar *name;
@@ -279,7 +321,11 @@ gy_app_initailize_plugins (GyApp *app)
       path = g_strdup_printf ("/org/gtk/gydict/plugins/%s/", name);
 
       GSettings *settings = g_settings_new_with_path ("org.gtk.gydict.plugin", path);
-      g_hash_table_insert (app->plugs_setting, g_strdup (name), settings);
+      g_hash_table_insert (app->plugin_settings, g_strdup (name), settings);
+
+
+      if (peas_plugin_info_get_external_data (iter->data, "Has-Resources"))
+        gy_app_load_plugin_resources (app, engine, iter->data);
 
       g_signal_connect (settings, "changed",
                         G_CALLBACK (gy_app_settings_changed), iter->data);
@@ -302,7 +348,6 @@ gy_app_addin_added (PeasExtensionSet *set,
   gy_app_addin_load (addin, self);
 }
 
-
 static void
 gy_app_addin_removed (PeasExtensionSet *set,
                       PeasPluginInfo   *plugin_info,
@@ -314,6 +359,7 @@ gy_app_addin_removed (PeasExtensionSet *set,
 
   gy_app_addin_unload (addin, self);
 }
+
 static void
 startup (GApplication *application)
 {
@@ -366,7 +412,8 @@ gy_app_shutdown (GApplication *app)
 {
   GyApp *self = GY_APP (app);
 
-  g_clear_pointer (&self->plugs_setting, g_hash_table_destroy);
+  g_clear_pointer (&self->plugin_settings, g_hash_table_destroy);
+  g_clear_pointer (&self->plugin_gresources, g_hash_table_destroy);
   g_clear_object (&self->extens);
 
   G_APPLICATION_CLASS (gy_app_parent_class)->shutdown (app);
@@ -377,8 +424,10 @@ gy_app_init (GyApp *self)
 {
   g_set_application_name ("Gydict");
 
-  self->plugs_setting = g_hash_table_new_full (g_str_hash, g_str_equal,
+  self->plugin_settings = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                g_free, g_object_unref);
+  self->plugin_gresources = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                   g_free, (GDestroyNotify) g_resource_unref);
 }
 
 static void
