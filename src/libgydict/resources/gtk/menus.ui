@@ -58,7 +58,7 @@
 		</section>
 	</menu>
   <menu id="dict-menu">
-    <section id="dict-menu-PWN-section">
+    <!--<section id="dict-menu-PWN-section">
       <attribute name="label" translatable="no">PWN</attribute>
       <item>
         <attribute name="label" translatable="yes">English-Polish Dictionary</attribute>
@@ -88,7 +88,7 @@
         <attribute name="action">win.switch-dict</attribute>
         <attribute name="target">GyDepl-german</attribute>
       </item>
-    </section>
+    </section>-->
   </menu>
 </interface>
 
