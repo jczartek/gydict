@@ -178,3 +178,41 @@ gy_dict_manager_get_used_dict (GyDictManager *self)
 
   return dict;
 }
+
+void
+gy_dict_manager_insert_dict (GyDictManager *self,
+                             GyDict        *dict,
+                             const gchar   *idx)
+{
+  g_return_if_fail (GY_IS_DICT_MANAGER (self));
+  g_return_if_fail (GY_IS_DICT (dict));
+  g_return_if_fail (idx != NULL);
+
+  if (g_hash_table_lookup (self->dicts, idx))
+    {
+      g_warning ("The identifier [%s] already exists. The previous value will be lost.", idx);
+    }
+
+  g_hash_table_insert (self->dicts, (gpointer) idx, (gpointer) dict);
+}
+
+void
+gy_dict_manager_remove_dict (GyDictManager *self,
+                             const gchar   *idx)
+{
+  g_return_if_fail (GY_IS_DICT_MANAGER (self));
+  g_return_if_fail (idx != NULL);
+
+  g_hash_table_remove (self->dicts, idx);
+}
+
+GyDict *
+gy_dict_manager_lookup_dict (GyDictManager *self,
+                             const gchar   *idx)
+{
+
+  g_return_val_if_fail (GY_IS_DICT_MANAGER (self), NULL);
+  g_return_val_if_fail (idx != NULL, NULL);
+
+  return (GyDict *) g_hash_table_lookup (self->dicts, idx);
+}

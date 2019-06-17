@@ -20,6 +20,7 @@
 #define __GY_WINDOW_H__
 
 #include "app/gy-app.h"
+#include "dictionaries/gy-dict-manager.h"
 
 G_BEGIN_DECLS
 
@@ -32,6 +33,7 @@ GtkWidget*     gy_window_get_text_view   (GyWindow *self);
 void           gy_window_grab_focus      (GyWindow *self);
 void           gy_window_clear_search_entry (GyWindow *self);
 DzlDockBin*    gy_window_get_dockbin (GyWindow *self);
+GyDictManager* gy_window_get_dict_manager (GyWindow *self);
 
 G_END_DECLS
 

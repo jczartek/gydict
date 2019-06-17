@@ -32,6 +32,16 @@ GyDict        *gy_dict_manager_set_dict         (GyDictManager *self,
                                                  const gchar   *name_dict);
 GyDict        *gy_dict_manager_get_used_dict    (GyDictManager *self);
 
+GyDict* gy_dict_manager_lookup_dict (GyDictManager *self,
+                                      const gchar   *idx);
+void gy_dict_manager_insert_dict (GyDictManager *self,
+                                  GyDict        *dict,
+                                  const gchar   *idx);
+void gy_dict_manager_remove_dict (GyDictManager *self,
+                                  const gchar   *idx);
+
+
+
 G_END_DECLS
 
 #endif /* __GY_DICT_MANAGER_H__ */

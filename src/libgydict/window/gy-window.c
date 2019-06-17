@@ -28,7 +28,6 @@
 #include "gy-history-box.h"
 #include "dictionaries/gy-dict.h"
 #include "dictionaries/gy-dict-manager.h"
-#include "dictionaries/gy-dict-provider.h"
 #include "deflist/gy-def-list.h"
 #include "entryview/gy-text-view.h"
 #include "entryview/gy-text-buffer.h"
@@ -48,7 +47,6 @@ struct _GyWindow
   GyTextBuffer         *buffer;
   GtkSearchEntry       *dict_entry;
   GyDictManager        *manager_dicts;
-  GyDictProvider       *dicts_provider;
   GyHistoryBox         *history_box;
   GyHeaderBar          *header_bar;
   GySearchBar          *search_bar;
@@ -313,9 +311,6 @@ gy_window_dispose (GObject *obj)
   if (self->manager_dicts != NULL)
     g_clear_object (&self->manager_dicts);
 
-  if (self->dicts_provider != NULL)
-    g_clear_object (&self->dicts_provider);
-
   G_OBJECT_CLASS (gy_window_parent_class)->dispose (obj);
 }
 
@@ -342,8 +337,6 @@ gy_window_init (GyWindow *self)
 
   gtk_tree_view_set_search_entry (GTK_TREE_VIEW (self->deflist),
                                   GTK_ENTRY (self->dict_entry));
-
-  self->dicts_provider = gy_dict_provider_new ();
 
   g_object_set_data (G_OBJECT (self->textview), "manager", self->manager_dicts);
   g_object_set_data (G_OBJECT (self->buffer), "textview", self->textview);
@@ -439,4 +432,12 @@ gy_window_get_dockbin (GyWindow *self)
   g_return_val_if_fail (GY_IS_WINDOW (self), NULL);
 
   return self->dockbin;
+}
+
+GyDictManager *
+gy_window_get_dict_manager (GyWindow *self)
+{
+  g_return_val_if_fail (GY_IS_WINDOW (self) && self->manager_dicts != NULL, NULL);
+
+  return self->manager_dicts;
 }
