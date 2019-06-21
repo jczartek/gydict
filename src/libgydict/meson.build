@@ -51,9 +51,9 @@ pkgg = import('pkgconfig')
 
 pkgg.generate(
     libraries: [libgydict],
-      subdirs: ['gydict-@0@/libgydict'.format(meson.project_version()) ],
+      subdirs: [join_paths('gydict', 'libgydict-' + apiversion) ],
       version: meson.project_version(),
-         name: 'Libgydict',
+         name: 'libgydict',
      filebase: 'libgydict-1.0',
   description: 'Libgydict contains the components used to build the application Gydict.',
      requires: ['gtk+-3.0'],

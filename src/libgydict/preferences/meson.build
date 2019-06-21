@@ -1,10 +1,12 @@
 preferences_headers = [
   'gy-prefs-view.h',
+  'gy-prefs-view-addin.h',
   'gy-prefs-window.h'
 ]
 
 preferences_sources = [
   'gy-prefs-view.c',
+  'gy-prefs-view-addin.c',
   'gy-prefs-window.c'
 ]
 

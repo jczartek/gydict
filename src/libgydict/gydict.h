@@ -27,7 +27,7 @@ G_BEGIN_DECLS
 
 #include "app/gy-app.h"
 #include "app/gy-app-addin.h"
-#include "deflist/gy-def-list.h"
+//#include "deflist/gy-def-list.h"
 #include "dictionaries/gy-depl.h"
 #include "dictionaries/gy-dict.h"
 #include "dictionaries/gy-dict-manager.h"
@@ -41,6 +41,7 @@ G_BEGIN_DECLS
 #include "entryview/gy-text-view.h"
 #include "helpers/gy-utility-func.h"
 #include "preferences/gy-prefs-view.h"
+#include "preferences/gy-prefs-view-addin.h"
 #include "preferences/gy-prefs-window.h"
 #include "printing/gy-print.h"
 #include "printing/gy-print-compositor.h"

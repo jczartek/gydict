@@ -21,11 +21,13 @@
 #include <glib/gi18n.h>
 #include <libpeas/peas.h>
 #include "gy-prefs-view.h"
+#include "gy-prefs-view-addin.h"
 
 struct _GyPrefsView
 {
   DzlPreferencesView  parent_instance;
   GHashTable         *size_groups;
+  PeasExtensionSet   *extens;
 };
 
 G_DEFINE_TYPE (GyPrefsView, gy_prefs_view, DZL_TYPE_PREFERENCES_VIEW)
@@ -144,6 +146,32 @@ gy_prefs_view_register_builtin_prefs (DzlPreferences *prefs)
 }
 
 static void
+gy_prefs_view_addin_added (PeasExtensionSet *set,
+                           PeasPluginInfo   *plugin_info,
+                           PeasExtension    *exten,
+                           gpointer          user_data)
+{
+  GyPrefsView *self = GY_PREFS_VIEW (user_data);
+  GyPrefsViewAddin *addin = GY_PREFS_VIEW_ADDIN (exten);
+
+  gy_prefs_view_addin_load (addin, self);
+}
+
+
+static void
+gy_prefs_view_addin_removed (PeasExtensionSet *set,
+                             PeasPluginInfo   *plugin_info,
+                             PeasExtension    *exten,
+                             gpointer          user_data)
+{
+  GyPrefsView *self = GY_PREFS_VIEW (user_data);
+  GyPrefsViewAddin *addin = GY_PREFS_VIEW_ADDIN (exten);
+
+  gy_prefs_view_addin_unload (addin, self);
+}
+
+
+static void
 gy_prefs_view_finalize (GObject *obj)
 {
   GyPrefsView *self = GY_PREFS_VIEW (obj);
@@ -156,9 +184,21 @@ gy_prefs_view_finalize (GObject *obj)
 static void
 gy_prefs_view_constructed (GObject *obj)
 {
+  GyPrefsView *self = GY_PREFS_VIEW (obj);
   G_OBJECT_CLASS (gy_prefs_view_parent_class)->constructed (obj);
 
   gy_prefs_view_register_builtin_prefs (DZL_PREFERENCES(obj));
+
+  PeasEngine *engine = peas_engine_get_default ();
+  self->extens = peas_extension_set_new (engine, GY_TYPE_PREFS_VIEW_ADDIN, NULL);
+
+  g_signal_connect (self->extens, "extension-added",
+                    G_CALLBACK (gy_prefs_view_addin_added), self);
+
+  g_signal_connect (self->extens, "extension-removed",
+                    G_CALLBACK (gy_prefs_view_addin_removed), self);
+
+  peas_extension_set_foreach (self->extens, gy_prefs_view_addin_added, self);
 }
 
 static void

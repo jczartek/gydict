@@ -116,7 +116,7 @@ status = [
   'Version .............. : @0@'.format(meson.project_version()),
   '',
   'Prefix ............... : @0@'.format(gydict_prefix),
-  'Includedir ........... : @0@'.format(gydict_includedir),
+  'Includedir ........... : @0@'.format(join_paths(gydict_includedir, 'libgydict-' + apiversion)),
   'Libdir ............... : @0@'.format(gydict_libdir),
   'GirDir ............... : @0@'.format(gydict_girdir),
   'TypeLibDir ........... : @0@'.format(gydict_typelibdir),
@@ -124,3 +124,4 @@ status = [
 ]
 
 message('\n'.join(status))
+

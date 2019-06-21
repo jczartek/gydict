@@ -93,4 +93,11 @@
     </key>
   </schema>
 
+  <schema id="org.gtk.gydict.path">
+    <key name="path" type="s">
+      <default>""</default>
+      <summary>Path to the dictionary</summary>
+    </key>
+  </schema>
+
 </schemalist>
