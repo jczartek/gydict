@@ -43,6 +43,7 @@ struct _GyWindow
   DzlApplicationWindow  __parent__;
   DzlDockBin           *dockbin;
   GyDefList            *deflist;
+  GtkTreeSelection     *selection;
   GyTextView           *textview;
   GyTextBuffer         *buffer;
   GtkSearchEntry       *dict_entry;
@@ -150,19 +151,30 @@ gy_window_action_switch_dict (GSimpleAction *action,
                               GVariant      *parameter,
                               gpointer       data)
 {
-  /*GyWindow    *self   = (GyWindow *) data;
-  GyDict      *dict   = NULL; */
+  GyWindow    *self   = (GyWindow *) data;
+  GyDict      *dict   = NULL;
   g_autoptr(GVariant) state = NULL;
-  // const gchar *str;
+  const gchar *str;
+  GError *err = NULL;
 
   state = g_action_get_state (G_ACTION (action));
 
   if (g_variant_compare (parameter, state) == 0) return;
 
-  /*str = g_variant_get_string (parameter, NULL);
+  str = g_variant_get_string (parameter, NULL);
 
-  dict = gy_dict_manager_set_dict (self->manager_dicts, str);
+  dict = gy_dict_manager_lookup_dict (self->manager_dicts, str);
   if (!dict) return;
+
+  if (!gy_dict_is_mapped (dict))
+    gy_dict_map (dict, &err);
+
+  if (err)
+    {
+      g_critical ("Can't map the dictionary. Error: %s", err->message);
+      g_clear_error (&err);
+      return;
+    }
 
   gy_text_buffer_clean_buffer (self->buffer);
 
@@ -172,7 +184,7 @@ gy_window_action_switch_dict (GSimpleAction *action,
   gy_window_clear_search_entry (self);
   gy_window_grab_focus (GY_WINDOW (self));
 
-  g_object_set (self->history_box, "filter-key", str, NULL); */
+  //g_object_set (self->history_box, "filter-key", str, NULL); */
 
   g_action_change_state (G_ACTION (action), parameter);
 }
@@ -186,6 +198,46 @@ static GActionEntry win_entries[] =
   { "add-to-history", gy_window_action_add_to_history, NULL, NULL, NULL}
 };
 
+static void
+gy_window_list_selection_changed (GtkTreeSelection *selection,
+                                  gpointer          data)
+{
+  GtkTreeIter   iter;
+  GtkTreeModel *model;
+  GyWindow     *self = GY_WINDOW (data);
+
+  if (gtk_tree_selection_get_selected (selection, &model, &iter))
+    {
+      GtkTreePath *path;
+      gint *row;
+
+      path = gtk_tree_model_get_path (model, &iter);
+      row = gtk_tree_path_get_indices (path);
+
+      if (row)
+        {
+          GAction *action = g_action_map_lookup_action (G_ACTION_MAP (self), "switch-dict");
+          g_autoptr(GVariant) state = NULL;
+
+          state = g_action_get_state (action);
+
+          const gchar* str = g_variant_get_string (state, NULL);
+
+          GyDict *dict = gy_dict_manager_lookup_dict (self->manager_dicts, str);
+
+          if (dict)
+            {
+              g_autofree gchar *raw_str = NULL;
+
+              raw_str = gy_dict_get_lexical_unit (dict, *row, NULL);
+
+              gtk_text_buffer_set_text (GTK_TEXT_BUFFER (self->buffer),raw_str, -1);
+
+            }
+        }
+      gtk_tree_path_free (path);
+    }
+}
 
 static void
 gy_window_set_property (GObject      *object,
@@ -338,9 +390,11 @@ gy_window_init (GyWindow *self)
   gtk_tree_view_set_search_entry (GTK_TREE_VIEW (self->deflist),
                                   GTK_ENTRY (self->dict_entry));
 
-  g_object_set_data (G_OBJECT (self->textview), "manager", self->manager_dicts);
   g_object_set_data (G_OBJECT (self->buffer), "textview", self->textview);
-  gy_def_list_register_observer (self->deflist, G_OBSERVER (self->textview));
+
+  self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->deflist));
+  g_signal_connect (self->selection, "changed",
+                   G_CALLBACK (gy_window_list_selection_changed), self);
 
   g_signal_connect (self, "button-press-event",
                     G_CALLBACK (gy_window_button_press_event), self->deflist);

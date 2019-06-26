@@ -20,7 +20,6 @@
 #define GY_DEF_LIST_H
 
 #include <gtk/gtk.h>
-#include <g-pattern.h>
 
 G_BEGIN_DECLS
 
@@ -32,10 +31,6 @@ gint   gy_def_list_get_selected_n_row         (GyDefList *self);
 void   gy_def_list_select_row                 (GyDefList *self,
                                                gint        row);
 gchar* gy_def_list_get_value_for_selected_row (GyDefList *self);
-void   gy_def_list_register_observer          (GyDefList *self,
-                                               GObserver *observer);
-void   gy_def_list_unregister_observer        (GyDefList *self,
-                                               GObserver *observer);
 void   gy_def_list_select_previous_item       (GyDefList *self);
 void   gy_def_list_select_next_item           (GyDefList *self);
 

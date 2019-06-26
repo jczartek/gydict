@@ -27,35 +27,9 @@ struct _GyDefList
   GtkTreeView       __parent__;
   GtkTreeSelection *selection;
 
-  GObservable *observable;
 };
 
 G_DEFINE_TYPE (GyDefList, gy_def_list, GTK_TYPE_TREE_VIEW)
-
-static void
-gy_def_list_selection_changed (GtkTreeSelection *selection,
-                               gpointer          data)
-{
-  GtkTreeIter   iter;
-  GtkTreeModel *model;
-  GyDefList   *self = GY_DEF_LIST (data);
-
-  if (gtk_tree_selection_get_selected (selection, &model, &iter))
-    {
-      GtkTreePath *path;
-      gint *row;
-
-      path = gtk_tree_model_get_path (model, &iter);
-      row = gtk_tree_path_get_indices (path);
-
-      if (row)
-        {
-          if (self->observable)
-            g_observable_dispatch_int (self->observable, *row);
-        }
-      gtk_tree_path_free (path);
-    }
-}
 
 static gboolean
 gy_def_list_search_equal_func (GtkTreeModel *model,
@@ -124,36 +98,16 @@ gy_def_list_constructed (GObject *object)
 }
 
 static void
-gy_def_list_dispose (GObject *object)
-{
-  GyDefList *self = GY_DEF_LIST (object);
-
-  if (self->observable)
-    {
-      g_object_unref (self->observable);
-      self->observable = NULL;
-    }
-  G_OBJECT_CLASS (gy_def_list_parent_class)->dispose (object);
-}
-
-static void
 gy_def_list_class_init (GyDefListClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-  object_class->dispose     = gy_def_list_dispose;
   object_class->constructed = gy_def_list_constructed;
 }
 
 static void
 gy_def_list_init (GyDefList *self)
 {
-  self->observable = g_observable_new (G_OBJECT (self));
-
-  self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
-  g_signal_connect (self->selection, "changed",
-                    G_CALLBACK (gy_def_list_selection_changed), self);
-
 }
 
 gint
@@ -234,29 +188,6 @@ gy_def_list_select_row (GyDefList *self,
     }
 
   gtk_tree_path_free (path);
-}
-
-void
-gy_def_list_register_observer (GyDefList *self,
-                               GObserver *observer)
-{
-  g_return_if_fail (GY_IS_DEF_LIST (self));
-  g_return_if_fail (G_IS_OBSERVER (observer));
-
-  if (self->observable)
-    g_observable_add_observer (self->observable, observer);
-
-}
-
-void
-gy_def_list_unregister_observer (GyDefList *self,
-                                 GObserver *observer)
-{
-  g_return_if_fail (GY_IS_DEF_LIST (self));
-  g_return_if_fail (G_IS_OBSERVER (observer));
-
-  if (self->observable)
-    g_observable_delete_observer (self->observable, observer);
 }
 
 static void

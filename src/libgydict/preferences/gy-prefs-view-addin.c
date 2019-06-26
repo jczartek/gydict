@@ -58,5 +58,5 @@ gy_prefs_view_addin_unload (GyPrefsViewAddin *self,
   g_return_if_fail (GY_IS_PREFS_VIEW_ADDIN (self));
   g_return_if_fail (GY_IS_PREFS_VIEW (prefs));
 
-  GY_PREFS_VIEW_ADDIN_GET_IFACE (self)->load (self, prefs);
+  GY_PREFS_VIEW_ADDIN_GET_IFACE (self)->unload (self, prefs);
 }

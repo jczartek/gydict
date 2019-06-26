@@ -27,7 +27,7 @@ G_BEGIN_DECLS
 
 #include "app/gy-app.h"
 #include "app/gy-app-addin.h"
-//#include "deflist/gy-def-list.h"
+#include "deflist/gy-def-list.h"
 #include "dictionaries/gy-depl.h"
 #include "dictionaries/gy-dict.h"
 #include "dictionaries/gy-dict-manager.h"
