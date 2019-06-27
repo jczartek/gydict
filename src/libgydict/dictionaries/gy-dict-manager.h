@@ -28,9 +28,6 @@ G_BEGIN_DECLS
 G_DECLARE_FINAL_TYPE (GyDictManager, gy_dict_manager, GY, DICT_MANAGER, GObject)
 
 GyDictManager *gy_dict_manager_new              (void);
-GyDict        *gy_dict_manager_set_dict         (GyDictManager *self,
-                                                 const gchar   *name_dict);
-GyDict        *gy_dict_manager_get_used_dict    (GyDictManager *self);
 
 GyDict* gy_dict_manager_lookup_dict (GyDictManager *self,
                                       const gchar   *idx);

@@ -31,7 +31,6 @@ G_BEGIN_DECLS
 #include "dictionaries/gy-depl.h"
 #include "dictionaries/gy-dict.h"
 #include "dictionaries/gy-dict-manager.h"
-#include "dictionaries/gy-dict-manager-addin.h"
 #include "dictionaries/gy-english-pwn.h"
 #include "dictionaries/gy-german-pwn.h"
 #include "dictionaries/gy-parsable.h"
