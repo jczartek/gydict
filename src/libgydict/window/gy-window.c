@@ -19,6 +19,7 @@
 #include "config.h"
 #include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
+#include <pango/pango.h>
 #include <libpeas/peas.h>
 
 #include "gy-window.h"
@@ -208,7 +209,7 @@ gy_window_list_selection_changed (GtkTreeSelection *selection,
 
   if (gtk_tree_selection_get_selected (selection, &model, &iter))
     {
-      GtkTreePath *path;
+      g_autoptr (GtkTreePath) path = NULL;
       gint *row;
 
       path = gtk_tree_model_get_path (model, &iter);
@@ -228,14 +229,34 @@ gy_window_list_selection_changed (GtkTreeSelection *selection,
           if (dict)
             {
               g_autofree gchar *raw_str = NULL;
-
               raw_str = gy_dict_get_lexical_unit (dict, *row, NULL);
 
-              gtk_text_buffer_set_text (GTK_TEXT_BUFFER (self->buffer),raw_str, -1);
+              if (G_UNLIKELY(g_getenv("GY_DICT_PRINT_RAW_STRING") != NULL))
+                {
+                  gtk_text_buffer_set_text (GTK_TEXT_BUFFER (self->buffer),raw_str, -1);
+                }
+              else
+                {
+                  g_autofree gchar *formatted_text = NULL;
+                  PangoAttrList *attr_list = NULL;
+                  g_autoptr(GError) err = NULL;
+                  GtkTextIter start;
+
+                  if (!gy_dict_parse (dict, raw_str, -1, &attr_list, &formatted_text, &err))
+                    {
+                      g_critical ("Can't parse the given text. Error: %s", err ? err->message : "<unknown>");
+                      return;
+                    }
+
+                  gy_text_buffer_clean_buffer (self->buffer);
+                  gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (self->buffer), &start);
+                  gy_text_buffer_insert_with_attributes (self->buffer, &start, formatted_text, attr_list);
+
+                  pango_attr_list_unref (attr_list);
+                }
 
             }
         }
-      gtk_tree_path_free (path);
     }
 }
 
