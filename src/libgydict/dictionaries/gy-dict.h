@@ -51,7 +51,6 @@ void          gy_dict_map (GyDict  *self,
                            GError **err);
 gboolean      gy_dict_is_mapped (GyDict *self);
 gboolean      gy_dict_is_used (GyDict *self);
-GObject*      gy_dict_new (const gchar   *identifier);
 gboolean      gy_dict_parse (GyDict         *self,
                              const gchar    *raw_text,
                              gint            length,
@@ -61,8 +60,6 @@ gboolean      gy_dict_parse (GyDict         *self,
 gchar *        gy_dict_get_lexical_unit (GyDict  *self,
                                          guint    idx,
                                          GError **err);
-void gy_dict_initialize (void);
-
 G_END_DECLS
 
 #endif /* __GY_DICT_H__ */

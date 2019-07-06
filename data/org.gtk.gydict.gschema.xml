@@ -63,28 +63,6 @@
     </key>
   </schema>
 
-  <schema id="org.gtk.gydict.paths" path="/org/gtk/gydict/paths/">
-    <key name="gygermanpwn-german" type="s">
-      <default>""</default>
-    </key>
-
-    <key name="gygermanpwn-polish" type="s">
-      <default>""</default>
-    </key>
-
-    <key name="gyenglishpwn-english" type="s">
-      <default>""</default>
-    </key>
-
-    <key name="gyenglishpwn-polish" type="s">
-      <default>""</default>
-    </key>
-
-    <key name="gydepl-german" type="s">
-      <default>""</default>
-    </key>
-  </schema>
-
   <schema id="org.gtk.gydict.plugin" gettext-domain="gydict">
     <key name="enabled" type="b">
       <default>true</default>

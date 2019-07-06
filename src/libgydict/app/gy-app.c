@@ -23,7 +23,6 @@
 #include "gy-app-addin.h"
 #include "window/gy-window.h"
 #include "preferences/gy-prefs-window.h"
-#include "dictionaries/gy-dict.h"
 #include "resources/gy-resources.h"
 
 
@@ -383,9 +382,6 @@ startup (GApplication *application)
 
   /* Initialize plugins */
   gy_app_initailize_plugins (app);
-
-  /* Initialize types */
-  gy_dict_initialize ();
 
   app->extens = peas_extension_set_new (engine, GY_TYPE_APP_ADDIN, NULL);
 

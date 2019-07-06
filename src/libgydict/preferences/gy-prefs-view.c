@@ -51,7 +51,7 @@ sort_plugin_info (gconstpointer a,
 static void
 gy_prefs_view_register_builtin_prefs (DzlPreferences *prefs)
 {
-  GtkSizeGroup *path_group;
+  //GtkSizeGroup *path_group;
 
   dzl_preferences_add_page (prefs, "appearance", _("Appearance"), 0);
   dzl_preferences_add_list_group (prefs, "appearance", "basic", _("Themes"), GTK_SELECTION_NONE, 0);
@@ -66,11 +66,11 @@ gy_prefs_view_register_builtin_prefs (DzlPreferences *prefs)
   dzl_preferences_add_font_button (prefs, "appearance", "font", "org.gtk.gydict", "font-name", _("Text View"), C_("Keywords", "Text view font"), 0);
 
 
-  path_group = gy_prefs_view_get_size_group (GY_PREFS_VIEW (prefs), "paths");
+  //path_group = gy_prefs_view_get_size_group (GY_PREFS_VIEW (prefs), "paths");
   dzl_preferences_add_page (prefs, "dictionaries", _("Dictionaries"), 400);
   dzl_preferences_add_list_group (prefs, "dictionaries", "paths", _("The dictionaries paths"), GTK_SELECTION_NONE, 0);
 
-  {
+  /*{
     GtkWidget *widget;
     guint      widget_id;
 
@@ -108,7 +108,7 @@ gy_prefs_view_register_builtin_prefs (DzlPreferences *prefs)
                                                   GTK_FILE_CHOOSER_ACTION_OPEN, NULL, 50);
     widget    = dzl_gtk_widget_find_child_typed (dzl_preferences_get_widget (prefs, widget_id), GTK_TYPE_FILE_CHOOSER_BUTTON);
     if (widget) gtk_size_group_add_widget (path_group, widget);
-  }
+  }*/
 
   {
     PeasEngine *engine = peas_engine_get_default ();

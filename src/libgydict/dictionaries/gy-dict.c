@@ -20,10 +20,6 @@
 #include <glib/gi18n-lib.h>
 
 #include "gy-dict.h"
-#include "gy-depl.h"
-#include "gy-pwn-dict.h"
-#include "gy-english-pwn.h"
-#include "gy-german-pwn.h"
 #include "../gy-dict-debug.h"
 
 
@@ -293,40 +289,4 @@ gy_dict_get_tree_model (GyDict *dict)
 
   priv = gy_dict_get_instance_private (dict);
   return priv->model;
-}
-
-
-GObject *
-gy_dict_new (const gchar *identifier)
-{
-  GType gtype;
-  GObject *object = NULL;
-  g_autofree gchar *type_name = NULL;
-  g_autofree gchar *id = NULL;
-  gsize offset = 0;
-
-  g_return_val_if_fail (identifier != NULL, NULL);
-
-  offset = strcspn (identifier, "-");
-  type_name = g_strndup (identifier, offset);
-
-  gtype = g_type_from_name (type_name);
-
-  g_assert (gtype != 0);
-
-  id = g_utf8_strdown (identifier, -1);
-
-  object = g_object_new (gtype, "identifier", id, NULL);
-
-  return object;
-}
-
-void
-gy_dict_initialize (void)
-{
-  g_type_ensure (GY_TYPE_DICT);
-  g_type_ensure (GY_TYPE_DEPL);
-  g_type_ensure (GY_TYPE_PWN_DICT);
-  g_type_ensure (GY_TYPE_ENGLISH_PWN);
-  g_type_ensure (GY_TYPE_GERMAN_PWN);
 }
