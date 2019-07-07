@@ -86,6 +86,13 @@ gy_dict_manager_remove_dict (GyDictManager *self,
   g_hash_table_remove (self->dicts, idx);
 }
 
+/**
+ * gy_dict_manager_lookup_dict:
+ * @self: a #GyDictManager
+ * @idx: the identifier to look up
+ *
+ * Returns: (transfer none) (nullable): A #GyDict, or %NULL if @idx is not found
+ */
 GyDict *
 gy_dict_manager_lookup_dict (GyDictManager *self,
                              const gchar   *idx)

@@ -55,53 +55,6 @@
             </child>
           </object>
         </child>
-        <child>
-          <object class="GtkShortcutsGroup">
-            <property name="visible">1</property>
-            <property name="title" translatable="yes">PWN Dictionaries</property>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="visible">1</property>
-                <property name="accelerator">&lt;alt&gt;1</property>
-                <property name="title" translatable="yes">English-Polish</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="visible">1</property>
-                <property name="accelerator">&lt;alt&gt;2</property>
-                <property name="title" translatable="yes">Polish-English</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="visible">1</property>
-                <property name="accelerator">&lt;alt&gt;3</property>
-                <property name="title" translatable="yes">German-Polish</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="visible">1</property>
-                <property name="accelerator">&lt;alt&gt;4</property>
-                <property name="title" translatable="yes">Polish-German</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkShortcutsGroup">
-            <property name="visible">1</property>
-            <property name="title" translatable="yes">DePl Dictionary</property>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="visible">1</property>
-                <property name="accelerator">&lt;alt&gt;5</property>
-                <property name="title" translatable="yes">German-Polish</property>
-              </object>
-            </child>
-          </object>
-        </child>
       </object>
     </child>
   </object>

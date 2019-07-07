@@ -188,8 +188,7 @@ gy_text_buffer_remove_tags_by_name (GyTextBuffer *self,
  * Returns the tag named name_tag in buffer self, or NULL if no tag exist in
  * the buffer.
  *
- * Returns
- * a GtkTextTag, or NULL
+ * Returns: (nullable) (transfer none): a #GtkTextTag, or NULL
  */
 GtkTextTag *
 gy_text_buffer_get_tag_by_name (GyTextBuffer  *self,

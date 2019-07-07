@@ -46,7 +46,7 @@ struct _GyDictClass
                                  GError **err);
 };
 
-GtkTreeModel* gy_dict_get_tree_model (GyDict *dict);
+GtkTreeModel* gy_dict_get_tree_model (GyDict *self);
 void          gy_dict_map (GyDict  *self,
                            GError **err);
 gboolean      gy_dict_is_mapped (GyDict *self);

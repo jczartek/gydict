@@ -51,8 +51,6 @@ sort_plugin_info (gconstpointer a,
 static void
 gy_prefs_view_register_builtin_prefs (DzlPreferences *prefs)
 {
-  //GtkSizeGroup *path_group;
-
   dzl_preferences_add_page (prefs, "appearance", _("Appearance"), 0);
   dzl_preferences_add_list_group (prefs, "appearance", "basic", _("Themes"), GTK_SELECTION_NONE, 0);
   dzl_preferences_add_switch (prefs, "appearance", "basic",
@@ -66,49 +64,8 @@ gy_prefs_view_register_builtin_prefs (DzlPreferences *prefs)
   dzl_preferences_add_font_button (prefs, "appearance", "font", "org.gtk.gydict", "font-name", _("Text View"), C_("Keywords", "Text view font"), 0);
 
 
-  //path_group = gy_prefs_view_get_size_group (GY_PREFS_VIEW (prefs), "paths");
   dzl_preferences_add_page (prefs, "dictionaries", _("Dictionaries"), 400);
   dzl_preferences_add_list_group (prefs, "dictionaries", "paths", _("The dictionaries paths"), GTK_SELECTION_NONE, 0);
-
-  /*{
-    GtkWidget *widget;
-    guint      widget_id;
-
-
-    widget_id = dzl_preferences_add_file_chooser (prefs, "dictionaries", "paths", "org.gtk.gydict.paths",
-                                                  "gyenglishpwn-english", NULL, _("PWN English-Polish"), _("Select angpol.win"),
-                                                  GTK_FILE_CHOOSER_ACTION_OPEN, NULL, 0);
-    widget    = dzl_gtk_widget_find_child_typed (dzl_preferences_get_widget (prefs, widget_id), GTK_TYPE_FILE_CHOOSER_BUTTON);
-    if (widget) gtk_size_group_add_widget (path_group, widget);
-
-
-    widget_id = dzl_preferences_add_file_chooser (prefs, "dictionaries", "paths", "org.gtk.gydict.paths",
-                                                  "gyenglishpwn-polish", NULL, _("PWN Polish-English"), _("Select polang.win"),
-                                                  GTK_FILE_CHOOSER_ACTION_OPEN, NULL, 20);
-    widget    = dzl_gtk_widget_find_child_typed (dzl_preferences_get_widget (prefs, widget_id), GTK_TYPE_FILE_CHOOSER_BUTTON);
-    if (widget) gtk_size_group_add_widget (path_group, widget);
-
-
-    widget_id = dzl_preferences_add_file_chooser (prefs, "dictionaries", "paths", "org.gtk.gydict.paths",
-                                                  "gygermanpwn-german", NULL, _("PWN German-Polish"), _("Select niempol.win"),
-                                                  GTK_FILE_CHOOSER_ACTION_OPEN, NULL, 30);
-    widget    = dzl_gtk_widget_find_child_typed (dzl_preferences_get_widget (prefs, widget_id), GTK_TYPE_FILE_CHOOSER_BUTTON);
-    if (widget) gtk_size_group_add_widget (path_group, widget);
-
-
-    widget_id = dzl_preferences_add_file_chooser (prefs, "dictionaries", "paths", "org.gtk.gydict.paths",
-                                                  "gygermanpwn-polish", NULL, _("PWN Polish-German"), _("Select polniem.win"),
-                                                  GTK_FILE_CHOOSER_ACTION_OPEN, NULL, 40);
-    widget    = dzl_gtk_widget_find_child_typed (dzl_preferences_get_widget (prefs, widget_id), GTK_TYPE_FILE_CHOOSER_BUTTON);
-    if (widget) gtk_size_group_add_widget (path_group, widget);
-
-
-    widget_id = dzl_preferences_add_file_chooser (prefs, "dictionaries", "paths", "org.gtk.gydict.paths",
-                                                  "gydepl-german", NULL, _("DEPL German-Polish"), _("Select a.dat"),
-                                                  GTK_FILE_CHOOSER_ACTION_OPEN, NULL, 50);
-    widget    = dzl_gtk_widget_find_child_typed (dzl_preferences_get_widget (prefs, widget_id), GTK_TYPE_FILE_CHOOSER_BUTTON);
-    if (widget) gtk_size_group_add_widget (path_group, widget);
-  }*/
 
   {
     PeasEngine *engine = peas_engine_get_default ();
@@ -215,6 +172,13 @@ gy_prefs_view_init (GyPrefsView *self)
 {
 }
 
+/**
+ * gy_prefs_view_get_size_group:
+ * @self: a #GyPrefsView widget
+ * @name_group:
+ *
+ * Returns: (transfer none): a #GtkSizeGroup
+ */
 GtkSizeGroup *
 gy_prefs_view_get_size_group (GyPrefsView *self,
                               const gchar *name_group)

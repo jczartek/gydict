@@ -281,12 +281,21 @@ gy_dict_is_used (GyDict *self)
   return (gboolean) priv->is_used;
 }
 
+/**
+ * gy_dict_get_tree_model:
+ * @self: a #GyDict
+ *
+ * Returns the model #GtkTreeView that was created by the @self. Returns %NULL if the @self
+ * is not mapped.
+ *
+ * Returns: (transfer none) (nullable): A #GtkTreeModel, or %NULL if the @self is not mapped.
+ **/
 GtkTreeModel *
-gy_dict_get_tree_model (GyDict *dict)
+gy_dict_get_tree_model (GyDict *self)
 {
   GyDictPrivate *priv;
-  g_return_val_if_fail (GY_IS_DICT (dict), NULL);
+  g_return_val_if_fail (GY_IS_DICT (self), NULL);
 
-  priv = gy_dict_get_instance_private (dict);
+  priv = gy_dict_get_instance_private (self);
   return priv->model;
 }

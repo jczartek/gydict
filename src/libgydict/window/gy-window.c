@@ -476,11 +476,16 @@ gy_window_new (GyApp *application)
   return GTK_WIDGET (window);
 }
 
+/**
+ * gy_window_get_text_view:
+ * @self: the main window
+ *
+ * Returns: (transfer none): The GyTextView
+ */
 GtkWidget *
 gy_window_get_text_view (GyWindow *self)
 {
   g_return_val_if_fail (GY_IS_WINDOW (self), NULL);
-
 
   return GTK_WIDGET (self->textview);
 }
@@ -501,6 +506,12 @@ gy_window_clear_search_entry (GyWindow *self)
   gtk_entry_set_text (GTK_ENTRY (self->dict_entry), "");
 }
 
+/**
+ * gy_window_get_dockbin:
+ * @self: the main window
+ *
+ * Returns: (transfer none): the DzlDockBin
+ */
 DzlDockBin *
 gy_window_get_dockbin (GyWindow *self)
 {
@@ -509,6 +520,12 @@ gy_window_get_dockbin (GyWindow *self)
   return self->dockbin;
 }
 
+/**
+ * gy_window_get_dict_manager:
+ * @self: the main window
+ *
+ * Returns: (transfer none): the #GyDictManager
+ */
 GyDictManager *
 gy_window_get_dict_manager (GyWindow *self)
 {
