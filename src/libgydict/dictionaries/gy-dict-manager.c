@@ -50,7 +50,7 @@ static void
 gy_dict_manager_init (GyDictManager *self)
 {
   self->dicts = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                       NULL, g_object_unref);
+                                       g_free, g_object_unref);
 }
 
 GyDictManager *
@@ -73,7 +73,7 @@ gy_dict_manager_insert_dict (GyDictManager *self,
       g_warning ("The identifier [%s] already exists. The previous value will be lost.", idx);
     }
 
-  g_hash_table_insert (self->dicts, (gpointer) idx, (gpointer) dict);
+  g_hash_table_insert (self->dicts, (gpointer) g_strdup (idx), g_object_ref_sink (dict));
 }
 
 void
