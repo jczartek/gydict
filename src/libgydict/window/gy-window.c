@@ -165,7 +165,11 @@ gy_window_action_switch_dict (GSimpleAction *action,
   str = g_variant_get_string (parameter, NULL);
 
   dict = gy_dict_manager_lookup_dict (self->manager_dicts, str);
-  if (!dict) return;
+  if (!dict)
+    {
+      g_warning ("Can't find dictionary");
+      return;
+    };
 
   if (!gy_dict_is_mapped (dict))
     gy_dict_map (dict, &err);
