@@ -33,7 +33,16 @@ libgydict_deps = [
   cc.find_library('z', required: true)
 ]
 
-libgydict = shared_library('gydict-' + apiversion, libgydct_sources,
+# Enumerations for GType
+libgydict_enums = gnome.mkenums(
+  'gy-enum-types',
+  sources: libgydict_public_headers,
+  c_template: 'gy-enum-types.c.template',
+  h_template: 'gy-enum-types.h.template',
+  install_dir: libgydict_header_dir,
+  install_header: true,)
+
+libgydict = shared_library('gydict-' + apiversion, libgydct_sources + libgydict_enums,
          dependencies: libgydict_deps,
               install: true,
                c_args: debug_cflags,
@@ -60,7 +69,7 @@ pkgg.generate(
 )
 
 libgydict_gir = gnome.generate_gir(libgydict,
-              sources: libgydict_public_headers + libgydict_public_sources,
+              sources: libgydict_public_headers + libgydict_public_sources + [ libgydict_enums[1] ] ,
             nsversion: apiversion,
             namespace: 'Gydict',
         symbol_prefix: 'gy',
