@@ -28,7 +28,6 @@ typedef struct _GyDictPrivate
   gchar          *identifier;
   GtkTreeModel   *model;
   guint           is_mapped: 1;
-  guint           is_used:   1;
 } GyDictPrivate;
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GyDict, gy_dict, G_TYPE_OBJECT, G_ADD_PRIVATE (GyDict))
@@ -39,7 +38,6 @@ enum
   PROP_IDENTIFIER,
   PROP_MODEL,
   PROP_IS_MAPPED,
-  PROP_IS_USED,
   LAST_PROP
 };
 GParamSpec *gParamSpecs[LAST_PROP];
@@ -81,9 +79,6 @@ gy_dict_set_property (GObject      *object,
     case PROP_IS_MAPPED:
       priv->is_mapped = g_value_get_boolean (value);
       break;
-    case PROP_IS_USED:
-      priv->is_used = g_value_get_boolean (value);
-      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -112,9 +107,6 @@ gy_dict_get_property (GObject    *object,
       break;
     case PROP_IS_MAPPED:
       g_value_set_boolean (value, priv->is_mapped);
-      break;
-    case PROP_IS_USED:
-      g_value_set_boolean (value, priv->is_used);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -173,18 +165,6 @@ gy_dict_class_init (GyDictClass *klass)
     g_param_spec_boolean ("is-mapped",
                           "Is-mapped",
                           "Is the dict mapped",
-                          FALSE,
-                          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-
-  /**
-   * GyDict:is-used:
-   *
-   * Is the dict being used at the moment?
-   */
-  gParamSpecs[PROP_IS_USED] =
-    g_param_spec_boolean ("is-used",
-                          "Is-used",
-                          "Is the dict being used at the moment.",
                           FALSE,
                           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -267,18 +247,6 @@ gy_dict_is_mapped (GyDict *self)
   priv = gy_dict_get_instance_private (self);
 
   return (gboolean) priv->is_mapped;
-}
-
-gboolean
-gy_dict_is_used (GyDict *self)
-{
-  GyDictPrivate *priv;
-
-  g_return_val_if_fail (GY_IS_DICT (self), FALSE);
-
-  priv = gy_dict_get_instance_private (self);
-
-  return (gboolean) priv->is_used;
 }
 
 /**
