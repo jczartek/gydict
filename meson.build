@@ -1,5 +1,5 @@
 project('gydict', 'c',
-        version: '0.5.0',
+        version: '0.6.0',
         default_options: ['c_std=gnu11', 'warning_level=2'],
         license: 'GPLv2+',
         meson_version: '>= 0.50.0')
