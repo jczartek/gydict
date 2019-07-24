@@ -33,6 +33,7 @@ G_BEGIN_DECLS
 #include "entryview/gy-text-buffer.h"
 #include "entryview/gy-text-view.h"
 #include "helpers/gy-utility-func.h"
+#include "helpers/gy-text-attribute.h"
 #include "preferences/gy-prefs-view.h"
 #include "preferences/gy-prefs-view-addin.h"
 #include "preferences/gy-prefs-window.h"
@@ -40,8 +41,10 @@ G_BEGIN_DECLS
 #include "printing/gy-print-compositor.h"
 #include "search/gy-search-bar.h"
 #include "window/gy-header-bar.h"
+#include "window/gy-history-box.h"
 #include "window/gy-window.h"
 #include "window/gy-window-addin.h"
+#include "gy-enum-types.h"
 
 #undef GYDICT_INSIDE
 

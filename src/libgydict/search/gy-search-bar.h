@@ -19,6 +19,10 @@
 #ifndef GY_SEARCH_BAR_H
 #define GY_SEARCH_BAR_H
 
+#if !defined (GYDICT_INSIDE) && !defined (GYDICT_COMPILATION)
+#error "Only <gydict.h> can be included directly."
+#endif
+
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS

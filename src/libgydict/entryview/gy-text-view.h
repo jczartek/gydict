@@ -19,6 +19,10 @@
 #ifndef __GY_TEXT_VIEW_H__
 #define __GY_TEXT_VIEW_H__
 
+#if !defined (GYDICT_INSIDE) && !defined (GYDICT_COMPILATION)
+#error "Only <gydict.h> can be included directly."
+#endif
+
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS

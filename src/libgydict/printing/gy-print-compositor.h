@@ -20,6 +20,10 @@
 #ifndef _GY_PRINT_COMPOSITOR_H_
 #define _GY_PRINT_COMPOSITOR_H_
 
+#if !defined (GYDICT_INSIDE) && !defined (GYDICT_COMPILATION)
+#error "Only <gydict.h> can be included directly."
+#endif
+
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS

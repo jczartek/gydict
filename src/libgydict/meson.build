@@ -45,7 +45,7 @@ libgydict_enums = gnome.mkenums(
 libgydict = shared_library('gydict-' + apiversion, libgydct_sources + libgydict_enums,
          dependencies: libgydict_deps,
               install: true,
-               c_args: debug_cflags,
+               c_args: debug_cflags + ['-DGYDICT_COMPILATION'],
         install_rpath: gydict_pkglibdir_abs,
           install_dir: gydict_libdir)
 
@@ -77,4 +77,5 @@ libgydict_gir = gnome.generate_gir(libgydict,
              includes: [ 'Gio-2.0', 'Gtk-3.0', 'Dazzle-1.0' ],
               install: true,
   install_dir_typelib: gydict_typelibdir,
-      install_dir_gir: gydict_girdir)
+      install_dir_gir: gydict_girdir,
+           extra_args: ['-DGYDICT_COMPILATION'],)

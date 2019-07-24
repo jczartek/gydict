@@ -20,6 +20,12 @@
 #ifndef __GYDICT_PRINT_H__
 #define __GYDICT_PRINT_H__
 
+#if !defined (GYDICT_INSIDE) && !defined (GYDICT_COMPILATION)
+#error "Only <gydict.h> can be included directly."
+#endif
+
+#include <gtk/gtk.h>
+
 extern void gy_print_do_printing (GSimpleAction *action, GVariant *parameter, gpointer data);
 
 #endif /* end of include guard: __GYDICT_PRINT_H__ */

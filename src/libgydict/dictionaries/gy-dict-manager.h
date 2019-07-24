@@ -18,6 +18,10 @@
 #ifndef __GY_DICT_MANAGER_H__
 #define __GY_DICT_MANAGER_H__
 
+#if !defined (GYDICT_INSIDE) && !defined (GYDICT_COMPILATION)
+#error "Only <gydict.h> can be included directly."
+#endif
+
 #include <gtk/gtk.h>
 #include "gy-dict.h"
 

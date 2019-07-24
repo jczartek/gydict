@@ -19,6 +19,10 @@
 #ifndef __GY_WINDOW_H__
 #define __GY_WINDOW_H__
 
+#if !defined (GYDICT_INSIDE) && !defined (GYDICT_COMPILATION)
+#error "Only <gydict.h> can be included directly."
+#endif
+
 #include "app/gy-app.h"
 #include "dictionaries/gy-dict-manager.h"
 
