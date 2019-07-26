@@ -110,7 +110,13 @@ guint gy_text_attribute_get_end_index (GyTextAttribute *attr);
 void gy_text_attribute_set_attr_type (GyTextAttribute *attr,
                                       GyTextAttrType   type);
 GyTextAttrType gy_text_attribute_get_attr_type (GyTextAttribute *attr);
-
+gboolean gy_text_attribute_get_boolean (GyTextAttribute *attr);
+gint gy_text_attribute_get_int (GyTextAttribute *attr);
+gdouble gy_text_attribute_get_float (GyTextAttribute *attr);
+const gchar* gy_text_attribute_get_string (GyTextAttribute *attr);
+const PangoLanguage* gy_text_attribute_get_language (GyTextAttribute *attr);
+const PangoFontDescription *gy_text_attribute_get_font_desc (GyTextAttribute *attr);
+const PangoColor* gy_text_attribute_get_color (GyTextAttribute *attr);
 GyTextAttribute * gy_text_attribute_language_new (PangoLanguage *language);
 GyTextAttribute * gy_text_attribute_family_new (const gchar *family);
 GyTextAttribute * gy_text_attribute_style_new (PangoStyle style);

@@ -258,6 +258,61 @@ gy_text_attribute_get_end_index (GyTextAttribute *attr)
   return attr->end_index;
 }
 
+gboolean
+gy_text_attribute_get_boolean (GyTextAttribute *attr)
+{
+  g_return_val_if_fail (attr != NULL, FALSE);
+
+  return attr->attr_bool;
+}
+
+gint
+gy_text_attribute_get_int (GyTextAttribute *attr)
+{
+  g_return_val_if_fail (attr != NULL, 0);
+
+  return attr->attr_int;
+}
+
+gdouble
+gy_text_attribute_get_float (GyTextAttribute *attr)
+{
+  g_return_val_if_fail (attr != NULL, 0.0);
+
+  return attr->attr_float;
+}
+
+const gchar*
+gy_text_attribute_get_string (GyTextAttribute *attr)
+{
+  g_return_val_if_fail (attr != NULL, NULL);
+
+  return attr->attr_string;
+}
+
+const PangoLanguage *
+gy_text_attribute_get_language (GyTextAttribute *attr)
+{
+  g_return_val_if_fail (attr != NULL, NULL);
+
+  return attr->attr_language;
+}
+
+const PangoFontDescription *
+gy_text_attribute_get_font_desc (GyTextAttribute *attr)
+{
+  g_return_val_if_fail (attr != NULL, NULL);
+
+  return attr->attr_desc;
+}
+
+const PangoColor *
+gy_text_attribute_get_color (GyTextAttribute *attr)
+{
+  g_return_val_if_fail (attr != NULL, NULL);
+
+  return &attr->attr_color;
+}
 /**
  * gy_text_attribute_set_attry_type:
  * @attr: a text attribute
