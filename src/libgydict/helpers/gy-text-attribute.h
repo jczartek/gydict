@@ -30,6 +30,7 @@ G_BEGIN_DECLS
 
 typedef struct _GyTextAttribute GyTextAttribute;
 typedef struct _GyTextAttrList GyTextAttrList;
+typedef struct _GyTextAttrIterator GyTextAttrIterator;
 
 /**
  * GyTextAttrType:
@@ -101,10 +102,10 @@ GyTextAttribute *gy_text_attribute_ref (GyTextAttribute *attr);
 void gy_text_attribute_unref (GyTextAttribute *attr);
 GyTextAttribute * gy_text_attribute_copy (GyTextAttribute *attr);
 void gy_text_attribute_set_start_index (GyTextAttribute *attr,
-                                        guint            idx);
+                                        guint            start_index);
 guint gy_text_attribute_get_start_index (GyTextAttribute *attr);
 void gy_text_attribute_set_end_index (GyTextAttribute *attr,
-                                      guint            idx);
+                                      guint            end_index);
 guint gy_text_attribute_get_end_index (GyTextAttribute *attr);
 
 void gy_text_attribute_set_attr_type (GyTextAttribute *attr,
@@ -162,5 +163,19 @@ void             gy_text_attr_list_insert         (GyTextAttrList  *list,
 void             gy_text_attr_list_insert_before  (GyTextAttrList  *list,
                                                    GyTextAttribute *attr);
 GSList*          gy_text_attr_list_get_attributes (GyTextAttrList *list);
+GyTextAttrIterator *gy_text_attr_list_get_iterator (GyTextAttrList *list);
+
+/*
+ * The text attribute iterator
+ */
+GType               gy_text_attr_iterator_get_type (void) G_GNUC_CONST;
+GyTextAttrIterator* gy_text_attr_iterator_copy     (GyTextAttrIterator *iterator);
+void                gy_text_attr_iterator_destroy  (GyTextAttrIterator *iterator);
+gboolean            gy_text_attr_iterator_next     (GyTextAttrIterator *iterator);
+void                gy_text_attr_iterator_range    (GyTextAttrIterator *iterator,
+                                                    gint               *start,
+                                                    gint               *end);
+GyTextAttribute*    gy_text_attr_iterator_get      (GyTextAttrIterator *iterator,
+                                                    GyTextAttrType      type);
 
 G_END_DECLS

@@ -222,9 +222,9 @@ gy_text_attribute_get_start_index (GyTextAttribute *attr)
 }
 
 /**
- * gy_text_attribute_set_start_index:
+ * gy_text_attribute_set_end_index:
  * @attr: a #GyTextAttribute
- * @start_index: final index of the range in bytes
+ * @end_index: final index of the range in bytes
  *
  * Sets final index. The character at this index
  * is not included in the range.
@@ -233,11 +233,11 @@ gy_text_attribute_get_start_index (GyTextAttribute *attr)
  */
 void
 gy_text_attribute_set_end_index (GyTextAttribute *attr,
-                                 guint            idx)
+                                 guint            end_index)
 {
   g_return_if_fail (attr != NULL);
 
-  attr->end_index = idx;
+  attr->end_index = end_index;
 }
 
 /**
@@ -883,6 +883,15 @@ struct _GyTextAttrList
   GSList *tail;
 };
 
+
+struct _GyTextAttrIterator
+{
+  GSList *next;
+  GList *stack;
+  guint start_index;
+  guint end_index;
+};
+
 G_DEFINE_BOXED_TYPE (GyTextAttrList, gy_text_attr_list,
                      gy_text_attr_list_copy,
                      gy_text_attr_list_unref);
@@ -1104,3 +1113,189 @@ gy_text_attr_list_get_attributes (GyTextAttrList *list)
   return g_slist_copy_deep (list->attrs, (GCopyFunc)gy_text_attribute_copy, NULL);
 #pragma GCC diagnostic pop
 }
+
+GyTextAttrIterator *
+gy_text_attr_list_get_iterator (GyTextAttrList *list)
+{
+  GyTextAttrIterator *iterator;
+
+  g_return_val_if_fail (list != NULL, NULL);
+
+  iterator = g_slice_new (GyTextAttrIterator);
+  iterator->next = list->attrs;
+  iterator->stack = NULL;
+
+  iterator->start_index = 0;
+  iterator->end_index = 0;
+
+  if (!gy_text_attr_iterator_next (iterator))
+    iterator->end_index = PANGO_ATTR_INDEX_TO_TEXT_END;
+
+  return iterator;
+}
+
+/*
+ * GyTextAttrIterator
+ */
+
+G_DEFINE_BOXED_TYPE (GyTextAttrIterator, gy_text_attr_iterator,
+                     gy_text_attr_iterator_copy,
+                     gy_text_attr_iterator_destroy);
+
+/**
+ * gy_text_attr_iterator_copy:
+ * @iterator: an iterator
+ *
+ * Copy the @iterator
+ *
+ * Return value: (transfer full): the newly allocated
+ *               #GyTextAttrIterator, which should be freed with
+ *               gy_text_attr_iterator_destroy().
+ *
+ * Since: 0.6
+ **/
+GyTextAttrIterator *
+gy_text_attr_iterator_copy (GyTextAttrIterator *iterator)
+{
+  GyTextAttrIterator *copy;
+
+  g_return_val_if_fail (iterator != NULL, NULL);
+
+  copy = g_slice_new (GyTextAttrIterator);
+
+  *copy = *iterator;
+
+  copy->stack = g_list_copy (iterator->stack);
+
+  return copy;
+}
+
+/**
+ * gy_text_attr_iterator_destroy:
+ * @iterator: an iterator.
+ *
+ * Destroy the @iterator and free all associated memory.
+ *
+ * Since: 0.6
+ **/
+void
+gy_text_attr_iterator_destroy (GyTextAttrIterator *iterator)
+{
+  g_return_if_fail (iterator != NULL);
+
+  g_list_free (iterator->stack);
+  g_slice_free (GyTextAttrIterator, iterator);
+}
+
+/**
+ * gy_text_attr_iterator_next:
+ * @iterator: an iterator
+ *
+ * Advance the iterator until the next change of style.
+ *
+ * Return value: %FALSE if the iterator is at the end of the list, otherwise %TRUE
+ *
+ * Since: 0.6
+ **/
+gboolean
+gy_text_attr_iterator_next (GyTextAttrIterator *iterator)
+{
+  g_return_val_if_fail (iterator != NULL, FALSE);
+
+  if (!iterator->next && !iterator->stack)
+    return FALSE;
+
+  iterator->start_index = iterator->end_index;
+  iterator->end_index = PANGO_ATTR_INDEX_TO_TEXT_END;
+
+  GyTextAttribute *attr = NULL;
+  for (GList *tmp_list = iterator->stack, *next = NULL ; tmp_list != NULL; tmp_list = next)
+    {
+      next = tmp_list->next;
+      attr = tmp_list->data;
+
+      if (attr->end_index == iterator->start_index)
+        {
+          iterator->stack = g_list_remove_link (iterator->stack, tmp_list);
+          g_list_free_1 (tmp_list);
+        }
+      else
+        {
+          iterator->end_index = MIN (iterator->end_index, attr->end_index);
+        }
+    }
+
+  while (iterator->next && ((GyTextAttribute *)iterator->next->data)->start_index == iterator->start_index)
+    {
+      if (((GyTextAttribute *)iterator->next->data)->end_index > iterator->start_index)
+        {
+          iterator->stack = g_list_prepend (iterator->stack, iterator->next->data);
+          iterator->end_index = MIN (iterator->end_index, ((GyTextAttribute *)iterator->next->data)->end_index);
+        }
+      iterator->next = iterator->next->next;
+    }
+
+  if (iterator->next)
+    iterator->end_index = MIN (iterator->end_index, ((GyTextAttribute *)iterator->next->data)->start_index);
+
+  return TRUE;
+}
+
+/**
+ * gy_text_attr_iterator_range:
+ * @iterator: an iterator
+ * @start: (out): location to store the start of the range
+ * @end: (out): location to store the end of the range
+ *
+ * Get the range of the current segment. Note that the
+ * stored return values are signed, not unsigned like
+ * the values in #GyTextAttribute. To deal with this API
+ * oversight, stored return values that wouldn't fit into
+ * a signed integer are clamped to %G_MAXINT.
+ **/
+void
+gy_text_attr_iterator_range (GyTextAttrIterator *iterator,
+                             gint               *start,
+                             gint               *end)
+{
+  g_return_if_fail (iterator != NULL);
+
+  if (start)
+    *start = MIN (iterator->start_index, G_MAXINT);
+  if (end)
+    *end = MIN (iterator->end_index, G_MAXINT);
+}
+
+/**
+ * gy_text_attr_iterator_get:
+ * @iterator: an iterator
+ * @type: the type of attribute to find.
+ *
+ * Find the current attribute of a particular type at the iterator
+ * location. When multiple attributes of the same type overlap,
+ * the attribute whose range starts closest to the current location
+ * is used.
+ *
+ * Return value: (nullable): the current attribute of the given type,
+ *               or %NULL if no attribute of that type applies to the
+ *               current location.
+ **/
+GyTextAttribute *
+gy_text_attr_iterator_get (GyTextAttrIterator *iterator,
+                           GyTextAttrType      type)
+{
+  GyTextAttribute *attr = NULL;
+
+  g_return_val_if_fail (iterator != NULL, NULL);
+
+  for (GList *iter = iterator->stack; iter != NULL; iter = iter->next)
+    {
+      attr = iter->data;
+
+      if (attr->type == type)
+        return attr;
+    }
+
+  return NULL;
+}
+
