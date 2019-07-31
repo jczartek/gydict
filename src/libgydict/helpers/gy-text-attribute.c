@@ -258,6 +258,16 @@ gy_text_attribute_get_end_index (GyTextAttribute *attr)
   return attr->end_index;
 }
 
+/**
+ * gy_text_attribute_get_boolean:
+ * @attr: a text attribute
+ *
+ * Returns the boolean value of @attr
+ *
+ * Returns: %TRUE or %FALSE
+ *
+ * Since: 0.6
+ **/
 gboolean
 gy_text_attribute_get_boolean (GyTextAttribute *attr)
 {
@@ -266,6 +276,16 @@ gy_text_attribute_get_boolean (GyTextAttribute *attr)
   return attr->attr_bool;
 }
 
+/**
+ * gy_text_attribute_get_int:
+ * @attr: a text attribute
+ *
+ * Returns the integer value of @attr
+ *
+ * Returns: an integer
+ *
+ * Since: 0.6
+ **/
 gint
 gy_text_attribute_get_int (GyTextAttribute *attr)
 {
@@ -274,6 +294,16 @@ gy_text_attribute_get_int (GyTextAttribute *attr)
   return attr->attr_int;
 }
 
+/**
+ * gy_text_attribute_get_float:
+ * @attr: a text attribute
+ *
+ * Returns the double precision floating point value of @attr
+ *
+ * Returns:a %gdouble
+ *
+ * Since: 0.6
+ **/
 gdouble
 gy_text_attribute_get_float (GyTextAttribute *attr)
 {
@@ -282,6 +312,17 @@ gy_text_attribute_get_float (GyTextAttribute *attr)
   return attr->attr_float;
 }
 
+/**
+ * gy_text_attribute_get_string:
+ * @attr: a text attribute
+ *
+ * Returns the string value of @attr. The return value remains valid
+ * as long as @attr exists.
+ *
+ * Returns: (transfer none): the constant string
+ *
+ * Since: 0.6
+ **/
 const gchar*
 gy_text_attribute_get_string (GyTextAttribute *attr)
 {
