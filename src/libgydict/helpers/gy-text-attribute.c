@@ -558,7 +558,7 @@ gy_text_attribute_size_new (gint size)
  * Since: 0.6
  **/
 GyTextAttribute *
-gy_text_attriubte_font_desc_new (const PangoFontDescription *desc)
+gy_text_attribute_font_desc_new (const PangoFontDescription *desc)
 {
   GyTextAttribute *attr = gy_text_attribute_new ();
 

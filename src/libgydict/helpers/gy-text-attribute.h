@@ -125,7 +125,7 @@ GyTextAttribute * gy_text_attribute_weight_new (PangoWeight weight);
 GyTextAttribute * gy_text_attribute_variant_new (PangoVariant variant);
 GyTextAttribute * gy_text_attribute_stretch_new (PangoStretch stretch);
 GyTextAttribute * gy_text_attribute_size_new (gint size);
-GyTextAttribute * gy_text_attriubte_font_desc_new (const PangoFontDescription *desc);
+GyTextAttribute * gy_text_attribute_font_desc_new (const PangoFontDescription *desc);
 GyTextAttribute * gy_text_attribute_foreground_new (guint16 red,
                                                     guint16 green,
                                                     guint16 blue);
