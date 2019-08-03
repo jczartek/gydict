@@ -8,5 +8,9 @@ DBusActivatable=true
 Terminal=false
 Type=Application
 Icon=gydict
-Categories=GTK;Office;Other;
+Categories=GTK;Office;X-Other;
+Actions=new-window
+
 [Desktop Action new-window]
+Name=Open Gydict
+Exec=gydict
