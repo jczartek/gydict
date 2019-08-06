@@ -24,18 +24,6 @@
 
 #include <gydict.h>
 
-static gboolean option_version;
-
-static GOptionEntry options[] =
-{
-  { "version", 'v',
-    0, G_OPTION_ARG_NONE, &option_version,
-    N_("Display the version program and exit"),
-    NULL
-  },
-  { NULL, }
-};
-
 int
 main (int argc, char **argv)
 {
@@ -48,18 +36,6 @@ main (int argc, char **argv)
   bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCAL_DIR);
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
   textdomain (GETTEXT_PACKAGE);
-
-  if (!gtk_init_with_args (&argc, &argv, NULL, options, GETTEXT_PACKAGE, &error))
-  {
-    g_printerr ("%s\n", error->message);
-    return EXIT_FAILURE;
-  }
-
-  if (option_version)
-  {
-    g_print("%s\n",PACKAGE_STRING);
-    return EXIT_SUCCESS;
-  }
 
   /* Create new GyApp */
   application = gy_app_new ();
