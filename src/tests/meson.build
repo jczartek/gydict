@@ -9,3 +9,9 @@ mutest_dep = dependency('mutest-1',
   required: false,
   disabler: true,
 )
+
+test_attributes = executable('test-attributes', 'test-attributes.c',
+         dependencies: [libgydict_dep] + [mutest_dep],
+)
+test('test of attributes', test_attributes)
+
