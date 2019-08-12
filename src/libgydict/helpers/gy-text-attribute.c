@@ -174,7 +174,7 @@ gy_text_attribute_copy (GyTextAttribute *attr)
 
   if (attr->type == GY_TEXT_ATTR_FOREGROUND ||
       attr->type == GY_TEXT_ATTR_BACKGROUND ||
-      attr->type == GY_TEXT_ATTR_UNERLINE_COLOR ||
+      attr->type == GY_TEXT_ATTR_UNDERLINE_COLOR ||
       attr->type == GY_TEXT_ATTR_STRIKETHROUGH_COLOR)
     {
       new->attr_color.red = attr->attr_color.red;
@@ -690,7 +690,7 @@ gy_text_attribute_underline_color_new (guint16 red,
 {
   GyTextAttribute *attr = gy_text_attribute_new ();
 
-  attr->type = GY_TEXT_ATTR_UNERLINE_COLOR;
+  attr->type = GY_TEXT_ATTR_UNDERLINE_COLOR;
   attr->attr_color.red = red;
   attr->attr_color.green = green;
   attr->attr_color.blue = blue;
