@@ -239,7 +239,6 @@ gy_app_load_plugin_resources (GyApp          *self,
 
   if (g_file_test (gresources_path, G_FILE_TEST_IS_REGULAR))
     {
-      g_autofree gchar *resource_path = NULL;
       g_autoptr (GError) error = NULL;
       GResource *resource;
 
@@ -253,9 +252,6 @@ gy_app_load_plugin_resources (GyApp          *self,
 
       g_hash_table_insert (self->plugin_gresources, g_strdup (module_name), resource);
       g_resources_register (resource);
-
-      resource_path = g_strdup_printf ("resource:///plugins/%s", module_name);
-      dzl_application_add_resources (DZL_APPLICATION (self), resource_path);
     }
 }
 
