@@ -295,11 +295,139 @@ attr_equal (void)
 }
 
 static void
+append_to_list(void)
+{
+  GyTextAttribute *attr;
+  GyTextAttrList *attr_list;
+  GSList *l = NULL;
+
+
+  attr_list = gy_text_attr_list_new ();
+
+  attr = gy_text_attribute_size_new (10);
+  gy_text_attr_list_insert (attr_list, attr);
+  attr = gy_text_attribute_size_new (20);
+  gy_text_attr_list_insert (attr_list, attr);
+  attr = gy_text_attribute_size_new (30);
+  gy_text_attr_list_insert (attr_list, attr);
+  attr = gy_text_attribute_size_new (40);
+  gy_text_attribute_set_start_index (attr, 10);
+  gy_text_attr_list_insert (attr_list, attr);
+  attr = gy_text_attribute_size_new (50);
+  gy_text_attribute_set_start_index (attr, 10);
+  gy_text_attr_list_insert (attr_list, attr);
+
+  l = gy_text_attr_list_get_attributes (attr_list);
+
+  attr = (GyTextAttribute *) g_slist_nth_data(l, 0);
+  mutest_expect ("the first text attribute has value 10",
+                 mutest_int_value (gy_text_attribute_get_int (attr)),
+                 mutest_to_be, 10, NULL);
+
+  attr = g_slist_nth_data (l, 1);
+  mutest_expect ("the second text attribute has value 20",
+                 mutest_int_value (gy_text_attribute_get_int (attr)),
+                 mutest_to_be, 20, NULL);
+
+
+  attr = g_slist_nth_data (l, 2);
+  mutest_expect ("the third text attribute has value 30",
+                 mutest_int_value (gy_text_attribute_get_int (attr)),
+                 mutest_to_be, 30, NULL);
+
+  attr = g_slist_nth_data (l, 3);
+  mutest_expect ("the fourth text attribute has value 40",
+                 mutest_int_value (gy_text_attribute_get_int (attr)),
+                 mutest_to_be, 40, NULL);
+
+  attr = g_slist_nth_data (l, 4);
+  mutest_expect ("the fifth text attribute has value 50",
+                 mutest_int_value (gy_text_attribute_get_int (attr)),
+                 mutest_to_be, 50, NULL);
+
+  gy_text_attr_list_unref (attr_list);
+  g_slist_free (l);
+
+
+
+}
+
+static void
+prepend_to_list (void)
+{
+  GyTextAttribute *attr;
+  GyTextAttrList *attr_list;
+  GSList *l = NULL;
+
+
+  attr_list = gy_text_attr_list_new ();
+
+  attr = gy_text_attribute_size_new (50);
+  gy_text_attribute_set_start_index (attr, 23123);
+  gy_text_attr_list_insert_before (attr_list, attr);
+
+  attr = gy_text_attribute_size_new (40);
+  gy_text_attribute_set_start_index (attr, 123);
+  gy_text_attr_list_insert_before (attr_list, attr);
+
+  attr = gy_text_attribute_size_new (30);
+  gy_text_attribute_set_start_index (attr, 0);
+  gy_text_attr_list_insert_before (attr_list, attr);
+
+  attr = gy_text_attribute_size_new (20);
+  gy_text_attribute_set_start_index (attr, 556);
+  gy_text_attr_list_insert_before (attr_list, attr);
+
+  attr = gy_text_attribute_size_new (10);
+  gy_text_attribute_set_start_index (attr, 0);
+  gy_text_attr_list_insert_before (attr_list, attr);
+
+  l = gy_text_attr_list_get_attributes (attr_list);
+
+  attr = (GyTextAttribute *) g_slist_nth_data(l, 0);
+  mutest_expect ("the first text attribute has value 10",
+                 mutest_int_value (gy_text_attribute_get_int (attr)),
+                 mutest_to_be, 10, NULL);
+
+  attr = g_slist_nth_data (l, 1);
+  mutest_expect ("the second text attribute has value 30",
+                 mutest_int_value (gy_text_attribute_get_int (attr)),
+                 mutest_to_be, 30, NULL);
+
+
+  attr = g_slist_nth_data (l, 2);
+  mutest_expect ("the third text attribute has value 40",
+                 mutest_int_value (gy_text_attribute_get_int (attr)),
+                 mutest_to_be, 40, NULL);
+
+  attr = g_slist_nth_data (l, 3);
+  mutest_expect ("the fourth text attribute has value 20",
+                 mutest_int_value (gy_text_attribute_get_int (attr)),
+                 mutest_to_be, 20, NULL);
+
+  attr = g_slist_nth_data (l, 4);
+  mutest_expect ("the fifth text attribute has value 50",
+                 mutest_int_value (gy_text_attribute_get_int (attr)),
+                 mutest_to_be, 50, NULL);
+
+  gy_text_attr_list_unref (attr_list);
+  g_slist_free (l);
+}
+
+static void
 attributes_suite (void)
 {
   mutest_it ("has equality", attr_equal);
 }
 
+static void
+attributes_list_suite (void)
+{
+  mutest_it ("appending an text attribute to the attr list", append_to_list);
+  mutest_it ("prepending an text attribute to the attr list", prepend_to_list);
+}
+
 MUTEST_MAIN (
   mutest_describe ("Text Attributes [GyTextAttributes]", attributes_suite);
+  mutest_describe ("Attributes List", attributes_list_suite);
 )
