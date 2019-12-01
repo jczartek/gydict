@@ -3,9 +3,11 @@
   <template class="GyHeaderBar" parent="GtkHeaderBar">
     <property name="visible">true</property>
     <property name="show-close-button">true</property>
+    <property name="title">search word...</property>
     <child type="title">
       <object class="GtkSearchEntry">
         <property name="width-chars">25</property>
+        <property name="placeholder-text" bind-source="GyHeaderBar" bind-property="title" />
       </object>
     </child>
     <child>
