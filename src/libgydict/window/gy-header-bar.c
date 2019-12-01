@@ -27,18 +27,80 @@ struct _GyHeaderBar
 
   GtkBox *primary;
   GtkBox *secondary;
+
+  gchar *title;
+};
+
+enum
+{
+  PROP_TITLE = 1,
+  N_PROPERTIES
 };
 
 G_DEFINE_TYPE (GyHeaderBar, gy_header_bar, GTK_TYPE_HEADER_BAR)
 
 static void
+gy_header_bar_set_property (GObject      *object,
+                            guint         property_id,
+                            const GValue *value,
+                            GParamSpec   *pspec)
+{
+  GyHeaderBar *self = (GyHeaderBar *) object;
+
+  switch (property_id)
+    {
+    case PROP_TITLE:
+        {
+          if (self->title != NULL)
+            g_free (self->title);
+
+          self->title = g_value_dup_string (value);
+          break;
+        }
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+      break;
+    }
+}
+
+static void
+gy_header_bar_get_property (GObject    *object,
+                            guint       property_id,
+                            GValue     *value,
+                            GParamSpec *pspec)
+{
+    GyHeaderBar *self = (GyHeaderBar *) object;
+
+  switch (property_id)
+    {
+    case PROP_TITLE:
+        {
+          if (self->title != NULL)
+            g_value_set_string (value, self->title);
+          break;
+        }
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+      break;
+    }
+}
+
+static void
 gy_header_bar_class_init (GyHeaderBarClass *klass)
 {
+
+  GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+  object_class->set_property = gy_header_bar_set_property;
+  object_class->get_property = gy_header_bar_get_property;
+
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gtk/gydict/gy-header-bar.ui");
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, dicts_button);
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, menu_button);
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, primary);
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, secondary);
+
+  g_object_class_override_property (object_class, PROP_TITLE, "title");
 }
 
 static void
