@@ -407,13 +407,8 @@ gy_window_init (GyWindow *self)
 
   self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
 
-  self->dict_entry = (GtkSearchEntry *) gtk_widget_new (GTK_TYPE_SEARCH_ENTRY,
-                                                        "width-chars", 25, NULL);
-  gtk_header_bar_set_custom_title (GTK_HEADER_BAR (self->header_bar),
-                                   GTK_WIDGET (self->dict_entry));
-
   gtk_tree_view_set_search_entry (GTK_TREE_VIEW (self->deflist),
-                                  GTK_ENTRY (self->dict_entry));
+                                  GTK_ENTRY (gtk_header_bar_get_custom_title (GTK_HEADER_BAR (self->header_bar))));
 
   g_object_set_data (G_OBJECT (self->buffer), "textview", self->textview);
 

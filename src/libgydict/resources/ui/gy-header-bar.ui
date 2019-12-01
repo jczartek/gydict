@@ -3,6 +3,11 @@
   <template class="GyHeaderBar" parent="GtkHeaderBar">
     <property name="visible">true</property>
     <property name="show-close-button">true</property>
+    <child type="title">
+      <object class="GtkSearchEntry">
+        <property name="width-chars">25</property>
+      </object>
+    </child>
     <child>
       <object class="GtkBox" id="primary">
         <property name="visible">true</property>
