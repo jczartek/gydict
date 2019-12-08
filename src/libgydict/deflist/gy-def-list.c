@@ -27,7 +27,19 @@ struct _GyDefList
   GtkTreeView       __parent__;
   GtkTreeSelection *selection;
 
+  gchar *value_selected_row;
+  gint   number_selected_row;
 };
+
+enum
+{
+  PROP_0,
+  PROP_VALUE_SELECTED_ROW,
+  PROP_NUMBER_SELECTED_ROW,
+  N_PROPERTIES
+};
+
+GParamSpec* properties[N_PROPERTIES];
 
 G_DEFINE_TYPE (GyDefList, gy_def_list, GTK_TYPE_TREE_VIEW)
 
@@ -88,6 +100,24 @@ gy_def_list_search_equal_func (GtkTreeModel *model,
 }
 
 static void
+gy_def_list_selection_changed_cb (GtkTreeSelection *selection,
+                                  gpointer          data)
+{
+  GyDefList *self = GY_DEF_LIST (data);
+  g_autofree gchar* value = NULL;
+  gint number;
+
+  value = gy_def_list_get_value_for_selected_row (self);
+  number = gy_def_list_get_selected_n_row (self);
+
+  if (value != NULL && number != -1)
+    g_object_set (G_OBJECT (self),
+                  "value-selected-row", value,
+                  "number-selected-row", number, NULL);
+
+}
+
+static void
 gy_def_list_constructed (GObject *object)
 {
   G_OBJECT_CLASS (gy_def_list_parent_class)->constructed (object);
@@ -95,7 +125,66 @@ gy_def_list_constructed (GObject *object)
   gtk_tree_view_set_search_equal_func (GTK_TREE_VIEW (object),
                                        gy_def_list_search_equal_func,
                                        NULL, NULL);
+
+  g_signal_connect (GY_DEF_LIST (object)->selection, "changed",
+                    G_CALLBACK (gy_def_list_selection_changed_cb), GY_DEF_LIST (object));
 }
+
+
+static void
+gy_def_list_finalize (GObject *object)
+{
+  GyDefList *self = (GyDefList *) object;
+
+  self->number_selected_row = -1;
+  g_clear_pointer (&self->value_selected_row, g_free);
+
+  G_OBJECT_CLASS (gy_def_list_parent_class)->finalize (object);
+}
+
+static void
+gy_def_list_get_property (GObject    *object,
+                          guint       prop_id,
+                          GValue     *value,
+                          GParamSpec *pspec)
+{
+  GyDefList *self = GY_DEF_LIST (object);
+
+  switch (prop_id)
+    {
+    case PROP_VALUE_SELECTED_ROW:
+      g_value_set_string (value, self->value_selected_row);
+      break;
+    case PROP_NUMBER_SELECTED_ROW:
+      g_value_set_int (value, self->number_selected_row);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
+}
+
+static void
+gy_def_list_set_property (GObject      *object,
+                          guint         prop_id,
+                          const GValue *value,
+                          GParamSpec   *pspec)
+{
+  GyDefList *self = GY_DEF_LIST (object);
+
+  switch (prop_id)
+    {
+    case PROP_VALUE_SELECTED_ROW:
+      if (self->value_selected_row != NULL) g_clear_pointer (&self->value_selected_row, g_free);
+      self->value_selected_row = g_value_dup_string (value);
+      break;
+    case PROP_NUMBER_SELECTED_ROW:
+      self->number_selected_row = g_value_get_int (value);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
+}
+
 
 static void
 gy_def_list_class_init (GyDefListClass *klass)
@@ -103,11 +192,33 @@ gy_def_list_class_init (GyDefListClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   object_class->constructed = gy_def_list_constructed;
+  object_class->finalize = gy_def_list_finalize;
+  object_class->set_property = gy_def_list_set_property;
+  object_class->get_property = gy_def_list_get_property;
+
+  properties[PROP_VALUE_SELECTED_ROW] =
+     g_param_spec_string ("value-selected-row",
+                          "value-selected-row",
+                          "The value of a selected row.",
+                          NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+  properties[PROP_NUMBER_SELECTED_ROW] =
+    g_param_spec_int ("number-selected-row",
+                      "number-selected-row",
+                      "The number of a selected row",
+                      G_MININT, G_MAXINT, -1,
+                      G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+  g_object_class_install_properties (object_class, N_PROPERTIES, properties);
 }
 
 static void
 gy_def_list_init (GyDefList *self)
 {
+  self->value_selected_row = NULL;
+  self->number_selected_row = -1;
+  self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
+
 }
 
 gint
