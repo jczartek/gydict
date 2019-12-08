@@ -1155,6 +1155,18 @@ gy_text_attr_list_get_attributes (GyTextAttrList *list)
 #pragma GCC diagnostic pop
 }
 
+/**
+ * gy_text_attr_list_get_iterator:
+ * @list: list #GyTextAttrList
+ *
+ * Create a iterator initialized to the beginning of the list.
+ * The list must not be modified until this iterator is freed.
+ *
+ * Return value: (transfer full): the newly allocated GyTextAttrIterator,
+ * which should be freed with gy_text_attr_iterator_destroy().
+ *
+ * Since: 0.6
+ */
 GyTextAttrIterator *
 gy_text_attr_list_get_iterator (GyTextAttrList *list)
 {
