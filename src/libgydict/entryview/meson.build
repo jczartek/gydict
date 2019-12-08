@@ -9,7 +9,6 @@ entryview_sources = [
 ]
 
 entryview_private = [
-  'gy-text-buffer-private.h'
 ]
 
 libgydict_public_headers  += files(entryview_headers)

@@ -17,7 +17,6 @@
  */
 
 #include "gy-text-buffer.h"
-#include "gy-text-buffer-private.h"
 
 struct _GyTextBuffer
 {
@@ -38,8 +37,6 @@ gy_text_buffer_constructed (GObject *object)
   GtkTextIter iter;
 
   G_OBJECT_CLASS (gy_text_buffer_parent_class)->constructed (object);
-
-  gy_text_buffer_set_attrs_tags (GTK_TEXT_BUFFER (object));
 
   gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (object), &iter);
   gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (object), "searched", &iter, FALSE);
