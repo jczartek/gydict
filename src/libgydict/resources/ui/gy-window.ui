@@ -9,6 +9,13 @@
 	  <child type="titlebar">
 	    <object class="GyHeaderBar" id="header_bar">
 	      <property name="title" bind-source="deflist" bind-property="value-selected-row" />
+	      <child type="title">
+	        <object class="GtkSearchEntry">
+	          <property name="width-chars">25</property>
+	          <property name="placeholder-text" bind-source="header_bar" bind-property="title" >Search words...</property>
+	          <property name="sensitive" bind-source="deflist" bind-property="has-model" >false</property>
+	        </object>
+	      </child>
 	    </object>
 	  </child>
 
