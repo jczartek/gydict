@@ -415,6 +415,124 @@ prepend_to_list (void)
 }
 
 static void
+attr_iter_order_text_attrs (void)
+{
+  GyTextAttribute *attr = NULL;
+  GyTextAttrList *attr_list = NULL;
+  GyTextAttrIterator *iter = NULL;
+
+  struct {
+    int start;
+    int end;
+    gchar *name;
+  } params_attrs[10];
+
+  attr_list = gy_text_attr_list_new ();
+
+  attr = gy_text_attribute_size_new (50);
+  gy_text_attribute_set_start_index (attr, 0);
+  gy_text_attribute_set_end_index (attr, 10);
+  gy_text_attr_list_insert (attr_list, attr);
+  params_attrs[0].start = 0;
+  params_attrs[0].end = 10;
+  params_attrs[0].name = "size attr";
+
+  attr = gy_text_attribute_style_new (PANGO_STYLE_ITALIC);
+  gy_text_attribute_set_start_index (attr, 10);
+  gy_text_attribute_set_end_index (attr, 20);
+  gy_text_attr_list_insert (attr_list, attr);
+  params_attrs[1].start = 10;
+  params_attrs[1].end = 20;
+  params_attrs[1].name = "style attr";
+
+  attr = gy_text_attribute_weight_new (PANGO_WEIGHT_HEAVY);
+  gy_text_attribute_set_start_index (attr, 20);
+  gy_text_attribute_set_end_index (attr, 30);
+  gy_text_attr_list_insert (attr_list, attr);
+  params_attrs[2].start = 20;
+  params_attrs[2].end = 30;
+  params_attrs[2].name = "weight attr";
+
+  attr = gy_text_attribute_variant_new (PANGO_VARIANT_SMALL_CAPS);
+  gy_text_attribute_set_start_index (attr, 30);
+  gy_text_attribute_set_end_index (attr, 40);
+  gy_text_attr_list_insert (attr_list, attr);
+  params_attrs[3].start = 30;
+  params_attrs[3].end = 40;
+  params_attrs[3].name = "variant attr";
+
+  attr = gy_text_attribute_stretch_new (PANGO_STRETCH_ULTRA_CONDENSED);
+  gy_text_attribute_set_start_index (attr, 40);
+  gy_text_attribute_set_end_index (attr, 50);
+  gy_text_attr_list_insert (attr_list, attr);
+  params_attrs[4].start = 40;
+  params_attrs[4].end = 50;
+  params_attrs[4].name = "stretch attr";
+
+  attr = gy_text_attribute_strikethrough_new (TRUE);
+  gy_text_attribute_set_start_index (attr, 50);
+  gy_text_attribute_set_end_index (attr, 60);
+  gy_text_attr_list_insert (attr_list, attr);
+  params_attrs[5].start = 50;
+  params_attrs[5].end = 60;
+  params_attrs[5].name = "strikethrough attr";
+
+  attr = gy_text_attribute_strikethrough_color_new (255, 255, 255);
+  gy_text_attribute_set_start_index (attr, 60);
+  gy_text_attribute_set_end_index (attr, 70);
+  gy_text_attr_list_insert (attr_list, attr);
+  params_attrs[6].start = 60;
+  params_attrs[6].end = 70;
+  params_attrs[6].name = "strikethrough color attr";
+
+  attr = gy_text_attribute_background_alpha_new (64);
+  gy_text_attribute_set_start_index (attr, 70);
+  gy_text_attribute_set_end_index (attr, 80);
+  gy_text_attr_list_insert (attr_list, attr);
+  params_attrs[7].start = 70;
+  params_attrs[7].end = 80;
+  params_attrs[7].name = "background alpha attr";
+
+  attr = gy_text_attribute_underline_new (PANGO_UNDERLINE_DOUBLE);
+  gy_text_attribute_set_start_index (attr, 80);
+  gy_text_attribute_set_end_index (attr, 90);
+  gy_text_attr_list_insert (attr_list, attr);
+  params_attrs[8].start = 80;
+  params_attrs[8].end = 90;
+  params_attrs[8].name = "underline attr";
+
+  attr = gy_text_attribute_rise_new(3);
+  gy_text_attribute_set_start_index (attr, 90);
+  gy_text_attribute_set_end_index (attr, 100);
+  gy_text_attr_list_insert (attr_list, attr);
+  params_attrs[9].start = 90;
+  params_attrs[9].end = 100;
+  params_attrs[9].name = "rise attr";
+
+  iter = gy_text_attr_list_get_iterator (attr_list);
+  guint i = 0;
+  GString *string = g_string_new ("");
+  gint start, end;
+  do
+    {
+      gy_text_attr_iterator_range (iter, &start, &end);
+      g_string_printf (string, "The %s starts at %d and ends at %d.", params_attrs[i].name, params_attrs[i].start, params_attrs[i].end);
+      mutest_expect (string->str,
+                     mutest_bool_value (start == params_attrs[i].start && end == params_attrs[i].end),
+                     mutest_to_be, TRUE, NULL);
+      i++;
+    }
+  while (gy_text_attr_iterator_next (iter) && i < 10);
+
+  mutest_expect ("The iterator has iterated 10 times.", mutest_int_value (i), mutest_to_be, 10, NULL);
+
+  g_string_free (string, TRUE);
+  gy_text_attr_iterator_destroy (iter);
+  gy_text_attr_list_unref (attr_list);
+
+}
+
+static void
 attributes_suite (void)
 {
   mutest_it ("has equality", attr_equal);
@@ -427,7 +545,14 @@ attributes_list_suite (void)
   mutest_it ("prepending an text attribute to the attr list", prepend_to_list);
 }
 
+static void
+attr_iter_suite (void)
+{
+  mutest_it ("returns valid order of text attrs:", attr_iter_order_text_attrs);
+}
+
 MUTEST_MAIN (
   mutest_describe ("Text Attributes [GyTextAttributes]", attributes_suite);
   mutest_describe ("Attributes List", attributes_list_suite);
+  mutest_describe ("Attrs Iterator", attr_iter_suite);
 )
