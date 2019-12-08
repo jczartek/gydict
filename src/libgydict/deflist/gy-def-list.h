@@ -37,6 +37,8 @@ void   gy_def_list_select_row                 (GyDefList *self,
 gchar* gy_def_list_get_value_for_selected_row (GyDefList *self);
 void   gy_def_list_select_previous_item       (GyDefList *self);
 void   gy_def_list_select_next_item           (GyDefList *self);
+void   gy_def_list_set_model                  (GyDefList    *self,
+                                               GtkTreeModel *model);
 
 G_END_DECLS
 

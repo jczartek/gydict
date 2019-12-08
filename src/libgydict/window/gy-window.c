@@ -183,8 +183,7 @@ gy_window_action_switch_dict (GSimpleAction *action,
 
   gy_text_buffer_clean_buffer (self->buffer);
 
-  gtk_tree_view_set_model (GTK_TREE_VIEW (self->deflist),
-                           gy_dict_get_tree_model (dict));
+  gy_def_list_set_model (self->deflist, gy_dict_get_tree_model (dict));
 
   gy_window_clear_search_entry (self);
   gy_window_grab_focus (GY_WINDOW (self));

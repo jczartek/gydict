@@ -29,6 +29,7 @@ struct _GyDefList
 
   gchar *value_selected_row;
   gint   number_selected_row;
+  gboolean has_model;
 };
 
 enum
@@ -36,6 +37,7 @@ enum
   PROP_0,
   PROP_VALUE_SELECTED_ROW,
   PROP_NUMBER_SELECTED_ROW,
+  PROP_HAS_MODEL,
   N_PROPERTIES
 };
 
@@ -158,6 +160,9 @@ gy_def_list_get_property (GObject    *object,
     case PROP_NUMBER_SELECTED_ROW:
       g_value_set_int (value, self->number_selected_row);
       break;
+    case PROP_HAS_MODEL:
+      g_value_set_boolean (value, self->has_model);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -179,6 +184,9 @@ gy_def_list_set_property (GObject      *object,
       break;
     case PROP_NUMBER_SELECTED_ROW:
       self->number_selected_row = g_value_get_int (value);
+      break;
+    case PROP_HAS_MODEL:
+      self->has_model = g_value_get_boolean (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -209,6 +217,12 @@ gy_def_list_class_init (GyDefListClass *klass)
                       G_MININT, G_MAXINT, -1,
                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+  properties[PROP_HAS_MODEL] =
+    g_param_spec_boolean ("has-model",
+                          "has-model",
+                          "The property determines if the tree view has model.",
+                          FALSE, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
   g_object_class_install_properties (object_class, N_PROPERTIES, properties);
 }
 
@@ -217,6 +231,7 @@ gy_def_list_init (GyDefList *self)
 {
   self->value_selected_row = NULL;
   self->number_selected_row = -1;
+  self->has_model = FALSE;
   self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
 
 }
@@ -336,4 +351,17 @@ gy_def_list_select_next_item (GyDefList *self)
 {
   g_return_if_fail (GY_IS_DEF_LIST (self));
   select_item (self, GTK_DIR_DOWN);
+}
+
+void
+gy_def_list_set_model (GyDefList    *self,
+                       GtkTreeModel *model)
+{
+  g_return_if_fail (GY_IS_DEF_LIST (self));
+
+  gtk_tree_view_set_model (GTK_TREE_VIEW (self), model);
+
+  gboolean has_model = !!model;
+
+  g_object_set (G_OBJECT (self), "has-model", has_model, NULL);
 }
