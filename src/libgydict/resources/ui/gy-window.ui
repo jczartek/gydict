@@ -7,7 +7,9 @@
 		<property name="is_focus">false</property>
 	  <property name="manager_dicts">manager_dicts</property>
 	  <child type="titlebar">
-	    <object class="GyHeaderBar" id="header_bar"></object>
+	    <object class="GyHeaderBar" id="header_bar">
+	      <property name="title" bind-source="deflist" bind-property="value-selected-row" />
+	    </object>
 	  </child>
 
 	  <child>
