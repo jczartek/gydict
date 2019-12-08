@@ -86,6 +86,16 @@ gy_header_bar_get_property (GObject    *object,
 }
 
 static void
+gy_header_bar_finalize (GObject *object)
+{
+  GyHeaderBar *self = (GyHeaderBar *) object;
+
+  g_clear_pointer (&self->title, g_free);
+
+  G_OBJECT_CLASS (gy_header_bar_parent_class)->finalize (object);
+}
+
+static void
 gy_header_bar_class_init (GyHeaderBarClass *klass)
 {
 
@@ -93,6 +103,7 @@ gy_header_bar_class_init (GyHeaderBarClass *klass)
 
   object_class->set_property = gy_header_bar_set_property;
   object_class->get_property = gy_header_bar_get_property;
+  object_class->finalize = gy_header_bar_finalize;
 
   gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass), "/org/gtk/gydict/gy-header-bar.ui");
   gtk_widget_class_bind_template_child (GTK_WIDGET_CLASS (klass), GyHeaderBar, dicts_button);
