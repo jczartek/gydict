@@ -143,7 +143,7 @@ GyTextAttribute * gy_text_attribute_strikethrough_color_new (guint16 red,
                                                              guint16 green,
                                                              guint16 blue);
 GyTextAttribute *gy_text_attribute_rise_new (gint rise);
-GyTextAttribute *gy_text_attriubte_scale_new (gdouble scale_factor);
+GyTextAttribute *gy_text_attribute_scale_new (gdouble scale_factor);
 GyTextAttribute *gy_text_attribute_fallback_new (gboolean enable_fallback);
 GyTextAttribute *gy_text_attribute_letter_spacing_new (gint letter_spacing);
 GyTextAttribute *gy_text_attribute_font_features_new (const gchar *features);

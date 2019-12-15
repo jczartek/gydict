@@ -786,7 +786,7 @@ gy_text_attribute_rise_new (gint rise)
  * Since: 0.6
  **/
 GyTextAttribute *
-gy_text_attriubte_scale_new (gdouble scale_factor)
+gy_text_attribute_scale_new (gdouble scale_factor)
 {
   GyTextAttribute *attr = gy_text_attribute_new ();
 
