@@ -304,16 +304,8 @@ gy_window_button_press_event (GtkWidget      *w,
                               GdkEventButton *e,
                               gpointer        d)
 {
-  GyDefList *dl = GY_DEF_LIST (d);
-
-  if (e->type == GDK_DOUBLE_BUTTON_PRESS && e->button == MOUSE_UP_BUTTON)
-    {
-      gy_def_list_select_previous_item (dl);
-    }
-  else if (e->type == GDK_DOUBLE_BUTTON_PRESS && e->button == MOUSE_DOWN_BUTTON)
-    {
-      gy_def_list_select_next_item (dl);
-    }
+  if (e->type == GDK_DOUBLE_BUTTON_PRESS && (e->button == MOUSE_UP_BUTTON || e->button == MOUSE_DOWN_BUTTON))
+    g_signal_emit_by_name (GY_WINDOW (w)->deflist, "move-selection", e->button == MOUSE_UP_BUTTON ? GTK_DIR_UP : GTK_DIR_DOWN);
 
   return FALSE;
 }
@@ -416,7 +408,7 @@ gy_window_init (GyWindow *self)
                    G_CALLBACK (gy_window_list_selection_changed), self);
 
   g_signal_connect (self, "button-press-event",
-                    G_CALLBACK (gy_window_button_press_event), self->deflist);
+                    G_CALLBACK (gy_window_button_press_event), NULL);
   g_signal_connect (self->dockbin, "notify::top-visible",
                     G_CALLBACK (gy_window_notify_top_visible), self);
   g_signal_connect (self->history_box, "row-activated",

@@ -41,7 +41,15 @@ enum
   N_PROPERTIES
 };
 
-GParamSpec* properties[N_PROPERTIES];
+static GParamSpec* properties[N_PROPERTIES];
+
+enum
+{
+  MOVE_SELECTION,
+  LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
 
 G_DEFINE_TYPE (GyDefList, gy_def_list, GTK_TYPE_TREE_VIEW)
 
@@ -120,6 +128,29 @@ gy_def_list_selection_changed_cb (GtkTreeSelection *selection,
 }
 
 static void
+gy_def_list_selection_move_cb (GyDefList        *self,
+                               GtkDirectionType  direction,
+                               gpointer          data)
+{
+  GtkTreeModel     *model;
+  GtkTreeIter       iter;
+
+  self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
+
+  if (gtk_tree_selection_get_selected (self->selection, &model, &iter) && self->has_model)
+    {
+      if (direction == GTK_DIR_UP && gtk_tree_model_iter_previous (model, &iter))
+      {
+        gtk_tree_selection_select_iter (self->selection, &iter);
+      }
+      else if (direction == GTK_DIR_DOWN && gtk_tree_model_iter_next (model, &iter))
+      {
+        gtk_tree_selection_select_iter (self->selection, &iter);
+      }
+    }
+}
+
+static void
 gy_def_list_constructed (GObject *object)
 {
   G_OBJECT_CLASS (gy_def_list_parent_class)->constructed (object);
@@ -130,6 +161,8 @@ gy_def_list_constructed (GObject *object)
 
   g_signal_connect (GY_DEF_LIST (object)->selection, "changed",
                     G_CALLBACK (gy_def_list_selection_changed_cb), GY_DEF_LIST (object));
+  g_signal_connect (GY_DEF_LIST (object), "move-selection",
+                    G_CALLBACK (gy_def_list_selection_move_cb), NULL);
 }
 
 
@@ -203,6 +236,15 @@ gy_def_list_class_init (GyDefListClass *klass)
   object_class->finalize = gy_def_list_finalize;
   object_class->set_property = gy_def_list_set_property;
   object_class->get_property = gy_def_list_get_property;
+
+  signals[MOVE_SELECTION] =
+    g_signal_new ("move-selection",
+                  GY_TYPE_DEF_LIST,
+                  G_SIGNAL_ACTION,
+                  0, NULL, NULL,
+                  g_cclosure_marshal_VOID__ENUM,
+                  G_TYPE_NONE, 1,
+                  GTK_TYPE_DIRECTION_TYPE);
 
   properties[PROP_VALUE_SELECTED_ROW] =
      g_param_spec_string ("value-selected-row",
@@ -314,43 +356,6 @@ gy_def_list_select_row (GyDefList *self,
     }
 
   gtk_tree_path_free (path);
-}
-
-static void
-select_item (GyDefList        *self,
-             GtkDirectionType  direction)
-{
-  GtkTreeSelection *selection;
-  GtkTreeModel     *model;
-  GtkTreeIter       iter;
-
-  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
-
-  if (gtk_tree_selection_get_selected (selection, &model, &iter))
-    {
-      if (direction == GTK_DIR_UP && gtk_tree_model_iter_previous (model, &iter))
-      {
-        gtk_tree_selection_select_iter (selection, &iter);
-      }
-      else if (direction == GTK_DIR_DOWN && gtk_tree_model_iter_next (model, &iter))
-      {
-        gtk_tree_selection_select_iter (selection, &iter);
-      }
-    }
-}
-
-void
-gy_def_list_select_previous_item (GyDefList *self)
-{
-  g_return_if_fail (GY_IS_DEF_LIST (self));
-  select_item (self, GTK_DIR_UP);
-}
-
-void
-gy_def_list_select_next_item (GyDefList *self)
-{
-  g_return_if_fail (GY_IS_DEF_LIST (self));
-  select_item (self, GTK_DIR_DOWN);
 }
 
 void
