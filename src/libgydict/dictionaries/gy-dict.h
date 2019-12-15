@@ -24,6 +24,7 @@
 #endif
 
 #include <gtk/gtk.h>
+#include "../helpers/gy-text-attribute.h"
 
 G_BEGIN_DECLS
 
@@ -38,12 +39,12 @@ struct _GyDictClass
   void      (*map)   (GyDict  *self,
                       GError **err);
 
-  gboolean  (*parse) (GyDict         *self,
-                      const gchar    *raw_text,
-                      gint            length,
-                      PangoAttrList **attr_list,
-                      gchar         **text,
-                      GError        **err);
+  gboolean  (*parse) (GyDict          *self,
+                      const gchar     *raw_text,
+                      gint             length,
+                      GyTextAttrList **attr_list,
+                      gchar          **text,
+                      GError         **err);
 
   gchar*    (*get_lexical_unit) (GyDict  *self,
                                  guint    idx,
@@ -55,12 +56,12 @@ void          gy_dict_map (GyDict  *self,
                            GError **err);
 gboolean      gy_dict_is_mapped (GyDict *self);
 gboolean      gy_dict_is_used (GyDict *self);
-gboolean      gy_dict_parse (GyDict         *self,
-                             const gchar    *raw_text,
-                             gint            length,
-                             PangoAttrList **attr_list,
-                             gchar         **text,
-                             GError        **err);
+gboolean      gy_dict_parse (GyDict          *self,
+                             const gchar     *raw_text,
+                             gint             length,
+                             GyTextAttrList **attr_list,
+                             gchar          **text,
+                             GError         **err);
 gchar *        gy_dict_get_lexical_unit (GyDict  *self,
                                          guint    idx,
                                          GError **err);

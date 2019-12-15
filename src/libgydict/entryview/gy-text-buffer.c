@@ -201,53 +201,54 @@ gy_text_buffer_get_tag_by_name (GyTextBuffer  *self,
   return gtk_text_tag_table_lookup (ttable, name_tag);
 }
 
+
 static GtkTextTag *
-get_tag_for_attributes (PangoAttrIterator *iter)
+get_tag_for_attributes (GyTextAttrIterator *iter)
 {
-  PangoAttribute *attr;
+  GyTextAttribute *attr;
   GtkTextTag *tag;
 
   tag = gtk_text_tag_new (NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_LANGUAGE);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_LANGUAGE);
   if (attr)
-    g_object_set (tag, "language", pango_language_to_string (((PangoAttrLanguage*)attr)->value), NULL);
+    g_object_set (tag, "language", pango_language_to_string (gy_text_attribute_get_language (attr)), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_FAMILY);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_FAMILY);
   if (attr)
-    g_object_set (tag, "family", ((PangoAttrString*)attr)->value, NULL);
+    g_object_set (tag, "family", gy_text_attribute_get_string (attr), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_STYLE);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_STYLE);
   if (attr)
-    g_object_set (tag, "style", ((PangoAttrInt*)attr)->value, NULL);
+    g_object_set (tag, "style", gy_text_attribute_get_int (attr), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_WEIGHT);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_WEIGHT);
   if (attr)
-    g_object_set (tag, "weight", ((PangoAttrInt*)attr)->value, NULL);
+    g_object_set (tag, "weight", gy_text_attribute_get_int (attr), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_VARIANT);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_VARIANT);
   if (attr)
-    g_object_set (tag, "variant", ((PangoAttrInt*)attr)->value, NULL);
+    g_object_set (tag, "variant", gy_text_attribute_get_int (attr), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_STRETCH);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_STRETCH);
   if (attr)
-    g_object_set (tag, "stretch", ((PangoAttrInt*)attr)->value, NULL);
+    g_object_set (tag, "stretch", gy_text_attribute_get_int (attr), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_SIZE);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_SIZE);
   if (attr)
-    g_object_set (tag, "size", ((PangoAttrInt*)attr)->value, NULL);
+    g_object_set (tag, "size", gy_text_attribute_get_int (attr), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_FONT_DESC);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_FONT_DESC);
   if (attr)
-    g_object_set (tag, "font-desc", ((PangoAttrFontDesc*)attr)->desc, NULL);
+    g_object_set (tag, "font-desc", gy_text_attribute_get_font_desc (attr), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_FOREGROUND);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_FOREGROUND);
   if (attr)
     {
       PangoColor *color;
       GdkRGBA rgba;
 
-      color = &((PangoAttrColor*)attr)->color;
+      color = (PangoColor *) gy_text_attribute_get_color (attr);
       rgba.red = color->red / 65535.;
       rgba.green = color->green / 65535.;
       rgba.blue = color->blue / 65535.;
@@ -255,13 +256,13 @@ get_tag_for_attributes (PangoAttrIterator *iter)
       g_object_set (tag, "foreground-rgba", &rgba, NULL);
     };
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_BACKGROUND);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_BACKGROUND);
   if (attr)
     {
       PangoColor *color;
       GdkRGBA rgba;
 
-      color = &((PangoAttrColor*)attr)->color;
+      color = (PangoColor *) gy_text_attribute_get_color (attr);
       rgba.red = color->red / 65535.;
       rgba.green = color->green / 65535.;
       rgba.blue = color->blue / 65535.;
@@ -269,17 +270,17 @@ get_tag_for_attributes (PangoAttrIterator *iter)
       g_object_set (tag, "background-rgba", &rgba, NULL);
     };
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_UNDERLINE);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_UNDERLINE);
   if (attr)
-    g_object_set (tag, "underline", ((PangoAttrInt*)attr)->value, NULL);
+    g_object_set (tag, "underline", gy_text_attribute_get_int (attr), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_UNDERLINE_COLOR);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_UNDERLINE_COLOR);
   if (attr)
     {
       PangoColor *color;
       GdkRGBA rgba;
 
-      color = &((PangoAttrColor*)attr)->color;
+      color = (PangoColor *) gy_text_attribute_get_color (attr);
       rgba.red = color->red / 65535.;
       rgba.green = color->green / 65535.;
       rgba.blue = color->blue / 65535.;
@@ -287,17 +288,17 @@ get_tag_for_attributes (PangoAttrIterator *iter)
       g_object_set (tag, "underline-rgba", &rgba, NULL);
     }
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_STRIKETHROUGH);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_STRIKETHROUGH);
   if (attr)
-    g_object_set (tag, "strikethrough", (gboolean) (((PangoAttrInt*)attr)->value != 0), NULL);
+    g_object_set (tag, "strikethrough", gy_text_attribute_get_boolean (attr), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_STRIKETHROUGH_COLOR);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_STRIKETHROUGH_COLOR);
   if (attr)
     {
       PangoColor *color;
       GdkRGBA rgba;
 
-      color = &((PangoAttrColor*)attr)->color;
+      color = (PangoColor *) gy_text_attribute_get_color (attr);
       rgba.red = color->red / 65535.;
       rgba.green = color->green / 65535.;
       rgba.blue = color->blue / 65535.;
@@ -305,37 +306,38 @@ get_tag_for_attributes (PangoAttrIterator *iter)
       g_object_set (tag, "strikethrough-rgba", &rgba, NULL);
     }
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_RISE);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_RISE);
   if (attr)
-    g_object_set (tag, "rise", ((PangoAttrInt*)attr)->value, NULL);
+    g_object_set (tag, "rise", gy_text_attribute_get_int (attr), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_SCALE);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_SCALE);
   if (attr)
-    g_object_set (tag, "scale", ((PangoAttrFloat*)attr)->value, NULL);
+    g_object_set (tag, "scale", gy_text_attribute_get_float (attr), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_FALLBACK);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_FALLBACK);
   if (attr)
-    g_object_set (tag, "fallback", (gboolean) (((PangoAttrInt*)attr)->value != 0), NULL);
+    g_object_set (tag, "fallback", gy_text_attribute_get_boolean (attr), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_LETTER_SPACING);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_LETTER_SPACING);
   if (attr)
-    g_object_set (tag, "letter-spacing", ((PangoAttrInt*)attr)->value, NULL);
+    g_object_set (tag, "letter-spacing", gy_text_attribute_get_int (attr), NULL);
 
-  attr = pango_attr_iterator_get (iter, PANGO_ATTR_FONT_FEATURES);
+  attr = gy_text_attr_iterator_get (iter, GY_TEXT_ATTR_FONT_FEATURES);
   if (attr)
-    g_object_set (tag, "font-features", ((PangoAttrString*)attr)->value, NULL);
+    g_object_set (tag, "font-features", gy_text_attribute_get_string (attr), NULL);
 
   return tag;
 }
 
+
 void
-gy_text_buffer_insert_with_attributes (GyTextBuffer  *self,
-                                       GtkTextIter   *iter,
-                                       const gchar   *text,
-                                       PangoAttrList *attributes)
+gy_text_buffer_insert_with_attributes (GyTextBuffer   *self,
+                                       GtkTextIter    *iter,
+                                       const gchar    *text,
+                                       GyTextAttrList *attributes)
 {
   GtkTextMark *mark;
-  PangoAttrIterator *attr;
+  GyTextAttrIterator *attr_iter;
   GtkTextTagTable *tags;
 
   g_return_if_fail (GY_IS_TEXT_BUFFER (self));
@@ -346,9 +348,9 @@ gy_text_buffer_insert_with_attributes (GyTextBuffer  *self,
       return;
     }
 
-  /* create mark with right gravity */
+  // create mark with right gravity
   mark = gtk_text_buffer_create_mark (GTK_TEXT_BUFFER (self), NULL, iter, FALSE);
-  attr = pango_attr_list_get_iterator (attributes);
+  attr_iter = gy_text_attr_list_get_iterator (attributes);
   tags = gtk_text_buffer_get_tag_table (GTK_TEXT_BUFFER (self));
 
   do
@@ -356,20 +358,20 @@ gy_text_buffer_insert_with_attributes (GyTextBuffer  *self,
       GtkTextTag *tag;
       gint start, end;
 
-      pango_attr_iterator_range (attr, &start, &end);
+      gy_text_attr_iterator_range (attr_iter, &start, &end);
 
-      if (end == G_MAXINT) /* last chunk */
-        end = start - 1; /* resulting in -1 to be passed to _insert */
+      if (end == G_MAXINT) // last chunk
+        end = start - 1; // resulting in -1 to be passed to _insert
 
-      tag = get_tag_for_attributes (attr);
+      tag = get_tag_for_attributes (attr_iter);
       gtk_text_tag_table_add (tags, tag);
 
       gtk_text_buffer_insert_with_tags (GTK_TEXT_BUFFER (self), iter, text + start, end - start, tag, NULL);
 
       gtk_text_buffer_get_iter_at_mark (GTK_TEXT_BUFFER (self), iter, mark);
     }
-  while (pango_attr_iterator_next (attr));
+  while (gy_text_attr_iterator_next (attr_iter));
 
   gtk_text_buffer_delete_mark (GTK_TEXT_BUFFER (self), mark);
-  pango_attr_iterator_destroy (attr);
-} 
+  gy_text_attr_iterator_destroy (attr_iter);
+}

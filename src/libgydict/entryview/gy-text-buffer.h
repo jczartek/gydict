@@ -24,6 +24,7 @@
 #endif
 
 #include <gtk/gtk.h>
+#include "../helpers/gy-text-attribute.h"
 
 G_BEGIN_DECLS
 
@@ -47,7 +48,7 @@ GtkTextTag *gy_text_buffer_get_tag_by_name          (GyTextBuffer *self,
 void gy_text_buffer_insert_with_attributes (GyTextBuffer  *self,
                                             GtkTextIter   *iter,
                                             const gchar   *text,
-                                            PangoAttrList *attributes);
+                                            GyTextAttrList *attributes);
 
 G_END_DECLS
 

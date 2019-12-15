@@ -241,7 +241,7 @@ gy_window_list_selection_changed (GtkTreeSelection *selection,
               else
                 {
                   g_autofree gchar *formatted_text = NULL;
-                  PangoAttrList *attr_list = NULL;
+                  GyTextAttrList *attr_list = NULL;
                   g_autoptr(GError) err = NULL;
                   GtkTextIter start;
 
@@ -255,7 +255,7 @@ gy_window_list_selection_changed (GtkTreeSelection *selection,
                   gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (self->buffer), &start);
                   gy_text_buffer_insert_with_attributes (self->buffer, &start, formatted_text, attr_list);
 
-                  pango_attr_list_unref (attr_list);
+                  gy_text_attr_list_unref (attr_list);
                 }
 
             }

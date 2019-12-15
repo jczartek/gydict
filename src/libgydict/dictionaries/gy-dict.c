@@ -191,19 +191,19 @@ gy_dict_map (GyDict  *self,
  * @self: a gydict object
  * @raw_text: raw text to parse
  * @length: length of @raw_text, or -1 if nul terminated
- * @attr_list: (out): addres of return location for text with for a #PangoAttrList, or %NULL
+ * @attr_list: (out): addres of return location for text with for a #GyTextAttrList, or %NULL
  * @text: (out): addres of loaction for text with tags stripped, or %NULL
  * @err: addres of return location for errors, or %NULL
  *
  * Return value: %FALSE if @err is set, otherwise %TRUE
  */
 gboolean
-gy_dict_parse (GyDict         *self,
-               const gchar    *raw_text,
-               gint            length,
-               PangoAttrList **attr_list,
-               gchar         **text,
-               GError        **err)
+gy_dict_parse (GyDict          *self,
+               const gchar     *raw_text,
+               gint             length,
+               GyTextAttrList **attr_list,
+               gchar          **text,
+               GError         **err)
 {
   GyDictClass *klass;
 
