@@ -188,7 +188,7 @@ gy_prefs_view_get_size_group (GyPrefsView *self,
   g_return_val_if_fail (GY_IS_PREFS_VIEW (self), NULL);
 
   if (self->size_groups == NULL)
-    self->size_groups = g_hash_table_new_full (g_direct_hash, g_str_equal,
+    self->size_groups = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                g_free, g_object_unref);
 
   if (!(ret = g_hash_table_lookup (self->size_groups, name_group)))
@@ -199,3 +199,4 @@ gy_prefs_view_get_size_group (GyPrefsView *self,
 
   return ret;
 }
+
