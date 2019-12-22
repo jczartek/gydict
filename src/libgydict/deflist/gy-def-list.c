@@ -281,15 +281,12 @@ gy_def_list_init (GyDefList *self)
 gint
 gy_def_list_get_selected_n_row (GyDefList *self)
 {
-  GtkTreeSelection *selection;
   GtkTreeModel     *model;
   GtkTreeIter       iter;
 
   g_return_val_if_fail (GY_IS_DEF_LIST (self), -1);
 
-  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
-
-  if (gtk_tree_selection_get_selected (selection, &model, &iter))
+  if (gtk_tree_selection_get_selected (self->selection, &model, &iter))
     {
       GtkTreePath *path;
       gint        *row;
@@ -310,15 +307,13 @@ gy_def_list_get_selected_n_row (GyDefList *self)
 gchar *
 gy_def_list_get_value_for_selected_row (GyDefList *self)
 {
-  GtkTreeSelection *selection;
   GtkTreeModel     *model;
   GtkTreeIter       iter;
 
   g_return_val_if_fail (GY_IS_DEF_LIST (self), NULL);
 
-  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
 
-  if (gtk_tree_selection_get_selected (selection, &model, &iter))
+  if (gtk_tree_selection_get_selected (self->selection, &model, &iter))
     {
       GValue  value = G_VALUE_INIT;
       gchar  *s = NULL;
@@ -338,18 +333,16 @@ void
 gy_def_list_select_row (GyDefList *self,
                         gint       row)
 {
-  GtkTreeSelection *selection = NULL;
   GtkTreePath      *path      = NULL;
 
   g_return_if_fail (GY_IS_DEF_LIST (self));
   g_return_if_fail (row >= 0);
 
-  selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
   path = gtk_tree_path_new_from_indices (row, -1);
 
-  if (!gtk_tree_selection_path_is_selected (selection, path))
+  if (!gtk_tree_selection_path_is_selected (self->selection, path))
     {
-      gtk_tree_selection_select_path (selection, path);
+      gtk_tree_selection_select_path (self->selection, path);
       gtk_tree_view_scroll_to_cell (GTK_TREE_VIEW (self),
                                     path, NULL, TRUE,
                                     0.5, 0.0);
