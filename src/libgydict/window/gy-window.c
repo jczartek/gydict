@@ -320,13 +320,10 @@ gy_window_notify_top_visible (GObject    *obj,
 
   g_object_get (obj, "top-visible", &is_visible, NULL);
 
-  if (is_visible)
     gy_search_bar_set_search_mode_enabled (self->search_bar, is_visible);
-  else
-    {
-      gy_search_bar_set_search_mode_enabled (self->search_bar, is_visible);
-      gy_window_grab_focus (self);
-    }
+
+  if (!is_visible)
+    gy_window_grab_focus (self);
 }
 
 static void
