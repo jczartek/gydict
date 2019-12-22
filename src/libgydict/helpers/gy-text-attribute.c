@@ -47,7 +47,7 @@ G_DEFINE_BOXED_TYPE (GyTextAttribute, gy_text_attribute,
  * gy_text_attribute_new:
  *
  * Creates a new text attribute. It will initialize
- * initially index to PANGO_ATTR_INDEX_FROM_TEXT_BEGINNING
+ * initially index to %PANGO_ATTR_INDEX_FROM_TEXT_BEGINNING
  * and final index to %PANGO_ATTR_INDEX_TO_TEXT_END
  * such that the text attribute applies to the entire text by default.
  *
@@ -331,6 +331,17 @@ gy_text_attribute_get_string (GyTextAttribute *attr)
   return attr->attr_string;
 }
 
+/**
+ * gy_text_attribute_get_language:
+ * @attr: a text attribute
+ *
+ * Returns the pango language of @attr. The return value remains valid
+ * as long as @attr exists.
+ *
+ * Returns: (transfer none): the pango language
+ *
+ * Since: 0.6
+ */
 const PangoLanguage *
 gy_text_attribute_get_language (GyTextAttribute *attr)
 {
@@ -339,6 +350,17 @@ gy_text_attribute_get_language (GyTextAttribute *attr)
   return attr->attr_language;
 }
 
+/**
+ * gy_text_attribute_get_font_desc:
+ * @attr: a text attribute
+ *
+ * Returns the font description of @attr. The return value remains valid
+ * as long as @attr exists.
+ *
+ * Returns: (transfer none): the font description
+ *
+ * Since: 0.6
+ */
 const PangoFontDescription *
 gy_text_attribute_get_font_desc (GyTextAttribute *attr)
 {
@@ -347,6 +369,18 @@ gy_text_attribute_get_font_desc (GyTextAttribute *attr)
   return attr->attr_desc;
 }
 
+
+/**
+ * gy_text_attribute_get_color:
+ * @attr: a text attribute
+ *
+ * Returns the pango color of @attr. The return value remains valid
+ * as long as @attr exists.
+ *
+ * Returns: (transfer none): the pango color
+ *
+ * Since: 0.6
+ */
 const PangoColor *
 gy_text_attribute_get_color (GyTextAttribute *attr)
 {
