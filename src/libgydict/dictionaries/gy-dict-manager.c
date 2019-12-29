@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <libpeas/peas.h>
 #include "gy-dict-manager.h"
 #include "gy-dict.h"
 
