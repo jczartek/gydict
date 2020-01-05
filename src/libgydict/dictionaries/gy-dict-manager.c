@@ -23,7 +23,16 @@ struct _GyDictManager
 {
   GObject     __parent__;
   GHashTable  *dicts;
+  GyDict      *dictionary;
 };
+
+enum
+{
+  PROP_0,
+  PROP_DICTIONARY,
+  N_PROPERTIES
+};
+static GParamSpec *properties[N_PROPERTIES] = { 0 };
 
 G_DEFINE_TYPE (GyDictManager, gy_dict_manager, G_TYPE_OBJECT)
 
@@ -32,9 +41,47 @@ gy_dict_manager_finalize (GObject *object)
 {
   GyDictManager *self = (GyDictManager *)object;
 
+  self->dictionary = NULL;
+
   g_hash_table_destroy (self->dicts);
 
   G_OBJECT_CLASS (gy_dict_manager_parent_class)->finalize (object);
+}
+
+static void
+gy_dict_manager_get_property (GObject    *object,
+                              guint       prop_id,
+                              GValue     *value,
+                              GParamSpec *pspec)
+{
+  GyDictManager *self = GY_DICT_MANAGER (object);
+
+  switch (prop_id)
+    {
+    case PROP_DICTIONARY:
+      g_value_take_object (value, self->dictionary);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
+}
+
+static void
+gy_dict_manager_set_property (GObject      *object,
+                              guint         prop_id,
+                              const GValue *value,
+                              GParamSpec   *pspec)
+{
+  GyDictManager *self = GY_DICT_MANAGER (object);
+
+  switch (prop_id)
+    {
+    case PROP_DICTIONARY:
+      self->dictionary = g_value_get_object (value);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
 }
 
 static void
@@ -42,7 +89,17 @@ gy_dict_manager_class_init (GyDictManagerClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
+  object_class->get_property = gy_dict_manager_get_property;
+  object_class->set_property = gy_dict_manager_set_property;
   object_class->finalize = gy_dict_manager_finalize;
+
+  properties[PROP_DICTIONARY] =
+    g_param_spec_object ("dictionary",
+                         "dictionary",
+                         "The current used dictionary selected by the user.",
+                         GY_TYPE_DICT,
+                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_properties (object_class, N_PROPERTIES, properties);
 }
 
 static void
@@ -63,13 +120,22 @@ gy_dict_manager_insert_dict (GyDictManager *self,
                              GyDict        *dict,
                              const gchar   *idx)
 {
+  GError *err = NULL;
   g_return_if_fail (GY_IS_DICT_MANAGER (self));
   g_return_if_fail (GY_IS_DICT (dict));
   g_return_if_fail (idx != NULL);
 
   if (g_hash_table_lookup (self->dicts, idx))
-    {
       g_warning ("The identifier [%s] already exists. The previous value will be lost.", idx);
+
+   if (!gy_dict_is_mapped (dict))
+    gy_dict_map (dict, &err);
+
+  if (err)
+    {
+      g_critical ("Can't map the dictionary. Error: %s", err->message);
+      g_clear_error (&err);
+      return;
     }
 
   g_hash_table_insert (self->dicts, (gpointer) g_strdup (idx), g_object_ref_sink (dict));
@@ -81,6 +147,13 @@ gy_dict_manager_remove_dict (GyDictManager *self,
 {
   g_return_if_fail (GY_IS_DICT_MANAGER (self));
   g_return_if_fail (idx != NULL);
+
+  if (self->dictionary != NULL)
+    {
+      GyDict *dict = (GyDict *) g_hash_table_lookup (self->dicts, idx);
+
+      if (dict == self->dictionary) g_object_set (self, "dictionary", NULL, NULL);
+    }
 
   g_hash_table_remove (self->dicts, idx);
 }
@@ -101,4 +174,30 @@ gy_dict_manager_lookup_dict (GyDictManager *self,
   g_return_val_if_fail (idx != NULL, NULL);
 
   return (GyDict *) g_hash_table_lookup (self->dicts, idx);
+}
+
+void
+gy_dict_manager_set_dictionary (GyDictManager *self,
+                                const gchar   *key)
+{
+  g_return_if_fail (GY_IS_DICT_MANAGER (self));
+  g_return_if_fail (key != NULL);
+
+
+  self->dictionary = g_hash_table_lookup (self->dicts, key);
+
+  if (!self->dictionary)
+      g_warning ("The key is not found. The property dictionary is set on NULL.");
+
+  g_object_notify (G_OBJECT (self), "dictionary");
+}
+
+GyDict*
+gy_dict_manager_get_dictionary (GyDictManager *self)
+{
+
+  g_return_val_if_fail (GY_IS_DICT_MANAGER (self), NULL);
+  g_return_val_if_fail (self->dictionary != NULL, NULL);
+
+  return (GyDict *) self->dictionary;
 }

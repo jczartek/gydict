@@ -156,7 +156,6 @@ gy_window_action_switch_dict (GSimpleAction *action,
   GyDict      *dict   = NULL;
   g_autoptr(GVariant) state = NULL;
   const gchar *str;
-  GError *err = NULL;
 
   state = g_action_get_state (G_ACTION (action));
 
@@ -164,27 +163,15 @@ gy_window_action_switch_dict (GSimpleAction *action,
 
   str = g_variant_get_string (parameter, NULL);
 
-  dict = gy_dict_manager_lookup_dict (self->manager_dicts, str);
-  if (!dict)
-    {
-      g_warning ("Can't find dictionary");
-      return;
-    };
+  gy_dict_manager_set_dictionary (self->manager_dicts, str);
+  dict = gy_dict_manager_get_dictionary (self->manager_dicts);
 
-  if (!gy_dict_is_mapped (dict))
-    gy_dict_map (dict, &err);
-
-  if (err)
-    {
-      g_critical ("Can't map the dictionary. Error: %s", err->message);
-      g_clear_error (&err);
-      return;
-    }
-
-  gy_text_buffer_clean_buffer (self->buffer);
+  g_return_if_fail (dict != NULL);
 
   gy_def_list_set_model (self->deflist, gy_dict_get_tree_model (dict));
 
+
+  gy_text_buffer_clean_buffer (self->buffer);
   gy_window_clear_search_entry (self);
   gy_window_grab_focus (GY_WINDOW (self));
 
@@ -220,14 +207,7 @@ gy_window_list_selection_changed (GtkTreeSelection *selection,
 
       if (row)
         {
-          GAction *action = g_action_map_lookup_action (G_ACTION_MAP (self), "switch-dict");
-          g_autoptr(GVariant) state = NULL;
-
-          state = g_action_get_state (action);
-
-          const gchar* str = g_variant_get_string (state, NULL);
-
-          GyDict *dict = gy_dict_manager_lookup_dict (self->manager_dicts, str);
+          GyDict *dict = gy_dict_manager_get_dictionary (self->manager_dicts);
 
           if (dict)
             {

@@ -41,7 +41,10 @@ void gy_dict_manager_insert_dict (GyDictManager *self,
 void gy_dict_manager_remove_dict (GyDictManager *self,
                                   const gchar   *idx);
 
+void gy_dict_manager_set_dictionary (GyDictManager *self,
+                                     const gchar   *key);
 
+GyDict* gy_dict_manager_get_dictionary (GyDictManager *self);
 
 G_END_DECLS
 
