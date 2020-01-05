@@ -307,6 +307,24 @@ gy_window_notify_top_visible (GObject    *obj,
 }
 
 static void
+gy_window_dictionary (GObject    *obj,
+                      GParamSpec *pspec,
+                      gpointer    data)
+{
+  GyWindow *self = GY_WINDOW (data);
+
+  if (!gy_dict_manager_get_dictionary (self->manager_dicts))
+    {
+      gy_def_list_set_model (self->deflist, NULL);
+      gy_text_buffer_clean_buffer (self->buffer);
+
+      GAction *action = g_action_map_lookup_action (G_ACTION_MAP (self), "switch-dict");
+      if (action)
+        g_action_change_state (action, g_variant_new_string (""));
+    }
+}
+
+static void
 gy_window_row_activated (GtkListBox    *box,
                          GtkListBoxRow *row,
                          gpointer       data)
@@ -390,6 +408,8 @@ gy_window_init (GyWindow *self)
                     G_CALLBACK (gy_window_notify_top_visible), self);
   g_signal_connect (self->history_box, "row-activated",
                     G_CALLBACK (gy_window_row_activated), self);
+  g_signal_connect (self->manager_dicts, "notify::dictionary",
+                    G_CALLBACK (gy_window_dictionary), self);
 
   PeasEngine *engine = peas_engine_get_default ();
   self->extens = peas_extension_set_new (engine, GY_TYPE_WINDOW_ADDIN, NULL);
