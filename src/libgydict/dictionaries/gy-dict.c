@@ -28,6 +28,7 @@ typedef struct _GyDictPrivate
   gchar          *identifier;
   GtkTreeModel   *model;
   guint           is_mapped: 1;
+  gchar          *path;
 } GyDictPrivate;
 
 G_DEFINE_ABSTRACT_TYPE_WITH_CODE (GyDict, gy_dict, G_TYPE_OBJECT, G_ADD_PRIVATE (GyDict))
@@ -38,6 +39,7 @@ enum
   PROP_IDENTIFIER,
   PROP_MODEL,
   PROP_IS_MAPPED,
+  PROP_PATH,
   LAST_PROP
 };
 GParamSpec *gParamSpecs[LAST_PROP];
@@ -52,6 +54,9 @@ gy_dict_finalize (GObject *object)
 
   if (priv->model)
     g_clear_object (&priv->model);
+
+  if (priv->path)
+    g_clear_object (&priv->path);
 
   G_OBJECT_CLASS (gy_dict_parent_class)->finalize (object);
 }
@@ -78,6 +83,11 @@ gy_dict_set_property (GObject      *object,
       break;
     case PROP_IS_MAPPED:
       priv->is_mapped = g_value_get_boolean (value);
+      break;
+    case PROP_PATH:
+      if (priv->path != NULL)
+        g_clear_pointer (&priv->path, g_free);
+      priv->path = g_value_dup_string (value);
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -108,6 +118,9 @@ gy_dict_get_property (GObject    *object,
     case PROP_IS_MAPPED:
       g_value_set_boolean (value, priv->is_mapped);
       break;
+    case PROP_PATH:
+      g_value_set_static_string (value, priv->path);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
       break;
@@ -121,6 +134,7 @@ gy_dict_init (GyDict *dict)
 
   priv->model = NULL;
   priv->is_mapped = FALSE;
+  priv->path = NULL;
 }
 
 static void
@@ -167,6 +181,18 @@ gy_dict_class_init (GyDictClass *klass)
                           "Is the dict mapped",
                           FALSE,
                           G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+
+  /**
+   * GyDict:path:
+   *
+   * The path to a real dictionary.
+   */
+  gParamSpecs[PROP_PATH] =
+    g_param_spec_string ("path",
+                         "Path",
+                         "The path to a real dictionary",
+                         NULL,
+                         G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (object_class, LAST_PROP, gParamSpecs);
 
@@ -266,4 +292,24 @@ gy_dict_get_tree_model (GyDict *self)
 
   priv = gy_dict_get_instance_private (self);
   return priv->model;
+}
+
+/**
+ * gy_dict_get_path:
+ * @self: a #GyDict
+ *
+ * Returns the path to the real dictionary. Returns %NULL if the property path wasn't set.
+ *
+ * Returns: (transfer none) (nullable): a path, or %NULL
+ *
+ * Since: 0.6
+ */
+const gchar *
+gy_dict_get_path (GyDict *self)
+{
+   GyDictPrivate *priv;
+  g_return_val_if_fail (GY_IS_DICT (self), NULL);
+
+  priv = gy_dict_get_instance_private (self);
+  return priv->path;
 }

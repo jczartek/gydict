@@ -65,6 +65,8 @@ gboolean      gy_dict_parse (GyDict          *self,
 gchar *        gy_dict_get_lexical_unit (GyDict  *self,
                                          guint    idx,
                                          GError **err);
+const gchar* gy_dict_get_path (GyDict *self);
+
 G_END_DECLS
 
 #endif /* __GY_DICT_H__ */
