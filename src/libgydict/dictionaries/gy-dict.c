@@ -313,3 +313,39 @@ gy_dict_get_path (GyDict *self)
   priv = gy_dict_get_instance_private (self);
   return priv->path;
 }
+
+
+GyDict *
+gy_dict_create_dictionary (GType        type_of_dict,
+                           const gchar *identifier,
+                           gboolean     can_bind,
+                           const gchar *schema_id,
+                           const gchar *path,
+                           const gchar *key)
+{
+  GyDict *dict = NULL;
+
+  g_return_val_if_fail (g_type_is_a (type_of_dict, GY_TYPE_DICT), NULL);
+
+  dict = g_object_new (type_of_dict, "identifier", identifier, NULL);
+
+  if (can_bind)
+    {
+      g_autoptr(GSettings) settings = NULL;
+      g_autofree gchar *settings_path = NULL;
+
+      if (schema_id == NULL)
+        schema_id = "org.gtk.gydict.path";
+
+      if (path == NULL)
+        path = settings_path = g_strdup_printf ("/org/gtk/gydict/path/%s/", identifier);
+
+      settings = g_settings_new_with_path (schema_id, path);
+
+      g_settings_bind (settings,
+                       key == NULL ? "path" : key,
+                       dict, "path",
+                       G_SETTINGS_BIND_GET);
+    }
+  return dict;
+}

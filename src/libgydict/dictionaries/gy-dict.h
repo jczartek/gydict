@@ -66,6 +66,12 @@ gchar *        gy_dict_get_lexical_unit (GyDict  *self,
                                          guint    idx,
                                          GError **err);
 const gchar* gy_dict_get_path (GyDict *self);
+GyDict * gy_dict_create_dictionary (GType        type_of_dict,
+                                    const gchar *identifier,
+                                    gboolean     can_bind,
+                                    const gchar *schema_id,
+                                    const gchar *path,
+                                    const gchar *key);
 
 G_END_DECLS
 
