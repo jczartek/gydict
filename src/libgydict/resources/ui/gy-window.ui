@@ -8,7 +8,7 @@
 	  <property name="manager_dicts">manager_dicts</property>
 	  <child type="titlebar">
 	    <object class="GyHeaderBar" id="header_bar">
-	      <property name="title" bind-source="deflist" bind-property="value-selected-row" />
+	      <property name="title" bind-source="deflist" bind-property="selected-value" />
 	      <child type="title">
 	        <object class="GtkSearchEntry">
 	          <property name="width-chars">25</property>

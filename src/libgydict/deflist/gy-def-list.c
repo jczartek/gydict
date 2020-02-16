@@ -27,16 +27,16 @@ struct _GyDefList
   GtkTreeView       __parent__;
   GtkTreeSelection *selection;
 
-  gchar *value_selected_row;
-  gint   number_selected_row;
+  gchar *selected_value;
+  gint   selected_index;
   gboolean has_model;
 };
 
 enum
 {
   PROP_0,
-  PROP_VALUE_SELECTED_ROW,
-  PROP_NUMBER_SELECTED_ROW,
+  PROP_SELECTED_VALUE,
+  PROP_SELECTED_INDEX,
   PROP_HAS_MODEL,
   N_PROPERTIES
 };
@@ -122,8 +122,8 @@ gy_def_list_selection_changed_cb (GtkTreeSelection *selection,
 
   if (value != NULL && number != -1)
     g_object_set (G_OBJECT (self),
-                  "value-selected-row", value,
-                  "number-selected-row", number, NULL);
+                  "selected-value", value,
+                  "selected-index", number, NULL);
 
 }
 
@@ -171,8 +171,8 @@ gy_def_list_finalize (GObject *object)
 {
   GyDefList *self = (GyDefList *) object;
 
-  self->number_selected_row = -1;
-  g_clear_pointer (&self->value_selected_row, g_free);
+  self->selected_index = -1;
+  g_clear_pointer (&self->selected_value, g_free);
 
   G_OBJECT_CLASS (gy_def_list_parent_class)->finalize (object);
 }
@@ -187,11 +187,11 @@ gy_def_list_get_property (GObject    *object,
 
   switch (prop_id)
     {
-    case PROP_VALUE_SELECTED_ROW:
-      g_value_set_string (value, self->value_selected_row);
+    case PROP_SELECTED_VALUE:
+      g_value_set_string (value, self->selected_value);
       break;
-    case PROP_NUMBER_SELECTED_ROW:
-      g_value_set_int (value, self->number_selected_row);
+    case PROP_SELECTED_INDEX:
+      g_value_set_int (value, self->selected_index);
       break;
     case PROP_HAS_MODEL:
       g_value_set_boolean (value, self->has_model);
@@ -211,12 +211,12 @@ gy_def_list_set_property (GObject      *object,
 
   switch (prop_id)
     {
-    case PROP_VALUE_SELECTED_ROW:
-      if (self->value_selected_row != NULL) g_clear_pointer (&self->value_selected_row, g_free);
-      self->value_selected_row = g_value_dup_string (value);
+    case PROP_SELECTED_VALUE:
+      if (self->selected_value != NULL) g_clear_pointer (&self->selected_value, g_free);
+      self->selected_value = g_value_dup_string (value);
       break;
-    case PROP_NUMBER_SELECTED_ROW:
-      self->number_selected_row = g_value_get_int (value);
+    case PROP_SELECTED_INDEX:
+      self->selected_index = g_value_get_int (value);
       break;
     case PROP_HAS_MODEL:
       self->has_model = g_value_get_boolean (value);
@@ -246,16 +246,16 @@ gy_def_list_class_init (GyDefListClass *klass)
                   G_TYPE_NONE, 1,
                   GTK_TYPE_DIRECTION_TYPE);
 
-  properties[PROP_VALUE_SELECTED_ROW] =
-     g_param_spec_string ("value-selected-row",
-                          "value-selected-row",
-                          "The value of a selected row.",
+  properties[PROP_SELECTED_VALUE] =
+     g_param_spec_string ("selected-value",
+                          "selected-value",
+                          "The value of the selected row.",
                           NULL, G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-  properties[PROP_NUMBER_SELECTED_ROW] =
-    g_param_spec_int ("number-selected-row",
-                      "number-selected-row",
-                      "The number of a selected row",
+  properties[PROP_SELECTED_INDEX] =
+    g_param_spec_int ("selected-index",
+                      "selected-index",
+                      "The index of a selected row. The default value is negative one (-1).",
                       G_MININT, G_MAXINT, -1,
                       G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
@@ -271,8 +271,8 @@ gy_def_list_class_init (GyDefListClass *klass)
 static void
 gy_def_list_init (GyDefList *self)
 {
-  self->value_selected_row = NULL;
-  self->number_selected_row = -1;
+  self->selected_value = NULL;
+  self->selected_index = -1;
   self->has_model = FALSE;
   self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self));
 
