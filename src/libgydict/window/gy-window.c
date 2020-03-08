@@ -47,7 +47,7 @@ struct _GyWindow
   GtkTreeSelection     *selection;
   GyTextView           *textview;
   GyTextBuffer         *buffer;
-  GtkSearchEntry       *dict_entry;
+  GtkSearchEntry       *search_entry;
   GyDictManager        *manager_dicts;
   GyHistoryBox         *history_box;
   GyHeaderBar          *header_bar;
@@ -91,6 +91,8 @@ owner_change_cb (GtkClipboard        *clipboard,
   gchar *text = NULL, *word = NULL;
   GyWindow *self = GY_WINDOW (data);
 
+  g_message("%s", "Jestem w "__FILE__);
+
   if ((text = gtk_clipboard_wait_for_text (clipboard)))
   {
     GRegex *regex;
@@ -101,7 +103,7 @@ owner_change_cb (GtkClipboard        *clipboard,
     g_regex_match (regex, text, 0, &match_info);
     word = g_match_info_fetch (match_info, 0);
 
-    if (word) gtk_entry_set_text (GTK_ENTRY (self->dict_entry), (const gchar *) word);
+    if (word) gtk_entry_set_text (GTK_ENTRY (self->search_entry), (const gchar *) word);
 
     g_match_info_free (match_info);
     g_regex_unref (regex);
@@ -442,6 +444,7 @@ gy_window_class_init (GyWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, search_bar);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, history_box);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, search_entry);
 
   properties[PROP_MANAGER_DICTS] =
     g_param_spec_object ("manager-dicts",
@@ -482,7 +485,7 @@ gy_window_grab_focus (GyWindow *self)
 {
   g_return_if_fail (GY_IS_WINDOW (self));
 
-  gtk_window_set_focus (GTK_WINDOW (self), GTK_WIDGET (self->dict_entry));
+  gtk_window_set_focus (GTK_WINDOW (self), GTK_WIDGET (self->search_entry));
 }
 
 void
@@ -490,7 +493,7 @@ gy_window_clear_search_entry (GyWindow *self)
 {
   g_return_if_fail (GY_IS_WINDOW (self));
 
-  gtk_entry_set_text (GTK_ENTRY (self->dict_entry), "");
+  gtk_entry_set_text (GTK_ENTRY (self->search_entry), "");
 }
 
 /**

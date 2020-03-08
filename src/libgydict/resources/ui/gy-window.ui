@@ -10,10 +10,10 @@
 	    <object class="GyHeaderBar" id="header_bar">
 	      <property name="title" bind-source="deflist" bind-property="selected-value" />
 	      <child type="title">
-	        <object class="GtkSearchEntry">
+	        <object class="GtkSearchEntry" id="search_entry">
 	          <property name="width-chars">25</property>
-	          <property name="placeholder-text" bind-source="header_bar" bind-property="title" >Search words...</property>
-	          <property name="sensitive" bind-source="deflist" bind-property="has-model" >false</property>
+	          <property name="placeholder-text" bind-source="header_bar" bind-property="title">Search words...</property>
+	          <property name="sensitive" bind-source="deflist" bind-property="has-model">false</property>
 	        </object>
 	      </child>
 	    </object>
