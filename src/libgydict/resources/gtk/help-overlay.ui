@@ -53,6 +53,13 @@
                 <property name="title" translatable="yes">Close Application</property>
               </object>
             </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">true</property>
+                <property name="title" translatable="yes">Preferences</property>
+                <property name="accelerator">&lt;ctrl&gt;comma</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>

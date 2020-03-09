@@ -229,6 +229,9 @@ startup (GApplication *application)
   /* Initialize plugins */
   gy_app_initailize_plugins (app);
 
+  /* Init shortcuts */
+  _gy_app_init_shortcuts (app);
+
   app->extens = peas_extension_set_new (engine, GY_TYPE_APP_ADDIN, NULL);
 
   g_signal_connect (app->extens, "extension-added",
