@@ -285,30 +285,10 @@ gy_app_class_init (GyAppClass *klass)
   app_class->shutdown = gy_app_shutdown;
 }
 
-static gint
-gy_app_handle_local_options (GApplication *application,
-                             GVariantDict *options,
-                             gpointer      user_data)
-{
-  if (g_variant_dict_contains (options, "version"))
-    {
-      g_print("%s\n",PACKAGE_STRING);
-      return EXIT_SUCCESS;
-    }
-
-  return -1;
-}
-
-
 GyApp *
 gy_app_new(void)
 {
   GyApp* application = NULL;
-  static const GOptionEntry options[] =
-  {
-    { "version", 'v', 0, G_OPTION_ARG_NONE, NULL, N_("Display the version program and exit") },
-    { NULL, }
-  };
 
   application = g_object_new (GY_TYPE_APP,
                               "application-id",   "org.gtk.gydict",
@@ -317,10 +297,7 @@ gy_app_new(void)
 
   g_assert (GY_IS_APP (application));
 
-  g_application_add_main_option_entries (G_APPLICATION (application), options);
-
-  g_signal_connect (application, "handle-local-options",
-                    G_CALLBACK (gy_app_handle_local_options), NULL);
+  _gy_app_cmd_line_add_options (application);
 
   return application;
 }

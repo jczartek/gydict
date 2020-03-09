@@ -37,4 +37,5 @@ struct _GyApp
 
 void _gy_app_action_init (GyApp *self);
 void _gy_app_init_shortcuts (GyApp *self);
+void _gy_app_cmd_line_add_options (GyApp *self);
 G_END_DECLS
