@@ -15,7 +15,6 @@ gydict_typelibdir = join_paths(gydict_libdir, 'girepository-1.0')
 
 gydict_pkglibdir_abs = join_paths(get_option('prefix'), get_option('libdir'), 'gydict')
 
-
 conf = configuration_data()
 conf.set_quoted('PACKAGE_NAME', meson.project_name())
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
@@ -23,6 +22,9 @@ conf.set_quoted('PACKAGE_STRING', '@0@-@1@'.format(meson.project_name(), meson.p
 conf.set_quoted('PACKAGE_DATADIR', gydict_datadir)
 conf.set_quoted('PACKAGE_LIBDIR', gydict_libdir)
 conf.set_quoted('PACKAGE_LOCAL_DIR', join_paths(gydict_datadir, 'locale'))
+conf.set_quoted('PACKAGE_PLUGINS_DIR', join_paths(gydict_libdir, 'plugins'))
+conf.set_quoted('PACKAGE_PLUGINS_DATA_DIR', join_paths(gydict_datadir, 'plugins'))
+conf.set_quoted('PACKAGE_LOCAL_PLUGINS_DIR', join_paths('~', '.local', 'share', 'gydict', 'plugins'))
 
 conf.set('VERSION', 'PACKAGE_VERSION')
 conf.set('GETTEXT_PACKAGE', 'PACKAGE_NAME')

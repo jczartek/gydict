@@ -24,6 +24,17 @@
 #include "gy-app-private.h"
 
 
+static void
+gy_app_cmd_line_print_paths_for_plugins (void)
+{
+  g_print ("Global Paths:\n");
+  g_print ("\tModule dir .....: %s\n", PACKAGE_PLUGINS_DIR);
+  g_print ("\tData dir .......: %s\n", PACKAGE_PLUGINS_DATA_DIR);
+  g_print ("Local Paths:\n");
+  g_print ("\tModule dir .....: %s\n", PACKAGE_LOCAL_PLUGINS_DIR);
+  g_print ("\tData dir .......: %s\n", PACKAGE_LOCAL_PLUGINS_DIR);
+}
+
 static gint
 gy_app_handle_local_options (GApplication *application,
                              GVariantDict *options,
@@ -39,6 +50,11 @@ gy_app_handle_local_options (GApplication *application,
       g_action_group_activate_action (G_ACTION_GROUP (application), "prefs", NULL);
       return EXIT_SUCCESS;
     }
+  else if (g_variant_dict_contains (options, "paths-for-plugins"))
+    {
+      gy_app_cmd_line_print_paths_for_plugins ();
+      return EXIT_SUCCESS;
+    }
 
   return -1;
 }
@@ -50,6 +66,7 @@ _gy_app_cmd_line_add_options (GyApp *self)
   {
     { "version", 'v', 0, G_OPTION_ARG_NONE, NULL, N_("Display the version program and exit") },
     { "preferences", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Show the application preferences") },
+    { "paths-for-plugins", 0, 0, G_OPTION_ARG_NONE, NULL, N_("Show the paths for plugins") },
     { NULL, }
   };
 
