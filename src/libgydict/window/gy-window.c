@@ -49,7 +49,7 @@ struct _GyWindow
   GyTextBuffer         *buffer;
   GtkSearchEntry       *search_entry;
   GyDictManager        *manager_dicts;
-  GyHistoryBox         *history_box;
+  //GyHistoryBox         *history_box;
   GyHeaderBar          *header_bar;
   GySearchBar          *search_bar;
   PeasExtensionSet     *extens;
@@ -67,7 +67,7 @@ enum
 
 static GParamSpec *properties[N_PROPS];
 
-static void
+/*static void
 gy_window_action_add_to_history (GSimpleAction *action,
                                  GVariant      *parameter,
                                  gpointer      data)
@@ -81,7 +81,7 @@ gy_window_action_add_to_history (GSimpleAction *action,
 
   if (n_row != -1 && s != NULL)
     gy_history_box_add (self->history_box, s, (guint) n_row);
-}
+}*/
 
 static void
 owner_change_cb (GtkClipboard        *clipboard,
@@ -188,7 +188,7 @@ static GActionEntry win_entries[] =
   { "clip", gy_window_action_respond_clipboard, NULL, "false", NULL },
   { "close", gy_window_action_quit_win_cb, NULL, NULL, NULL },
   { "switch-dict", gy_window_action_switch_dict, "s", "''", NULL},
-  { "add-to-history", gy_window_action_add_to_history, NULL, NULL, NULL}
+ // { "add-to-history", gy_window_action_add_to_history, NULL, NULL, NULL}
 };
 
 static void
@@ -408,8 +408,8 @@ gy_window_init (GyWindow *self)
                     G_CALLBACK (gy_window_button_press_event), NULL);
   g_signal_connect (self->dockbin, "notify::top-visible",
                     G_CALLBACK (gy_window_notify_top_visible), self);
-  g_signal_connect (self->history_box, "row-activated",
-                    G_CALLBACK (gy_window_row_activated), self);
+  /*g_signal_connect (self->history_box, "row-activated",
+                    G_CALLBACK (gy_window_row_activated), self);*/
   g_signal_connect (self->manager_dicts, "notify::dictionary",
                     G_CALLBACK (gy_window_dictionary), self);
 
@@ -443,7 +443,7 @@ gy_window_class_init (GyWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, GyWindow, buffer);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, search_bar);
-  gtk_widget_class_bind_template_child (widget_class, GyWindow, history_box);
+  //gtk_widget_class_bind_template_child (widget_class, GyWindow, history_box);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, search_entry);
 
   properties[PROP_MANAGER_DICTS] =
@@ -522,4 +522,20 @@ gy_window_get_dict_manager (GyWindow *self)
   g_return_val_if_fail (GY_IS_WINDOW (self) && self->manager_dicts != NULL, NULL);
 
   return self->manager_dicts;
+}
+
+/**
+ * gy_window_get_header_bar:
+ * @self: the main window
+ *
+ * Returns: (transfer none): the GyHeaderBar
+ *
+ * Since: 0.6
+ */
+GyHeaderBar *
+gy_window_get_header_bar(GyWindow *self)
+{
+  g_return_val_if_fail (GY_IS_WINDOW (self) && self->manager_dicts != NULL, NULL);
+
+  return self->header_bar;
 }

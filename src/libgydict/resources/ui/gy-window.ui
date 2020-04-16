@@ -85,12 +85,12 @@
           <object class="GtkScrolledWindow">
             <property name="visible">true</property>
             <property name="expand">true</property>
-            <child>
+           <!-- <child>
               <object class="GyHistoryBox" id="history_box">
                 <property name="visible">true</property>
                 <property name="selection-mode">none</property>
               </object>
-            </child>
+            </child> -->
           </object>
         </child>
 
