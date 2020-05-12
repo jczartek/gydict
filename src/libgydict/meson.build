@@ -17,6 +17,7 @@ subdir('preferences')
 subdir('printing')
 subdir('resources')
 subdir('search')
+subdir('services')
 subdir('window')
 
 libgydct_sources = [
@@ -64,9 +65,9 @@ pkgg.generate(
       subdirs: [join_paths('gydict', 'libgydict-' + apiversion) ],
       version: meson.project_version(),
          name: 'libgydict',
-     filebase: 'libgydict-1.0',
+     filebase: 'libgydict-' + apiversion,
   description: 'Libgydict contains the components used to build the application Gydict.',
-     requires: ['gtk+-3.0'],
+     requires: ['gtk+-3.0', 'libdazzle-1.0', 'gio-2.0', 'libpeas-1.0'],
   install_dir: join_paths(gydict_libdir, 'pkgconfig'),
 )
 
@@ -80,4 +81,13 @@ libgydict_gir = gnome.generate_gir(libgydict,
               install: true,
   install_dir_typelib: gydict_typelibdir,
       install_dir_gir: gydict_girdir,
-           extra_args: ['-DGYDICT_COMPILATION'],)
+           extra_args: ['--c-include=gydict.h', '--quiet', '-DGYDICT_COMPILATION'],)
+
+libgydict_vapi = gnome.generate_vapi(
+    'libgydict-' + apiversion,
+      install: true,
+      install_dir: gydict_vapidir,
+      sources: libgydict_gir[0],
+      metadata_dirs: [ meson.current_source_dir() ],
+      packages: [ 'gio-2.0', 'gtk+-3.0', 'libdazzle-1.0'])
+    

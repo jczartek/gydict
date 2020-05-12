@@ -12,6 +12,7 @@ gydict_includedir = join_paths(gydict_prefix, get_option('includedir'), 'gydict'
 gydict_schemadir  = join_paths(gydict_datadir, 'glib-2.0', 'schemas')
 gydict_girdir     = join_paths(gydict_datadir, 'gydict', 'gir-1.0')
 gydict_typelibdir = join_paths(gydict_libdir, 'girepository-1.0')
+gydict_vapidir    = join_paths(gydict_datadir, 'vala', 'vapi')
 
 gydict_pkglibdir_abs = join_paths(get_option('prefix'), get_option('libdir'), 'gydict')
 
@@ -114,13 +115,14 @@ status = [
   '', '',
   'gydict @0@'.format(meson.project_version()),
   '', '',
-  'Version .............. : @0@'.format(meson.project_version()),
+  'Version ............... : @0@'.format(meson.project_version()),
   '',
-  'Prefix ............... : @0@'.format(gydict_prefix),
-  'Includedir ........... : @0@'.format(join_paths(gydict_includedir, 'libgydict-' + apiversion)),
-  'Libdir ............... : @0@'.format(gydict_libdir),
-  'GirDir ............... : @0@'.format(gydict_girdir),
-  'TypeLibDir ........... : @0@'.format(gydict_typelibdir),
+  'Prefix ................ : @0@'.format(gydict_prefix),
+  'Include Dir ........... : @0@'.format(join_paths(gydict_includedir, 'libgydict-' + apiversion)),
+  'Lib Dir ............... : @0@'.format(gydict_libdir),
+  'Gir Dir ............... : @0@'.format(gydict_girdir),
+  'TypeLib Dir ........... : @0@'.format(gydict_typelibdir),
+  'Vapi Dir .............. : @0@'.format(gydict_vapidir),
   '', ''
 ]
 
