@@ -33,13 +33,30 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (GyWindow, gy_window, GY, WINDOW, DzlApplicationWindow)
 
-GtkWidget*     gy_window_new             (GyApp *application);
-GtkWidget*     gy_window_get_text_view   (GyWindow *self);
-void           gy_window_grab_focus      (GyWindow *self);
-void           gy_window_clear_search_entry (GyWindow *self);
-DzlDockBin*    gy_window_get_dockbin (GyWindow *self);
+GtkWidget* gy_window_new (GyApp *application);
+
+GtkWidget* gy_window_get_text_view (GyWindow *self);
+
+void gy_window_grab_focus (GyWindow *self);
+
+void gy_window_clear_search_entry (GyWindow *self);
+
+DzlDockBin* gy_window_get_dockbin (GyWindow *self);
+
 GyDictManager* gy_window_get_dict_manager (GyWindow *self);
-GyHeaderBar * gy_window_get_header_bar(GyWindow *self);
+
+GyHeaderBar * gy_window_get_header_bar (GyWindow *self);
+
+guint gy_window_add_menu (GyWindow    *self,
+                          const gchar *menu_id,
+                          GMenuModel  *menu);
+
+guint gy_window_add_menu_by_resource (GyWindow     *self,
+                                      const gchar  *resource,
+                                      GError      **err);
+
+void gy_window_remove_menu (GyWindow *self,
+                            guint     id);
 
 G_END_DECLS
 

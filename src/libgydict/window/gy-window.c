@@ -34,6 +34,8 @@
 #include "entryview/gy-text-buffer.h"
 #include "helpers/gy-utility-func.h"
 #include "printing/gy-print.h"
+#include "services/gy-dict-service.h"
+#include "services/gy-service-provider.h"
 #include "search/gy-search-bar.h"
 
 #define MOUSE_UP_BUTTON   8
@@ -42,6 +44,7 @@
 struct _GyWindow
 {
   DzlApplicationWindow  __parent__;
+
   DzlDockBin           *dockbin;
   GyDefList            *deflist;
   GtkTreeSelection     *selection;
@@ -54,6 +57,11 @@ struct _GyWindow
   GySearchBar          *search_bar;
   PeasExtensionSet     *extens;
   GtkClipboard         *clipboard; /* Non free! */
+  DzlMenuManager       *menu_manager;
+
+  const gchar             *service_id;
+  GyService         *service;
+  GyServiceProvider *service_provider;
 };
 
 G_DEFINE_TYPE (GyWindow, gy_window, DZL_TYPE_APPLICATION_WINDOW);
@@ -155,15 +163,24 @@ gy_window_action_switch_dict (GSimpleAction *action,
                               gpointer       data)
 {
   GyWindow    *self   = (GyWindow *) data;
-  GyDict      *dict   = NULL;
+  //GyDict      *dict   = NULL;
   g_autoptr(GVariant) state = NULL;
-  const gchar *str;
+  //const gchar *str;
 
   state = g_action_get_state (G_ACTION (action));
 
   if (g_variant_compare (parameter, state) == 0) return;
 
-  str = g_variant_get_string (parameter, NULL);
+  self->service_id = g_variant_get_string (parameter, NULL);
+  self->service = gy_service_provider_get_service_by_id (self->service_provider,
+                                                         self->service_id);
+  if (GY_IS_DICT_SERVICE (self->service))
+    {
+    }
+  else
+    g_critical ("The dictionary services: %s is not available.", self->service_id );
+
+  /*str = g_variant_get_string (parameter, NULL);
 
   gy_dict_manager_set_dictionary (self->manager_dicts, str);
   dict = gy_dict_manager_get_dictionary (self->manager_dicts);
@@ -401,6 +418,7 @@ gy_window_init (GyWindow *self)
   g_object_set_data (G_OBJECT (self->buffer), "textview", self->textview);
 
   self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->deflist));
+  self->menu_manager = dzl_application_get_menu_manager (DZL_APPLICATION (g_application_get_default ()));
   g_signal_connect (self->selection, "changed",
                    G_CALLBACK (gy_window_list_selection_changed), self);
 
@@ -421,9 +439,6 @@ gy_window_init (GyWindow *self)
 
   g_signal_connect (self->extens, "extension-removed",
                     G_CALLBACK (gy_window_addin_removed), self);
-
-  peas_extension_set_foreach (self->extens, gy_window_addin_added, self);
-
 }
 
 static void
@@ -458,12 +473,16 @@ gy_window_class_init (GyWindowClass *klass)
 GtkWidget *
 gy_window_new (GyApp *application)
 {
-  GyWindow *window;
+  g_return_val_if_fail (GY_IS_APP (application), NULL);
+  GyWindow *self;
 
-  window = g_object_new (GY_TYPE_WINDOW,
-                         "application", application, NULL);
+  self = g_object_new (GY_TYPE_WINDOW, "application", application, NULL);
 
-  return GTK_WIDGET (window);
+  self->service_provider = gy_app_get_service_provider (application);
+
+  g_assert (self->service_provider != NULL);
+
+  return GTK_WIDGET (self);
 }
 
 /**
@@ -538,4 +557,34 @@ gy_window_get_header_bar(GyWindow *self)
   g_return_val_if_fail (GY_IS_WINDOW (self) && self->manager_dicts != NULL, NULL);
 
   return self->header_bar;
+}
+
+
+guint
+gy_window_add_menu (GyWindow    *self,
+                    const gchar *menu_id,
+                    GMenuModel  *menu)
+{
+  g_return_val_if_fail (GY_IS_WINDOW (self), G_MAXUINT);
+
+  return dzl_menu_manager_merge (self->menu_manager, menu_id, menu);
+}
+
+guint
+gy_window_add_menu_by_resource (GyWindow     *self,
+                                const gchar  *resource,
+                                GError      **err)
+{
+  g_return_val_if_fail (GY_IS_WINDOW (self), G_MAXUINT);
+
+  return dzl_menu_manager_add_resource (self->menu_manager, resource, err);
+}
+
+void
+gy_window_remove_menu (GyWindow *self,
+                       guint      id)
+{
+  g_return_if_fail (GY_IS_WINDOW (self));
+
+  dzl_menu_manager_remove (self->menu_manager, id);
 }
