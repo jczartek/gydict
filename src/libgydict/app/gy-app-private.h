@@ -23,6 +23,7 @@
 #include <dazzle.h>
 #include <libpeas/peas.h>
 #include "gy-app.h"
+#include "../services/gy-service-provider.h"
 
 G_BEGIN_DECLS
 
@@ -33,6 +34,8 @@ struct _GyApp
   PeasExtensionSet      *extens;
   GHashTable            *plugin_settings;
   GHashTable            *plugin_gresources;
+
+  GyServiceProvider *service_provider;
 };
 
 void _gy_app_action_init (GyApp *self);

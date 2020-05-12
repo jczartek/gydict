@@ -34,6 +34,7 @@ gy_app_addin_real_unload (GyAppAddin *self,
                           GyApp      *app)
 {
 }
+
 static void
 gy_app_addin_default_init (GyAppAddinInterface *iface)
 {

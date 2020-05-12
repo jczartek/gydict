@@ -26,6 +26,8 @@
 #include <gtk/gtk.h>
 #include <dazzle.h>
 
+#include "../services/gy-service-provider.h"
+
 G_BEGIN_DECLS
 
 #define GY_TYPE_APP    (gy_app_get_type ())
@@ -35,6 +37,7 @@ G_DECLARE_FINAL_TYPE (GyApp, gy_app, GY, APP, DzlApplication)
 
 GyApp *gy_app_new            (void);
 void   gy_app_new_window     (GyApp *self);
+GyServiceProvider* gy_app_get_service_provider (GyApp *self);
 G_END_DECLS
 
 #endif /* end of include guard: __GY_APP_H__ */

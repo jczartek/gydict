@@ -25,6 +25,16 @@
 
 G_DEFINE_TYPE (GyApp, gy_app, DZL_TYPE_APPLICATION);
 
+
+enum
+{
+  PROP_0,
+  PROP_SERVICE_PROVIDER,
+  N_PROPERTIES
+};
+
+GParamSpec *properties[N_PROPERTIES];
+
 static void
 setup_accels (GyApp *self)
 {
@@ -71,34 +81,9 @@ gy_app_register_theme_overrides (GyApp *self)
 }
 
 static void
-gy_app_addin_added (PeasExtensionSet *set,
-                    PeasPluginInfo   *plugin_info,
-                    PeasExtension    *exten,
-                    gpointer          user_data)
-{
-  GyApp *self = GY_APP (user_data);
-  GyAppAddin *addin = GY_APP_ADDIN (exten);
-
-  gy_app_addin_load (addin, self);
-}
-
-static void
-gy_app_addin_removed (PeasExtensionSet *set,
-                      PeasPluginInfo   *plugin_info,
-                      PeasExtension    *exten,
-                      gpointer          user_data)
-{
-  GyApp *self = GY_APP (user_data);
-  GyAppAddin *addin = GY_APP_ADDIN (exten);
-
-  gy_app_addin_unload (addin, self);
-}
-
-static void
 startup (GApplication *application)
 {
   GyApp *app = GY_APP (application);
-  PeasEngine *engine = peas_engine_get_default ();
 
   g_resources_register (gy_get_resource ());
   g_application_set_resource_base_path (application, "/org/gtk/gydict");
@@ -115,19 +100,8 @@ startup (GApplication *application)
   /* Setup theme */
   gy_app_register_theme_overrides (app);
 
-  /* Initialize plugins */
-  _gy_app_plugins_init_plugins (app);
-
   /* Init shortcuts */
   _gy_app_init_shortcuts (app);
-
-  app->extens = peas_extension_set_new (engine, GY_TYPE_APP_ADDIN, NULL);
-
-  g_signal_connect (app->extens, "extension-added",
-                    G_CALLBACK (gy_app_addin_added), app);
-
-  g_signal_connect (app->extens, "extension-removed",
-                    G_CALLBACK (gy_app_addin_removed), app);
 }
 
 static void
@@ -137,8 +111,7 @@ gy_app_activate (GApplication *app)
 
   gy_app_new_window (self);
 
-  if (self->extens != NULL)
-    peas_extension_set_foreach (self->extens, gy_app_addin_added, self);
+  _gy_app_plugins_init_plugins (self);
 }
 
 static void
@@ -149,6 +122,7 @@ gy_app_shutdown (GApplication *app)
   g_clear_pointer (&self->plugin_settings, g_hash_table_destroy);
   g_clear_pointer (&self->plugin_gresources, g_hash_table_destroy);
   g_clear_object (&self->extens);
+  g_clear_object (&self->service_provider);
 
   G_APPLICATION_CLASS (gy_app_parent_class)->shutdown (app);
 }
@@ -162,16 +136,49 @@ gy_app_init (GyApp *self)
                                                g_free, g_object_unref);
   self->plugin_gresources = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                    g_free, (GDestroyNotify) g_resource_unref);
+
+  self->service_provider = gy_service_provider_new();
 }
+
+
+static void
+gy_app_get_property (GObject    *object,
+                     guint       prop_id,
+                     GValue     *value,
+                     GParamSpec *pspec)
+{
+  GyApp *self = GY_APP (object);
+
+  switch (prop_id)
+    {
+    case PROP_SERVICE_PROVIDER:
+      g_value_take_object (value, self->service_provider);
+      break;
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
+}
+
 
 static void
 gy_app_class_init (GyAppClass *klass)
 {
+  GObjectClass *obj_class = G_OBJECT_CLASS (klass);
   GApplicationClass *app_class = G_APPLICATION_CLASS (klass);
+
+  obj_class->get_property = gy_app_get_property;
 
   app_class->startup = startup;
   app_class->activate = gy_app_activate;
   app_class->shutdown = gy_app_shutdown;
+
+  properties[PROP_SERVICE_PROVIDER] =
+    g_param_spec_object ("service-provider",
+                         "Service provider",
+                         "",
+                         GY_TYPE_SERVICE_PROVIDER,
+                         G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
+  g_object_class_install_properties (obj_class, N_PROPERTIES, properties);
 }
 
 GyApp *
@@ -199,3 +206,12 @@ gy_app_new_window (GyApp *self)
   g_action_group_activate_action (G_ACTION_GROUP (self),
                                   "new-window",NULL);
 }
+
+GyServiceProvider *
+gy_app_get_service_provider(GyApp *self)
+{
+  g_return_val_if_fail(GY_IS_APP (self), NULL);
+
+  return self->service_provider;
+};
+
