@@ -1,4 +1,4 @@
-/* gy-dict-data-scheme.h
+/* gy-format-scheme.h
  *
  * Copyright 2020 Jakub Czartek <kuba@linux.pl>
  *
@@ -29,28 +29,28 @@
 
 G_BEGIN_DECLS
 
-typedef struct _GyDictDataScheme GyDictDataScheme;
+typedef struct _GyFormatScheme GyFormatScheme;
 
-GType gy_dict_data_scheme_get_type (void) G_GNUC_CONST;
+GType gy_format_scheme_get_type (void) G_GNUC_CONST;
 
-GyDictDataScheme *gy_dict_data_scheme_new (void);
+GyFormatScheme *gy_format_scheme_new (void);
 
-GyDictDataScheme * gy_dict_data_scheme_copy (GyDictDataScheme *scheme);
+GyFormatScheme * gy_format_scheme_copy (GyFormatScheme *scheme);
 
-void gy_dict_data_scheme_unref (GyDictDataScheme *scheme);
+void gy_format_scheme_unref (GyFormatScheme *scheme);
 
-const gchar *gy_dict_data_scheme_get_parsed_text (GyDictDataScheme *scheme);
+const gchar *gy_format_scheme_get_parsed_text (GyFormatScheme *scheme);
 
-void gy_dict_data_scheme_set_parsed_text (GyDictDataScheme *scheme,
-                                          gchar            *parsed_text);
+void gy_format_scheme_set_parsed_text (GyFormatScheme *scheme,
+                                       gchar          *parsed_text);
 
-void gy_dict_data_scheme_dup_parsed_text (GyDictDataScheme *scheme,
-                                          const gchar      *parsed_text);
+void gy_format_scheme_dup_parsed_text (GyFormatScheme *scheme,
+                                       const gchar    *parsed_text);
 
-const GyTextAttrList * gy_dict_data_scheme_get_attrs (GyDictDataScheme *scheme);
+const GyTextAttrList * gy_format_scheme_get_attrs (GyFormatScheme *scheme);
 
-void gy_dict_data_scheme_set_attrs (GyDictDataScheme *scheme,
-                                    GyTextAttrList   *attrs);
+void gy_format_scheme_set_attrs (GyFormatScheme *scheme,
+                                 GyTextAttrList *attrs);
 
 
 G_END_DECLS

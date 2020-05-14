@@ -1,4 +1,4 @@
-/* gy-dict-service.h
+/* gy-dict-formatter-service.h
  *
  * Copyright 2020 Jakub Czartek <kuba@linux.pl>
  *
@@ -20,34 +20,26 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
 #include "gy-service.h"
+#include "../helpers/gy-format-scheme.h"
 
 G_BEGIN_DECLS
 
-#define GY_TYPE_DICT_SERVICE (gy_dict_service_get_type ())
+#define GY_TYPE_DICT_FORMATTER_SERVICE (gy_dict_formatter_service_get_type ())
 
-G_DECLARE_INTERFACE (GyDictService, gy_dict_service, GY, DICT_SERVICE, GyService)
+G_DECLARE_INTERFACE (GyDictFormatterService, gy_dict_formatter_service, GY, DICT_FORMATTER_SERVICE, GyService)
 
-struct _GyDictServiceInterface
+struct _GyDictFormatterServiceInterface
 {
   GTypeInterface parent;
 
-  GtkTreeModel *(*get_model) (GyDictService  *self,
-                              GError        **err);
-
-  gchar* (*get_lexical_unit) (GyDictService  *self,
-                              guint           idx,
-                              GError        **err);
-
+  GyFormatScheme* (*format) (GyDictFormatterService  *self,
+                             const gchar             *text_to_format,
+                             GError                 **err);
 };
 
-GtkTreeModel* gy_dict_service_get_model (GyDictService  *self,
-                                         GError        **err);
-
-gchar* gy_dict_service_get_lexical_unit (GyDictService  *self,
-                                         guint           idx,
-                                         GError        **err);
-
+GyFormatScheme* gy_dict_formatter_service_format (GyDictFormatterService  *self,
+                                                  const gchar             *text_to_format,
+                                                  GError                 **err);
 
 G_END_DECLS

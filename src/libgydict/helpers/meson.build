@@ -1,12 +1,12 @@
 helpers_headers = [
-  'gy-dict-data-scheme.h',
+  'gy-format-scheme.h',
   'gy-text-attribute.h',
   'gy-utility-func.h'
 ]
 
 helpers_sources = [
   'gy-text-attribute.c',
-  'gy-dict-data-scheme.c',
+  'gy-format-scheme.c',
   'gy-utility-func.c'
 ]
 

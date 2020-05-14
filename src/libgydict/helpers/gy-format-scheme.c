@@ -1,4 +1,4 @@
-/* gy-dict-data-scheme.c
+/* gy-format-scheme.c
  *
  * Copyright 2020 Jakub Czartek <kuba@linux.pl>
  *
@@ -18,9 +18,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "gy-dict-data-scheme.h"
+#include "gy-format-scheme.h"
 
-struct _GyDictDataScheme
+struct _GyFormatScheme
 {
   guint ref_count;
 
@@ -28,27 +28,27 @@ struct _GyDictDataScheme
   GyTextAttrList *attrs;
 };
 
-G_DEFINE_BOXED_TYPE (GyDictDataScheme, gy_dict_data_scheme,
-                     gy_dict_data_scheme_copy,
-                     gy_dict_data_scheme_unref)
+G_DEFINE_BOXED_TYPE (GyFormatScheme, gy_format_scheme,
+                     gy_format_scheme_copy,
+                     gy_format_scheme_unref)
 
 
-GyDictDataScheme *
-gy_dict_data_scheme_new (void)
+GyFormatScheme *
+gy_format_scheme_new (void)
 {
-  GyDictDataScheme *scheme = g_slice_new0(GyDictDataScheme);
+  GyFormatScheme *scheme = g_slice_new0(GyFormatScheme);
 
   scheme->ref_count = 1;
 
   return scheme;
 }
 
-GyDictDataScheme *
-gy_dict_data_scheme_copy (GyDictDataScheme *scheme)
+GyFormatScheme *
+gy_format_scheme_copy (GyFormatScheme *scheme)
 {
   if (scheme == NULL) return NULL;
 
-  GyDictDataScheme *new = gy_dict_data_scheme_new ();
+  GyFormatScheme *new = gy_format_scheme_new ();
 
   new->parsed_text = g_strdup(scheme->parsed_text);
   new->attrs = gy_text_attr_list_copy (scheme->attrs);
@@ -56,8 +56,8 @@ gy_dict_data_scheme_copy (GyDictDataScheme *scheme)
   return new;
 }
 
-GyDictDataScheme *
-gy_dict_data_scheme_ref (GyDictDataScheme *scheme)
+GyFormatScheme *
+gy_format_scheme_ref (GyFormatScheme *scheme)
 {
   if (scheme == NULL) return NULL;
 
@@ -67,7 +67,7 @@ gy_dict_data_scheme_ref (GyDictDataScheme *scheme)
 }
 
 void
-gy_dict_data_scheme_unref (GyDictDataScheme *scheme)
+gy_format_scheme_unref (GyFormatScheme *scheme)
 {
   if (scheme == NULL) return;
 
@@ -86,7 +86,7 @@ gy_dict_data_scheme_unref (GyDictDataScheme *scheme)
 
 
 const gchar *
-gy_dict_data_scheme_get_parsed_text (GyDictDataScheme *scheme)
+gy_format_scheme_get_parsed_text (GyFormatScheme *scheme)
 {
   g_return_val_if_fail (scheme != NULL, NULL);
 
@@ -94,7 +94,7 @@ gy_dict_data_scheme_get_parsed_text (GyDictDataScheme *scheme)
 }
 
 void
-gy_dict_data_scheme_set_parsed_text (GyDictDataScheme *scheme,
+gy_format_scheme_set_parsed_text (GyFormatScheme *scheme,
                                      gchar            *parsed_text)
 {
   g_return_if_fail (scheme != NULL);
@@ -106,7 +106,7 @@ gy_dict_data_scheme_set_parsed_text (GyDictDataScheme *scheme,
 }
 
 void
-gy_dict_data_scheme_dup_parsed_text (GyDictDataScheme *scheme,
+gy_format_scheme_dup_parsed_text (GyFormatScheme *scheme,
                                      const gchar      *parsed_text)
 {
   g_return_if_fail (scheme != NULL);
@@ -118,7 +118,7 @@ gy_dict_data_scheme_dup_parsed_text (GyDictDataScheme *scheme,
 }
 
 const GyTextAttrList *
-gy_dict_data_scheme_get_attrs (GyDictDataScheme *scheme)
+gy_format_scheme_get_attrs (GyFormatScheme *scheme)
 {
   g_return_val_if_fail (scheme != NULL, NULL);
 
@@ -126,7 +126,7 @@ gy_dict_data_scheme_get_attrs (GyDictDataScheme *scheme)
 }
 
 void
-gy_dict_data_scheme_set_attrs (GyDictDataScheme *scheme,
+gy_format_scheme_set_attrs (GyFormatScheme *scheme,
                                GyTextAttrList   *attrs)
 {
   g_return_if_fail (scheme != NULL);

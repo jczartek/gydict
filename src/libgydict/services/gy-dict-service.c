@@ -29,31 +29,12 @@ gy_dict_service_default_init (GyDictServiceInterface *iface)
 }
 
 /**
- * gy_dict_service_parse:
+ * gy_dict_service_get_model:
  * @self: a dictionary service
- * @text_to_parse: text to parse
  * @err: addres of return location for errors, or %NULL
  *
- * Return value: (transfer full): #GyDictDataScheme
+ * Returns: (transfer none): Returns #GtkTreeModel
  */
-GyDictDataScheme *
-gy_dict_service_parse (GyDictService   *self,
-                       const gchar     *text_to_parse,
-                       GError         **err)
-{
-  GyDictServiceInterface *iface;
-
-  g_return_val_if_fail (GY_IS_DICT_SERVICE (self), NULL);
-  g_return_val_if_fail (g_utf8_validate (text_to_parse, -1, NULL), NULL);
-
-  iface = GY_DICT_SERVICE_GET_IFACE (self);
-
-  g_assert (iface->parse != NULL);
-
-  return iface->parse (self, text_to_parse, err);
-}
-
-
 GtkTreeModel *
 gy_dict_service_get_model (GyDictService  *self,
                            GError        **err)
