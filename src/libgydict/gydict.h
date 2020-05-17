@@ -37,7 +37,6 @@ G_BEGIN_DECLS
 #include "services/gy-dict-formatter.h"
 #include "services/gy-service.h"
 #include "services/gy-service-provider.h"
-#include "gui/gy-header-bar.h"
 #include "gui/gy-window.h"
 #include "gui/gy-window-addin.h"
 #include "gy-enum-types.h"
