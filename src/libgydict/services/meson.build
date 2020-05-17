@@ -1,13 +1,13 @@
 services_headers = [
   'gy-service.h',
-  'gy-dict-formatter-service.h',
+  'gy-dict-formatter.h',
   'gy-dict-service.h',
   'gy-service-provider.h'
 ]
 
 services_sources = [
   'gy-service.c',
-  'gy-dict-formatter-service.c',
+  'gy-dict-formatter.c',
   'gy-dict-service.c',
   'gy-service-provider.c'
 ]

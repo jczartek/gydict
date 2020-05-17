@@ -9,16 +9,11 @@ libgydict_private_sources = ['gy-dict-debug.h']
 libgydict_private_headers = []
 
 subdir('app')
-subdir('deflist')
-subdir('dictionaries')
-subdir('entryview')
 subdir('helpers')
 subdir('preferences')
-subdir('printing')
 subdir('resources')
-subdir('search')
 subdir('services')
-subdir('window')
+subdir('gui')
 
 libgydct_sources = [
   libgydict_public_sources,
@@ -69,6 +64,7 @@ pkgg.generate(
   description: 'Libgydict contains the components used to build the application Gydict.',
      requires: ['gtk+-3.0', 'libdazzle-1.0', 'gio-2.0', 'libpeas-1.0'],
   install_dir: join_paths(gydict_libdir, 'pkgconfig'),
+    variables: ['vapidir=@0@'.format(gydict_vapidir)],
 )
 
 libgydict_gir = gnome.generate_gir(libgydict,

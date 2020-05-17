@@ -112,6 +112,13 @@ gy_service_provider_unregister_service (GyServiceProvider *self,
     }
 }
 
+/**
+ * gy_service_provider_get_service_by_id:
+ * @self: #GyServiceProvider object
+ * @service_id: id of service
+ *
+ * Returns: (transfer none) (nullable): a service
+ **/
 GyService *
 gy_service_provider_get_service_by_id (GyServiceProvider *self,
                                        const gchar       *service_id)

@@ -27,9 +27,6 @@ G_BEGIN_DECLS
 
 #include "app/gy-app.h"
 #include "app/gy-app-addin.h"
-#include "deflist/gy-def-list.h"
-#include "entryview/gy-text-buffer.h"
-#include "entryview/gy-text-view.h"
 #include "helpers/gy-utility-func.h"
 #include "helpers/gy-text-attribute.h"
 #include "helpers/gy-format-scheme.h"
@@ -37,12 +34,12 @@ G_BEGIN_DECLS
 #include "preferences/gy-prefs-view-addin.h"
 #include "preferences/gy-prefs-window.h"
 #include "services/gy-dict-service.h"
-#include "services/gy-dict-formatter-service.h"
+#include "services/gy-dict-formatter.h"
 #include "services/gy-service.h"
 #include "services/gy-service-provider.h"
-#include "window/gy-header-bar.h"
-#include "window/gy-window.h"
-#include "window/gy-window-addin.h"
+#include "gui/gy-header-bar.h"
+#include "gui/gy-window.h"
+#include "gui/gy-window-addin.h"
 #include "gy-enum-types.h"
 
 #undef GYDICT_INSIDE

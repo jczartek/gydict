@@ -1,6 +1,6 @@
-/* gy-history-box.h
+/* gy-dict-formatter-service.h
  *
- * Copyright 2019 Jakub Czartek <kuba@linux.pl>
+ * Copyright 2020 Jakub Czartek <kuba@linux.pl>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,19 +20,25 @@
 
 #pragma once
 
-#if !defined (GYDICT_INSIDE) && !defined (GYDICT_COMPILATION)
-#error "Only <gydict.h> can be included directly."
-#endif
-
-#include <gtk/gtk.h>
+#include "../helpers/gy-format-scheme.h"
 
 G_BEGIN_DECLS
 
-#define GY_TYPE_HISTORY_BOX (gy_history_box_get_type())
+#define GY_TYPE_DICT_FORMATTER (gy_dict_formatter_get_type ())
 
-G_DECLARE_FINAL_TYPE (GyHistoryBox, gy_history_box, GY, HISTORY_BOX, GtkListBox)
+G_DECLARE_INTERFACE (GyDictFormatter, gy_dict_formatter, GY, DICT_FORMATTER, GObject)
 
-void gy_history_box_add (GyHistoryBox *self,
-                         const gchar  *entry,
-                         guint         idx);
+struct _GyDictFormatterInterface
+{
+  GTypeInterface parent;
+
+  GyFormatScheme* (*format) (GyDictFormatter  *self,
+                             const gchar      *text_to_format,
+                             GError          **err);
+};
+
+GyFormatScheme* gy_dict_formatter_format (GyDictFormatter  *self,
+                                          const gchar      *text_to_format,
+                                          GError          **err);
+
 G_END_DECLS

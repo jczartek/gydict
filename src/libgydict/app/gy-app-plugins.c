@@ -70,10 +70,12 @@ static inline void
 gy_app_plugin_configure_search_paths (GyApp      *self,
                                       PeasEngine *engine)
 {
-  g_autofree gchar *local_plugins_dir = g_build_filename (g_get_home_dir (), ".local", "share", "gydict", "plugins", NULL);
+  g_autofree gchar *local_plugins_datadir = g_build_filename (g_get_home_dir (), ".local", "share", "gydict", "plugins", NULL);
+  g_autofree gchar *local_plugins_moduledir = g_build_filename (g_get_home_dir (),
+                                                                ".local", "lib", NULL);
 
   peas_engine_add_search_path (engine, PACKAGE_LIBDIR"/plugins", PACKAGE_DATADIR"/plugins");
-  peas_engine_add_search_path (engine, local_plugins_dir, local_plugins_dir);
+  peas_engine_add_search_path (engine, local_plugins_moduledir, local_plugins_datadir);
   peas_engine_rescan_plugins (engine);
 }
 

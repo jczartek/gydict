@@ -109,9 +109,10 @@ gy_app_activate (GApplication *app)
 {
   GyApp *self = GY_APP (app);
 
+  _gy_app_plugins_init_plugins (self);
+
   gy_app_new_window (self);
 
-  _gy_app_plugins_init_plugins (self);
 }
 
 static void
@@ -207,6 +208,12 @@ gy_app_new_window (GyApp *self)
                                   "new-window",NULL);
 }
 
+/**
+ * gy_app_get_service_provider:
+ * @self: object of the application
+ *
+ * Returns: (transfer none): the service provider
+ */
 GyServiceProvider *
 gy_app_get_service_provider(GyApp *self)
 {

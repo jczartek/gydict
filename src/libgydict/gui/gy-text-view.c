@@ -19,8 +19,7 @@
 #include <dazzle.h>
 #include "gy-text-view.h"
 #include "gy-text-buffer.h"
-#include "deflist/gy-def-list.h"
-#include "dictionaries/gy-dict-manager.h"
+#include "gy-def-list.h"
 #include "helpers/gy-utility-func.h"
 
 struct _GyTextView

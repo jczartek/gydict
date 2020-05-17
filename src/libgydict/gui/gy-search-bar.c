@@ -17,7 +17,7 @@
  */
 
 #include "gy-search-bar.h"
-#include "./entryview/gy-text-buffer.h"
+#include "gy-text-buffer.h"
 
 struct _GySearchBar
 {

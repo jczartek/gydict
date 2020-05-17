@@ -5,7 +5,6 @@
 		<property name="can_focus">false</property>
 		<property name="has_focus">false</property>
 		<property name="is_focus">false</property>
-	  <property name="manager_dicts">manager_dicts</property>
 	  <child type="titlebar">
 	    <object class="GyHeaderBar" id="header_bar">
 	      <property name="title" bind-source="deflist" bind-property="selected-value" />
@@ -101,5 +100,4 @@
 
 	</template>
   <object class="GyTextBuffer" id="buffer"></object>
-  <object class="GyDictManager" id="manager_dicts"></object>
 </interface>

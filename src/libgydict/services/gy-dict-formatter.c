@@ -18,34 +18,34 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "gy-dict-formatter-service.h"
+#include "gy-dict-formatter.h"
 
-G_DEFINE_INTERFACE (GyDictFormatterService, gy_dict_formatter_service, GY_TYPE_SERVICE)
+G_DEFINE_INTERFACE (GyDictFormatter, gy_dict_formatter, G_TYPE_OBJECT)
 
 static void
-gy_dict_formatter_service_default_init (GyDictFormatterServiceInterface *iface)
+gy_dict_formatter_default_init (GyDictFormatterInterface *iface)
 {
 }
 
 
 /**
- * gy_dict_formatter_service_format:
+ * gy_dict_formatter_format:
  * @self: a dictionary service
- * @text_to_parse: text to parse
+ * @text_to_format: text to parse
  * @err: addres of return location for errors, or %NULL
  *
  * Returns: (transfer full) (nullable): #GyDictDataScheme
  */
-GyFormatScheme* gy_dict_formatter_service_format (GyDictFormatterService  *self,
-                                                  const gchar             *text_to_format,
-                                                  GError                 **err)
+GyFormatScheme* gy_dict_formatter_format (GyDictFormatter  *self,
+                                          const gchar      *text_to_format,
+                                          GError          **err)
 {
-  GyDictFormatterServiceInterface *iface;
+  GyDictFormatterInterface *iface;
 
-  g_return_val_if_fail (GY_IS_DICT_FORMATTER_SERVICE (self), NULL);
+  g_return_val_if_fail (GY_IS_DICT_FORMATTER (self), NULL);
   g_return_val_if_fail (g_utf8_validate (text_to_format, -1, NULL), NULL);
 
-  iface = GY_DICT_FORMATTER_SERVICE_GET_IFACE (self);
+  iface = GY_DICT_FORMATTER_GET_IFACE (self);
 
   g_assert (iface->format != NULL);
 

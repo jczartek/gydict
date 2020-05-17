@@ -22,7 +22,7 @@
 #include <glib/gi18n-lib.h>
 #include "gy-app.h"
 #include "gy-app-private.h"
-#include "window/gy-window.h"
+#include "gui/gy-window.h"
 #include "preferences/gy-prefs-window.h"
 
 static void

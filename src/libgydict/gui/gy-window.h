@@ -24,7 +24,6 @@
 #endif
 
 #include "app/gy-app.h"
-#include "dictionaries/gy-dict-manager.h"
 #include "gy-header-bar.h"
 
 G_BEGIN_DECLS
@@ -42,10 +41,6 @@ void gy_window_grab_focus (GyWindow *self);
 void gy_window_clear_search_entry (GyWindow *self);
 
 DzlDockBin* gy_window_get_dockbin (GyWindow *self);
-
-GyDictManager* gy_window_get_dict_manager (GyWindow *self);
-
-GyHeaderBar * gy_window_get_header_bar (GyWindow *self);
 
 guint gy_window_add_menu (GyWindow    *self,
                           const gchar *menu_id,

@@ -18,7 +18,7 @@
 
 #include <string.h>
 #include "gy-def-list.h"
-#include "entryview/gy-text-view.h"
+#include "gy-text-view.h"
 #include "helpers/gy-utility-func.h"
 
 

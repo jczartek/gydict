@@ -20,7 +20,7 @@
 
 #pragma once
 
-#include "gy-dict-service.h"
+#include "gy-service.h"
 
 G_BEGIN_DECLS
 

@@ -1,20 +1,29 @@
 window_headers = [
   'gy-header-bar.h',
-  'gy-history-box.h',
   'gy-window-addin.h',
+  'gy-search-bar.h',
+  'gy-def-list.h',
+  'gy-text-buffer.h',
+  'gy-text-view.h',
   'gy-window.h',
 ]
 
 window_sources = [
   'gy-header-bar.c',
-  'gy-history-box.c',
   'gy-window-addin.c',
+  'gy-search-bar.c',
+  'gy-def-list.c',
+  'gy-text-buffer.c',
+  'gy-text-view.c',
   'gy-window.c',
 ]
 
 window_private = [
+  'gy-window-private.h',
   'gy-window-settings.h',
-  'gy-window-settings.c'
+  'gy-window-settings.c',
+  'gy-window-plugins.c',
+  'gy-window-actions.c',
 ]
 
 libgydict_public_headers   += files(window_headers)
