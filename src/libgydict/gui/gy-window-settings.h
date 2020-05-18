@@ -27,7 +27,7 @@
 
 G_BEGIN_DECLS
 
-void gy_window_settings_register (GtkWindow *window);
+
 
 G_END_DECLS
 

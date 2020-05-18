@@ -141,7 +141,7 @@ gy_window_settings__window_destroy (GtkWindow *window)
 }
 
 void
-gy_window_settings_register (GtkWindow *window)
+_gy_window_settings_register (GtkWindow *window)
 {
   if (settings == NULL)
     {

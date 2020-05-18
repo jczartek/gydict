@@ -44,7 +44,7 @@ struct _GyWindow
   GyTextView           *textview;
   GyTextBuffer         *buffer;
   GtkSearchEntry       *search_entry;
-  GyHeaderBar          *header_bar;
+  GtkHeaderBar         *header_bar;
   GySearchBar          *search_bar;
   PeasExtensionSet     *extens;
   GtkClipboard         *clipboard; /* Non free! */
@@ -57,5 +57,6 @@ struct _GyWindow
 
 void _gy_window_plugins_init_extens (GyWindow *self);
 void _gy_window_actions_init (GyWindow *self);
+void _gy_window_settings_register (GtkWindow *window);
 
 G_END_DECLS

@@ -24,7 +24,6 @@
 #endif
 
 #include "app/gy-app.h"
-#include "gy-header-bar.h"
 
 G_BEGIN_DECLS
 

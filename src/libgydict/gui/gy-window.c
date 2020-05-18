@@ -23,8 +23,6 @@
 #include <libpeas/peas.h>
 
 #include "gy-window-addin.h"
-#include "gy-window-settings.h"
-#include "gy-header-bar.h"
 #include "helpers/gy-utility-func.h"
 
 #include "gy-window-private.h"
@@ -109,9 +107,10 @@ gy_window_init (GyWindow *self)
 {
 
   gtk_widget_init_template (GTK_WIDGET (self));
+
   _gy_window_actions_init (self);
 
-  gy_window_settings_register (GTK_WINDOW (self));
+  _gy_window_settings_register (GTK_WINDOW (self));
 
   self->clipboard = gtk_clipboard_get (GDK_SELECTION_PRIMARY);
 
@@ -122,6 +121,7 @@ gy_window_init (GyWindow *self)
 
   self->selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (self->deflist));
   self->menu_manager = dzl_application_get_menu_manager (DZL_APPLICATION (g_application_get_default ()));
+
   g_signal_connect (self->selection, "changed",
                    G_CALLBACK (gy_window_list_selection_changed), self);
 

@@ -35,7 +35,7 @@ gy_app_actions_new_window_cb (GSimpleAction *action   G_GNUC_UNUSED,
 
   window = gy_window_new (app);
   gtk_application_add_window (GTK_APPLICATION (app), GTK_WINDOW (window));
-  gtk_widget_show_all (window);
+  gtk_window_present (GTK_WINDOW (window));
 }
 
 static void

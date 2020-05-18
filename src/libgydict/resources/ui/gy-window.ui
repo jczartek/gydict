@@ -2,19 +2,47 @@
 <interface>
 
 	<template class="GyWindow" parent="DzlApplicationWindow">
-		<property name="can_focus">false</property>
-		<property name="has_focus">false</property>
-		<property name="is_focus">false</property>
 	  <child type="titlebar">
-	    <object class="GyHeaderBar" id="header_bar">
-	      <property name="title" bind-source="deflist" bind-property="selected-value" />
+	    <object class="GtkHeaderBar" id="header_bar">
+	      <property name="show-close-button">true</property>
+	      <property name="visible">true</property>
+
 	      <child type="title">
-	        <object class="GtkSearchEntry" id="search_entry">
+	      	<object class="GtkSearchEntry" id="search_entry">
+	      	  <property name="visible">true</property>
 	          <property name="width-chars">25</property>
-	          <property name="placeholder-text" bind-source="header_bar" bind-property="title">Search words...</property>
+	          <property name="placeholder-text" bind-source="deflist" bind-property="selected-value">Search words...</property>
 	          <property name="sensitive" bind-source="deflist" bind-property="has-model">false</property>
 	        </object>
-	      </child>
+        </child>
+
+	      <child>
+          <object class="DzlMenuButton">
+            <property name="menu-id">service-menu</property>
+            <property name="visible">true</property>
+            <property name="icon-name">view-dual-symbolic</property>
+            <property name="show-arrow">true</property>
+            <property name="show-icons">true</property>
+          </object>
+          <packing>
+            <property name="position">0</property>
+            <property name="pack-type">end</property>
+          </packing>
+        </child>
+	      <child>
+          <object class="DzlMenuButton" id="gear_menu">
+            <property name="menu-id">gear-menu</property>
+            <property name="visible">true</property>
+            <property name="icon-name">open-menu-symbolic</property>
+            <property name="show-arrow">false</property>
+            <property name="show-icons">false</property>
+          </object>
+          <packing>
+            <property name="position">0</property>
+            <property name="pack-type">end</property>
+          </packing>
+        </child>
+
 	    </object>
 	  </child>
 
@@ -84,12 +112,6 @@
           <object class="GtkScrolledWindow">
             <property name="visible">true</property>
             <property name="expand">true</property>
-           <!-- <child>
-              <object class="GyHistoryBox" id="history_box">
-                <property name="visible">true</property>
-                <property name="selection-mode">none</property>
-              </object>
-            </child> -->
           </object>
         </child>
 

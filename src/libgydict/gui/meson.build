@@ -1,5 +1,4 @@
 window_headers = [
-  'gy-header-bar.h',
   'gy-window-addin.h',
   'gy-search-bar.h',
   'gy-def-list.h',
@@ -9,7 +8,6 @@ window_headers = [
 ]
 
 window_sources = [
-  'gy-header-bar.c',
   'gy-window-addin.c',
   'gy-search-bar.c',
   'gy-def-list.c',
