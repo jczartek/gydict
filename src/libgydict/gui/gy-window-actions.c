@@ -27,7 +27,7 @@ gy_window_actions_set_dict_service (GSimpleAction *action,
                                     GVariant      *parameter,
                                     gpointer       data)
 {
-  GyWindow    *self   = (GyWindow *) data;
+  GyWindow *self = (GyWindow *) data;
 
   g_autoptr(GVariant) state = NULL;
   state = g_action_get_state (G_ACTION (action));
@@ -39,6 +39,15 @@ gy_window_actions_set_dict_service (GSimpleAction *action,
                                                               self->service_id);
   if (GY_IS_DICT_SERVICE (service))
     {
+      GError *error = NULL;
+      GtkTreeModel *model = gy_dict_service_get_model((GyDictService *)service, &error);
+      if (error != NULL)
+        {
+          g_critical ("Error: %s", error->message);
+          g_error_free(error);
+          return;
+        }
+      gy_def_list_set_model (self->deflist, model);
     }
   else
     g_critical ("The dictionary services: %s is not available.", self->service_id );

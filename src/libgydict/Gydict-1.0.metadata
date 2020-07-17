@@ -1,0 +1,4 @@
+Gydict name="Gydict"
+* cheader_filename="gydict.h"
+Service
+  .service_id skip=true

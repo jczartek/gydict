@@ -30,7 +30,7 @@ gy_service_default_init (GyServiceInterface *iface)
                                                             "Service identifier",
                                                             "",
                                                             NULL,
-                                                            G_PARAM_READABLE | G_PARAM_CONSTRUCT_ONLY));
+                                                            G_PARAM_READWRITE));
 
 }
 
