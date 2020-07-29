@@ -375,3 +375,12 @@ gy_text_buffer_insert_with_attributes (GyTextBuffer   *self,
   gtk_text_buffer_delete_mark (GTK_TEXT_BUFFER (self), mark);
   gy_text_attr_iterator_destroy (attr_iter);
 }
+
+void
+gy_text_buffer_insert_and_format (GyTextBuffer *self,
+                                  const gchar *text,
+                                  GyDictFormatter *formatter)
+{
+  g_return_if_fail (GY_IS_TEXT_BUFFER (self));
+  g_return_if_fail (GY_IS_DICT_FORMATTER (formatter));
+}

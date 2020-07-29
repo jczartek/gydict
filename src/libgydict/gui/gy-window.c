@@ -33,11 +33,12 @@
 G_DEFINE_TYPE (GyWindow, gy_window, DZL_TYPE_APPLICATION_WINDOW);
 
 static void
-gy_window_list_selection_changed (GtkTreeSelection *selection,
-                                  gpointer          data)
+gy_window_show_lexical_unit (GtkTreeSelection *selection,
+                             gpointer          data)
 {
   GtkTreeIter   iter;
   GtkTreeModel *model;
+  GyWindow     *self = GY_WINDOW (data);
 
   if (gtk_tree_selection_get_selected (selection, &model, &iter))
     {
@@ -46,9 +47,28 @@ gy_window_list_selection_changed (GtkTreeSelection *selection,
 
       path = gtk_tree_model_get_path (model, &iter);
       row = gtk_tree_path_get_indices (path);
-
+      GyService *service = gy_service_provider_get_service_by_id (self->service_provider,
+                                                                  self->service_id);
       if (row)
         {
+          if (GY_IS_DICT_SERVICE (service))
+            {
+              GError *error = NULL;
+              g_autofree gchar *lexical_unit =
+                gy_dict_service_get_lexical_unit(GY_DICT_SERVICE (service), *row, &error);
+
+              if (error != NULL)
+                {
+                  g_critical ("Error: %s", error->message);
+                  g_error_free(error);
+                  return;
+                }
+              GyDictFormatter *formatter = gy_dict_service_get_formatter (GY_DICT_SERVICE (service));
+              gy_text_buffer_insert_and_format (self->buffer, lexical_unit, formatter);
+              g_object_unref (formatter);
+            }
+          else
+            g_critical("The dictionary services: %s is not available.", self->service_id );
         }
     }
 }
@@ -123,7 +143,7 @@ gy_window_init (GyWindow *self)
   self->menu_manager = dzl_application_get_menu_manager (DZL_APPLICATION (g_application_get_default ()));
 
   g_signal_connect (self->selection, "changed",
-                   G_CALLBACK (gy_window_list_selection_changed), self);
+                   G_CALLBACK (gy_window_show_lexical_unit), self);
 
   g_signal_connect (self, "button-press-event",
                     G_CALLBACK (gy_window_button_press_event), NULL);

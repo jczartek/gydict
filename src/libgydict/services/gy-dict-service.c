@@ -66,3 +66,23 @@ gy_dict_service_get_lexical_unit (GyDictService  *self,
   return iface->get_lexical_unit (self, idx, err);
 }
 
+/**
+ * gy_dict_service_get_formatter:
+ * @self: a service
+ *
+ * Returns: (transfer full): a formatter
+ */
+GyDictFormatter *
+gy_dict_service_get_formatter (GyDictService *self)
+{
+  GyDictServiceInterface *iface;
+
+  g_return_val_if_fail (GY_IS_DICT_SERVICE (self), NULL);
+
+  iface = GY_DICT_SERVICE_GET_IFACE (self);
+
+  g_assert (iface->get_formatter != NULL);
+
+  return iface->get_formatter (self);
+
+}

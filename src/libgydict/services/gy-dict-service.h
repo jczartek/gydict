@@ -22,6 +22,7 @@
 
 #include <gtk/gtk.h>
 #include "gy-service.h"
+#include "gy-dict-formatter.h"
 
 G_BEGIN_DECLS
 
@@ -40,6 +41,8 @@ struct _GyDictServiceInterface
                               guint           idx,
                               GError        **err);
 
+  GyDictFormatter* (*get_formatter) (GyDictService *self);
+
 };
 
 GtkTreeModel* gy_dict_service_get_model (GyDictService  *self,
@@ -48,6 +51,8 @@ GtkTreeModel* gy_dict_service_get_model (GyDictService  *self,
 gchar* gy_dict_service_get_lexical_unit (GyDictService  *self,
                                          guint           idx,
                                          GError        **err);
+
+GyDictFormatter *gy_dict_service_get_formatter (GyDictService *self);
 
 
 G_END_DECLS

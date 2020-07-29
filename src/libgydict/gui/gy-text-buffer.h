@@ -25,6 +25,7 @@
 
 #include <gtk/gtk.h>
 #include "../helpers/gy-text-attribute.h"
+#include "../services/gy-dict-formatter.h"
 
 G_BEGIN_DECLS
 
@@ -49,6 +50,9 @@ void gy_text_buffer_insert_with_attributes (GyTextBuffer  *self,
                                             GtkTextIter   *iter,
                                             const gchar   *text,
                                             GyTextAttrList *attributes);
+void gy_text_buffer_insert_and_format (GyTextBuffer    *self,
+                                       const gchar     *text,
+                                       GyDictFormatter *formatter);
 
 G_END_DECLS
 
