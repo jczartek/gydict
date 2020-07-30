@@ -381,6 +381,29 @@ gy_text_buffer_insert_and_format (GyTextBuffer *self,
                                   const gchar *text,
                                   GyDictFormatter *formatter)
 {
+  GError *error = NULL;
   g_return_if_fail (GY_IS_TEXT_BUFFER (self));
   g_return_if_fail (GY_IS_DICT_FORMATTER (formatter));
+
+  GyFormatScheme *scheme = gy_dict_formatter_format (formatter,
+                                                     text,
+                                                     &error);
+
+  if (!error)
+    {
+      GtkTextIter iter;
+      GyTextAttrList *attrs = (GyTextAttrList *) gy_format_scheme_get_attrs (scheme);
+      const gchar *lexical_unit = gy_format_scheme_get_lexical_unit (scheme);
+
+      gtk_text_buffer_get_start_iter (GTK_TEXT_BUFFER (self), &iter);
+      gy_text_buffer_insert_with_attributes (self, &iter, lexical_unit, attrs);
+    }
+  else
+    {
+
+      g_critical ("Error: %s", error->message);
+      g_error_free(error);
+    }
+
+  gy_format_scheme_unref (scheme);
 }

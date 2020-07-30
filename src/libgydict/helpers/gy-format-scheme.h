@@ -32,25 +32,31 @@ G_BEGIN_DECLS
 typedef struct _GyFormatScheme GyFormatScheme;
 
 GType gy_format_scheme_get_type (void) G_GNUC_CONST;
-
-GyFormatScheme *gy_format_scheme_new (void);
-
-GyFormatScheme * gy_format_scheme_copy (GyFormatScheme *scheme);
-
+GyFormatScheme* gy_format_scheme_new (void);
+GyFormatScheme* gy_format_scheme_copy (GyFormatScheme *scheme);
+GyFormatScheme* gy_format_scheme_ref (GyFormatScheme *scheme);
 void gy_format_scheme_unref (GyFormatScheme *scheme);
 
-const gchar *gy_format_scheme_get_parsed_text (GyFormatScheme *scheme);
+const GyTextAttrList* gy_format_scheme_get_attrs (GyFormatScheme *scheme);
 
-void gy_format_scheme_set_parsed_text (GyFormatScheme *scheme,
-                                       gchar          *parsed_text);
+void gy_format_scheme_append_text (GyFormatScheme *scheme,
+                                   const gchar    *text);
+void gy_format_scheme_append_text_len (GyFormatScheme *scheme,
+                                       const gchar    *text,
+                                       gssize          len);
+void gy_format_scheme_append_char (GyFormatScheme *scheme,
+                                   gchar           ch);
+void gy_format_scheme_append_unichar (GyFormatScheme *scheme,
+                                      gunichar        uch);
 
-void gy_format_scheme_dup_parsed_text (GyFormatScheme *scheme,
-                                       const gchar    *parsed_text);
-
-const GyTextAttrList * gy_format_scheme_get_attrs (GyFormatScheme *scheme);
-
-void gy_format_scheme_set_attrs (GyFormatScheme *scheme,
-                                 GyTextAttrList *attrs);
-
-
+void gy_format_scheme_prepend_text (GyFormatScheme *scheme,
+                                    const gchar    *text);
+void gy_format_scheme_prepend_text_len (GyFormatScheme *scheme,
+                                        const gchar    *text,
+                                        gssize          len);
+void gy_format_scheme_prepend_char (GyFormatScheme *scheme,
+                                    gchar           ch);
+void gy_format_scheme_prepend_unichar (GyFormatScheme *scheme,
+                                       gunichar        uch);
+const gchar* gy_format_scheme_get_lexical_unit (GyFormatScheme *scheme);
 G_END_DECLS

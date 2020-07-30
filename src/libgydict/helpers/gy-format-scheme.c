@@ -22,9 +22,8 @@
 
 struct _GyFormatScheme
 {
-  guint ref_count;
-
-  gchar          *parsed_text;
+  guint           ref_count;
+  GString        *lexical_unit;
   GyTextAttrList *attrs;
 };
 
@@ -32,13 +31,14 @@ G_DEFINE_BOXED_TYPE (GyFormatScheme, gy_format_scheme,
                      gy_format_scheme_copy,
                      gy_format_scheme_unref)
 
-
 GyFormatScheme *
 gy_format_scheme_new (void)
 {
   GyFormatScheme *scheme = g_slice_new0(GyFormatScheme);
 
   scheme->ref_count = 1;
+  scheme->lexical_unit = g_string_new (NULL);
+  scheme->attrs = gy_text_attr_list_new ();
 
   return scheme;
 }
@@ -50,8 +50,8 @@ gy_format_scheme_copy (GyFormatScheme *scheme)
 
   GyFormatScheme *new = gy_format_scheme_new ();
 
-  new->parsed_text = g_strdup(scheme->parsed_text);
   new->attrs = gy_text_attr_list_copy (scheme->attrs);
+  new->lexical_unit = g_string_new (scheme->lexical_unit->str);
 
   return new;
 }
@@ -73,48 +73,18 @@ gy_format_scheme_unref (GyFormatScheme *scheme)
 
   if (g_atomic_int_dec_and_test ((int *) &scheme->ref_count))
     {
-      if (scheme->parsed_text != NULL)
-        g_clear_pointer (&scheme->parsed_text, g_free);
-
       if (scheme->attrs != NULL)
         {
           gy_text_attr_list_unref (scheme->attrs);
           scheme->attrs = NULL;
         }
+
+      if (scheme->lexical_unit != NULL)
+        {
+          g_string_free (scheme->lexical_unit, TRUE);
+          scheme->lexical_unit = NULL;
+        }
     }
-}
-
-
-const gchar *
-gy_format_scheme_get_parsed_text (GyFormatScheme *scheme)
-{
-  g_return_val_if_fail (scheme != NULL, NULL);
-
-  return scheme->parsed_text;
-}
-
-void
-gy_format_scheme_set_parsed_text (GyFormatScheme *scheme,
-                                     gchar            *parsed_text)
-{
-  g_return_if_fail (scheme != NULL);
-
-  if (scheme->parsed_text != NULL)
-    g_free (scheme->parsed_text);
-
-  scheme->parsed_text = parsed_text;
-}
-
-void
-gy_format_scheme_dup_parsed_text (GyFormatScheme *scheme,
-                                     const gchar      *parsed_text)
-{
-  g_return_if_fail (scheme != NULL);
-
-  if (scheme->parsed_text != NULL)
-    g_free (scheme->parsed_text);
-
-  scheme->parsed_text = g_strdup(parsed_text);
 }
 
 const GyTextAttrList *
@@ -126,13 +96,90 @@ gy_format_scheme_get_attrs (GyFormatScheme *scheme)
 }
 
 void
-gy_format_scheme_set_attrs (GyFormatScheme *scheme,
-                               GyTextAttrList   *attrs)
+gy_format_scheme_add_text_attr (GyFormatScheme  *scheme,
+                                GyTextAttribute *attr)
 {
   g_return_if_fail (scheme != NULL);
 
-  if (scheme->attrs != NULL)
-    gy_text_attr_list_unref (scheme->attrs);
+  gy_text_attr_list_insert (scheme->attrs, attr);
+}
 
-  scheme->attrs = attrs;
+void
+gy_format_scheme_append_text (GyFormatScheme *scheme,
+                              const gchar    *text)
+{
+  g_return_if_fail (scheme != NULL);
+
+  scheme->lexical_unit = g_string_append (scheme->lexical_unit, text);
+}
+
+void
+gy_format_scheme_append_text_len (GyFormatScheme *scheme,
+                                   const gchar    *text,
+                                   gssize          len)
+{
+  g_return_if_fail (scheme != NULL);
+  scheme->lexical_unit = g_string_append_len (scheme->lexical_unit, text, len);
+}
+
+void
+gy_format_scheme_append_char (GyFormatScheme *scheme,
+                              gchar           ch)
+{
+  g_return_if_fail (scheme != NULL);
+
+  scheme->lexical_unit = g_string_append_c (scheme->lexical_unit, ch);
+}
+
+void
+gy_format_scheme_append_unichar (GyFormatScheme *scheme,
+                                 gunichar        uch)
+{
+  g_return_if_fail (scheme != NULL);
+
+  scheme->lexical_unit = g_string_append_unichar (scheme->lexical_unit, uch);
+}
+
+void
+gy_format_scheme_prepend_text (GyFormatScheme *scheme,
+                               const gchar    *text)
+{
+  g_return_if_fail (scheme != NULL);
+
+  scheme->lexical_unit = g_string_prepend (scheme->lexical_unit, text);
+}
+
+void
+gy_format_scheme_prepend_text_len (GyFormatScheme *scheme,
+                                   const gchar    *text,
+                                   gssize          len)
+{
+  g_return_if_fail (scheme != NULL);
+  scheme->lexical_unit = g_string_prepend_len (scheme->lexical_unit, text, len);
+}
+
+void
+gy_format_scheme_prepend_char (GyFormatScheme *scheme,
+                               gchar           ch)
+{
+  g_return_if_fail (scheme != NULL);
+
+  scheme->lexical_unit = g_string_prepend_c (scheme->lexical_unit, ch);
+}
+
+void
+gy_format_scheme_prepend_unichar (GyFormatScheme *scheme,
+                                  gunichar        uch)
+{
+  g_return_if_fail (scheme != NULL);
+
+  scheme->lexical_unit = g_string_prepend_unichar (scheme->lexical_unit, uch);
+}
+
+const gchar*
+gy_format_scheme_get_lexical_unit (GyFormatScheme *scheme)
+{
+  g_return_val_if_fail (scheme != NULL, NULL);
+
+  return scheme->lexical_unit->str;
 }
