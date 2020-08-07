@@ -385,6 +385,8 @@ gy_text_buffer_insert_and_format (GyTextBuffer *self,
   g_return_if_fail (GY_IS_TEXT_BUFFER (self));
   g_return_if_fail (GY_IS_DICT_FORMATTER (formatter));
 
+  gy_text_buffer_clean_buffer (self);
+
   GyFormatScheme *scheme = gy_dict_formatter_format (formatter,
                                                      text,
                                                      &error);
