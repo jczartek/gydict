@@ -183,3 +183,11 @@ gy_format_scheme_get_lexical_unit (GyFormatScheme *scheme)
 
   return scheme->lexical_unit->str;
 }
+
+gsize
+gy_format_scheme_length_lexical_unit (GyFormatScheme *scheme)
+{
+  g_return_val_if_fail (scheme != NULL, 0);
+
+  return scheme->lexical_unit->len;
+}

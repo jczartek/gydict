@@ -59,4 +59,6 @@ void gy_format_scheme_prepend_char (GyFormatScheme *scheme,
 void gy_format_scheme_prepend_unichar (GyFormatScheme *scheme,
                                        gunichar        uch);
 const gchar* gy_format_scheme_get_lexical_unit (GyFormatScheme *scheme);
+
+gsize gy_format_scheme_length_lexical_unit (GyFormatScheme *scheme);
 G_END_DECLS
