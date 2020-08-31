@@ -38,6 +38,8 @@ GyFormatScheme* gy_format_scheme_ref (GyFormatScheme *scheme);
 void gy_format_scheme_unref (GyFormatScheme *scheme);
 
 const GyTextAttrList* gy_format_scheme_get_attrs (GyFormatScheme *scheme);
+void gy_format_scheme_add_text_attr (GyFormatScheme  *scheme,
+                                     GyTextAttribute *attr);
 
 void gy_format_scheme_append_text (GyFormatScheme *scheme,
                                    const gchar    *text);

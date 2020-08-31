@@ -101,7 +101,7 @@ gy_format_scheme_add_text_attr (GyFormatScheme  *scheme,
 {
   g_return_if_fail (scheme != NULL);
 
-  gy_text_attr_list_insert (scheme->attrs, attr);
+  gy_text_attr_list_insert (scheme->attrs, gy_text_attribute_ref (attr));
 }
 
 void
