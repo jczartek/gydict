@@ -33,6 +33,22 @@ struct _GyPrefsView
 G_DEFINE_TYPE (GyPrefsView, gy_prefs_view, DZL_TYPE_PREFERENCES_VIEW)
 
 
+static void
+gy_prefs_view_register_appearance_prefs (DzlPreferences *prefs)
+{
+  dzl_preferences_add_page (prefs, "appearance", _("Appearance"), 0);
+  dzl_preferences_add_list_group (prefs, "appearance", "basic", _("Themes"), GTK_SELECTION_NONE, 0);
+  dzl_preferences_add_switch (prefs, "appearance", "basic",
+                              "org.gtk.gydict", "night-mode", NULL, NULL,
+                              _("Dark Mode"), _("Whether Gydict should use a dark theme"), _("dark theme"), 0);
+  dzl_preferences_add_switch (prefs, "appearance", "basic",
+                              "org.gtk.gydict", "show-grid-lines", NULL, NULL,
+                              _("Grid Pattern"), _("Display a grid pattern underneath text"), NULL, 10);
+
+  dzl_preferences_add_list_group (prefs, "appearance", "font", _("Font"), GTK_SELECTION_NONE, 10);
+  dzl_preferences_add_font_button (prefs, "appearance", "font", "org.gtk.gydict", "font-name", _("Text View"), C_("Keywords", "Text view font"), 0);
+}
+
 static gint
 sort_plugin_info (gconstpointer a,
                   gconstpointer b)
@@ -51,21 +67,8 @@ sort_plugin_info (gconstpointer a,
 static void
 gy_prefs_view_register_builtin_prefs (DzlPreferences *prefs)
 {
-  dzl_preferences_add_page (prefs, "appearance", _("Appearance"), 0);
-  dzl_preferences_add_list_group (prefs, "appearance", "basic", _("Themes"), GTK_SELECTION_NONE, 0);
-  dzl_preferences_add_switch (prefs, "appearance", "basic",
-                              "org.gtk.gydict", "night-mode", NULL, NULL,
-                              _("Dark Mode"), _("Whether Gydict should use a dark theme"), _("dark theme"), 0);
-  dzl_preferences_add_switch (prefs, "appearance", "basic",
-                              "org.gtk.gydict", "show-grid-lines", NULL, NULL,
-                              _("Grid Pattern"), _("Display a grid pattern underneath text"), NULL, 10);
 
-  dzl_preferences_add_list_group (prefs, "appearance", "font", _("Font"), GTK_SELECTION_NONE, 10);
-  dzl_preferences_add_font_button (prefs, "appearance", "font", "org.gtk.gydict", "font-name", _("Text View"), C_("Keywords", "Text view font"), 0);
-
-
-  dzl_preferences_add_page (prefs, "dictionaries", _("Dictionaries"), 400);
-  dzl_preferences_add_list_group (prefs, "dictionaries", "paths", _("The dictionaries paths"), GTK_SELECTION_NONE, 0);
+  gy_prefs_view_register_appearance_prefs (prefs);
 
   {
     PeasEngine *engine = peas_engine_get_default ();
