@@ -28,3 +28,8 @@ list row > box button:last-child image {
   min-height: 16px;
   min-width: 16px;
 }
+
+button.circle {
+    border-radius: 20px;
+}
+

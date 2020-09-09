@@ -22,6 +22,7 @@
 #include <libpeas/peas.h>
 #include "gy-prefs-view.h"
 #include "gy-prefs-view-addin.h"
+#include "gy-prefs-plugin-row.h"
 
 struct _GyPrefsView
 {
@@ -98,7 +99,9 @@ gy_prefs_view_register_builtin_prefs (DzlPreferences *prefs)
         path = g_strdup_printf ("/org/gtk/gydict/plugins/%s/",
                                 peas_plugin_info_get_module_name (plugin_info));
 
-        dzl_preferences_add_switch (prefs, "plugins", "plugins", "org.gtk.gydict.plugin", "enabled", path, NULL, name, desc, keywords, i);
+        GtkWidget *row = (GtkWidget *) gy_prefs_plugin_row_new (name, desc, "org.gtk.gydict.plugin", "enabled", path);
+
+        dzl_preferences_add_custom (prefs, "plugins", "plugins", row, NULL, i);
       }
 
     g_list_free (copy);

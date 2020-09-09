@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.36.0 -->
+<interface>
+  <requires lib="gtk+" version="3.22"/>
+  <template class="GyPrefsPluginRow" parent="GtkBin">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_start">0</property>
+        <property name="margin_end">0</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
+        <property name="column_spacing">8</property>
+        <child>
+          <object class="GtkLabel" id="name_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="hexpand">True</property>
+            <property name="xalign">0</property>
+            <property name="label" bind-source="GyPrefsPluginRow" bind-property="name"/>
+            <property name="wrap">true</property>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="description_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="hexpand">True</property>
+            <property  name="xalign">0</property>
+            <property name="label" bind-source="GyPrefsPluginRow" bind-property="description"/>
+            <property name="wrap">true</property>
+            <style>
+              <class name="dim-label"/>
+            </style>
+          </object>
+          <packing>
+            <property name="left_attach">1</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkImage" id="icon_image">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="pixel_size">32</property>
+            <property name="icon_name">application-x-addon-symbolic</property>
+            <property name="icon_size">3</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+            <property name="height">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSwitch" id="loaded_switch">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="valign">center</property>
+            <property name="vexpand">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">2</property>
+            <property name="top_attach">0</property>
+            <property name="height">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="preferences_plugin_button">
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <style>
+              <class name="circle"/>
+            </style>
+            <child>
+              <object class="GtkImage">
+                <property name="visible">True</property>
+                <property name="icon_name">preferences-system-symbolic</property>
+                <property name="pixel_size">16</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">3</property>
+            <property name="top_attach">0</property>
+            <property name="height">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
