@@ -17,8 +17,9 @@
  *
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-
+#include <libpeas/peas.h>
 #include "gy-prefs-plugin-row.h"
+#include "gy-prefs-configurable.h"
 
 struct _GyPrefsPluginRow
 {
@@ -30,10 +31,12 @@ struct _GyPrefsPluginRow
   gchar *schema_id;
   gchar *path;
   gchar *key;
+  gboolean has_configure_widget;
 
   /*Private Field*/
   GSettings *settings;
   GtkWidget *loaded_switch;
+  PeasExtension *exten;
 };
 
 G_DEFINE_TYPE (GyPrefsPluginRow, gy_prefs_plugin_row, GTK_TYPE_BIN)
@@ -45,6 +48,7 @@ enum {
   PROP_SCHEMA_ID,
   PROP_PATH,
   PROP_KEY,
+  PROP_HAS_CONFIGURE_WIDGET,
   N_PROPS
 };
 
@@ -77,12 +81,30 @@ gy_prefs_plugin_row_finalize (GObject *object)
   g_clear_pointer (&self->schema_id, g_free);
   g_clear_pointer (&self->path, g_free);
   g_clear_object (&self->settings);
+  g_clear_object (&self->exten);
 
   G_OBJECT_CLASS (gy_prefs_plugin_row_parent_class)->finalize (object);
 }
 
 static void
-gy_prefs_plugin_constructed (GObject *object)
+gy_prefs_plugin_row_create_configurable_extension (GyPrefsPluginRow *self)
+{
+  PeasEngine *engine = peas_engine_get_default ();
+  const GList *plugins = peas_engine_get_plugin_list (engine);
+
+  for (GList *info = (GList *)plugins; info != NULL; info = info->next)
+    {
+      if (g_strcmp0 (self->name, peas_plugin_info_get_name(info->data)) == 0)
+        {
+          self->exten = peas_engine_create_extension (engine, info->data, GY_TYPE_PREFS_CONFIGURABLE, NULL);
+        }
+    }
+
+  g_object_set (self, "has-configure-widget", !!self->exten, NULL);
+}
+
+static void
+gy_prefs_plugin_row_constructed (GObject *object)
 {
   GyPrefsPluginRow *self = (GyPrefsPluginRow *)object;
 
@@ -94,6 +116,8 @@ gy_prefs_plugin_constructed (GObject *object)
                    self->loaded_switch,
                    "active",
                    G_SETTINGS_BIND_DEFAULT);
+
+  gy_prefs_plugin_row_create_configurable_extension (self);
 }
 
 static void
@@ -125,6 +149,10 @@ gy_prefs_plugin_row_get_property (GObject    *object,
     case PROP_KEY:
       if (self->key != NULL)
         g_value_set_string (value, self->key);
+      break;
+
+    case PROP_HAS_CONFIGURE_WIDGET:
+      g_value_set_boolean (value, self->has_configure_widget);
       break;
 
     default:
@@ -162,6 +190,10 @@ gy_prefs_plugin_row_set_property (GObject      *object,
       self->key = g_value_dup_string (value);
       break;
 
+    case PROP_HAS_CONFIGURE_WIDGET:
+      self->has_configure_widget = g_value_get_boolean (value);
+      break;
+
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -174,7 +206,7 @@ gy_prefs_plugin_row_class_init (GyPrefsPluginRowClass *klass)
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
   object_class->finalize = gy_prefs_plugin_row_finalize;
-  object_class->constructed = gy_prefs_plugin_constructed;
+  object_class->constructed = gy_prefs_plugin_row_constructed;
   object_class->get_property = gy_prefs_plugin_row_get_property;
   object_class->set_property = gy_prefs_plugin_row_set_property;
 
@@ -208,11 +240,18 @@ gy_prefs_plugin_row_class_init (GyPrefsPluginRowClass *klass)
     g_param_spec_string ("key",
                          "Key",
                          "Key", NULL,
-                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_NAME);
+                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY | G_PARAM_STATIC_STRINGS);
+
+  properties[PROP_HAS_CONFIGURE_WIDGET] =
+    g_param_spec_boolean ("has-configure-widget",
+                          "Has configure widget",
+                          "The prop determines if the loaded plugin implements the interface GyPrefsConfigurable",
+                          FALSE,
+                          G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
   g_object_class_install_properties (object_class, N_PROPS, properties);
 
-  gtk_widget_class_set_template_from_resource(widget_class, "/org/gtk/gydict/gy-prefs-plugin-row.ui");
+  gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-prefs-plugin-row.ui");
   gtk_widget_class_bind_template_child (widget_class, GyPrefsPluginRow, loaded_switch);
 }
 

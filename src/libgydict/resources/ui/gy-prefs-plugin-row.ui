@@ -75,7 +75,7 @@
         <child>
           <object class="GtkButton" id="preferences_plugin_button">
             <property name="visible">True</property>
-            <property name="sensitive">False</property>
+            <property name="sensitive" bind-source="GyPrefsPluginRow" bind-property="has-configure-widget" />
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="halign">center</property>
