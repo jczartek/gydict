@@ -87,6 +87,17 @@ gy_prefs_plugin_row_finalize (GObject *object)
 }
 
 static void
+gy_prefs_plugin_row_bind_settings_with_loaded_switch (GyPrefsPluginRow *self)
+{
+  self->settings = g_settings_new_with_path (self->schema_id, self->path);
+  g_settings_bind (self->settings,
+                   self->key,
+                   self->loaded_switch,
+                   "active",
+                   G_SETTINGS_BIND_DEFAULT);
+}
+
+static void
 gy_prefs_plugin_row_create_configurable_extension (GyPrefsPluginRow *self)
 {
   PeasEngine *engine = peas_engine_get_default ();
@@ -110,13 +121,7 @@ gy_prefs_plugin_row_constructed (GObject *object)
 
   G_OBJECT_CLASS (gy_prefs_plugin_row_parent_class)->constructed (object);
 
-  self->settings = g_settings_new_with_path (self->schema_id, self->path);
-  g_settings_bind (self->settings,
-                   self->key,
-                   self->loaded_switch,
-                   "active",
-                   G_SETTINGS_BIND_DEFAULT);
-
+  gy_prefs_plugin_row_bind_settings_with_loaded_switch (self);
   gy_prefs_plugin_row_create_configurable_extension (self);
 }
 
