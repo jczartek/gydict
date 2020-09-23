@@ -73,13 +73,14 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="preferences_plugin_button">
+          <object class="GtkButton" id="show_prefs_dialog_btn">
             <property name="visible">True</property>
             <property name="sensitive" bind-source="GyPrefsPluginRow" bind-property="has-configure-widget" />
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
+            <signal name="clicked" handler="gy_prefs_plugin_row_show_prefs_dialog" object="GyPrefsPluginRow" swapped="yes"/>
             <style>
               <class name="circle"/>
             </style>

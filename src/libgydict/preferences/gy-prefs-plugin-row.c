@@ -71,6 +71,24 @@ gy_prefs_plugin_row_new (const gchar *name,
 }
 
 static void
+gy_prefs_plugin_row_show_prefs_dialog (GyPrefsPluginRow *self)
+{
+  g_return_if_fail (GY_IS_PREFS_CONFIGURABLE (self->exten));
+
+  GtkWidget *conf_dialog = gtk_dialog_new_with_buttons (self->name,
+                                                       gtk_application_get_active_window ((GtkApplication *)g_application_get_default ()),
+                                                       GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                                       "_Close", GTK_RESPONSE_CLOSE, NULL);
+  GtkWidget *conf_widget = gy_prefs_configurable_create_configure_widget ((GyPrefsConfigurable *)self->exten);
+  GtkWidget *vbox = gtk_dialog_get_content_area (GTK_DIALOG (conf_dialog));
+  gtk_box_pack_start (GTK_BOX (vbox), conf_widget, TRUE, TRUE, 0);
+
+  gtk_widget_show (conf_widget);
+  g_signal_connect (conf_dialog, "response",
+                    G_CALLBACK (gtk_widget_destroy), NULL);
+}
+
+static void
 gy_prefs_plugin_row_finalize (GObject *object)
 {
   GyPrefsPluginRow *self = (GyPrefsPluginRow *)object;
@@ -258,6 +276,7 @@ gy_prefs_plugin_row_class_init (GyPrefsPluginRowClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gtk/gydict/gy-prefs-plugin-row.ui");
   gtk_widget_class_bind_template_child (widget_class, GyPrefsPluginRow, loaded_switch);
+  gtk_widget_class_bind_template_callback (widget_class, gy_prefs_plugin_row_show_prefs_dialog);
 }
 
 static void
