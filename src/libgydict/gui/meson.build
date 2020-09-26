@@ -5,6 +5,7 @@ window_headers = [
   'gy-text-buffer.h',
   'gy-text-view.h',
   'gy-window.h',
+  'gy-greeting-view.h',
 ]
 
 window_sources = [
@@ -14,6 +15,7 @@ window_sources = [
   'gy-text-buffer.c',
   'gy-text-view.c',
   'gy-window.c',
+  'gy-greeting-view.c',
 ]
 
 window_private = [

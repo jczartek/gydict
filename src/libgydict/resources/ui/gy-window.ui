@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
+  <template class="GyWindow" parent="DzlApplicationWindow">
 
-	<template class="GyWindow" parent="DzlApplicationWindow">
-	  <child type="titlebar">
-	    <object class="GtkHeaderBar" id="header_bar">
-	      <property name="show-close-button">true</property>
-	      <property name="visible">true</property>
-
-	      <child type="title">
-	      	<object class="GtkSearchEntry" id="search_entry">
-	      	  <property name="visible">true</property>
-	          <property name="width-chars">25</property>
-	          <property name="placeholder-text" bind-source="deflist" bind-property="selected-value">Search words...</property>
-	          <property name="sensitive" bind-source="deflist" bind-property="has-model">false</property>
-	        </object>
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="header_bar">
+        <property name="show-close-button">true</property>
+        <property name="visible">true</property>
+        <child type="title">
+          <object class="GtkSearchEntry" id="search_entry">
+            <property name="visible">true</property>
+            <property name="width-chars">25</property>
+            <property name="placeholder-text" bind-source="deflist" bind-property="selected-value">Search words...</property>
+            <property name="sensitive" bind-source="deflist" bind-property="has-model">false</property>
+          </object>
         </child>
-
-	      <child>
+        <child>
           <object class="DzlMenuButton">
             <property name="menu-id">service-menu</property>
             <property name="visible">true</property>
@@ -29,7 +27,7 @@
             <property name="pack-type">end</property>
           </packing>
         </child>
-	      <child>
+        <child>
           <object class="DzlMenuButton" id="gear_menu">
             <property name="menu-id">gear-menu</property>
             <property name="visible">true</property>
@@ -42,84 +40,97 @@
             <property name="pack-type">end</property>
           </packing>
         </child>
+      </object>
+    </child>
 
-	    </object>
-	  </child>
+    <child>
+      <object class="GtkStack" id="main_view_stack">
+        <property name="visible">true</property>
+        <property name="transition_type">slide-right</property>
 
-	  <child>
-	    <object class="DzlDockBin" id="dockbin">
-	      <property name="visible">true</property>
-
-	      <child>
-          <object class="GtkScrolledWindow">
+        <child>
+          <object class="GyGreetingView" id="greeting-view">
             <property name="visible">true</property>
-            <property name="expand">true</property>
-            <child>
-              <object class="GyTextView" id="textview">
-                <property name="visible">true</property>
-                <property name="editable">false</property>
-                <property name="margin_top">2</property>
-                <property name="margin_bottom">3</property>
-                <property name="pixels_above_lines">4</property>
-                <property name="pixels_below_lines">4</property>
-                <property name="pixels_inside_wrap">2</property>
-                <property name="left_margin">10</property>
-                <property name="right_margin">10</property>
-                <property name="wrap-mode">word</property>
-                <property name="buffer">buffer</property>
-              </object>
-            </child>
           </object>
+          <packing>
+            <property name="name">greeting-view-page</property>
+          </packing>
         </child>
 
-	      <child type="left">
-          <object class="GtkScrolledWindow">
+        <child>
+          <object class="DzlDockBin" id="dockbin">
             <property name="visible">true</property>
-            <property name="expand">true</property>
             <child>
-              <object class="GyDefList" id="deflist">
+              <object class="GtkScrolledWindow">
                 <property name="visible">true</property>
-                <property name="headers_visible">false</property>
-                <property name="fixed_height_mode">true</property>
-                <child internal-child="selection">
-                  <object class="GtkTreeSelection" id="treev_selection" />
-                </child>
+                <property name="expand">true</property>
                 <child>
-                  <object class="GtkTreeViewColumn" id="treev_column">
-                    <property name="sizing">fixed</property>
+                  <object class="GyTextView" id="textview">
+                    <property name="visible">true</property>
+                    <property name="editable">false</property>
+                    <property name="margin_top">2</property>
+                    <property name="margin_bottom">3</property>
+                    <property name="pixels_above_lines">4</property>
+                    <property name="pixels_below_lines">4</property>
+                    <property name="pixels_inside_wrap">2</property>
+                    <property name="left_margin">10</property>
+                    <property name="right_margin">10</property>
+                    <property name="wrap-mode">word</property>
+                    <property name="buffer">buffer</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="left">
+              <object class="GtkScrolledWindow">
+                <property name="visible">true</property>
+                <property name="expand">true</property>
+                <child>
+                  <object class="GyDefList" id="deflist">
+                    <property name="visible">true</property>
+                    <property name="headers_visible">false</property>
+                    <property name="fixed_height_mode">true</property>
+                    <child internal-child="selection">
+                      <object class="GtkTreeSelection" id="treev_selection"/>
+                    </child>
                     <child>
-                      <object class="GtkCellRendererText" id="ct_renderer" />
-                      <attributes>
-                        <attribute name="text">0</attribute>
-                      </attributes>
+                      <object class="GtkTreeViewColumn" id="treev_column">
+                        <property name="sizing">fixed</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="ct_renderer"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
                     </child>
                   </object>
                 </child>
               </object>
             </child>
+            <child type="top">
+              <object class="GySearchBar" id="search_bar">
+                <property name="visible">true</property>
+                <property name="buffer">buffer</property>
+              </object>
+            </child>
+            <child type="right">
+              <object class="GtkScrolledWindow">
+                <property name="visible">true</property>
+                <property name="expand">true</property>
+              </object>
+            </child>
           </object>
+          <packing>
+            <property name="name">dictionary-view-page</property>
+            <property name="position">1</property>
+          </packing>
         </child>
 
-	      <child type="top">
-          <object class="GySearchBar" id="search_bar">
-            <property name="visible">true</property>
-            <property name="buffer">buffer</property>
-          </object>
-        </child>
+      </object>
+    </child>
 
-
-	      <child type="right">
-          <object class="GtkScrolledWindow">
-            <property name="visible">true</property>
-            <property name="expand">true</property>
-          </object>
-        </child>
-
-
-	    </object>
-	  </child>
-
-
-	</template>
-  <object class="GyTextBuffer" id="buffer"></object>
+  </template>
+  <object class="GyTextBuffer" id="buffer"/>
 </interface>
+

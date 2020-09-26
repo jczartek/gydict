@@ -5,6 +5,7 @@
     <file alias="gy-search-bar.ui" compressed="true" preprocess="xml-stripblanks">./ui/gy-searchbar.ui</file>
     <file alias="gy-prefs-window.ui" preprocess="xml-stripblanks">./ui/gy-prefs-window.ui</file>
     <file alias="gy-prefs-plugin-row.ui" preprocess="xml-stripblanks">./ui/gy-prefs-plugin-row.ui</file>
+    <file alias="gy-greeting-view.ui" preprocess="xml-stripblanks">./ui/gy-greeting-view.ui</file>
   </gresource>
 
   <gresource prefix="/org/gtk/gydict/themes">

@@ -32,6 +32,9 @@ gy_window_actions_set_dict_service (GSimpleAction *action,
   g_autoptr(GVariant) state = NULL;
   state = g_action_get_state (G_ACTION (action));
 
+  if (g_strcmp0 (gtk_stack_get_visible_child_name ((GtkStack *) self->main_view_stack), "greeting-view-page") == 0)
+    gtk_stack_set_visible_child_name ((GtkStack *)self->main_view_stack, "dictionary-view-page");
+
   if (g_variant_compare (parameter, state) == 0) return;
 
   self->service_id = g_variant_get_string (parameter, NULL);

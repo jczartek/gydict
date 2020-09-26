@@ -29,6 +29,7 @@
 #include "gy-def-list.h"
 #include "gy-text-view.h"
 #include "gy-text-buffer.h"
+#include "gy-greeting-view.h"
 #include "services/gy-dict-service.h"
 #include "services/gy-service-provider.h"
 
@@ -49,6 +50,7 @@ struct _GyWindow
   PeasExtensionSet     *extens;
   GtkClipboard         *clipboard; /* Non free! */
   DzlMenuManager       *menu_manager;
+  GtkWidget            *main_view_stack;
 
   const gchar       *service_id;
   GyServiceProvider *service_provider;

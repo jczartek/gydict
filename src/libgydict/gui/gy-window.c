@@ -120,6 +120,8 @@ gy_window_constructed(GObject *obj)
   GyWindow *self = GY_WINDOW (obj);
 
   _gy_window_plugins_init_extens (self);
+
+  gtk_stack_set_visible_child_name ((GtkStack*)self->main_view_stack, "greeting-view-page");
 }
 
 static void
@@ -168,6 +170,7 @@ gy_window_class_init (GyWindowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, GyWindow, header_bar);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, search_bar);
   gtk_widget_class_bind_template_child (widget_class, GyWindow, search_entry);
+  gtk_widget_class_bind_template_child (widget_class, GyWindow, main_view_stack);
 }
 
 GtkWidget *
