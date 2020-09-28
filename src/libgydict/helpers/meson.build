@@ -3,6 +3,7 @@ helpers_headers = [
   'gy-text-attribute.h',
   'gy-utility-func.h',
   'gy-print-compositor.h',
+  'gy-plugins.h',
 ]
 
 helpers_sources = [
@@ -10,6 +11,7 @@ helpers_sources = [
   'gy-format-scheme.c',
   'gy-print-compositor.c',
   'gy-utility-func.c',
+  'gy-plugins.c',
 ]
 
 libgydict_public_headers += files(helpers_headers)
