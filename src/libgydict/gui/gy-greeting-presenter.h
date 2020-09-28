@@ -1,4 +1,4 @@
-/* gy-greeting-view.h
+/* gy-greeting-presenter.h
  *
  * Copyright 2020 Jakub Czartek <kuba@linux.pl>
  *
@@ -21,17 +21,17 @@
 #pragma once
 
 #include <gtk/gtk.h>
+#include "gy-greeting-view.h"
 
 G_BEGIN_DECLS
 
-#define GY_TYPE_GREETING_VIEW (gy_greeting_view_get_type())
+#define GY_TYPE_GREETING_PRESENTER (gy_greeting_presenter_get_type())
 
-G_DECLARE_FINAL_TYPE (GyGreetingView, gy_greeting_view, GY, GREETING_VIEW, GtkBin)
+G_DECLARE_FINAL_TYPE (GyGreetingPresenter, gy_greeting_presenter, GY, GREETING_PRESENTER, GObject)
 
-GyGreetingView *gy_greeting_view_new (void);
+GyGreetingPresenter *gy_greeting_presenter_new (GyGreetingView *view);
 
-/* Methods only for presenter */
-void _gy_greeting_view_set_number_of_dictionaries (GyGreetingView *self,
-                                                   guint number_dictionaries);
+/* Methods only for view */
+void _gy_greeting_presenter_load_data (GyGreetingPresenter *self);
 
 G_END_DECLS
