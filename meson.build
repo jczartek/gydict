@@ -97,7 +97,7 @@ configure_file(output: 'config.h', configuration: conf)
 gio_dep     = dependency('gio-2.0', version: '>= 2.72.0')
 gtk_dep     = dependency('gtk+-3.0', version: '>= 3.22.0')
 peas_dep    = dependency('libpeas-1.0', version: '>= 1.32.0')
-dazzle_dep  = dependency('libdazzle-1.0', version: '>= 3.26.0')
+#dazzle_dep  = dependency('libdazzle-1.0', version: '>= 3.26.0')
 gtk4_dep    = dependency('gtk4', version: '>= 4.6.0')
 adwaita_dep = dependency('libadwaita-1', version: '>= 1.1.0')
 

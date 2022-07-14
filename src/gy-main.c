@@ -27,35 +27,36 @@
 int
 main (int argc, char **argv)
 {
-  GyApp *application;
-  GError *error = NULL;
-  gint status;
+  /* GyApp *application; */
+  /* GError *error = NULL; */
+  /* gint status; */
 
   /* GETTEXT */
-  setlocale (LC_ALL, "");
-  bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCAL_DIR);
-  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-  textdomain (GETTEXT_PACKAGE);
+  /* setlocale (LC_ALL, ""); */
+  /* bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCAL_DIR); */
+  /* bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8"); */
+  /* textdomain (GETTEXT_PACKAGE); */
 
   /* Create new GyApp */
-  application = gy_app_new ();
+  /* application = gy_app_new (); */
 
   /* Set it as the default application */
-  g_application_set_default (G_APPLICATION (application));
+  /* g_application_set_default (G_APPLICATION (application)); */
 
   /* Try to register the application... */
-  if (!g_application_register (G_APPLICATION (application), NULL, &error)) 
-  {
-    g_printerr ("Couldn't register Gydict instance: '%s'\n",
-                error ? error->message : "");
-    g_object_unref (application);
-    return EXIT_FAILURE;
-  }
+  /* if (!g_application_register (G_APPLICATION (application), NULL, &error))  */
+  /* { */
+  /*   g_printerr ("Couldn't register Gydict instance: '%s'\n", */
+  /*               error ? error->message : ""); */
+  /*   g_object_unref (application); */
+  /*   return EXIT_FAILURE; */
+  /* } */
 
   /* And run the GtkApplication */
-  status = g_application_run (G_APPLICATION (application), argc, argv);
+  /* status = g_application_run (G_APPLICATION (application), argc, argv); */
 
-  g_object_unref (application);
+  /* g_object_unref (application); */
 
-  return status;
+  /* return status; */
+    return 0;
 }

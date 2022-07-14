@@ -1,4 +1,4 @@
-apiversion = '1.0'
+apiversion = '2.0'
 libgydict_header_dir = join_paths(gydict_includedir, 'libgydict-' + apiversion)
 
 install_headers('gydict.h', install_dir: libgydict_header_dir)
@@ -8,24 +8,24 @@ libgydict_public_sources =  []
 libgydict_private_sources = ['gy-dict-debug.h']
 libgydict_private_headers = []
 
-subdir('app')
-subdir('helpers')
-subdir('preferences')
-subdir('resources')
-subdir('services')
-subdir('gui')
+#subdir('app')
+#subdir('helpers')
+#subdir('preferences')
+#subdir('resources')
+#subdir('services')
+#subdir('gui')
 
 libgydct_sources = [
-  libgydict_public_sources,
-  libgydict_private_sources,
-  libgydict_resources
+ # libgydict_public_sources,
+ # libgydict_private_sources,
+ # libgydict_resources
 ]
 
 libgydict_deps = [
-  gtk_dep,
+  gtk4_dep,
+  adwaita_dep,
   gio_dep,
   peas_dep,
-  dazzle_dep,
   cc.find_library('m', required: true),
   cc.find_library('z', required: true)
 ]
@@ -67,23 +67,23 @@ pkgg.generate(
     variables: ['vapidir=@0@'.format(gydict_vapidir)],
 )
 
-libgydict_gir = gnome.generate_gir(libgydict,
-              sources: libgydict_public_headers + libgydict_public_sources + [ libgydict_enums[1] ] ,
-            nsversion: apiversion,
-            namespace: 'Gydict',
-        symbol_prefix: 'gy',
-    identifier_prefix: 'Gy',
-             includes: [ 'Gio-2.0', 'Gtk-3.0', 'Dazzle-1.0' ],
-              install: true,
-  install_dir_typelib: gydict_typelibdir,
-      install_dir_gir: gydict_girdir,
-           extra_args: ['--c-include=gydict.h', '--quiet', '-DGYDICT_COMPILATION'],)
+# libgydict_gir = gnome.generate_gir(libgydict,
+#               sources: libgydict_public_headers + libgydict_public_sources + [ libgydict_enums[1] ] ,
+#             nsversion: apiversion,
+#             namespace: 'Gydict',
+#         symbol_prefix: 'gy',
+#     identifier_prefix: 'Gy',
+#              includes: [ 'Gio-2.0', 'Gtk-3.0', 'Dazzle-1.0' ],
+#               install: true,
+#   install_dir_typelib: gydict_typelibdir,
+#       install_dir_gir: gydict_girdir,
+#            extra_args: ['--c-include=gydict.h', '--quiet', '-DGYDICT_COMPILATION'],)
 
-libgydict_vapi = gnome.generate_vapi(
-    'libgydict-' + apiversion,
-      install: true,
-      install_dir: gydict_vapidir,
-      sources: libgydict_gir[0],
-      metadata_dirs: [ meson.current_source_dir() ],
-      packages: [ 'gio-2.0', 'gtk+-3.0', 'libdazzle-1.0'])
+# libgydict_vapi = gnome.generate_vapi(
+#     'libgydict-' + apiversion,
+#       install: true,
+#       install_dir: gydict_vapidir,
+#       sources: libgydict_gir[0],
+#       metadata_dirs: [ meson.current_source_dir() ],
+#       packages: [ 'gio-2.0', 'gtk+-3.0', 'libdazzle-1.0'])
     
