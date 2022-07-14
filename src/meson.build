@@ -1,13 +1,9 @@
-exe_link_args = [
-  '-pie',
-]
+exe_link_args = []
 
-exe_c_args = [
-  '-fPIE',
-]
+exe_c_args = []
 
 executable('gydict', 'gy-main.c',
-              gui_app: true,
+        win_subsystem: 'windows',
               install: true,
                c_args: exe_c_args,
             link_args: exe_link_args,

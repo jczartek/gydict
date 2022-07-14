@@ -1,8 +1,8 @@
 project('gydict', 'c',
-        version: '0.6.0',
-        default_options: ['c_std=gnu11', 'warning_level=2'],
+        version: '1.0.0',
+        default_options: ['c_std=gnu17', 'warning_level=2'],
         license: 'GPLv2+',
-        meson_version: '>= 0.50.0')
+        meson_version: '>= 0.62.0')
 
 gydict_prefix     = get_option('prefix')
 gydict_bindir     = join_paths(gydict_prefix, get_option('bindir'))
@@ -39,7 +39,7 @@ host_system = host_machine.system()
 
 add_global_arguments([
   '-DHAVE_CONFIG_H',
-  '-I' + meson.build_root(), #config.h
+  '-I' + meson.project_build_root(), #config.h
 ], language: 'c')
 
 test_cflags = []
@@ -94,10 +94,12 @@ po_dir   = join_paths(meson.current_source_dir(), 'po')
 
 configure_file(output: 'config.h', configuration: conf)
 
-gio_dep    = dependency('gio-2.0', version: '>= 2.50.0')
-gtk_dep    = dependency('gtk+-3.0', version: '>= 3.22.0')
-peas_dep   = dependency('libpeas-1.0', version: '>= 1.22.0')
-dazzle_dep = dependency('libdazzle-1.0', version: '>= 3.26.0')
+gio_dep     = dependency('gio-2.0', version: '>= 2.72.0')
+gtk_dep     = dependency('gtk+-3.0', version: '>= 3.22.0')
+peas_dep    = dependency('libpeas-1.0', version: '>= 1.32.0')
+#dazzle_dep  = dependency('libdazzle-1.0', version: '>= 3.26.0')
+gtk4_dep    = dependency('gtk4', version: '>= 4.6.0')
+adwaita_dep = dependency('libadwaita-1', version: '>= 1.1.0')
 
 gnome = import('gnome')
 i18n  = import('i18n')
