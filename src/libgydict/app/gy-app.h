@@ -23,9 +23,7 @@
 #error "Only <gydict.h> can be included directly."
 #endif
 
-#include <gtk/gtk.h>
-#include <dazzle.h>
-
+#include <libadwaita-1/adwaita.h>
 #include "../services/gy-service-provider.h"
 
 G_BEGIN_DECLS
@@ -33,7 +31,7 @@ G_BEGIN_DECLS
 #define GY_TYPE_APP    (gy_app_get_type ())
 #define GY_APP_DEFAULT (GY_APP (g_application_get_default ()))
 
-G_DECLARE_FINAL_TYPE (GyApp, gy_app, GY, APP, DzlApplication)
+G_DECLARE_FINAL_TYPE (GyApp, gy_app, GY, APP, AdwApplication)
 
 GyApp *gy_app_new            (void);
 void   gy_app_new_window     (GyApp *self);

@@ -1,11 +1,11 @@
 app_headers = [
   'gy-app.h',
-  'gy-app-addin.h'
+#  'gy-app-addin.h'
 ]
 
 app_sources = [
   'gy-app.c',
-  'gy-app-addin.c'
+#  'gy-app-addin.c'
 ]
 
 app_private_headers = [
@@ -14,9 +14,9 @@ app_private_headers = [
 
 app_private_sources = [
   'gy-app-actions.c',
-  'gy-app-shortcuts.c',
+#  'gy-app-shortcuts.c',
   'gy-app-cmd-line.c',
-  'gy-app-plugins.c',
+#  'gy-app-plugins.c',
 ]
 
 libgydict_public_headers  += files(app_headers)

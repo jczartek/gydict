@@ -8,17 +8,17 @@ libgydict_public_sources =  []
 libgydict_private_sources = ['gy-dict-debug.h']
 libgydict_private_headers = []
 
-#subdir('app')
-#subdir('helpers')
+subdir('app')
+subdir('helpers')
 #subdir('preferences')
 #subdir('resources')
-#subdir('services')
+subdir('services')
 #subdir('gui')
 
 libgydct_sources = [
- # libgydict_public_sources,
- # libgydict_private_sources,
- # libgydict_resources
+ libgydict_public_sources,
+ libgydict_private_sources,
+ #libgydict_resources
 ]
 
 libgydict_deps = [
@@ -62,7 +62,7 @@ pkgg.generate(
          name: 'libgydict',
      filebase: 'libgydict-' + apiversion,
   description: 'Libgydict contains the components used to build the application Gydict.',
-     requires: ['gtk+-3.0', 'libdazzle-1.0', 'gio-2.0', 'libpeas-1.0'],
+     requires: ['gtk-4.0', 'libadwaita-1', 'gio-2.0', 'libpeas-1.0'],
   install_dir: join_paths(gydict_libdir, 'pkgconfig'),
     variables: ['vapidir=@0@'.format(gydict_vapidir)],
 )

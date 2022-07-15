@@ -20,11 +20,10 @@
 #include <glib/gi18n-lib.h>
 #include "gy-app-private.h"
 #include "gy-app.h"
-#include "gy-app-addin.h"
-#include "resources/gy-resources.h"
+/* #include "gy-app-addin.h" */
+/* #include "resources/gy-resources.h" */
 
-G_DEFINE_TYPE (GyApp, gy_app, DZL_TYPE_APPLICATION);
-
+G_DEFINE_TYPE (GyApp, gy_app, ADW_TYPE_APPLICATION);
 
 enum
 {
@@ -45,8 +44,6 @@ setup_accels (GyApp *self)
       {"win.close", "<ctrl>w"},
       {"win.clip", "<ctrl>m"},
       {"win.gear-menu", "F10"},
-      {"dockbin.top-visible", "<ctrl>f"},
-      {"dockbin.left-visible", "F9"},
       {NULL, NULL}
   };
 
@@ -59,34 +56,34 @@ setup_accels (GyApp *self)
     }
 }
 
-static void
-gy_app_register_theme_overrides (GyApp *self)
-{
-  g_autoptr(GSettings)  settings = NULL;
-  g_autoptr(GtkCssProvider) provider = NULL;
-  GtkSettings          *gtk_settings;
-  GdkScreen            *screen;
+/* static void */
+/* gy_app_register_theme_overrides (GyApp *self) */
+/* { */
+/*   g_autoptr(GSettings)  settings = NULL; */
+/*   g_autoptr(GtkCssProvider) provider = NULL; */
+/*   GtkSettings          *gtk_settings; */
+/*   GdkScreen            *screen; */
 
-  provider = dzl_css_provider_new ("/org/gtk/gydict/themes");
-  screen = gdk_screen_get_default ();
+/*   provider = dzl_css_provider_new ("/org/gtk/gydict/themes"); */
+/*   screen = gdk_screen_get_default (); */
 
-  gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (provider),
-                                             GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+/*   gtk_style_context_add_provider_for_screen (screen, GTK_STYLE_PROVIDER (provider), */
+/*                                              GTK_STYLE_PROVIDER_PRIORITY_APPLICATION); */
 
-  gtk_settings = gtk_settings_get_for_screen (screen);
-  settings = g_settings_new ("org.gtk.gydict");
-  g_settings_bind (settings,     "night-mode",
-                   gtk_settings, "gtk-application-prefer-dark-theme",
-                   G_SETTINGS_BIND_DEFAULT);
-}
+/*   gtk_settings = gtk_settings_get_for_screen (screen); */
+/*   settings = g_settings_new ("org.gtk.gydict"); */
+/*   g_settings_bind (settings,     "night-mode", */
+/*                    gtk_settings, "gtk-application-prefer-dark-theme", */
+/*                    G_SETTINGS_BIND_DEFAULT); */
+/* } */
 
 static void
 startup (GApplication *application)
 {
   GyApp *app = GY_APP (application);
 
-  g_resources_register (gy_get_resource ());
-  g_application_set_resource_base_path (application, "/org/gtk/gydict");
+  /* g_resources_register (gy_get_resource ()); */
+  /* g_application_set_resource_base_path (application, "/org/gtk/gydict"); */
 
   /* Chain up parent's class */
   G_APPLICATION_CLASS (gy_app_parent_class)->startup (application);
@@ -98,10 +95,10 @@ startup (GApplication *application)
   setup_accels (app);
 
   /* Setup theme */
-  gy_app_register_theme_overrides (app);
+  /* gy_app_register_theme_overrides (app); */
 
   /* Init shortcuts */
-  _gy_app_init_shortcuts (app);
+  /* _gy_app_init_shortcuts (app); */
 }
 
 static void
@@ -109,7 +106,7 @@ gy_app_activate (GApplication *app)
 {
   GyApp *self = GY_APP (app);
 
-  _gy_app_plugins_init_plugins (self);
+  /* _gy_app_plugins_init_plugins (self); */
 
   gy_app_new_window (self);
 
@@ -120,9 +117,9 @@ gy_app_shutdown (GApplication *app)
 {
   GyApp *self = GY_APP (app);
 
-  g_clear_pointer (&self->plugin_settings, g_hash_table_destroy);
-  g_clear_pointer (&self->plugin_gresources, g_hash_table_destroy);
-  g_clear_object (&self->extens);
+  /* g_clear_pointer (&self->plugin_settings, g_hash_table_destroy); */
+  /* g_clear_pointer (&self->plugin_gresources, g_hash_table_destroy); */
+  /* g_clear_object (&self->extens); */
   g_clear_object (&self->service_provider);
 
   G_APPLICATION_CLASS (gy_app_parent_class)->shutdown (app);
@@ -133,10 +130,10 @@ gy_app_init (GyApp *self)
 {
   g_set_application_name ("Gydict");
 
-  self->plugin_settings = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                               g_free, g_object_unref);
-  self->plugin_gresources = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                                   g_free, (GDestroyNotify) g_resource_unref);
+  /* self->plugin_settings = g_hash_table_new_full (g_str_hash, g_str_equal, */
+  /*                                              g_free, g_object_unref); */
+  /* self->plugin_gresources = g_hash_table_new_full (g_str_hash, g_str_equal, */
+  /*                                                  g_free, (GDestroyNotify) g_resource_unref); */
 
   self->service_provider = gy_service_provider_new();
 }

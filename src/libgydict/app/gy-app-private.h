@@ -20,7 +20,6 @@
 
 #pragma once
 
-#include <dazzle.h>
 #include <libpeas/peas.h>
 #include "gy-app.h"
 #include "../services/gy-service-provider.h"
@@ -29,11 +28,11 @@ G_BEGIN_DECLS
 
 struct _GyApp
 {
-  DzlApplication        __parent__;
+  AdwApplication        __parent__;
 
-  PeasExtensionSet      *extens;
-  GHashTable            *plugin_settings;
-  GHashTable            *plugin_gresources;
+  // PeasExtensionSet      *extens;
+  // GHashTable            *plugin_settings;
+  // GHashTable            *plugin_gresources;
 
   GyServiceProvider *service_provider;
 };

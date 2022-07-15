@@ -22,8 +22,8 @@
 #include <glib/gi18n-lib.h>
 #include "gy-app.h"
 #include "gy-app-private.h"
-#include "gui/gy-window.h"
-#include "preferences/gy-prefs-window.h"
+/* #include "gui/gy-window.h" */
+/* #include "preferences/gy-prefs-window.h" */
 
 static void
 gy_app_actions_new_window_cb (GSimpleAction *action   G_GNUC_UNUSED,
@@ -31,44 +31,42 @@ gy_app_actions_new_window_cb (GSimpleAction *action   G_GNUC_UNUSED,
                               gpointer                data)
 {
   GyApp *app = GY_APP (data);
-  GtkWidget *window;
-
-  window = gy_window_new (app);
+  GtkWidget *window =  adw_window_new(); //gy_window_new (app);
   gtk_application_add_window (GTK_APPLICATION (app), GTK_WINDOW (window));
   gtk_window_present (GTK_WINDOW (window));
 }
 
-static void
-gy_app_actions_preferences_cb (GSimpleAction *action   G_GNUC_UNUSED,
-                               GVariant      *parametr G_GNUC_UNUSED,
-                               gpointer                data)
-{
-  GyApp *self         = GY_APP (data);
-  GtkWindow *toplevel = NULL;
-  GtkWindow *window   = NULL;
-  GList *windows      = NULL;
+/* static void */
+/* gy_app_actions_preferences_cb (GSimpleAction *action   G_GNUC_UNUSED, */
+/*                                GVariant      *parametr G_GNUC_UNUSED, */
+/*                                gpointer                data) */
+/* { */
+/*   GyApp *self         = GY_APP (data); */
+/*   GtkWindow *toplevel = NULL; */
+/*   GtkWindow *window   = NULL; */
+/*   GList *windows      = NULL; */
 
 
-  windows = gtk_application_get_windows (GTK_APPLICATION (self));
-  for (; windows != NULL; windows = windows->next)
-    {
-      GtkWindow *win = windows->data;
+/*   windows = gtk_application_get_windows (GTK_APPLICATION (self)); */
+/*   for (; windows != NULL; windows = windows->next) */
+/*     { */
+/*       GtkWindow *win = windows->data; */
 
-      if (GY_IS_PREFS_WINDOW (win))
-        {
-          gtk_window_present (win);
-          return;
-        }
+/*       if (GY_IS_PREFS_WINDOW (win)) */
+/*         { */
+/*           gtk_window_present (win); */
+/*           return; */
+/*         } */
 
-      if (toplevel == NULL && GY_IS_WINDOW (win))
-        toplevel = win;
-    }
+/*       if (toplevel == NULL && GY_IS_WINDOW (win)) */
+/*         toplevel = win; */
+/*     } */
 
 
-  window = g_object_new (GY_TYPE_PREFS_WINDOW, "transient-for", toplevel, NULL);
-  gtk_application_add_window (GTK_APPLICATION (self), window);
-  gtk_window_present (window);
-}
+/*   window = g_object_new (GY_TYPE_PREFS_WINDOW, "transient-for", toplevel, NULL); */
+/*   gtk_application_add_window (GTK_APPLICATION (self), window); */
+/*   gtk_window_present (window); */
+/* } */
 
 static void
 gy_app_actions_about_cb (GSimpleAction *action    G_GNUC_UNUSED,
@@ -93,7 +91,7 @@ gy_app_actions_about_cb (GSimpleAction *action    G_GNUC_UNUSED,
 
   for (iter = windows; iter ;iter = iter->next)
     {
-      if (GY_IS_WINDOW (iter->data))
+      if (GTK_IS_WINDOW (iter->data)) // TODO: previouse was GY_IS_WINDOw
         {
           parent = GTK_WINDOW (iter->data);
           break;
@@ -134,7 +132,7 @@ static GActionEntry app_entries[] =
 {
   /* general action */
   { "new-window", gy_app_actions_new_window_cb, NULL, NULL, NULL},
-  { "prefs", gy_app_actions_preferences_cb, NULL, NULL, NULL },
+  /* { "prefs", gy_app_actions_preferences_cb, NULL, NULL, NULL }, */
   { "about", gy_app_actions_about_cb, NULL, NULL, NULL},
   { "quit", gy_app_actions_quit_cb, NULL, NULL, NULL },
 };
